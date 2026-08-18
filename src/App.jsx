@@ -11,7 +11,6 @@ export default function App() {
       <SearchProvider>
         <CartProvider>
           <AppRouter/>
-          {/* <Home /> */}
         </CartProvider>
       </SearchProvider>
     </div>

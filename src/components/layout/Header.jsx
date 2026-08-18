@@ -23,7 +23,7 @@ export default function Header() {
         value={searchItem}
         onChange={(e) => setSearchItem(e.target.value)}
         placeholder="ស្វែងរក..."
-        className="w-full bg-slate-100 rounded-full pl-10 pr-4 py-2.5 text-base leading-khmer outline-none focus:ring-2 focus:ring-red-400 placeholder:text-slate-400"
+        className="w-full bg-slate-100 rounded-full pl-10 pr-2 py-2 text-base leading-khmer outline-none focus:ring-2 focus:ring-red-400 placeholder:text-slate-400"
       />
     </div>
 

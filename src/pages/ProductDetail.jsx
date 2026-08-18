@@ -24,7 +24,7 @@ export default function ProductDetail() {
       <div>
         <Header />
         <Container className="pt-24 pb-16 text-center">
-          <p className="text-slate-500">រកមិនឃើញផលិតផលនេះទេ។</p>
+          <p className="text-slate-500">រកមិនឃើញផលិតផលនេះទេ</p>
           <Link to="/" className="text-red-700 font-medium mt-4 inline-block">
             ត្រឡប់ទៅទំព័រដើម
           </Link>
@@ -61,7 +61,7 @@ export default function ProductDetail() {
       <Container className="pt-24 mt-4 pb-16">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1 text-slate-500 text-sm mb-6 hover:text-slate-700 transition-colors"
+          className="flex items-center gap-1 bg-red-500 rounded-tl-xl rounded-br-xl px-4 py-2 text-white text-md font-semibold mb-6 hover:text-red-900 hover:bg-red-300 transition-colors duration-300 ease-in-out"
         >
           <ArrowLeft size={16} />
           ត្រឡប់ក្រោយ

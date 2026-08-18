@@ -39,6 +39,7 @@ export default function DeliveryInformation({
           <input
             type="tel"
             value={phone}
+            min={10}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="012 345 678"
             className="w-full h-11 px-3.5 text-sm

@@ -59,16 +59,13 @@ export default function ProductDetail() {
       <Header />
 
       <Container className="pt-24 mt-4 pb-16">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-1 bg-red-500 rounded-tl-xl rounded-br-xl px-4 py-2 text-white text-md font-semibold mb-6 hover:text-red-900 hover:bg-red-300 transition-colors duration-300 ease-in-out"
-        >
+        <Link to="/" 
+        className="flex items-center w-40 gap-1 bg-red-500 rounded-tl-xl rounded-br-xl px-4 py-2 text-white text-md font-semibold mb-6 hover:text-red-900 hover:bg-red-300 transition-colors duration-300 ease-in-out">
           <ArrowLeft size={16} />
-          ត្រឡប់ក្រោយ
-        </button>
+            ត្រឡប់ក្រោយ
+        </Link>
 
         <div className="grid md:grid-cols-2 gap-10">
-          {/* Left: gallery */}
           <div>
             <div className="relative">
               <img

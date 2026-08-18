@@ -15,7 +15,17 @@ export default function PromoBanner({
       </span>
       <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
       <p className="mt-2 text-base text-white/80 max-w-md leading-khmer">{description}</p>
-      <Button variant="white" className="mt-6 flex items-center gap-2 font-semibold rounded-2xl">
+     <Button
+        variant="white"
+        className="
+          mt-6
+          flex items-center gap-2
+          rounded-[50px]
+          font-semibold
+          animate-[bounce_4s_ease-in-out_infinite]
+          transition-all
+          duration-100
+          hover:scale-105">
         {buttonText}
         <ArrowRight size={16} />
       </Button>

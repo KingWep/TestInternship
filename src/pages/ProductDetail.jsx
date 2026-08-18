@@ -1,0 +1,184 @@
+import { useState } from "react"
+import { useParams, Link, useNavigate } from "react-router-dom"
+import { ArrowLeft, Gift, Plus, Minus } from "lucide-react"
+import Header from "../components/layout/Header"
+import Footer from "../components/layout/Footer"
+import Container from "../components/layout/Container"
+import CartDrawer from "../components/cart/CartDrawer"
+import Badge from "../components/common/Badge"
+import { products } from "../data/Products"
+import { useCart } from "../context/CartContext"
+import RecommendedProducts from "../components/products/RecommendedProducts"
+export default function ProductDetail() {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { addToCart } = useCart()
+  const [quantity, setQuantity] = useState(1)
+
+  const product = products.find((p) => p.id === Number(id))
+
+  const [activeImage, setActiveImage] = useState(0)
+
+  if (!product) {
+    return (
+      <div>
+        <Header />
+        <Container className="pt-24 pb-16 text-center">
+          <p className="text-slate-500">រកមិនឃើញផលិតផលនេះទេ។</p>
+          <Link to="/" className="text-red-700 font-medium mt-4 inline-block">
+            ត្រឡប់ទៅទំព័រដើម
+          </Link>
+        </Container>
+        <Footer />
+      </div>
+    )
+  }
+  const {
+    name,
+    price,
+    oldPrice,
+    discount,
+    stock,
+    cashback,
+    image,
+    images,
+    description,
+    category,
+  } = product
+
+  const gallery = images && images.length > 0 ? images : [image]
+
+  const handleAddToCart = () => {
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product)
+    }
+  }
+
+  return (
+    <div>
+      <Header />
+
+      <Container className="pt-24 mt-4 pb-16">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-1 text-slate-500 text-sm mb-6 hover:text-slate-700 transition-colors"
+        >
+          <ArrowLeft size={16} />
+          ត្រឡប់ក្រោយ
+        </button>
+
+        <div className="grid md:grid-cols-2 gap-10">
+          {/* Left: gallery */}
+          <div>
+            <div className="relative">
+              <img
+                src={gallery[activeImage]}
+                alt={name}
+                className="w-full h-96 object-cover rounded-2xl"
+              />
+              {discount && (
+                <span className="absolute top-4 left-4 bg-red-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md">
+                  -{discount}%
+                </span>
+              )}
+            </div>
+
+            {/* Thumbnails */}
+            {gallery.length > 1 && (
+              <div className="flex gap-3 mt-4">
+                {gallery.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImage(i)}
+                    className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                      activeImage === i
+                        ? "border-red-700"
+                        : "border-transparent hover:border-slate-200"
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${name} ${i + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right: info */}
+          <div>
+            {category && (
+              <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">
+                {category}
+              </span>
+            )}
+
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mt-1">
+              {name}
+            </h1>
+
+            <div className="flex items-center gap-3 mt-4">
+              <span className="text-red-700 font-bold text-3xl">
+                ${price.toFixed(2)}
+              </span>
+              {oldPrice && (
+                <span className="text-slate-400 line-through text-lg">
+                  ${oldPrice.toFixed(2)}
+                </span>
+              )}
+            </div>
+
+            {cashback && (
+              <div className="flex items-center gap-1 mt-3 text-green-600 text-sm font-medium">
+                <Gift size={16} />
+                សំណូក ${cashback.toFixed(2)}
+              </div>
+            )}
+
+            <div className="mt-3">
+              <Badge variant="stock">ស្តុក: {stock}</Badge>
+            </div>
+
+            {description && (
+              <p className="text-slate-600 mt-6 leading-relaxed">{description}</p>
+            )}
+
+            <div className="flex items-center gap-4 mt-8">
+              <span className="text-sm font-medium text-slate-700">ចំនួន:</span>
+              <div className="flex items-center gap-3 border border-slate-200 rounded-full px-4 py-2">
+                <button
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  disabled={quantity <= 1}
+                  className="disabled:opacity-30"
+                >
+                  <Minus size={16} />
+                </button>
+                <span className="w-6 text-center font-medium">{quantity}</span>
+                <button onClick={() => setQuantity((q) => q + 1)}>
+                  <Plus size={16} />
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={handleAddToCart}
+              disabled={stock === 0}
+              className="w-full md:w-auto mt-6 flex items-center justify-center gap-2 bg-red-900 text-white font-medium px-8 py-3 rounded-full hover:bg-red-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Plus size={18} />
+              {stock === 0 ? "អស់ស្តុក" : "បន្ថែមទៅកន្ត្រក"}
+            </button>
+          </div>
+        </div>
+        <RecommendedProducts
+          products={products}
+          currentProduct={product}
+        />
+      </Container>
+      <Footer />
+      <CartDrawer />
+    </div>
+  )
+}

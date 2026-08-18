@@ -14,8 +14,8 @@ export default function PromoBanner({
         {tag}
       </span>
       <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
-      <p className="mt-2 text-white/80 max-w-md">{description}</p>
-      <Button variant="white" className="mt-6 flex items-center gap-2 text-red-900 bg-white rounded-2xl">
+      <p className="mt-2 text-base text-white/80 max-w-md leading-khmer">{description}</p>
+      <Button variant="white" className="mt-6 flex items-center gap-2 font-semibold rounded-2xl">
         {buttonText}
         <ArrowRight size={16} />
       </Button>

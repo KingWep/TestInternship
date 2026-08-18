@@ -15,7 +15,7 @@ import Container from "./Container";
 export default function Footer() {
   return (
     <footer className="bg-slate-50 pt-8 pb-4 mt-16">
-      <Container className="grid grid-row md:grid-cols-3 gap-10">
+      <Container className="grid grid-row md:flex justify-evenly md:grid-cols-3 gap-10">
         <div>
           <h3 className="font-bold text-red-900 mb-3">
             ONE CARE SHOP

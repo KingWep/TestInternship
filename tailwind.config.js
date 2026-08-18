@@ -4,8 +4,19 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Kantumruy Pro", "sans-serif"], 
+        khmer: ["Kantumruy Pro", "sans-serif"],  
+      },
+      lineHeight: {
+        "khmer": "1.9",       
+        "khmer-heading": "2", 
+      },
+    },
   },
+
   plugins: [],
-}
+};

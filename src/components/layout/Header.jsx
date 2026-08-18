@@ -13,19 +13,19 @@ export default function Header() {
         <span className="font-bold text-lg text-red-900 whitespace-nowrap">
           ONE CARE SHOP
         </span>
-        <div className="flex-1 relative">
-          <Search
-            size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-          />
-          <input
-            type="text"
-            value={searchItem}
-            onChange={(e) => setSearchItem(e.target.value)}
-            placeholder="ស្វែងរក..."
-            className="w-full bg-slate-100 rounded-full pl-11 pr-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-red-200"
-          />
-        </div>
+       <div className="flex-1 relative">
+      <Search
+        size={18}
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+      />
+      <input
+        type="text"
+        value={searchItem}
+        onChange={(e) => setSearchItem(e.target.value)}
+        placeholder="ស្វែងរក..."
+        className="w-full bg-slate-100 rounded-full pl-10 pr-4 py-2.5 text-base leading-khmer outline-none focus:ring-2 focus:ring-red-400 placeholder:text-slate-400"
+      />
+    </div>
 
         <select
           value={priceRange}

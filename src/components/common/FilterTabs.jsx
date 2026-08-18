@@ -14,7 +14,7 @@ export default function FilterTabs({ tabs, onChange }) {
         <button
           key={tab}
           onClick={() => handleClick(tab)}
-          className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+          className={`px-5 py-2 rounded-full text-base font-medium leading-khmer transition-colors ${
             active === tab
               ? "bg-red-900 text-white"
               : "bg-white text-slate-700 border border-slate-200"

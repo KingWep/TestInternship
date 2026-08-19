@@ -20,7 +20,7 @@ export default function PromoBanner({
         className="
           mt-6
           flex items-center gap-2
-          rounded-[50px]
+          rounded-[100px]
           font-semibold
           animate-[bounce_4s_ease-in-out_infinite]
           transition-all

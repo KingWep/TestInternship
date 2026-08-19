@@ -1,5 +1,3 @@
-// components/cart/ReceiptModal.jsx
-
 import { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { X, Printer, FileDown, CheckCircle2, ShoppingBag, Calendar, Phone, MapPin, FileText } from "lucide-react"
@@ -85,11 +83,6 @@ export default function ReceiptModal({
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
 
       <div className="relative flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl border border-slate-100">
-
-        {/* ======================================
-            HEADER
-        ====================================== */}
-
         <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50/50">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-red-50 text-red-600 shadow-sm">

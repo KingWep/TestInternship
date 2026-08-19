@@ -4,12 +4,24 @@ import { Link } from "react-router-dom"
 import Badge from "../common/Badge"
 import ProductPrice from "./ProductPrice"
 
-export default function ProductCard({ product }) {
-  const { id, name, price, oldPrice, discount, stock, cashback, image, images } = product
+export default function ProductCard({ product, index = 0 }) {
+  const {
+    id,
+    name,
+    price,
+    oldPrice,
+    discount,
+    stock,
+    cashback,
+    image,
+    images,
+  } = product
+
   const [hoverIndex, setHoverIndex] = useState(0)
   const [isHovering, setIsHovering] = useState(false)
 
   const gallery = images?.length > 0 ? images : [image]
+
   useEffect(() => {
     if (!isHovering || gallery.length <= 1) return
 
@@ -31,12 +43,14 @@ export default function ProductCard({ product }) {
 
   return (
     <div
+      data-aos="fade-up"
+      data-aos-delay={Math.min(index % 4, 3) * 100}
       className="group bg-white/50 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div className="relative overflow-hidden">
-         {gallery.map((img, index) => (
+        {gallery.map((img, index) => (
           <img
             key={img}
             src={img}
@@ -49,14 +63,18 @@ export default function ProductCard({ product }) {
           />
         ))}
 
+        {/* Keep container height */}
         <img
           src={gallery[0]}
           alt=""
           className="w-full h-64 object-cover opacity-0"
         />
+
         {discount && (
           <div className="absolute top-3 left-3">
-            <Badge variant="discount">-{discount}%</Badge>
+            <Badge variant="discount">
+              -{discount}%
+            </Badge>
           </div>
         )}
 
@@ -72,12 +90,19 @@ export default function ProductCard({ product }) {
 
       <div className="p-4">
         <div className="mb-2">
-          <Badge variant="stock">ស្តុក: {stock}</Badge>
+          <Badge variant="stock">
+            ស្តុក: {stock}
+          </Badge>
         </div>
 
-        <h3 className="font-semibold text-slate-900">{name}</h3>
+        <h3 className="font-semibold text-slate-900">
+          {name}
+        </h3>
 
-        <ProductPrice price={price} oldPrice={oldPrice} />
+        <ProductPrice
+          price={price}
+          oldPrice={oldPrice}
+        />
 
         {cashback && (
           <div className="flex items-center gap-1 mt-2 text-green-600 text-sm font-medium">

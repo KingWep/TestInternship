@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
-import { ArrowLeft, Gift, Plus, Minus } from "lucide-react"
+import { ArrowLeft, ArrowRight, Gift, Plus, Minus, ChevronLeft, ChevronRight } from "lucide-react"
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import Container from "../components/layout/Container"
@@ -9,6 +9,7 @@ import Badge from "../components/common/Badge"
 import { products } from "../data/Products"
 import { useCart } from "../context/CartContext"
 import RecommendedProducts from "../components/products/RecommendedProducts"
+
 export default function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -18,6 +19,36 @@ export default function ProductDetail() {
   const product = products.find((p) => p.id === Number(id))
 
   const [activeImage, setActiveImage] = useState(0)
+
+  const gallery = product
+    ? product.images && product.images.length > 0
+      ? product.images
+      : [product.image]
+    : []
+
+  const goPrev = useCallback(() => {
+    setActiveImage((prev) => (prev - 1 + gallery.length) % gallery.length)
+  }, [gallery.length])
+
+  const goNext = useCallback(() => {
+    setActiveImage((prev) => (prev + 1) % gallery.length)
+  }, [gallery.length])
+
+  useEffect(() => {
+    setActiveImage(0)
+  }, [id])
+  
+  useEffect(() => {
+    if (gallery.length <= 1) return
+
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowLeft") goPrev()
+      if (e.key === "ArrowRight") goNext()
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [gallery.length, goPrev, goNext])
 
   if (!product) {
     return (
@@ -40,13 +71,9 @@ export default function ProductDetail() {
     discount,
     stock,
     cashback,
-    image,
-    images,
     description,
     category,
   } = product
-
-  const gallery = images && images.length > 0 ? images : [image]
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -67,7 +94,7 @@ export default function ProductDetail() {
 
         <div className="grid md:grid-cols-2 gap-10">
           <div>
-            <div className="relative">
+            <div className="group relative">
               <img
                 src={gallery[activeImage]}
                 alt={name}
@@ -77,6 +104,31 @@ export default function ProductDetail() {
                 <span className="absolute top-4 left-4 bg-red-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md">
                   -{discount}%
                 </span>
+              )}
+
+              {/* Prev / Next arrows */}
+              {gallery.length > 1 && (
+                <>
+                  <button
+                    onClick={goPrev}
+                    aria-label="Previous image"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/80 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+                  >
+                    <ChevronLeft size={20} className="text-slate-800" />
+                  </button>
+                  <button
+                    onClick={goNext}
+                    aria-label="Next image"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/80 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+                  >
+                    <ChevronRight size={20} className="text-slate-800" />
+                  </button>
+
+                  {/* Image counter */}
+                  <span className="absolute bottom-3 right-3 bg-black/60 text-white text-xs font-medium px-2 py-1 rounded-full">
+                    {activeImage + 1} / {gallery.length}
+                  </span>
+                </>
               )}
             </div>
 
@@ -142,7 +194,7 @@ export default function ProductDetail() {
               <p className="text-slate-600 mt-6 leading-relaxed">{description}</p>
             )}
 
-            <div className="flex items-center gap-4 mt-8">
+            <div className="flex items-center  gap-4 mt-8">
               <span className="text-sm font-medium text-slate-700">ចំនួន:</span>
               <div className="flex items-center gap-3 border border-slate-200 rounded-full px-4 py-2">
                 <button
@@ -156,17 +208,17 @@ export default function ProductDetail() {
                 <button onClick={() => setQuantity((q) => q + 1)}>
                   <Plus size={16} />
                 </button>
-              </div>
+              </div>           
+               <button
+                onClick={handleAddToCart}
+                disabled={stock === 0}
+                className="w-full md:w-auto flex items-center justify-center gap-2 bg-red-900 text-white font-medium  px-4 py-2 rounded-full hover:bg-red-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                <Plus size={18} />
+                {stock === 0 ? "អស់ស្តុក" : "បន្ថែមទៅកន្ត្រក"}
+              </button>
             </div>
 
-            <button
-              onClick={handleAddToCart}
-              disabled={stock === 0}
-              className="w-full md:w-auto mt-6 flex items-center justify-center gap-2 bg-red-900 text-white font-medium px-8 py-3 rounded-full hover:bg-red-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <Plus size={18} />
-              {stock === 0 ? "អស់ស្តុក" : "បន្ថែមទៅកន្ត្រក"}
-            </button>
+
           </div>
         </div>
         <RecommendedProducts

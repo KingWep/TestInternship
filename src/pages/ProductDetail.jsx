@@ -4,11 +4,11 @@ import { ArrowLeft, ArrowRight, Gift, Plus, Minus, ChevronLeft, ChevronRight } f
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import Container from "../components/layout/Container"
-import CartDrawer from "../components/cart/CartDrawer"
+import CartDrawer from "../features/cart/components/CartDrawer"
 import Badge from "../components/common/Badge"
 import { products } from "../data/Products"
 import { useCart } from "../context/CartContext"
-import RecommendedProducts from "../components/products/RecommendedProducts"
+import RecommendedProducts from "../features/products/components/RecommendedProducts"
 
 export default function ProductDetail() {
   const { id } = useParams()

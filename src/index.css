@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  /* ===== Global Khmer Font Setup ===== */
   html {
     font-family: "Kantumruy Pro", sans-serif;
     -webkit-font-smoothing: antialiased;

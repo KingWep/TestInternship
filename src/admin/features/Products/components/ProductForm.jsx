@@ -6,7 +6,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
     name: '',
     sku: '',
     category: '',
-    stock: 0,
+    stock: '',
     price: '',
     discount: '',
     salePrice: '',

@@ -5,7 +5,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
   if (totalPages <= 1) return null
 
   return (
-    <div className="flex items-center justify-between px-6 py-4 bg-white border-t border-slate-200 rounded-b-2xl">
+    <div className="flex items-center justify-between px-6 py-4 bg-white border border-slate-200 rounded-b-2xl">
       <span className="text-sm text-slate-500">
         Page <span className="font-semibold text-slate-800">{currentPage}</span> of <span className="font-semibold text-slate-800">{totalPages}</span>
       </span>

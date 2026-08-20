@@ -1,8 +1,9 @@
 import React from 'react'
+import { FaBoxOpen } from "react-icons/fa";
 
 export default function DataTable({ columns, data, keyField = 'id' }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-t-2xl shadow-xs overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -24,11 +25,20 @@ export default function DataTable({ columns, data, keyField = 'id' }) {
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan={columns.length} className="px-6 py-8 text-center text-slate-500">
-                  No data available.
-                </td>
-              </tr>
+            <tr>
+              <td
+                colSpan={columns.length}
+                className="px-6 py-12 text-slate-500"
+              >
+                <div className="flex flex-col items-center justify-center">
+                  <FaBoxOpen className="w-20 h-20 text-slate-400 mb-3" />
+
+                  <span className="text-sm">
+                    No data available.
+                  </span>
+                </div>
+              </td>
+            </tr>
             )}
           </tbody>
         </table>

@@ -10,7 +10,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
     image: [],
   })
 
-  // Check if we are editing an existing category
+  // Edit 
   const isEditing = !!initialData
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
   const handleChange = (e) => {
     const { name, value } = e.target
 
-    // Auto-generate slug from name when not editing
+    // Auto-generate slug
     if (name === 'name' && !isEditing) {
       const autoSlug = value
         .toLowerCase()

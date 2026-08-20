@@ -33,8 +33,11 @@ export default function AdminSidebar() {
 
   return (
     <aside className="w-64 bg-slate-900 text-slate-300 hidden md:flex flex-col border-r border-slate-800">
-      <div className="p-6 font-bold text-lg text-white border-b border-slate-800 flex items-center gap-2">
-        <span className="text-red-500">⚡</span> ADMIN PANEL
+      <div className="p-6 font-bold text-lg text-white border-b border-slate-800 flex items-center gap-4">
+        <div className="w-8 h-8 rounded overflow-hidden flex items-center justify-center bg-white">
+          <img src="/images/shopping.png" alt="Shopping" />
+        </div>
+        <span className="text-white text-xl">ONE CARE</span> 
       </div>
       
       <nav className="flex-1 p-4 space-y-6 overflow-y-auto">

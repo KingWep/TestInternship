@@ -26,21 +26,21 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-3 pt-1">
               <a
-                href="#facebook"
+                href="https://www.facebook.com/share/1EzGQtkvGq/?mibextid=wwXIfr"
                 aria-label="Facebook"
                 className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white hover:bg-blue-600 transition-all duration-200"
               >
                 <FaFacebookF size={16} />
               </a>
               <a
-                href="#instagram"
+                href="https://www.instagram.com/valverdexteam?igsh=NHB6NGo0bGNzNWU5&igsi=NHB6NGo0bGNzNWU5"
                 aria-label="Instagram"
                 className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white hover:bg-blue-600 transition-all duration-200"
               >
                 <FaInstagram size={16} />
               </a>
               <a
-                href="#telegram"
+                href="https://t.me/thadev168"
                 aria-label="Telegram"
                 className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white hover:bg-sky-500 transition-all duration-200"
               >

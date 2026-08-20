@@ -402,7 +402,7 @@ export function useProducts() {
     .sort((a, b) => {
       if (sortOrder === 'Newest First' || sortOrder === 'newest' || sortOrder === '') return b.id - a.id
       if (sortOrder === 'A → Z' || sortOrder === 'asc') return a.name.localeCompare(b.name)
-      return b.name.localeCompare(a.name) // 'Z → A' or 'desc'
+      return b.name.localeCompare(a.name)
     })
 
   // ── Pagination ─────────────────────────────────────────────────────────────

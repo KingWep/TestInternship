@@ -16,7 +16,7 @@ export default function DataTable({ columns, data, keyField = 'id' }) {
           <tbody className="divide-y divide-slate-200 text-sm text-slate-700">
             {data && data.length > 0 ? (
               data.map((row) => (
-                <tr key={row[keyField] || Math.random()} className="hover:bg-slate-50/50 transition-colors">
+                <tr key={row[keyField] || Math.random()} className="hover:bg-slate-100 transition-colors">
                   {columns.map((col, index) => (
                     <td key={index} className="px-6 py-4 whitespace-nowrap">
                       {col.render ? col.render(row) : row[col.accessor]}
@@ -25,20 +25,19 @@ export default function DataTable({ columns, data, keyField = 'id' }) {
                 </tr>
               ))
             ) : (
-            <tr>
-              <td
-                colSpan={columns.length}
-                className="px-6 py-12 text-slate-500"
-              >
-                <div className="flex flex-col items-center justify-center">
-                  <FaBoxOpen className="w-20 h-20 text-slate-400 mb-3" />
-
-                  <span className="text-sm">
-                    No data available.
-                  </span>
-                </div>
-              </td>
-            </tr>
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="px-6 py-12 text-slate-500"
+                >
+                  <div className="flex flex-col items-center justify-center">
+                    <FaBoxOpen className="w-20 h-20 text-slate-400 mb-3" />
+                    <span className="text-sm">
+                      No data available.
+                    </span>
+                  </div>
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

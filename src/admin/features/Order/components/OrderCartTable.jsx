@@ -58,12 +58,9 @@ const CartItem = memo(({ item, onUpdateQuantity, onRemoveItem }) => {
   )
 })
 
-// 2. Main Cart Component
+// Main Cart Component
 export default function OrderCartTable({ cart, onUpdateQuantity, onRemoveItem }) {
-  // Calculate totals for a better header display
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
-  const totalPrice = cart.reduce((sum, item) => sum + (item.salePrice * item.quantity), 0)
-
   return (
     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
       {/* Upgraded Header with dynamic totals */}

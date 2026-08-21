@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react'
+import Swal from 'sweetalert2'
+import { useOrderContext } from '../../../../context/OrderContext'
 
-// ─── Static data outside hook to avoid re-creation on every render ───────────
-// Note: filterOptions is now derived dynamically inside the hook from dummyProducts.
-
+// ─── Static data outside hook to avoid re-creation on every render ────
 const dummyProducts = [
   {
     id: 1,
@@ -61,7 +61,7 @@ const dummyProducts = [
     salePrice: 19.99,
     originalPrice: 29.99,
     savings: 10.00,
-    stock: 0,                 // out of stock — should be blocked from cart
+    stock: 0, // out of stock — blocked from cart
     image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0',
   },
   {
@@ -126,40 +126,38 @@ const dummyProducts = [
   },
 ]
 
-// ─── Initial state helpers ────────────────────────────────────────────────────
-const INITIAL_CUSTOMER = { name: '', phone: '' }
+// ─── Initial state helpers ─────
+const INITIAL_CUSTOMER = { phone: '', address: '', deliveryFee: '' }
 const INITIAL_PAYMENT = 'Cash'
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
+// ─── Hook ──
 export default function useSalesForm() {
+  const { addOrder } = useOrderContext()
+
   const [cart, setCart] = useState([])
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState({ category: '' })
 
-  // ── Dynamic category filter — derived from actual product data ───────────
-  // Any time a product's category changes or a new product is added,
-  // this list updates automatically. 'All' is always the first option.
+  // ── Dynamic category filter 
   const filterOptions = useMemo(() => {
     const uniqueCategories = [
       'All',
       ...Array.from(new Set(dummyProducts.map((p) => p.category))).sort(),
     ]
     return [{ key: 'category', options: uniqueCategories }]
-  }, []) // dummyProducts is module-level constant so no dep needed
+  }, [])
 
-  // ── Filter change handler — matches FilterBar's (key, value) signature ───
+  // ── Filter change handler ──
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }))
   }
 
-
   const handleAddToCart = (product) => {
-    if (product.stock === 0) return // out-of-stock guard
+    if (product.stock === 0) return
 
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id)
       if (existing) {
-        // Do not exceed available stock
         if (existing.quantity >= product.stock) return prev
         return prev.map((item) =>
           item.id === product.id
@@ -185,35 +183,74 @@ export default function useSalesForm() {
     )
   }
 
-  // ── Remove item ──────────────────────────────────────────────────────────
   const handleRemoveItem = (id) => {
     setCart((prev) => prev.filter((item) => item.id !== id))
   }
 
-  // ── Checkout ─────────────────────────────────────────────────────────────
-  // Accepts final customer info & payment method from the page, then resets
-  // all form state so the clerk is ready for the next sale immediately.
+  // ── Checkout with validation & SweetAlert2 
   const handleCheckout = ({ customerInfo, paymentMethod }) => {
-    const order = {
+    if (cart.length === 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Cart is Empty!',
+        text: 'Please add at least one product before placing an order.',
+        confirmButtonColor: '#3b82f6',
+        confirmButtonText: 'Got it',
+      })
+      return null
+    }
+
+    if (!customerInfo.phone || !customerInfo.phone.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Phone Number Required',
+        text: 'Please enter the customer\'s phone number.',
+        confirmButtonColor: '#3b82f6',
+        confirmButtonText: 'OK',
+      })
+      return null
+    }
+
+    if (!customerInfo.address || !customerInfo.address.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Address Required',
+        text: 'Please enter the delivery address.',
+        confirmButtonColor: '#3b82f6',
+        confirmButtonText: 'OK',
+      })
+      return null
+    }
+
+    // ── All valid → create order via context ───
+    const newOrder = addOrder({
       items: cart,
       subtotal,
-      customerInfo,
+      delivery: Number(customerInfo.deliveryFee) || 0,
       paymentMethod,
-      createdAt: new Date().toISOString(),
-    }
-    // TODO: replace with real API call / order dispatch
-    console.log('Order submitted:', order)
+      customerInfo,
+    })
 
-    // Reset all state
+    // ── Reset state ─
     setCart([])
     setSearch('')
     setFilters({ category: '' })
 
-    return order
+    // ── Success alert ──────
+    Swal.fire({
+      icon: 'success',
+      title: 'Order Placed Successfully!🎉',
+      confirmButtonColor: '#3b82f6',
+      confirmButtonText: 'Great!',
+      showClass: {
+        popup: 'animate__animated animate__fadeInDown',
+      },
+    })
+
+    return newOrder
   }
 
-  // ── Derived values ────────────────────────────────────────────────────────
-  // Subtotal uses salePrice (the discounted price the customer pays).
+  // ── Derived values ──
   const subtotal = cart.reduce(
     (acc, item) => acc + item.salePrice * item.quantity,
     0
@@ -246,7 +283,7 @@ export default function useSalesForm() {
     handleCheckout,
     // Summary
     subtotal,
-    // Customer / payment defaults exposed so the page can reset them via handleCheckout
+    // Customer / payment defaults
     INITIAL_CUSTOMER,
     INITIAL_PAYMENT,
   }

@@ -7,6 +7,7 @@ import "./index.css";
 
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
+import { OrderProvider } from "./context/OrderContext";
 
 // Initialize AOS
 AOS.init({
@@ -19,7 +20,9 @@ AOS.init({
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <OrderProvider>
+        <App />
+      </OrderProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

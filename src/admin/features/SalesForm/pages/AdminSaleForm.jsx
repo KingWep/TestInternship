@@ -31,9 +31,12 @@ export default function AdminSaleForm() {
   const [paymentMethod, setPaymentMethod] = useState(INITIAL_PAYMENT)
 
   const onCheckout = () => {
-    handleCheckout({ customerInfo, paymentMethod })
-    setCustomerInfo(INITIAL_CUSTOMER)
-    setPaymentMethod(INITIAL_PAYMENT)
+    const result = handleCheckout({ customerInfo, paymentMethod })
+    // Only reset form fields if the checkout was successful (not blocked by validation)
+    if (result !== null) {
+      setCustomerInfo(INITIAL_CUSTOMER)
+      setPaymentMethod(INITIAL_PAYMENT)
+    }
   }
 
   return (
@@ -89,17 +92,40 @@ export default function AdminSaleForm() {
               onRemoveItem={handleRemoveItem}
             />
           </div>
+
           <OrderFormFields
             customerInfo={customerInfo}
             onChange={(e) =>
               setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value })
             }
-            paymentMethod={paymentMethod}
-            onPaymentChange={setPaymentMethod}
           />
+
+          {/* ── Payment Method Selector ── */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+            <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider mb-3">
+              Payment Method
+            </h3>
+            <div className="flex gap-3">
+              {['Cash', 'Card', 'Bank Transfer', 'QR Code'].map((method) => (
+                <button
+                  key={method}
+                  onClick={() => setPaymentMethod(method)}
+                  className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-all ${
+                    paymentMethod === method
+                      ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
+                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  {method}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <OrderSummaryBox
             subtotal={subtotal}
             onCheckout={onCheckout}
+            delivery={customerInfo.deliveryFee}
             disabled={cart.length === 0}
           />
         </div>

@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom'
 
 export default function AdminHeader() {
   return (
-    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-xs">
+    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-xl">
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full border-2 border-green-500 hover:border-green-400 bg-blue-600 text-white flex items-center justify-center font-semibold text-sm overflow-hidden transition-colors duration-300 group cursor-pointer">
           <img 

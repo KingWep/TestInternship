@@ -1,76 +1,109 @@
 import React, { useState } from 'react'
+import { PackageOpen } from 'lucide-react'
 import OrderCartTable from '../../Order/components/OrderCartTable'
 import OrderFormFields from '../../Order/components/OrderFormFields'
 import OrderSummaryBox from '../../Order/components/OrderSummaryBox'
 import ProductSelectCard from '../components/ProductSelectCard'
 import PageHeader from '../../../common/PageHeader'
+import SearchBar from '../../../common/SearchBar'
+import FilterBar from '../../../common/FilterBar'
+import useSalesForm from '../hooks/useSalesForm'
 
 export default function AdminSaleForm() {
-  const [cart, setCart] = useState([])
-  const [customerInfo, setCustomerInfo] = useState({ name: '', phone: '' })
-  const [paymentMethod, setPaymentMethod] = useState('Cash')
+  const {
+    search,
+    setSearch,
+    filters,
+    handleFilterChange,
+    filterOptions,
+    filterProducts,
+    cart,
+    handleAddToCart,
+    handleUpdateQuantity,
+    handleRemoveItem,
+    handleCheckout,
+    subtotal,
+    INITIAL_CUSTOMER,
+    INITIAL_PAYMENT,
+  } = useSalesForm()
 
-  const dummyProducts = [
-    { id: 1, name: 'Wireless Headphones', price: 79.99, stock: 15 },
-    { id: 2, name: 'Smart Watch Series 5', price: 199.99, stock: 8 },
-    { id: 3, name: 'Bluetooth Speaker', price: 45.00, stock: 20 },
-  ]
+  const [customerInfo, setCustomerInfo] = useState(INITIAL_CUSTOMER)
+  const [paymentMethod, setPaymentMethod] = useState(INITIAL_PAYMENT)
 
-  const handleAddToCart = (product) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id)
-      if (existing) {
-        return prev.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
-      }
-      return [...prev, { ...product, quantity: 1 }]
-    })
+  const onCheckout = () => {
+    handleCheckout({ customerInfo, paymentMethod })
+    setCustomerInfo(INITIAL_CUSTOMER)
+    setPaymentMethod(INITIAL_PAYMENT)
   }
-
-  const handleUpdateQuantity = (id, qty) => {
-    if (qty <= 0) {
-      setCart((prev) => prev.filter((item) => item.id !== id))
-    } else {
-      setCart((prev) => prev.map((item) => item.id === id ? { ...item, quantity: qty } : item))
-    }
-  }
-
-  const handleRemoveItem = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id))
-  }
-
-  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-8rem)]">
-      <div className="lg:col-span-7 flex flex-col gap-6 overflow-hidden">
-      <div>
-        <PageHeader 
+    <div className="flex flex-col h-[calc(100vh-8rem)] gap-4">
+
+      {/* ── TOP ROW: Header (left) + Filter & Search (right) ── */}
+      <div className="flex items-center justify-between flex-shrink-0">
+        <PageHeader
           title="Post Sale Form"
           description="Record and manage sales transactions efficiently."
+          className="w-[30%]"
         />
-      </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 overflow-y-auto pr-2">
-          {dummyProducts.map((p) => (
-            <ProductSelectCard key={p.id} product={p} onSelect={handleAddToCart} />
-          ))}
+        <div className="w-[70%] flex items-center gap-3  justify-end">
+          <SearchBar
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search products..."
+          />
+          <FilterBar
+            filters={filterOptions}
+            values={filters}
+            onChange={handleFilterChange}
+          />
         </div>
       </div>
 
-      <div className="lg:col-span-5 flex flex-col gap-4 overflow-y-auto">
-        <div className="h-64">
-          <OrderCartTable cart={cart} onUpdateQuantity={handleUpdateQuantity} onRemoveItem={handleRemoveItem} />
+      {/* ── BOTTOM SECTION: 12-col grid, fills remaining height ── */}
+      <div className="flex-1 grid grid-cols-12 gap-6 min-h-0">
+
+        {/* ── Left column: product catalogue (col-span-7) ── */}
+        <div className="col-span-7 flex flex-col min-h-0">
+          {filterProducts.length > 0 ? (
+            <div className="flex-1 grid grid-cols-2 xl:grid-cols-3 gap-4 overflow-y-auto pr-2 content-start auto-rows-max will-change-scroll overscroll-contain transform-gpu">
+              {filterProducts.map((p) => (
+                <ProductSelectCard key={p.id} product={p} onSelect={handleAddToCart} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-white rounded-xl border border-slate-200 border-dashed h-full">
+              <PackageOpen size={64} className="mb-4 text-slate-300" strokeWidth={1.5} />
+              <h3 className="text-lg font-medium text-slate-600 mb-1">No products found</h3>
+              <p className="text-sm">Try adjusting your search or filters.</p>
+            </div>
+          )}
         </div>
-        <OrderFormFields 
-          customerInfo={customerInfo} 
-          onChange={(e) => setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value })} 
-          paymentMethod={paymentMethod} 
-          onPaymentChange={setPaymentMethod} 
-        />
-        <OrderSummaryBox 
-          subtotal={subtotal} 
-          onCheckout={() => alert('Order Complete!')} 
-          disabled={cart.length === 0} 
-        />
+
+        {/* ── Right column: cart + form + summary (col-span-5) ── */}
+        <div className="col-span-5 flex flex-col gap-4 overflow-y-auto will-change-scroll overscroll-contain transform-gpu">
+          <div className="h-64 flex-shrink-0">
+            <OrderCartTable
+              cart={cart}
+              onUpdateQuantity={handleUpdateQuantity}
+              onRemoveItem={handleRemoveItem}
+            />
+          </div>
+          <OrderFormFields
+            customerInfo={customerInfo}
+            onChange={(e) =>
+              setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value })
+            }
+            paymentMethod={paymentMethod}
+            onPaymentChange={setPaymentMethod}
+          />
+          <OrderSummaryBox
+            subtotal={subtotal}
+            onCheckout={onCheckout}
+            disabled={cart.length === 0}
+          />
+        </div>
+
       </div>
     </div>
   )

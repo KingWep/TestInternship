@@ -35,7 +35,7 @@ export default function AdminSidebar({ isCollapsed, setIsCollapsed }) {
     <aside className={`${isCollapsed ? 'w-[80px]' : 'w-64'} bg-slate-900 text-slate-300 hidden md:flex flex-col border-r border-slate-800 transition-all duration-300 ease-in-out relative z-20`}>
       <button 
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-8 bg-slate-800 border border-slate-700 text-slate-300 p-1.5 rounded-full hover:text-white hover:bg-slate-700 transition-colors z-50 shadow-md"
+        className="absolute -right-3 top-8 bg-slate-800 border border-slate-700 text-slate-300 p-1.5 rounded-full hover:text-white hover:bg-slate-700 duration-300 ease-in-out "
         aria-label="Toggle Sidebar"
       >
         {isCollapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
@@ -50,7 +50,7 @@ export default function AdminSidebar({ isCollapsed, setIsCollapsed }) {
         </span>
       </div>
       
-      <nav className="flex-1 p-4 space-y-6 overflow-y-auto overflow-x-hidden">
+      <nav className="flex-1 p-4 space-y-6">
         {menuSections.map((section, idx) => (
           <div key={idx} className="space-y-1">
             <h2 className={`px-4 text-xs font-semibold text-slate-500 tracking-wider transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'max-h-0 opacity-0 mb-0' : 'max-h-[20px] opacity-100 mb-2'}`}>

@@ -1,10 +1,10 @@
-import Header from "../components/layout/Header"
-import Footer from "../components/layout/Footer"
-import Container from "../components/layout/Container"
-import PromoBanner from "../features/home/components/PromoBanner"
-import ProductSection from "../features/home/components/ProductSection"
-import CartDrawer from "../features/cart/components/CartDrawer"
-import { useSearch } from "../context/SearchContext"
+import Header from "../../../components/layout/Header"
+import Footer from "../../../components/layout/Footer"
+import Container from "../../../components/layout/Container"
+import PromoBanner from "../components/PromoBanner"
+import ProductSection from "../components/ProductSection"
+import CartDrawer from "../../cart/components/CartDrawer"
+import { useSearch } from "../../../context/SearchContext"
 
 export default function Home() {
   const { searchItem, priceRange } = useSearch()

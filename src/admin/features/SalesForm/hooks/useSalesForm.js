@@ -127,7 +127,7 @@ const dummyProducts = [
 ]
 
 // ─── Initial state helpers ─────
-const INITIAL_CUSTOMER = { phone: '', address: '', deliveryFee: '' }
+const INITIAL_CUSTOMER = { name: '', phone: '', address: '', deliveryFee: '' }
 const INITIAL_PAYMENT = 'Cash'
 
 // ─── Hook ──

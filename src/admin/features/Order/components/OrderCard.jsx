@@ -1,7 +1,10 @@
 import React from 'react'
 import { Phone, MapPin, Receipt, Printer, Clock } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 export default function OrderCard({ order }) {
+  const navigate = useNavigate()
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
       {/* Header */}
@@ -9,9 +12,10 @@ export default function OrderCard({ order }) {
         <h4 className="font-bold text-blue-600 text-sm">
           #{order.id} - ORD:{order.orderNumber}
         </h4>
-        <span className={`bg-amber-100 text-amber-700 text-xs px-2.5 py-1 rounded-md font-bold flex items-center gap-1 
-        ${order.status === 'Pending' ? 'bg-amber-100 text-amber-700' :
-          order.status === 'Completed'? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+        <span className={`text-xs px-2.5 py-1 rounded-md font-bold flex items-center gap-1 
+        ${order.status === 'Pending'   ? 'bg-amber-100 text-amber-700' :
+          order.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                                         'bg-red-100 text-red-700'}`}>
           <Clock size={12} className="stroke-[3]" />
           {order.status}
         </span>
@@ -19,6 +23,7 @@ export default function OrderCard({ order }) {
 
       {/* Customer Info */}
       <div className="px-4 pb-4 space-y-2">
+
         <div className="flex items-center gap-2 text-slate-600 text-sm">
           <Phone size={14} className="text-slate-400" />
           <span>{order.phone}</span>
@@ -49,8 +54,8 @@ export default function OrderCard({ order }) {
       <div className="p-4 flex items-center justify-between">
         <span className={`text-xs px-2 py-1 rounded-md font-bold flex items-center gap-1 
           ${order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-           <Receipt size={12} className="stroke-[3]"/> 
-            {order.paymentStatus}
+          <Receipt size={12} className="stroke-[3]" />
+          {order.paymentStatus}
         </span>
         <div className="flex items-center gap-1 text-slate-400 text-xs">
           <Clock size={12} />
@@ -60,12 +65,18 @@ export default function OrderCard({ order }) {
 
       {/* Action Buttons */}
       <div className="px-4 pb-4 flex gap-2">
-        <button className="flex-1 flex items-center justify-center gap-2 py-2 border border-slate-200 rounded-xl text-slate-600 text-sm hover:bg-slate-200 transition-colors">
+        <button
+          onClick={() => navigate(`/admin/print-receipt/${order.id}`)}
+          className="flex-1 flex items-center justify-center gap-2 py-2 border border-slate-200 rounded-xl text-slate-600 text-sm hover:bg-slate-50 hover:border-red-300 hover:text-red-600 transition-colors"
+        >
           <Receipt size={16} className="text-red-500" />
           វិក្កយបត្រ
         </button>
-        <button className="flex-1 flex items-center justify-center gap-2 py-2 border border-slate-200 rounded-xl text-slate-600 text-sm hover:bg-slate-200 transition-colors">
-          <Printer size={16} className="text-red-500" />
+        <button
+          onClick={() => navigate(`/admin/print-sticker/${order.id}`)}
+          className="flex-1 flex items-center justify-center gap-2 py-2 border border-slate-200 rounded-xl text-slate-600 text-sm hover:bg-slate-50 hover:border-violet-300 hover:text-violet-600 transition-colors"
+        >
+          <Printer size={16} className="text-violet-500" />
           ស្ទីឃ័រ
         </button>
       </div>

@@ -1,13 +1,12 @@
 import { createContext, useContext, useState } from 'react'
 
 const OrderContext = createContext()
-
-// ─── Shared initial orders ────────────────────────────────────────────────────
 const INITIAL_ORDERS = [
   {
     id: '1',
     orderNumber: '00007',
     status: 'Pending',
+    customerName: 'អតិថិជនទូទៅ',
     phone: '0965134829',
     address: 'ssssssssss',
     subtotal: 113.00,
@@ -23,6 +22,7 @@ const INITIAL_ORDERS = [
     id: '2',
     orderNumber: '00008',
     status: 'Completed',
+    customerName: 'Chantha Leang',
     phone: '012345678',
     address: 'Phnom Penh',
     subtotal: 50.00,
@@ -38,6 +38,7 @@ const INITIAL_ORDERS = [
     id: '3',
     orderNumber: '00009',
     status: 'Cancelled',
+    customerName: 'Sokha Rin',
     phone: '098765432',
     address: 'Siem Reap',
     subtotal: 25.00,
@@ -53,6 +54,7 @@ const INITIAL_ORDERS = [
     id: '4',
     orderNumber: '000010',
     status: 'Pending',
+    customerName: 'Malis Pov',
     phone: '0965134829',
     address: 'ssssssssss',
     subtotal: 113.00,
@@ -68,6 +70,7 @@ const INITIAL_ORDERS = [
     id: '5',
     orderNumber: '000011',
     status: 'Completed',
+    customerName: ' ',
     phone: '012345678',
     address: 'Phnom Penh',
     subtotal: 50.00,
@@ -83,6 +86,7 @@ const INITIAL_ORDERS = [
     id: '6',
     orderNumber: '000012',
     status: 'Cancelled',
+    customerName: '',
     phone: '098765432',
     address: 'Siem Reap',
     subtotal: 25.00,
@@ -99,23 +103,16 @@ const INITIAL_ORDERS = [
 export function OrderProvider({ children }) {
   const [orders, setOrders] = useState(INITIAL_ORDERS)
 
-  /**
-   * Adds a new order from the SaleForm checkout.
-   * Returns the newly created order object.
-   */
   const addOrder = ({ items, subtotal, delivery, paymentMethod, customerInfo }) => {
     const now = new Date()
     const date = now.toISOString().split('T')[0]
     const time = now.toTimeString().split(' ')[0]
 
-    // ── Generate sequential id (max existing numeric id + 1) ──────────────
     const maxId = orders.reduce((max, o) => {
       const n = parseInt(o.id, 10)
       return !isNaN(n) && n > max ? n : max
     }, 0)
     const nextId = String(maxId + 1)
-
-    // ── Generate sequential orderNumber (max existing orderNumber + 1) ─────
     const maxNum = orders.reduce((max, o) => {
       const n = parseInt(o.orderNumber, 10)
       return n > max ? n : max
@@ -125,9 +122,10 @@ export function OrderProvider({ children }) {
     const total = (Number(subtotal) || 0) + (Number(delivery) || 0)
 
     const newOrder = {
-      id: nextId,          // clean sequential: "7", "8", "9", ...
-      orderNumber,         // zero-padded:      "00013", "00014", ...
+      id: nextId,        
+      orderNumber,        
       status: 'Pending',
+      customerName: customerInfo.name || customerInfo.customerName || '',
       phone: customerInfo.phone,
       address: customerInfo.address,
       subtotal: Number(subtotal) || 0,

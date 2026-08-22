@@ -3,18 +3,18 @@ import { useNavigate, Link } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import Swal from "sweetalert2"
 
-import { useCart } from "../context/CartContext"
+import { useCart } from "../../../context/CartContext"
 
-import DeliveryInformation from "../features/checkout/components/DeliveryInformation"
-import DeliveryMethod from "../features/checkout/components/DeliveryMethod"
-import PaymentMethod from "../features/checkout/components/PaymentMethod"
-import CheckoutOrderItems from "../features/checkout/components/CheckoutOrderItems"
-import CheckoutSummary from "../features/checkout/components/CheckoutSummary"
-import CheckoutButton from "../features/checkout/components/CheckoutButton"
-import ReceiptModal from "../features/receipt/components/ReceiptModal"
+import DeliveryInformation from "../components/DeliveryInformation"
+import DeliveryMethod from "../components/DeliveryMethod"
+import PaymentMethod from "../components/PaymentMethod"
+import CheckoutOrderItems from "../components/CheckoutOrderItems"
+import CheckoutSummary from "../components/CheckoutSummary"
+import CheckoutButton from "../components/CheckoutButton"
+import ReceiptModal from "../../receipt/components/ReceiptModal"
 
-import { deliveryOptions } from "../data/deliveryOptions"
-import { paymentMethods } from "../data/paymentMethods"
+import { deliveryOptions } from "../../../data/deliveryOptions"
+import { paymentMethods } from "../../../data/paymentMethods"
 
 export default function Checkout() {
   const navigate = useNavigate()

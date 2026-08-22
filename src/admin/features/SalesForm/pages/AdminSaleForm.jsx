@@ -110,7 +110,7 @@ export default function AdminSaleForm() {
                 <button
                   key={method}
                   onClick={() => setPaymentMethod(method)}
-                  className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-all ${
+                  className={`flex-1 py-1 rounded-lg text-sm font-semibold border transition-all ${
                     paymentMethod === method
                       ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
                       : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'

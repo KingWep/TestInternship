@@ -36,14 +36,14 @@ export default function OrderSummaryBox({ subtotal = 0, discount = 0, delivery =
       {/* Emphasized Total Box */}
       <div className="bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 my-4 flex justify-between items-center">
         <span className="text-sm font-bold text-slate-700 uppercase">Total Due</span>
-        <span className="text-xl font-black text-blue-600">${total.toFixed(2)}</span>
+        <span className="text-xl font-black text-green-600">${total.toFixed(2)}</span>
       </div>
 
       {/* Checkout Button */}
       <button
         onClick={onCheckout}
         disabled={disabled || total === 0}
-        className="w-full py-3.5 bg-blue-500 text-white font-bold text-sm rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all active:scale-[0.98] disabled:opacity-50 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
+        className="w-full py-3 bg-blue-500 text-white font-bold text-sm rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all active:scale-[0.98] disabled:opacity-50 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
       >
         Complete Order & Send Telegram
       </button>

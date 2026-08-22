@@ -1,11 +1,11 @@
 import React from 'react'
 
-// Removed paymentMethod and onPaymentChange props as requested
 export default function OrderFormFields({ customerInfo, onChange }) {
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
       <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider">Customer Information</h3>
-      
+
+      {/* Phone Number */}
       <div>
         <label className="block text-xs font-semibold text-slate-600 mb-1">Phone Number</label>
         <input
@@ -18,6 +18,7 @@ export default function OrderFormFields({ customerInfo, onChange }) {
         />
       </div>
 
+      {/* Address */}
       <div>
         <label className="block text-xs font-semibold text-slate-600 mb-1">Address</label>
         <textarea
@@ -30,13 +31,12 @@ export default function OrderFormFields({ customerInfo, onChange }) {
         />
       </div>
 
-
-      {/* Added Delivery Fee Field */}
+      {/* Delivery Fee */}
       <div>
         <label className="block text-xs font-semibold text-slate-600 mb-1">Delivery Fee ($)</label>
         <input
-          type="number"
-          name="deliveryFee" 
+          type="num"
+          name="deliveryFee"
           value={customerInfo.deliveryFee || ''}
           onChange={onChange}
           min="0"

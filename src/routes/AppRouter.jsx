@@ -1,8 +1,8 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Home from '../pages/Home'
-import ProductDetail from '../pages/ProductDetail'
-import Receipt from '../pages/Receipt'
+import Home from "../features/home/pages/Home"
+import ProductDetail from "../features/products/pages/ProductDetail"
+import Receipt from "../features/receipt/pages/Receipt"
 
 // Admin Layout & Pages
 import AdminLayout from '../admin/components/AdminLayout'
@@ -14,6 +14,8 @@ import AdminSlides from '../admin/features/Slides/pages/AdminSlides'
 import AdminDashboard from '../admin/features/Dashboard/pages/AdminDashboard'
 import AdminUsers from '../admin/features/Users/pages/AdminUsers'
 import AdminSettings from '../admin/features/Setting/pages/AdminSettings'
+import AdminReceiptPage from '../admin/features/Order/pages/AdminReceiptPage'
+import AdminStickerPage from '../admin/features/Order/pages/AdminStickerPage'
 
 export default function AppRouter() {
   return (
@@ -21,6 +23,8 @@ export default function AppRouter() {
       <Route path="/" element={<Home />} />
       <Route path="/products/:id" element={<ProductDetail />} />
       <Route path="/receipt/:orderId" element={<Receipt />} />
+      <Route path="/admin/print-receipt/:id" element={<AdminReceiptPage />} />
+      <Route path="/admin/print-sticker/:id" element={<AdminStickerPage />} />
 
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard/>} />

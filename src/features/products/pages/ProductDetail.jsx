@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { ArrowLeft, ArrowRight, Gift, Plus, Minus, ChevronLeft, ChevronRight } from "lucide-react"
-import Header from "../components/layout/Header"
-import Footer from "../components/layout/Footer"
-import Container from "../components/layout/Container"
-import CartDrawer from "../features/cart/components/CartDrawer"
-import Badge from "../components/common/Badge"
-import { products } from "../data/Products"
-import { useCart } from "../context/CartContext"
-import RecommendedProducts from "../features/products/components/RecommendedProducts"
+import Header from "../../../components/layout/Header"
+import Footer from "../../../components/layout/Footer"
+import Container from "../../../components/layout/Container"
+import CartDrawer from "../../cart/components/CartDrawer"
+import Badge from "../../../components/common/Badge"
+import { products } from "../../../data/Products"
+import { useCart } from "../../../context/CartContext"
+import RecommendedProducts from "../components/RecommendedProducts"
 
 export default function ProductDetail() {
   const { id } = useParams()

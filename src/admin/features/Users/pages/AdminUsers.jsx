@@ -115,8 +115,9 @@ export default function AdminUsers() {
     },
     {
       header: 'Actions',
+      align: 'right',
       render: (row) => (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
             className="text-slate-400 hover:text-blue-600 transition-colors"

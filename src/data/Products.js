@@ -3,6 +3,7 @@ export const products = [
   {
     id: 1,
     name: "ONE GEL",
+    sku:"Cos-001",
     category: "Cosmetic",
     price: 27.0,
     oldPrice: 35.0,
@@ -23,6 +24,7 @@ export const products = [
   {
     id: 2,
     name: "ONE CREAM",
+    sku:"Cos-002",
     category: "Cosmetic",
     price: 22.0,
     oldPrice: 30.0,
@@ -43,6 +45,7 @@ export const products = [
   {
     id: 3,
     name: "ONE FOUNDATION",
+    sku:"Cos-003",
     category: "Cosmetic",
     price: 29.0,
     oldPrice: 38.0,
@@ -63,6 +66,7 @@ export const products = [
   {
     id: 4,
     name: "ONE LIPSTICK",
+    sku:"Cos-004",
     category: "Cosmetic",
     price: 12.0,
     oldPrice: 18.0,
@@ -83,6 +87,7 @@ export const products = [
   {
     id: 5,
     name: "ONE MASCARA",
+    sku:"Cos-005",
     category: "Cosmetic",
     price: 15.0,
     oldPrice: 21.0,
@@ -103,6 +108,7 @@ export const products = [
   {
     id: 6,
     name: "ONE BLUSH",
+    sku:"Cos-006",
     category: "Cosmetic",
     price: 14.0,
     oldPrice: 19.0,
@@ -125,6 +131,7 @@ export const products = [
   {
     id: 7,
     name: "ONE CARE",
+    sku:"Ski-007",
     category: "Skincare",
     price: 17.0,
     oldPrice: 25.0,
@@ -145,6 +152,7 @@ export const products = [
   {
     id: 8,
     name: "ONE SERUM",
+    sku:"Ski-008",
     category: "Skincare",
     price: 32.0,
     oldPrice: 45.0,
@@ -165,6 +173,7 @@ export const products = [
   {
     id: 9,
     name: "ONE FACE WASH",
+    sku:"Ski-009",
     category: "Skincare",
     price: 14.0,
     oldPrice: 19.0,
@@ -185,6 +194,7 @@ export const products = [
   {
     id: 10,
     name: "ONE SUNSCREEN",
+    sku:"Ski-010",
     category: "Skincare",
     price: 25.0,
     oldPrice: 35.0,
@@ -205,6 +215,7 @@ export const products = [
   {
     id: 11,
     name: "ONE TONER",
+    sku:"Ski-011",
     category: "Skincare",
     price: 16.0,
     oldPrice: 22.0,
@@ -225,6 +236,7 @@ export const products = [
   {
     id: 12,
     name: "ONE EYE CREAM",
+    sku:"Ski-012",
     category: "Skincare",
     price: 21.0,
     oldPrice: 29.0,
@@ -247,6 +259,7 @@ export const products = [
   {
     id: 13,
     name: "ONE LOTION",
+    sku:"Bod-013",
     category: "Body Care",
     price: 15.0,
     oldPrice: 20.0,
@@ -267,6 +280,7 @@ export const products = [
   {
     id: 14,
     name: "ONE BODY WASH",
+    sku:"Bod-014",
     category: "Body Care",
     price: 18.0,
     oldPrice: 25.0,
@@ -287,6 +301,7 @@ export const products = [
   {
     id: 15,
     name: "ONE BODY SCRUB",
+    sku:"Bod-015",
     category: "Body Care",
     price: 21.0,
     oldPrice: 29.0,
@@ -307,6 +322,7 @@ export const products = [
   {
     id: 16,
     name: "ONE BODY OIL",
+    sku:"Bod-016",
     category: "Body Care",
     price: 19.0,
     oldPrice: 26.0,
@@ -327,6 +343,7 @@ export const products = [
   {
     id: 17,
     name: "ONE HAND CREAM",
+    sku:"Bod-017",
     category: "Body Care",
     price: 11.0,
     oldPrice: 15.0,
@@ -347,6 +364,7 @@ export const products = [
   {
     id: 18,
     name: "ONE DEODORANT",
+    sku:"Bod-018",
     category: "Body Care",
     price: 9.0,
     oldPrice: 13.0,
@@ -369,6 +387,7 @@ export const products = [
   {
     id: 19,
     name: "ONE SHAMPOO",
+    sku:"Hai-019",
     category: "Hair Care",
     price: 19.0,
     oldPrice: 27.0,
@@ -389,6 +408,7 @@ export const products = [
   {
     id: 20,
     name: "ONE CONDITIONER",
+    sku:"Hai-020",
     category: "Hair Care",
     price: 18.0,
     oldPrice: 24.0,
@@ -409,6 +429,7 @@ export const products = [
   {
     id: 21,
     name: "ONE HAIR MASK",
+    sku:"Hai-021",
     category: "Hair Care",
     price: 23.0,
     oldPrice: 31.0,
@@ -429,6 +450,7 @@ export const products = [
   {
     id: 22,
     name: "ONE HAIR OIL",
+    sku:"Hai-022",
     category: "Hair Care",
     price: 20.0,
     oldPrice: 28.0,
@@ -449,6 +471,7 @@ export const products = [
   {
     id: 23,
     name: "ONE HAIR SERUM",
+    sku:"Hai-023",
     category: "Hair Care",
     price: 24.0,
     oldPrice: 33.0,
@@ -469,6 +492,7 @@ export const products = [
   {
     id: 24,
     name: "ONE HAIR SPRAY",
+    sku:"Hai-024",
     category: "Hair Care",
     price: 16.0,
     oldPrice: 22.0,
@@ -491,6 +515,7 @@ export const products = [
   {
     id: 25,
     name: "ONE PERFUME",
+    sku:"Fra-025",
     category: "Fragrance",
     price: 45.0,
     oldPrice: 60.0,
@@ -511,6 +536,7 @@ export const products = [
   {
     id: 26,
     name: "ONE BODY MIST",
+    sku:"Fra-026",
     category: "Fragrance",
     price: 18.0,
     oldPrice: 24.0,
@@ -531,6 +557,7 @@ export const products = [
   {
     id: 27,
     name: "ONE COLOGNE",
+    sku:"Fra-027",
     category: "Fragrance",
     price: 40.0,
     oldPrice: 55.0,
@@ -551,6 +578,7 @@ export const products = [
   {
     id: 28,
     name: "ONE EAU DE PARFUM",
+    sku:"Fra-028",
     category: "Fragrance",
     price: 52.0,
     oldPrice: 70.0,
@@ -571,6 +599,7 @@ export const products = [
   {
     id: 29,
     name: "ONE ROLL-ON",
+    sku:"Fra-029",
     category: "Fragrance",
     price: 14.0,
     oldPrice: 19.0,
@@ -591,6 +620,7 @@ export const products = [
   {
     id: 30,
     name: "ONE SCENTED OIL",
+    sku:"Fra-030",
     category: "Fragrance",
     price: 22.0,
     oldPrice: 30.0,

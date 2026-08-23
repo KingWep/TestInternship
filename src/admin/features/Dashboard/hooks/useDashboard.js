@@ -7,8 +7,8 @@ export default function useDashboard() {
     const { orders, totalRevenue, topSellingProducts } = useOrderContext()
 
     const statsData = [
-        { title: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign, trend: "12", color: "green" },
-        { title: "Total Orders", value: orders.length.toString(), icon: ClipboardList, trend: "8", color: "blue" },
+        { title: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign, trend: "12", color: "green" , link: "/admin"},
+        { title: "Total Orders", value: orders.length.toString(), icon: ClipboardList, trend: "8", color: "blue", link: "/admin/orders" },
         {
             title: "Low Stock Products",
             value: lowStockProducts.length.toString(),
@@ -16,6 +16,7 @@ export default function useDashboard() {
             color: "amber",
             warning: lowStockProducts.length > 0,
             note: "Needs restocking",
+            link: "/admin/products",
         },
         {
             title: "Top Selling Products",
@@ -23,8 +24,17 @@ export default function useDashboard() {
             icon: Trophy,
             color: "purple",
             note: topSellingProducts.length === 0 ? "No sales data yet" : undefined,
+            link: "/admin/products",
         },
     ]
 
-    return { statsData }
+    const recentOrders = [...orders]
+        .sort((a, b) => {
+            const dateA = new Date(`${a.date} ${a.time}`);
+            const dateB = new Date(`${b.date} ${b.time}`);
+            return dateB - dateA;
+        })
+        .slice(0, 10);
+
+    return { statsData, recentOrders }
 }

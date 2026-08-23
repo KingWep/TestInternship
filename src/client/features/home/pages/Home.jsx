@@ -5,6 +5,7 @@ import PromoBanner from "../components/PromoBanner"
 import ProductSection from "../components/ProductSection"
 import CartDrawer from "../../cart/components/CartDrawer"
 import { useSearch } from "../../../../context/SearchContext"
+import ScrollToTopButton from "../../../components/common/ScrollToTopButton"
 
 export default function Home() {
   const { searchItem, priceRange } = useSearch()
@@ -18,6 +19,7 @@ export default function Home() {
         <ProductSection />
       </Container>
       <CartDrawer />
+      <ScrollToTopButton />
       <Footer />
     </div>
   )

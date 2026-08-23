@@ -30,10 +30,10 @@ export default function AdminSaleForm() {
   const [customerInfo, setCustomerInfo] = useState(INITIAL_CUSTOMER)
   const [paymentMethod, setPaymentMethod] = useState(INITIAL_PAYMENT)
 
-  const onCheckout = () => {
-    const result = handleCheckout({ customerInfo, paymentMethod })
+  const onCheckout = async () => {
+    const result = await handleCheckout({ customerInfo, paymentMethod })
     // Only reset form fields if the checkout was successful (not blocked by validation)
-    if (result !== null) {
+    if (result) {
       setCustomerInfo(INITIAL_CUSTOMER)
       setPaymentMethod(INITIAL_PAYMENT)
     }

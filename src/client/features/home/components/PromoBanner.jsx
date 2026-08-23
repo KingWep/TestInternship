@@ -8,7 +8,7 @@ export default function PromoBanner({
   buttonText = "ទិញឥឡូវនេះ",
 }) {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-red-900 to-red-800 text-white rounded-2xl p-8 md:p-10">
+    <div className="relative overflow-hidden bg-gradient-to-br from-red-900 to-red-800 text-white rounded-2xl p-4 md:p-10">
       <div className="absolute -right-16 -top-16 w-64 h-64 bg-white/10 rounded-full" />
       <span className="inline-block bg-white/15 text-xs font-medium px-3 py-1 rounded-full mb-4">
         {tag}
@@ -18,13 +18,14 @@ export default function PromoBanner({
       <Button
         variant="white"
         className="
+          rounded-[500px]
           mt-6
           flex items-center gap-2
-          rounded-[100px]
+          md:rounded-[100px]
           font-semibold
           animate-[bounce_4s_ease-in-out_infinite]
-          transition-all
-          duration-100
+          transition-transform
+          duration-1000
           hover:scale-105">
         {buttonText}
         <ArrowRight size={16} />

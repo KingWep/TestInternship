@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import Swal from 'sweetalert2'
 import { useOrderContext } from '../../../../context/OrderContext'
+import { sendOrderToTelegram } from '../../../../services/telegramService'
 
 import { useProductContext } from '../../../../context/ProductContext'
 import { useCategoryContext } from '../../../../context/CategoryContext'
@@ -66,7 +67,7 @@ export default function useSalesForm() {
   }
 
   // ── Checkout with validation & SweetAlert2 
-  const handleCheckout = ({ customerInfo, paymentMethod }) => {
+  const handleCheckout = async ({ customerInfo, paymentMethod }) => {
     if (cart.length === 0) {
       Swal.fire({
         icon: 'warning',
@@ -113,6 +114,13 @@ export default function useSalesForm() {
     setCart([])
     setSearch('')
     setFilters({ category: '' })
+
+    // ── Send Telegram Message ──
+    try {
+      await sendOrderToTelegram(newOrder)
+    } catch (err) {
+      console.error('Failed to send order to Telegram:', err)
+    }
 
     // ── Success alert ──────
     Swal.fire({

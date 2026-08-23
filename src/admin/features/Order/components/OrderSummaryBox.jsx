@@ -1,5 +1,4 @@
 import React from 'react'
-
 export default function OrderSummaryBox({ subtotal = 0, discount = 0, delivery = 0, onCheckout, disabled }) {
   const safeSubtotal = Number(subtotal) || 0
   const safeDiscount = Number(discount) || 0
@@ -8,6 +7,33 @@ export default function OrderSummaryBox({ subtotal = 0, discount = 0, delivery =
   // Total Calculation updated: Tax completely removed
   const total = safeSubtotal - safeDiscount + safeDelivery
 
+    const handleSendTelegram = async () => {
+      setLoading('telegram')
+  
+      try {
+        await sendOrderToTelegram(order)
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'ជោគជ័យ! ✅',
+          text: 'បានផ្ញើវិក្កយបត្រទៅ Telegram រួចរាល់ហើយ!',
+          confirmButtonColor: '#0284c7',
+          timer: 3000,
+          timerProgressBar: true,
+        })
+      } catch (error) {
+        console.error('Telegram error:', error)
+  
+        Swal.fire({
+          icon: 'error',
+          title: 'បរាជ័យ!',
+          text: error.message || 'មិនអាចផ្ញើទៅ Telegram បានទេ',
+          confirmButtonColor: '#0f172a',
+        })
+      } finally {
+        setLoading(null)
+      }
+    }
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col h-full">
       <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider mb-4">Order Summary</h3>
@@ -41,7 +67,10 @@ export default function OrderSummaryBox({ subtotal = 0, discount = 0, delivery =
 
       {/* Checkout Button */}
       <button
-        onClick={onCheckout}
+        onClick={()=>{
+          onCheckout();
+          handleSendTelegram();
+        }}
         disabled={disabled || total === 0}
         className="w-full py-3 bg-blue-500 text-white font-bold text-sm rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all active:scale-[0.98] disabled:opacity-50 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
       >

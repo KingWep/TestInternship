@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react'
+import Swal from 'sweetalert2'
 
 const OrderContext = createContext()
 const INITIAL_ORDERS = [
@@ -103,6 +104,35 @@ const INITIAL_ORDERS = [
 export function OrderProvider({ children }) {
   const [orders, setOrders] = useState(INITIAL_ORDERS)
 
+  
+const topSellingProducts = orders
+  .filter(order => order.paymentStatus === 'Paid')
+  .flatMap(order => order.items || [])
+  .reduce((acc, item) => {
+    const productId = item.productId
+
+    const existingProduct = acc.find(
+      product => product.productId === productId
+    )
+
+    if (existingProduct) {
+      existingProduct.quantity += Number(item.quantity || 0)
+    } else {
+      acc.push({
+        productId,
+        name: item.name,
+        quantity: Number(item.quantity || 0),
+      })
+    }
+
+    return acc
+  }, [])
+  .sort((a, b) => b.quantity - a.quantity)
+
+  const totalRevenue = orders
+  .filter(order => order.paymentStatus === 'Paid')
+  .reduce((sum, order) => sum + Number(order.total || 0), 0);
+
   const addOrder = ({ items, subtotal, delivery, paymentMethod, customerInfo }) => {
     const now = new Date()
     const date = now.toISOString().split('T')[0]
@@ -120,6 +150,7 @@ export function OrderProvider({ children }) {
     const orderNumber = String(maxNum + 1).padStart(5, '0')
 
     const total = (Number(subtotal) || 0) + (Number(delivery) || 0)
+
 
     const newOrder = {
       id: nextId,        
@@ -142,8 +173,58 @@ export function OrderProvider({ children }) {
     return newOrder
   }
 
+  const updateOrderStatus = (orderId, newStatus) => {
+    setOrders((orders) => (
+      orders.map((order) =>
+        order.id === orderId ?
+        { ...order, status: newStatus } : order
+      )
+    ))
+  }
+  
+const updatePaymentStatus = (orderId, newPaymentStatus) => {
+  if (newPaymentStatus === 'Paid') {
+    Swal.fire({
+      icon: 'question',
+      title: 'Confirm Payment',
+      text: 'Are you sure this order has been paid?',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Paid',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setOrders((orders) =>
+          orders.map((order) =>
+            order.id === orderId
+              ? { ...order, paymentStatus: 'Paid' }
+              : order
+          )
+        )
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Payment Updated',
+          text: 'Payment status is now Paid.',
+          timer: 1500,
+          showConfirmButton: false,
+        })
+      }
+    })
+  } else {
+    setOrders((orders) =>
+      orders.map((order) =>
+        order.id === orderId
+          ? { ...order, paymentStatus: 'Unpaid' }
+          : order
+      )
+    )
+  }
+}
+
+  
   return (
-    <OrderContext.Provider value={{ orders, setOrders, addOrder }}>
+    <OrderContext.Provider value=
+      {{ orders, setOrders, addOrder ,totalRevenue, topSellingProducts, updateOrderStatus, updatePaymentStatus }}>
       {children}
     </OrderContext.Provider>
   )

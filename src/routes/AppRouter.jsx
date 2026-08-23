@@ -1,11 +1,11 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Home from "../features/home/pages/Home"
-import ProductDetail from "../features/products/pages/ProductDetail"
-import Receipt from "../features/receipt/pages/Receipt"
+import Home from "../client/features/home/pages/Home"
+import ProductDetail from "../client/features/products/pages/ProductDetail"
+import Receipt from "../client/features/receipt/pages/Receipt"
 
 // Admin Layout & Pages
-import AdminLayout from '../admin/components/AdminLayout'
+import AdminLayout from '../admin/components/layout/AdminLayout'
 import AdminCategories from '../admin/features/Categories/pages/AdminCategories'
 import AdminSaleForm from '../admin/features/SalesForm/pages/AdminSaleForm'
 import AdminOrders from '../admin/features/Order/pages/AdminOrders'
@@ -27,14 +27,14 @@ export default function AppRouter() {
       <Route path="/admin/print-sticker/:id" element={<AdminStickerPage />} />
 
       <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<AdminDashboard/>} />
-        <Route path="products" element={<AdminProducts/>} />
-        <Route path="sale-form" element={<AdminSaleForm/>} />
-        <Route path="orders" element={<AdminOrders/>} />
-        <Route path="users" element={<AdminUsers/>} />
+        <Route index element={<AdminDashboard />} />
+        <Route path="products" element={<AdminProducts />} />
+        <Route path="sale-form" element={<AdminSaleForm />} />
+        <Route path="orders" element={<AdminOrders />} />
+        <Route path="users" element={<AdminUsers />} />
         <Route path="categories" element={<AdminCategories />} />
         <Route path="slides" element={<AdminSlides />} />
-        <Route path="settings" element={<AdminSettings/>} />
+        <Route path="settings" element={<AdminSettings />} />
       </Route>
     </Routes>
   )

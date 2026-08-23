@@ -1,5 +1,5 @@
 import React from 'react'
-import PageHeader from '../../../common/PageHeader'
+import PageHeader from '../../../components/common/PageHeader'
 import OrderFilterBar from '../components/OrderFilterBar'
 import OrderCard from '../components/OrderCard'
 import { PackageOpen } from 'lucide-react'
@@ -7,7 +7,7 @@ import { PackageOpen } from 'lucide-react'
 import { useOrders } from '../hooks/useOrders'
 
 export default function AdminOrders() {
-  const { 
+  const {
     orders,
     search,
     setSearch,
@@ -28,7 +28,7 @@ export default function AdminOrders() {
         />
       </div>
 
-      <OrderFilterBar 
+      <OrderFilterBar
         search={search}
         onSearchChange={(e) => setSearch(e.target.value)}
         statusFilter={statusFilter}
@@ -45,8 +45,8 @@ export default function AdminOrders() {
           {[...orders]
             .sort((a, b) => b.id - a.id)
             .map(order => (
-            <OrderCard key={order.id} order={order} />
-          ))}
+              <OrderCard key={order.id} order={order} />
+            ))}
         </div>
       ) : (
         <div className=" flex flex-col items-center justify-center py-16 text-slate-400">

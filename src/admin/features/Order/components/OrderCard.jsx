@@ -1,10 +1,11 @@
 import React from 'react'
 import { Phone, MapPin, Receipt, Printer, Clock } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useOrderContext } from '../../../../context/OrderContext'
 
 export default function OrderCard({ order }) {
   const navigate = useNavigate()
-
+  const { updatePaymentStatus } = useOrderContext()
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
       {/* Header */}
@@ -52,11 +53,17 @@ export default function OrderCard({ order }) {
 
       {/* Footer Info */}
       <div className="p-4 flex items-center justify-between">
-        <span className={`text-xs px-2 py-1 rounded-md font-bold flex items-center gap-1 
-          ${order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-          <Receipt size={12} className="stroke-[3]" />
-          {order.paymentStatus}
-        </span>
+        <select
+          className={`text-xs px-2 py-1 rounded-md font-bold flex items-center gap-1 
+          ${order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+          value={order.paymentStatus}
+          onChange={(e) =>
+            updatePaymentStatus(order.id, e.target.value)
+          }
+        >
+          <option value="Unpaid">Unpaid</option>
+          <option value="Paid">Paid</option>
+        </select>
         <div className="flex items-center gap-1 text-slate-400 text-xs">
           <Clock size={12} />
           <span>{order.date} {order.time}</span>

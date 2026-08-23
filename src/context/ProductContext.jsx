@@ -6,6 +6,8 @@ const ProductContext = createContext();
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState(initialProducts);
 
+  const lowStockProducts = products.filter((product) => product.stock < 10);
+
   const addProduct = (product) => {
     // Generate a unique ID if not present
     const newProduct = { ...product, id: product.id || Date.now() };
@@ -30,6 +32,7 @@ export function ProductProvider({ children }) {
         addProduct,
         updateProduct,
         deleteProduct,
+        lowStockProducts,
       }}
     >
       {children}

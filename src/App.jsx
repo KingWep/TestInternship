@@ -5,7 +5,7 @@ import { CartProvider } from "./context/CartContext";
 import { ProductProvider } from "./context/ProductContext";
 import { CategoryProvider } from "./context/CategoryContext";
 import AppRouter from "./routes/AppRouter";
-import ScrollToTop from "./components/common/ScrollToTop";
+import ScrollToTop from "./client/components/common/ScrollToTop";
 
 export default function App() {
   return (
@@ -14,8 +14,8 @@ export default function App() {
         <ProductProvider>
           <SearchProvider>
             <CartProvider>
-              <ScrollToTop/>
-              <AppRouter/>
+              <ScrollToTop />
+              <AppRouter />
             </CartProvider>
           </SearchProvider>
         </ProductProvider>

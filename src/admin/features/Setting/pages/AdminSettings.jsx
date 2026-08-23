@@ -1,12 +1,12 @@
 import React from 'react'
-import Button from '../../../common/Button'
-import PageHeader from '../../../common/PageHeader'
+import Button from '../../../components/common/Button'
+import PageHeader from '../../../components/common/PageHeader'
 
 export default function AdminSettings() {
   return (
     <div className="space-y-6 max-w-xl">
       <div>
-        <PageHeader 
+        <PageHeader
           title="System Settings"
           description="Configure global shop parameters."
         />

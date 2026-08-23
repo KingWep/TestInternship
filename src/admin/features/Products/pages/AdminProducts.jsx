@@ -2,14 +2,14 @@ import React from 'react'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { useProducts, getStockStatus } from '../hooks/useProducts'
 import ProductsForm from '../components/ProductForm'
-import DataTable from '../../../common/DataTable'
-import SearchBar from '../../../common/SearchBar'
-import Button from '../../../common/Button'
-import Modal from '../../../common/Modal'
-import PageHeader from '../../../common/PageHeader'
-import FilterBar from '../../../common/FilterBar'
-import DeleteButton from '../../../common/DeleteButton'
-import Pagination from '../../../common/Pagination'
+import DataTable from '../../../components/common/DataTable'
+import SearchBar from '../../../components/common/SearchBar'
+import Button from '../../../components/common/Button'
+import Modal from '../../../components/common/Modal'
+import PageHeader from '../../../components/common/PageHeader'
+import FilterBar from '../../../components/common/FilterBar'
+import DeleteButton from '../../../components/common/DeleteButton'
+import Pagination from '../../../components/common/Pagination'
 import { useCategoryContext } from '../../../../context/CategoryContext'
 
 export default function AdminProducts() {
@@ -90,8 +90,8 @@ export default function AdminProducts() {
       render: (row) => {
         const status = getStockStatus(row.stock)
         const styles = {
-          'In Stock':     'bg-green-100 text-green-700',
-          'Low Stock':    'bg-yellow-100 text-yellow-700',
+          'In Stock': 'bg-green-100 text-green-700',
+          'Low Stock': 'bg-yellow-100 text-yellow-700',
           'Out of Stock': 'bg-red-100 text-red-700',
         }
         return (

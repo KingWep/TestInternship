@@ -4,9 +4,9 @@ import OrderCartTable from '../../Order/components/OrderCartTable'
 import OrderFormFields from '../../Order/components/OrderFormFields'
 import OrderSummaryBox from '../../Order/components/OrderSummaryBox'
 import ProductSelectCard from '../components/ProductSelectCard'
-import PageHeader from '../../../common/PageHeader'
-import SearchBar from '../../../common/SearchBar'
-import FilterBar from '../../../common/FilterBar'
+import PageHeader from '../../../components/common/PageHeader'
+import SearchBar from '../../../components/common/SearchBar'
+import FilterBar from '../../../components/common/FilterBar'
 import useSalesForm from '../hooks/useSalesForm'
 
 export default function AdminSaleForm() {
@@ -110,11 +110,10 @@ export default function AdminSaleForm() {
                 <button
                   key={method}
                   onClick={() => setPaymentMethod(method)}
-                  className={`flex-1 py-1 rounded-lg text-sm font-semibold border transition-all ${
-                    paymentMethod === method
+                  className={`flex-1 py-1 rounded-lg text-sm font-semibold border transition-all ${paymentMethod === method
                       ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
                       : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                  }`}
+                    }`}
                 >
                   {method}
                 </button>

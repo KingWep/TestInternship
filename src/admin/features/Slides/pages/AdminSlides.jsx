@@ -2,14 +2,14 @@ import React from 'react'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { useSlides } from '../hooks/useSlides'
 import SlideForm from '../components/SlideForm'
-import PageHeader from '../../../common/PageHeader'
-import FilterBar from '../../../common/FilterBar'
-import SearchBar from '../../../common/SearchBar'
-import DataTable from '../../../common/DataTable'
-import Button from '../../../common/Button'
-import Modal from '../../../common/Modal'
-import DeleteButton from '../../../common/DeleteButton'
-import Pagination from '../../../common/Pagination'
+import PageHeader from '../../../components/common/PageHeader'
+import FilterBar from '../../../components/common/FilterBar'
+import SearchBar from '../../../components/common/SearchBar'
+import DataTable from '../../../components/common/DataTable'
+import Button from '../../../components/common/Button'
+import Modal from '../../../components/common/Modal'
+import DeleteButton from '../../../components/common/DeleteButton'
+import Pagination from '../../../components/common/Pagination'
 
 export default function AdminSlides() {
   const {
@@ -57,11 +57,10 @@ export default function AdminSlides() {
       header: 'Status',
       render: (row) => (
         <span
-          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-            row.status === 'Active'
+          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${row.status === 'Active'
               ? 'bg-green-100 text-green-700'
               : 'bg-red-100 text-red-700'
-          }`}
+            }`}
         >
           {row.status}
         </span>

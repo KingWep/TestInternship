@@ -2,14 +2,14 @@ import React from 'react'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { useUsers } from '../hooks/useUsers'
 import UserForm from '../components/UserForm'
-import DataTable from '../../../common/DataTable'
-import SearchBar from '../../../common/SearchBar'
-import Button from '../../../common/Button'
-import Modal from '../../../common/Modal'
-import PageHeader from '../../../common/PageHeader'
-import FilterBar from '../../../common/FilterBar'
-import DeleteButton from '../../../common/DeleteButton'
-import Pagination from '../../../common/Pagination'
+import DataTable from '../../../components/common/DataTable'
+import SearchBar from '../../../components/common/SearchBar'
+import Button from '../../../components/common/Button'
+import Modal from '../../../components/common/Modal'
+import PageHeader from '../../../components/common/PageHeader'
+import FilterBar from '../../../components/common/FilterBar'
+import DeleteButton from '../../../components/common/DeleteButton'
+import Pagination from '../../../components/common/Pagination'
 
 const ROLE_COLORS = {
   Admin: 'bg-purple-100 text-purple-700',
@@ -87,9 +87,8 @@ export default function AdminUsers() {
       header: 'Role',
       render: (row) => (
         <span
-          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-            ROLE_COLORS[row.role] || 'bg-gray-100 text-gray-600'
-          }`}
+          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${ROLE_COLORS[row.role] || 'bg-gray-100 text-gray-600'
+            }`}
         >
           {row.role}
         </span>
@@ -99,11 +98,10 @@ export default function AdminUsers() {
       header: 'Status',
       render: (row) => (
         <span
-          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-            row.status === 'Active'
+          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${row.status === 'Active'
               ? 'bg-green-100 text-green-700'
               : 'bg-red-100 text-red-700'
-          }`}
+            }`}
         >
           {row.status}
         </span>

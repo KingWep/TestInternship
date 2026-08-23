@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import Swal from 'sweetalert2'
+import { useParams, Link } from 'react-router-dom'
 import { Printer, FileDown, Send, ArrowLeft, Loader2} from 'lucide-react'
 import { useReactToPrint } from 'react-to-print'
 import { toPng } from 'html-to-image'
 import { useOrderContext } from '../../../../context/OrderContext'
-
+import { sendOrderToTelegram } from '../../../../services/telegramService'
 function AdminReceiptCard({ order }) {
   const subtotal = Number(order?.subtotal) || 0
   const delivery = Number(order?.delivery) || 0
@@ -41,8 +42,8 @@ function AdminReceiptCard({ order }) {
         </div>
         {order?.customerName && (
           <div className="flex justify-between items-center w-full">
-            <span className="font-medium text-slate-900">អតិថិជន:</span> 
-            <span className="font-bold text-slate-900 truncate max-w-[180px]">{order.customerName}</span>
+            <span className="font-medium text-slate-900">អតិថិជន</span> 
+            <span className="font-bold text-slate-900 truncate max-w-[180px]">{order.customerName || 'អតិថិជនទូទៅ'}</span>
           </div>
         )}
         <div className="flex justify-between items-center w-full">
@@ -121,7 +122,6 @@ function AdminReceiptCard({ order }) {
 
 export default function AdminReceiptPage() {
   const { id } = useParams()
-  const navigate = useNavigate()
   const { orders } = useOrderContext()
   const order = orders?.find((o) => o.id === id || o.orderNumber === id)
 
@@ -187,51 +187,40 @@ export default function AdminReceiptPage() {
       link.click()
     } catch (err) {
       console.error('Image export failed:', err)
-      alert('មានបញ្ហាក្នុងការទាញយករូបភាព!')
+      Swal.fire({
+        icon: 'error',
+        title: 'បរាជ័យ!',
+        text: 'មានបញ្ហាក្នុងការទាញយករូបភាព!',
+        confirmButtonColor: '#0f172a',
+      })
     } finally {
       setLoading(null)
     }
   }
 
   const handleSendTelegram = async () => {
-    const token = import.meta.env.VITE_TELEGRAM_BOT_TOKEN
-    const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID
-    if (!token || !chatId) {
-      alert('សូមកំណត់ VITE_TELEGRAM_BOT_TOKEN និង VITE_TELEGRAM_CHAT_ID ក្នុងឯកសារ .env')
-      return
-    }
     setLoading('telegram')
+
     try {
-      const lines = (order.items || [])
-        .map((i) => {
-          const p = Number(i.price) || Number(i.salePrice) || 0
-          const q = Number(i.quantity) || 0
-          return `• ${i.name} × ${q} — $${(p * q).toFixed(2)}`
-        })
-        .join('\n')
+      await sendOrderToTelegram(order)
 
-      const text =
-        `🧾 <b>វិក្កយបត្រ — ORD:${order.orderNumber || order.id}</b>\n\n` +
-        `👤 <b>អតិថិជន:</b> ${order.customerName || '—'}\n` +
-        `📲 <b>លេខទូរស័ព្ទ:</b> ${order.phone || '—'}\n` +
-        `📍 <b>អាសយដ្ឋាន:</b> ${order.address || '—'}\n` +
-        `📅 <b>កាលបរិច្ឆេទ:</b> ${order.date} ${order.time}\n` +
-        `------------------------\n${lines}\n` +
-        `------------------------\n` +
-        `🔹 <b>Subtotal:</b> $${(Number(order.subtotal) || 0).toFixed(2)}\n` +
-        `🚚 <b>Delivery:</b> $${(Number(order.delivery) || 0).toFixed(2)}\n` +
-        `💰 <b>Total:</b> $${(Number(order.total) || 0).toFixed(2)}`
-
-      const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
+      Swal.fire({
+        icon: 'success',
+        title: 'ជោគជ័យ! ✅',
+        text: 'បានផ្ញើវិក្កយបត្រទៅ Telegram រួចរាល់ហើយ!',
+        confirmButtonColor: '#0284c7',
+        timer: 3000,
+        timerProgressBar: true,
       })
-      if (!res.ok) throw new Error('Telegram API error')
-      alert('បានផ្ញើវិក្កយបត្រទៅ Telegram ដោយជោគជ័យ ✅')
-    } catch (err) {
-      console.error(err)
-      alert('មិនអាចផ្ញើទៅ Telegram បានទេ')
+    } catch (error) {
+      console.error('Telegram error:', error)
+
+      Swal.fire({
+        icon: 'error',
+        title: 'បរាជ័យ!',
+        text: error.message || 'មិនអាចផ្ញើទៅ Telegram បានទេ',
+        confirmButtonColor: '#0f172a',
+      })
     } finally {
       setLoading(null)
     }

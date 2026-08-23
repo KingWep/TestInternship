@@ -17,7 +17,7 @@ export default function OrderFilterBar({
       {/* Search Input */}
       <div className="flex-1 min-w-[250px]">
         <label className="block text-sm font-medium text-slate-600 mb-2">
-          ស្វែងរក (លេខវិក្កយបត្រ / ទូរស័ព្ទ)
+          ស្វែងរក (លេខវិក្ក័យបត្រ / ទូរស័ព្ទ)
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -28,7 +28,7 @@ export default function OrderFilterBar({
             value={search}
             onChange={onSearchChange}
             className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors text-sm"
-            placeholder="បញ្ចូលលេខវិក្កយបត្រ ឬ ទូរស័ព្ទ..."
+            placeholder="បញ្ចូលលេខវិក្ក័យបត្រ ឬ ទូរស័ព្ទ..."
           />
         </div>
       </div>

@@ -1,37 +1,65 @@
 import React, { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
 export default function Modal({ isOpen, onClose, title, children }) {
-  const [show, setShow] = useState(false)
+  const [mounted, setMounted] = useState(isOpen)
+  const [active, setActive] = useState(false)
 
   useEffect(() => {
+    let timer
     if (isOpen) {
-      requestAnimationFrame(() => {
-        setShow(true)
-      })
+      setMounted(true)
+     
+      document.body.style.overflow = 'hidden'
+    
+      timer = setTimeout(() => setActive(true), 30)
     } else {
-      setShow(false)
+      setActive(false)
+      timer = setTimeout(() => {
+        setMounted(false)
+        document.body.style.overflow = 'unset'
+      }, 500)
+    }
+
+    return () => {
+      clearTimeout(timer)
+      document.body.style.overflow = 'unset'
     }
   }, [isOpen])
 
-  if (!isOpen && !show) return null
 
-  return (
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) onClose()
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
+
+  if (!mounted) return null
+
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+      className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto
+        bg-slate-900/60 backdrop-blur-md
+        transition-all duration-500 ease-out
+        ${active ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+    >
       <div
-        className={`fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto
-          bg-slate-900/50 backdrop-blur-sm
-          transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
-          ${show ? 'opacity-100' : 'opacity-0'}`}
-      >
-      <div
-        className={`bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden
-          transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
-          ${show
-            ? 'opacity-100 scale-100 translate-y-0'
-            : 'opacity-0 scale-95 translate-y-3'
+        onClick={(e) => e.stopPropagation()} 
+        className={`bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] overflow-hidden flex flex-col
+          transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
+          ${active 
+            ? 'opacity-100 translate-y-0 scale-100 blur-0' 
+            : 'opacity-0 -translate-y-24 scale-95 blur-[2px]'
           }`}
       >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white sticky top-0 z-10">
           <h3 className="font-bold text-slate-800 text-lg">
             {title}
           </h3>
@@ -39,16 +67,19 @@ export default function Modal({ isOpen, onClose, title, children }) {
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 transition-all duration-200 p-1.5 rounded-lg hover:bg-slate-100 hover:rotate-90"
+            aria-label="Close modal"
+            className="text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all duration-200 p-2 rounded-xl"
           >
             <X size={20} />
           </button>
         </div>
 
-        <div className="p-5 overflow-y-auto max-h-[calc(90vh-65px)]">
+        {/* Content */}
+        <div className="p-6 overflow-y-auto">
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

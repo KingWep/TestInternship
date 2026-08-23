@@ -1,54 +1,63 @@
-import { useState, useEffect, useCallback } from "react"
-import { useParams, Link, useNavigate } from "react-router-dom"
-import { ArrowLeft, ArrowRight, Gift, Plus, Minus, ChevronLeft, ChevronRight } from "lucide-react"
-import Header from "../../../components/layout/Header"
-import Footer from "../../../components/layout/Footer"
-import Container from "../../../components/layout/Container"
-import CartDrawer from "../../cart/components/CartDrawer"
-import Badge from "../../../components/common/Badge"
-import { products } from "../../../data/Products"
-import { useCart } from "../../../context/CartContext"
-import RecommendedProducts from "../components/RecommendedProducts"
+import { useState, useEffect, useCallback } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Gift,
+  Plus,
+  Minus,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import Header from "../../../components/layout/Header";
+import Footer from "../../../components/layout/Footer";
+import Container from "../../../components/layout/Container";
+import CartDrawer from "../../cart/components/CartDrawer";
+import Badge from "../../../components/common/Badge";
+import { useCart } from "../../../context/CartContext";
+import { useProductContext } from "../../../context/ProductContext";
+import RecommendedProducts from "../components/RecommendedProducts";
 
 export default function ProductDetail() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const { addToCart } = useCart()
-  const [quantity, setQuantity] = useState(1)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const { products } = useProductContext();
+  const [quantity, setQuantity] = useState(1);
 
-  const product = products.find((p) => p.id === Number(id))
+  const product = products.find((p) => p.id === Number(id));
 
-  const [activeImage, setActiveImage] = useState(0)
+  const [activeImage, setActiveImage] = useState(0);
 
   const gallery = product
     ? product.images && product.images.length > 0
       ? product.images
       : [product.image]
-    : []
+    : [];
 
   const goPrev = useCallback(() => {
-    setActiveImage((prev) => (prev - 1 + gallery.length) % gallery.length)
-  }, [gallery.length])
+    setActiveImage((prev) => (prev - 1 + gallery.length) % gallery.length);
+  }, [gallery.length]);
 
   const goNext = useCallback(() => {
-    setActiveImage((prev) => (prev + 1) % gallery.length)
-  }, [gallery.length])
+    setActiveImage((prev) => (prev + 1) % gallery.length);
+  }, [gallery.length]);
 
   useEffect(() => {
-    setActiveImage(0)
-  }, [id])
-  
+    setActiveImage(0);
+  }, [id]);
+
   useEffect(() => {
-    if (gallery.length <= 1) return
+    if (gallery.length <= 1) return;
 
     const handleKeyDown = (e) => {
-      if (e.key === "ArrowLeft") goPrev()
-      if (e.key === "ArrowRight") goNext()
-    }
+      if (e.key === "ArrowLeft") goPrev();
+      if (e.key === "ArrowRight") goNext();
+    };
 
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [gallery.length, goPrev, goNext])
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [gallery.length, goPrev, goNext]);
 
   if (!product) {
     return (
@@ -62,7 +71,7 @@ export default function ProductDetail() {
         </Container>
         <Footer />
       </div>
-    )
+    );
   }
   const {
     name,
@@ -73,23 +82,25 @@ export default function ProductDetail() {
     cashback,
     description,
     category,
-  } = product
+  } = product;
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
-      addToCart(product)
+      addToCart(product);
     }
-  }
+  };
 
   return (
     <div>
       <Header />
 
       <Container className="pt-24 mt-4 pb-16">
-        <Link to="/" 
-        className="flex items-center w-40 gap-1 bg-red-500 rounded-tl-xl rounded-br-xl px-4 py-2 text-white text-md font-semibold mb-6 hover:text-red-900 hover:bg-red-300 transition-colors duration-300 ease-in-out">
+        <Link
+          to="/"
+          className="flex items-center w-40 gap-1 bg-red-500 rounded-tl-xl rounded-br-xl px-4 py-2 text-white text-md font-semibold mb-6 hover:text-red-900 hover:bg-red-300 transition-colors duration-300 ease-in-out"
+        >
           <ArrowLeft size={16} />
-            ត្រឡប់ក្រោយ
+          ត្រឡប់ក្រោយ
         </Link>
 
         <div className="grid md:grid-cols-2 gap-10">
@@ -179,19 +190,25 @@ export default function ProductDetail() {
               )}
             </div>
 
-            {cashback && (
+            {(oldPrice && oldPrice > price) || cashback ? (
               <div className="flex items-center gap-1 mt-3 text-green-600 text-sm font-medium">
                 <Gift size={16} />
-                សំណូក ${cashback.toFixed(2)}
+                សំណូក $
+                {(oldPrice && oldPrice > price
+                  ? oldPrice - price
+                  : cashback
+                ).toFixed(2)}
               </div>
-            )}
+            ) : null}
 
             <div className="mt-3">
               <Badge variant="stock">ស្តុក: {stock}</Badge>
             </div>
 
             {description && (
-              <p className="text-slate-600 mt-6 leading-relaxed">{description}</p>
+              <p className="text-slate-600 mt-6 leading-relaxed">
+                {description}
+              </p>
             )}
 
             <div className="flex items-center  gap-4 mt-8">
@@ -208,26 +225,22 @@ export default function ProductDetail() {
                 <button onClick={() => setQuantity((q) => q + 1)}>
                   <Plus size={16} />
                 </button>
-              </div>           
-               <button
+              </div>
+              <button
                 onClick={handleAddToCart}
                 disabled={stock === 0}
-                className="w-full md:w-auto flex items-center justify-center gap-2 bg-red-900 text-white font-medium  px-4 py-2 rounded-full hover:bg-red-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                className="w-full md:w-auto flex items-center justify-center gap-2 bg-red-900 text-white font-medium  px-4 py-2 rounded-full hover:bg-red-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
                 <Plus size={18} />
                 {stock === 0 ? "អស់ស្តុក" : "បន្ថែមទៅកន្ត្រក"}
               </button>
             </div>
-
-
           </div>
         </div>
-        <RecommendedProducts
-          products={products}
-          currentProduct={product}
-        />
+        <RecommendedProducts products={products} currentProduct={product} />
       </Container>
       <Footer />
       <CartDrawer />
     </div>
-  )
+  );
 }

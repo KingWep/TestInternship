@@ -2,12 +2,15 @@ import { useState } from "react"
 import FilterTabs from "../../../components/common/FilterTabs"
 import SectionHeader from "../../../components/common/SectionHeader"
 import ProductGrid from "../../products/components/ProductGrid"
-import { products } from "../../../data/Products"
 import { useSearch } from "../../../context/SearchContext"
+import { useProductContext } from "../../../context/ProductContext"
+import { useCategoryContext } from "../../../context/CategoryContext"
 
 export default function ProductSection() {
- const tabs = [
-  "ទាំងអស់",...new Set(products.map((product) => product.category)),
+  const { products } = useProductContext()
+  const { categories } = useCategoryContext()
+  const tabs = [
+    "ទាំងអស់", ...categories.map(c => c.name)
   ];
   const [activeTab, setActiveTab] = useState("ទាំងអស់")
   const {searchItem, priceRange} = useSearch()

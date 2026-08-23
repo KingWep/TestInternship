@@ -45,22 +45,28 @@ export default function ProductSelectCard({ product, onSelect }) {
         </h4>
       </div>
 
-      {/* Price — salePrice (green) vs originalPrice struck-through (red) */}
+      {/* Price — price (green) vs oldPrice struck-through (red) */}
       <div className="flex items-center gap-2">
         <span className="font-bold text-green-600 text-sm">
-          ${product.salePrice.toFixed(2)}
+          ${(product.price ?? 0).toFixed(2)}
         </span>
-        <span className="font-medium text-red-600 text-sm">
-          <del>${product.originalPrice?.toFixed(2) ?? product.salePrice.toFixed(2)}</del>
-        </span>
+        {product.oldPrice && (
+          <span className="font-medium text-red-600 text-sm">
+            <del>${product.oldPrice.toFixed(2)}</del>
+          </span>
+        )}
       </div>
 
       {/* Savings badge */}
-      <div className="flex items-center mt-1">
-        <IoGift size={18} className="text-blue-500" />
-        <span className="text-sm px-2 py-1 font-khmer text-blue-600 rounded">
-          សន្សំ ${product.savings ?? 0}
-        </span>
+      <div className="flex items-center mt-1 min-h-[28px]">
+        {(product.oldPrice && product.oldPrice > product.price) ? (
+          <>
+            <IoGift size={18} className="text-blue-500" />
+            <span className="text-sm px-2 py-1 font-khmer text-blue-600 rounded">
+              សន្សំ ${(product.oldPrice - product.price).toFixed(2)}
+            </span>
+          </>
+        ) : null}
       </div>
 
       {/* CTA button */}

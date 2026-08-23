@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { Save, ImagePlus, X } from 'lucide-react'
+import { useCategoryContext } from '../../../../context/CategoryContext'
 
 export default function ProductsForm({ onSubmit, initialData }) {
+  const { categories } = useCategoryContext()
   const [formData, setFormData] = useState({
     name: '',
     sku: '',
     category: '',
     stock: '',
-    price: '',
+    oldPrice: '',
     discount: '',
-    salePrice: '',
+    price: '',
     description: '',
     images: [],           // new File objects selected by the user
     existingImages: [],   // URL strings already saved on the product (edit mode)
@@ -35,9 +37,9 @@ export default function ProductsForm({ onSubmit, initialData }) {
         sku: initialData.sku || '',
         category: initialData.category || '',
         stock: initialData.stock || 0,
-        price: initialData.price || '',
+        oldPrice: initialData.oldPrice || '',
         discount: initialData.discount || '',
-        salePrice: initialData.salePrice || '',
+        price: initialData.price || '',
         description: initialData.description || '',
         images: [],
         existingImages: existing,
@@ -48,9 +50,9 @@ export default function ProductsForm({ onSubmit, initialData }) {
         sku: '',
         category: '',
         stock: 0,
-        price: '',
+        oldPrice: '',
         discount: '',
-        salePrice: '',
+        price: '',
         description: '',
         images: [],
         existingImages: [],
@@ -91,13 +93,32 @@ export default function ProductsForm({ onSubmit, initialData }) {
     }))
   }
 
+  const totalImageCount = formData.existingImages.length + formData.images.length;
+
+  const sellPrice = useMemo(() => {
+    if (formData.price !== '') {
+      return formData.price
+    }
+
+    if (formData.oldPrice === '') {
+      return ''
+    }
+
+    const oldPrice = Number(formData.oldPrice)
+    const discount = Number(formData.discount) || 0
+
+    return Math.max(0, oldPrice - discount)
+  }, [formData.price, formData.oldPrice, formData.discount]);
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    onSubmit(formData)
+    onSubmit({
+      ...formData,
+      price: sellPrice === '' ? '' : sellPrice
+    })
   }
 
-  const totalImageCount = formData.existingImages.length + formData.images.length
-
+  // console.log("SELL PRICE", sellPrice);
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* ── Name / SKU ── */}
@@ -147,10 +168,9 @@ export default function ProductsForm({ onSubmit, initialData }) {
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           >
             <option value="">Select Category</option>
-            <option value="Cosmetic">Cosmetic</option>
-            <option value="Skincare">Skincare</option>
-            <option value="Body Care">Body Care</option>
-            <option value="Hair Care">Hair Care</option>
+            {categories.map((cat) => (
+              <option key={cat.name} value={cat.name}>{cat.name}</option>
+            ))}
           </select>
         </div>
 
@@ -174,12 +194,12 @@ export default function ProductsForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-3 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Price ($)
+            Old Price ($)
           </label>
           <input
             type="number"
-            name="price"
-            value={formData.price}
+            name="oldPrice"
+            value={formData.oldPrice}
             onChange={handleChange}
             min="0"
             step="0.01"
@@ -206,12 +226,12 @@ export default function ProductsForm({ onSubmit, initialData }) {
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Sale Price ($)
+            Selling Price ($)
           </label>
           <input
             type="number"
-            name="salePrice"
-            value={formData.salePrice}
+            name="price"
+            value={sellPrice}
             onChange={handleChange}
             min="0"
             step="0.01"

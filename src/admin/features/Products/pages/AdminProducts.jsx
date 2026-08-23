@@ -10,8 +10,10 @@ import PageHeader from '../../../common/PageHeader'
 import FilterBar from '../../../common/FilterBar'
 import DeleteButton from '../../../common/DeleteButton'
 import Pagination from '../../../common/Pagination'
+import { useCategoryContext } from '../../../../context/CategoryContext'
 
 export default function AdminProducts() {
+  const { categories } = useCategoryContext()
   const {
     search,
     filters,
@@ -124,7 +126,7 @@ export default function AdminProducts() {
   const productFilters = [
     {
       key: 'category',
-      options: ['All', 'Cosmetic', 'Skincare', 'Body Care', 'Hair Care'],
+      options: ['All', ...categories.map(c => c.name)],
     },
     {
       key: 'status',

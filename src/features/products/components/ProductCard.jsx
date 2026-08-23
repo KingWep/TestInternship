@@ -104,12 +104,12 @@ export default function ProductCard({ product, index = 0 }) {
           oldPrice={oldPrice}
         />
 
-        {cashback && (
+        {(oldPrice && oldPrice > price) || cashback ? (
           <div className="flex items-center gap-1 mt-2 text-green-600 text-sm font-medium">
             <Gift size={14} />
-            សន្សំ ${cashback.toFixed(2)}
+            សន្សំ ${(oldPrice && oldPrice > price ? oldPrice - price : cashback).toFixed(2)}
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   )

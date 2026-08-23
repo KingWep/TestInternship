@@ -2,14 +2,18 @@ import React from 'react'
 import { LayoutDashboard, ShoppingBag, ClipboardList, Users, DollarSign } from 'lucide-react'
 import StatsCard from '../../../components/StatsCard'
 import PageHeader from '../../../common/PageHeader'
+import { useProductContext } from '../../../../context/ProductContext'
 
-const statsData = [
-  { title: "Total Revenue", value: "$12,450.00", icon: DollarSign, trend: "12", color: "green" },
-  { title: "Total Orders", value: "148", icon: ClipboardList, trend: "8", color: "blue" },
-  { title: "Products", value: "32", icon: ShoppingBag, color: "purple" },
-  { title: "Active Users", value: "1,240", icon: Users, trend: "4", color: "orange" }
-]
 export default function AdminDashboard() {
+  const { products } = useProductContext()
+
+  const statsData = [
+    { title: "Total Revenue", value: "$12,450.00", icon: DollarSign, trend: "12", color: "green" },
+    { title: "Total Orders", value: "148", icon: ClipboardList, trend: "8", color: "blue" },
+    { title: "Products", value: products.length.toString(), icon: ShoppingBag, color: "purple" },
+    { title: "Active Users", value: "1,240", icon: Users, trend: "4", color: "orange" }
+  ]
+
   return (
     <div className="space-y-6">
       <div>

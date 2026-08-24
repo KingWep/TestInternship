@@ -16,15 +16,17 @@ import AdminUsers from '../admin/features/Users/pages/AdminUsers'
 import AdminSettings from '../admin/features/Setting/pages/AdminSettings'
 import AdminReceiptPage from '../admin/features/Order/pages/AdminReceiptPage'
 import AdminStickerPage from '../admin/features/Order/pages/AdminStickerPage'
+import LoginForm from '@/client/features/auth/components/LoginForm'
 
 export default function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/products/:id" element={<ProductDetail />} />
-      <Route path="/receipt/:orderId" element={<Receipt />} />
+      <Route path="/print-receipt/:orderId" element={<Receipt />} />
       <Route path="/admin/print-receipt/:id" element={<AdminReceiptPage />} />
       <Route path="/admin/print-sticker/:id" element={<AdminStickerPage />} />
+      <Route path="/admin/login" element={<LoginForm/>} />
 
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />

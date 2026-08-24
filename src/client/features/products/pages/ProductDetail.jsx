@@ -94,16 +94,15 @@ export default function ProductDetail() {
     <div>
       <Header />
 
-      <Container className="pt-24 mt-4 pb-16">
+      <Container className="pt-28 md:pt-24 mt-4">
         <Link
           to="/"
-          className="flex items-center w-40 gap-1 bg-red-500 rounded-tl-xl rounded-br-xl px-4 py-2 text-white text-md font-semibold mb-6 hover:text-red-900 hover:bg-red-300 transition-colors duration-300 ease-in-out"
+          className="flex items-center w-40 gap-1 bg-red-500 rounded-tl-xl rounded-br-xl px-2 py-1 md:px-4 md:py-2 text-white text-md font-semibold mb-6 hover:text-red-900 hover:bg-red-300 transition-colors duration-300 ease-in-out"
         >
           <ArrowLeft size={16} />
           ត្រឡប់ក្រោយ
         </Link>
-
-        <div className="grid md:grid-cols-2 gap-10">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-3 md:gap-10 ">
           <div>
             <div className="group relative">
               <img
@@ -174,23 +173,23 @@ export default function ProductDetail() {
               </span>
             )}
 
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mt-1">
+            <h1 className="text-xl md:text-3xl font-bold text-slate-900 mt-1">
               {name}
             </h1>
 
-            <div className="flex items-center gap-3 mt-4">
-              <span className="text-red-700 font-bold text-3xl">
+            <div className="flex items-center gap-3 mt-1 md:mt-4">
+              <span className="text-red-700 font-bold text-2xl md:text-3xl">
                 ${price.toFixed(2)}
               </span>
               {oldPrice && (
-                <span className="text-slate-400 line-through text-lg">
+                <span className="text-slate-400 line-through text-md md:text-lg">
                   ${oldPrice.toFixed(2)}
                 </span>
               )}
             </div>
 
             {(oldPrice && oldPrice > price) || cashback ? (
-              <div className="flex items-center gap-1 mt-3 text-green-600 text-sm font-medium">
+              <div className="flex items-center gap-1 mt-1 md:mt-3 text-green-600 text-sm font-medium">
                 <Gift size={16} />
                 សំណូក $
                 {(oldPrice && oldPrice > price
@@ -200,19 +199,19 @@ export default function ProductDetail() {
               </div>
             ) : null}
 
-            <div className="mt-3">
+            <div className="mt-1 md:mt-3">
               <Badge variant="stock">ស្តុក: {stock}</Badge>
             </div>
 
             {description && (
-              <p className="text-slate-600 mt-6 leading-relaxed">
+              <p className="text-slate-600 mt-4 md:mt-6 leading-relaxed">
                 {description}
               </p>
             )}
 
-            <div className="flex items-center  gap-4 mt-8">
+            <div className="flex items-center  gap-4 mt-4 md:mt-8">
               <span className="text-sm font-medium text-slate-700">ចំនួន:</span>
-              <div className="flex items-center gap-3 border border-slate-200 rounded-full px-4 py-2">
+              <div className="flex items-center gap-3 border border-slate-200 rounded-full px-2 py-1 md:px-4 md:py-2">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                   disabled={quantity <= 1}
@@ -228,7 +227,7 @@ export default function ProductDetail() {
               <button
                 onClick={handleAddToCart}
                 disabled={stock === 0}
-                className="w-full md:w-auto flex items-center justify-center gap-2 bg-red-900 text-white font-medium  px-4 py-2 rounded-full hover:bg-red-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className=" md:w-auto flex items-center justify-center gap-2 bg-red-900 text-white font-medium px-4 py-1 md:py-2 rounded-full hover:bg-red-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <Plus size={18} />
                 {stock === 0 ? "អស់ស្តុក" : "បន្ថែមទៅកន្ត្រក"}

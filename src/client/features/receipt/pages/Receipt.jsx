@@ -1,283 +1,278 @@
-import { useRef, useState } from "react"
-import { useParams, Link } from "react-router-dom"
-import { ArrowLeft, Printer, FileDown, Share2, Send } from "lucide-react"
-import { useReactToPrint } from "react-to-print"
-import html2canvas from "html2canvas"
-import jsPDF from "jspdf"
+import React, { useRef, useState } from 'react'
+import Swal from 'sweetalert2'
+import { useParams, Link } from 'react-router-dom'
+import { Printer, FileDown, Send, ArrowLeft, Loader2} from 'lucide-react'
+import { useReactToPrint } from 'react-to-print'
+import { toPng } from 'html-to-image'
+import { useOrderContext } from '../../../../context/OrderContext'
+import { sendOrderToTelegram } from '../../../../services/telegramService'
 
-// Shared Receipt Card component used by both the modal and standalone page
 export function ReceiptCard({ order }) {
-  const {
-    orderId,
-    date,
-    customerName,
-    phone,
-    address,
-    deliveryMethod,
-    paymentMethod,
-    items,
-    subtotal,
-    deliveryFee,
-    total,
-    note,
-  } = order
+  const subtotal = Number(order?.subtotal) || 0
+  const delivery = Number(order?.delivery) || 0
+  const total    = Number(order?.total)    || 0
 
   return (
-    // បន្ថែម pb-8 ដើម្បីការពារកុំឱ្យដាច់ item ពេលចាប់យករូបភាព
-    <div className="bg-white text-slate-900 p-6 pb-8 w-full max-w-sm mx-auto font-mono text-sm">
-      <div className="text-center border-b border-dashed border-slate-300 pb-4 mb-4">
-        <h2 className="font-bold text-lg tracking-wide">ONE CARE SHOP</h2>
-        <p className="text-xs text-slate-500 mt-1">ភ្នំពេញ, កម្ពុជា</p>
-        <p className="text-xs text-slate-500">+855 88 66 77 456</p>
+    <div
+      id="receipt-card"
+      style={{ 
+        width: '350px',
+        fontFamily: "'Kantumruy Pro', 'Siemreap', 'Battambang', 'Noto Sans Khmer', sans-serif",
+        boxSizing: 'border-box',
+        WebkitFontSmoothing: 'antialiased',
+        MozOsxFontSmoothing: 'grayscale',
+        textRendering: 'optimizeLegibility'
+      }}
+      className="bg-white text-slate-900 mx-auto text-xs px-6 py-6 shadow-sm border border-slate-900 rounded-xl overflow-hidden flex flex-col"
+    >
+
+      <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
+        <h2 className="font-black text-base tracking-wider uppercase text-slate-900 leading-tight">ONE CARE SHOP</h2>
+        <p className="text-[11px] text-slate-900 mt-1">ទូរស័ព្ទ: 088 66 77 456</p>
+        <p className="text-[11px] text-slate-900">ភ្នំពេញ, កម្ពុជា</p>
       </div>
 
-      <div className="text-xs space-y-1 mb-4">
-        <div className="flex justify-between">
-          <span className="text-slate-500">លេខបញ្ជាទិញ</span>
-          <span className="font-semibold">{orderId}</span>
+      <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">
+        <div className="flex justify-between items-center w-full">
+          <span className="font-medium text-slate-900">លេខវិក្កយបត្រ:</span> 
+          <span className="font-mono font-bold text-slate-900">ORD:{order?.orderNumber || order?.id}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-slate-500">កាលបរិច្ឆេទ</span>
-          <span>{date}</span>
+        <div className="flex justify-between items-center w-full">
+          <span className="font-medium text-slate-900">កាលបរិច្ឆេទ:</span> 
+          <span className="font-mono text-slate-800">{order?.date} {order?.time}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-slate-500">អតិថិជន</span>
-          <span>{customerName}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-slate-500">ទូរស័ព្ទ</span>
-          <span>{phone}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-slate-500">អាសយដ្ឋាន</span>
-          <span className="text-right max-w-[60%]">{address}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-slate-500">សេវាដឹកជញ្ជូន</span>
-          <span>{deliveryMethod}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-slate-500">វិធីបង់ប្រាក់</span>
-          <span>{paymentMethod}</span>
-        </div>
-        {note && (
-          <div className="flex justify-between">
-            <span className="text-slate-500">ចំណាំ</span>
-            <span className="text-right max-w-[60%]">{note}</span>
+        {order?.customerName && (
+          <div className="flex justify-between items-center w-full">
+            <span className="font-medium text-slate-900">អតិថិជន</span> 
+            <span className="font-bold text-slate-900 truncate max-w-[180px]">{order.customerName || 'អតិថិជនទូទៅ'}</span>
           </div>
         )}
-      </div>
-
-      <div className="border-t border-dashed border-slate-300 pt-3 pb-2">
-        {items.map((item) => {
-          const price = Number(item.price) || 0
-          const quantity = Number(item.quantity) || 0
-          return (
-            <div key={item.id} className="flex justify-between items-start mb-2">
-              <span className="truncate pr-2 text-xs leading-relaxed">
-                {item.name} × {quantity}
-              </span>
-              <span className="shrink-0 text-xs font-medium">${(price * quantity).toFixed(2)}</span>
-            </div>
-          )
-        })}
-      </div>
-
-      <div className="border-t border-dashed border-slate-300 mt-3 pt-3 space-y-1">
-        <div className="flex justify-between text-slate-600 text-xs">
-          <span>តម្លៃផលិតផលសរុប</span>
-          <span>${(Number(subtotal) || 0).toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between text-slate-600 text-xs">
-          <span>ថ្លៃដឹកជញ្ជូន</span>
-          <span>${(Number(deliveryFee) || 0).toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between font-bold text-sm border-t border-slate-300 pt-2 mt-2">
-          <span>សរុប</span>
-          <span>${(Number(total) || 0).toFixed(2)}</span>
+        <div className="flex justify-between items-center w-full">
+          <span className="font-medium text-slate-900">លេខទូរស័ព្ទ:</span> 
+          <span className="font-mono text-slate-900 font-semibold">{order?.phone || '—'}</span>
         </div>
       </div>
 
-      <p className="text-center text-xs text-slate-400 mt-6">
-        សូមអរគុណសម្រាប់ការទិញទំនិញ!
-      </p>
+      <div className="mb-3 w-full border-b border-dashed border-slate-800 pb-3">
+        <table className="w-full text-[11px] table-fixed border-collapse">
+          <thead>
+            <tr className="border-b border-slate-800 text-slate-900 font-bold">
+              <th className="text-left pb-1.5 font-bold w-[45%]">ទំនិញ</th>
+              <th className="text-center pb-1.5 font-bold w-[15%]">ចំនួន</th>
+              <th className="text-right pb-1.5 font-bold w-[20%]">តម្លៃ</th>
+              <th className="text-right pb-1.5 font-bold w-[20%]">សរុប</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {order?.items && order.items.length > 0 ? (
+              order.items.map((item, idx) => {
+                const price = Number(item.price) || Number(item.salePrice) || 0
+                const qty   = Number(item.quantity) || 0
+                return (
+                  <tr key={item.id ?? idx} className="text-slate-800">
+                    <td className="py-1.5 pr-1 font-medium break-words text-left align-top leading-snug">
+                      {item.name}
+                    </td>
+                    <td className="py-1.5 text-center tabular-nums text-slate-600 font-semibold align-top">
+                      {qty}
+                    </td>
+                    <td className="py-1.5 text-right tabular-nums text-slate-600 align-top">
+                      ${price.toFixed(2)}
+                    </td>
+                    <td className="py-1.5 text-right tabular-nums font-bold text-slate-900 align-top">
+                      ${(price * qty).toFixed(2)}
+                    </td>
+                  </tr>
+                )
+              })
+            ) : (
+              <tr>
+                <td colSpan={4} className="py-3 text-center text-slate-400">
+                  គ្មានទំនិញ
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="space-y-1.5 pb-3 mb-3 border-b border-dashed border-slate-800 text-[11px] text-slate-700 w-full">
+        <div className="flex justify-between items-center">
+          <span className="text-slate-900">តម្លៃទំនិញសរុប (Subtotal):</span>
+          <span className="tabular-nums font-medium text-slate-800">${subtotal.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-slate-900">សេវាដឹកជញ្ជូន (Delivery):</span>
+          <span className="tabular-nums font-medium text-slate-800">${delivery.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between items-center pt-1.5 border-t border-slate-800 text-sm font-bold text-slate-900">
+          <span>ទឹកប្រាក់សរុប (Total):</span>
+          <span className="tabular-nums font-black text-slate-950">${total.toFixed(2)}</span>
+        </div>
+      </div>
+
+      <div className="text-center space-y-0.5 pt-0.5 w-full">
+        <p className="text-[11px] font-bold text-slate-900">
+          អរគុណសម្រាប់ការគាំទ្រ! 🙏
+        </p>
+        <p className="text-[10px] text-slate-900 font-medium tracking-wide uppercase">Thank You! Please Come Again</p>
+      </div>
     </div>
   )
 }
 
 export default function Receipt() {
   const { orderId } = useParams()
+  const { orders } = useOrderContext()
+  const order = orders?.find((o) => o.id === orderId || o.orderNumber === orderId)
+
   const printRef = useRef(null)
   const [loading, setLoading] = useState(null)
 
-  let order = null
-  try {
-    const raw = localStorage.getItem(`receipt-${orderId}`)
-    order = raw ? JSON.parse(raw) : null
-  } catch (err) {
-    order = null
+  if (!order) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+        <p className="text-base font-semibold text-slate-600 mb-4">រកមិនឃើញវិក្កយបត្រនេះទេ</p>
+        <Link to="/" className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3.5 py-1.5 rounded-lg shadow-xs border border-slate-800 text-sm font-medium transition-colors">
+          <ArrowLeft size={16} />
+          <span>ត្រលប់ក្រោយ</span>
+        </Link>
+      </div>
+    )
   }
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `receipt-${orderId}`,
+    documentTitle: `Receipt-ORD-${order.orderNumber || order.id}`,
+    pageStyle: `
+      @page { 
+        size: auto; 
+        margin: 10mm; 
+      }
+      @media print { 
+        html, body { 
+          width: 100%;
+          height: 100%;
+          margin: 0 !important; 
+          padding: 0 !important;
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          -webkit-print-color-adjust: exact; 
+          print-color-adjust: exact;
+        }
+        #receipt-card {
+          margin: auto !important;
+          border: none !important;
+          box-shadow: none !important;
+        }
+      }
+    `,
   })
 
-  // កែប្រែ handleSavePdf ឱ្យ Save PDF ចំកណ្តាលក្រដាស A4 ស្អាត
-  const handleSavePdf = async () => {
+  const handleSaveImage = async () => {
     if (!printRef.current) return
-    setLoading("pdf")
+    setLoading('img')
     try {
-      const canvas = await html2canvas(printRef.current, { 
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        windowWidth: printRef.current.scrollWidth
+      await document.fonts.ready
+
+      const dataUrl = await toPng(printRef.current, {
+        cacheBust: true,
+        pixelRatio: 4,
+        backgroundColor: '#ffffff'
       })
-      const imgData = canvas.toDataURL("image/png")
-      const pdf = new jsPDF("p", "mm", "a4")
 
-      const pageWidth = pdf.internal.pageSize.getWidth()
-      const pageHeight = pdf.internal.pageSize.getHeight()
-
-      // កំណត់ទំហំទទឹងវិក្កយបត្រលើ PDF ត្រឹម 90mm ដើម្បីឱ្យនៅចំកណ្តាលស្អាតមិនធំពេក
-      const imgWidth = 90
-      const imgHeight = (canvas.height * imgWidth) / canvas.width
-
-      // គណនាកូអរដោនែ X និង Y ให้อยู่ចំកណ្តាល (Center)
-      const xCoord = (pageWidth - imgWidth) / 2
-      const yCoord = imgHeight < pageHeight ? (pageHeight - imgHeight) / 2 : 10
-
-      pdf.addImage(imgData, "PNG", xCoord, yCoord, imgWidth, imgHeight)
-      pdf.save(`receipt-${orderId}.pdf`)
+      const link = document.createElement('a')
+      link.download = `Receipt-ORD-${order.orderNumber || order.id}.png`
+      link.href = dataUrl
+      link.click()
     } catch (err) {
-      console.error("PDF generation failed:", err)
-    } finally {
-      setLoading(null)
-    }
-  }
-
-  const handleShare = async () => {
-    setLoading("share")
-    const text = `វិក្កយបត្រ ${order.orderId}\nសរុប: $${(Number(order.total) || 0).toFixed(2)}\nអតិថិជន: ${order.customerName}`
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: "វិក្កយបត្រ", text })
-      } else {
-        await navigator.clipboard.writeText(text)
-        alert("Browser មិន support share ទេ — ចម្លងទៅ clipboard ជំនួសវិញ")
-      }
-    } catch (err) {
+      console.error('Image export failed:', err)
+      Swal.fire({
+        icon: 'error',
+        title: 'បរាជ័យ!',
+        text: 'មានបញ្ហាក្នុងការទាញយករូបភាព!',
+        confirmButtonColor: '#0f172a',
+      })
     } finally {
       setLoading(null)
     }
   }
 
   const handleSendTelegram = async () => {
-    const token = import.meta.env.VITE_TELEGRAM_BOT_TOKEN
-    const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID
+    setLoading('telegram')
 
-    if (!token || !chatId) {
-      alert("សូមកំណត់ VITE_TELEGRAM_BOT_TOKEN និង VITE_TELEGRAM_CHAT_ID ក្នុងឯកសារ .env")
-      return
-    }
-
-    setLoading("telegram")
     try {
-      const text =
-        `🧾 វិក្កយបត្រ ${order.orderId}\n` +
-        `👤 ${order.customerName} (${order.phone})\n` +
-        `📍 ${order.address}\n` +
-        `🚚 ${order.deliveryMethod}  |  💳 ${order.paymentMethod}\n` +
-        `------------------------\n` +
-        order.items
-          .map((i) => `${i.name} × ${i.quantity} — $${(Number(i.price) * Number(i.quantity)).toFixed(2)}`)
-          .join("\n") +
-        `\n------------------------\n` +
-        `💰 សរុប: $${(Number(order.total) || 0).toFixed(2)}`
+      await sendOrderToTelegram(order)
 
-      const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: chatId, text }),
+      Swal.fire({
+        icon: 'success',
+        title: 'ជោគជ័យ! ✅',
+        text: 'បានផ្ញើវិក្កយបត្រទៅ Telegram រួចរាល់ហើយ!',
+        confirmButtonColor: '#0284c7',
+        timer: 3000,
+        timerProgressBar: true,
       })
+    } catch (error) {
+      console.error('Telegram error:', error)
 
-      if (!res.ok) throw new Error("Telegram API returned an error")
-      alert("បានផ្ញើវិក្កយបត្រទៅ Telegram ✅")
-    } catch (err) {
-      console.error(err)
-      alert("មិនអាចផ្ញើទៅ Telegram បានទេ")
+      Swal.fire({
+        icon: 'error',
+        title: 'បរាជ័យ!',
+        text: error.message || 'មិនអាចផ្ញើទៅ Telegram បានទេ',
+        confirmButtonColor: '#0f172a',
+      })
     } finally {
       setLoading(null)
     }
   }
 
-  if (!order) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-10 text-center max-w-md w-full">
-          <p className="text-slate-500">រកមិនឃើញវិក្កយបត្រនេះទេ។</p>
-          <Link to="/" className="text-red-700 font-medium mt-4 inline-block">
-            ត្រឡប់ទៅទំព័រដើម
-          </Link>
+  return (
+    <div className="min-h-screen bg-slate-100 flex flex-col items-center py-8 px-4 font-sans text-slate-800">
+     
+      <div className="w-full max-w-xl flex items-center justify-between mb-5">
+        <Link to="/" className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3.5 py-1.5 rounded-lg shadow-xs border border-slate-800 text-sm font-medium transition-colors">
+          <ArrowLeft size={16} />
+          <span>ត្រលប់ក្រោយ</span>
+        </Link>
+        <span className="text-xs font-bold text-slate-900 bg-slate-200/70 px-2.5 py-1 rounded">
+          ទម្រង់វិក្ក័យបត្រ (Receipt)
+        </span>
+      </div>
+
+      <div className="bg-white p-6 shadow-lg rounded-2xl mb-6 border border-slate-800/80 flex items-center justify-center">
+        <div ref={printRef} className="bg-white inline-block">
+          <ReceiptCard order={order} />
         </div>
       </div>
-    )
-  }
 
-  return (
-    <div className="min-h-screen bg-slate-50 py-10 px-4">
-      <div className="max-w-md mx-auto">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-red-700 mb-4"
+      {/* Action Buttons */}
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <button
+          onClick={handlePrint}
+          className="flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-xl hover:bg-slate-800 active:scale-[0.98] transition-all text-sm font-semibold shadow-sm"
         >
-          <ArrowLeft size={16} />
-          ត្រឡប់ទៅទំព័រដើម
-        </Link>
+          <Printer size={16} />
+          បោះពុម្ពវិក្កយបត្រ
+        </button>
 
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div ref={printRef} className="py-4 bg-white flex justify-center">
-            <ReceiptCard order={order} />
-          </div>
+        <button
+          onClick={handleSaveImage}
+          disabled={loading === 'img'}
+          className="flex items-center gap-2 bg-white text-slate-700 border border-slate-800 px-5 py-2.5 rounded-xl hover:bg-slate-50 active:scale-[0.98] transition-all text-sm font-semibold shadow-xs disabled:opacity-60"
+        >
+          {loading === 'img' ? <Loader2 size={16} className="animate-spin text-slate-900" /> : <FileDown size={16} />}
+          {loading === 'img' ? 'កំពុងរក្សាទុក...' : 'ទាញយករូបភាព PNG'}
+        </button>
 
-          <div className="grid grid-cols-2 gap-2 p-2 border-t border-slate-100">
-            <button
-              onClick={handlePrint}
-              className="flex items-center justify-center gap-2 bg-red-900 text-white font-medium py-2 rounded-full hover:bg-red-800 transition-colors"
-            >
-              <Printer size={16} />
-              Print
-            </button>
-
-            <button
-              onClick={handleSavePdf}
-              disabled={loading === "pdf"}
-              className="flex items-center justify-center gap-2 border border-slate-200 text-slate-700 font-medium py-2 rounded-full hover:bg-slate-50 transition-colors disabled:opacity-50"
-            >
-              <FileDown size={16} />
-              {loading === "pdf" ? "កំពុងរក្សា..." : "Save PDF"}
-            </button>
-
-            <button
-              onClick={handleShare}
-              disabled={loading === "share"}
-              className="flex items-center justify-center gap-2 border border-slate-200 text-slate-700 font-medium py-2 rounded-full hover:bg-slate-50 transition-colors disabled:opacity-50"
-            >
-              <Share2 size={16} />
-              Share
-            </button>
-
-            <button
-              onClick={handleSendTelegram}
-              disabled={loading === "telegram"}
-              className="flex items-center justify-center gap-2 border border-slate-200 text-slate-700 font-medium py-2 rounded-full hover:bg-slate-50 transition-colors disabled:opacity-50"
-            >
-              <Send size={16} />
-              {loading === "telegram" ? "កំពុងផ្ញើ..." : "Telegram"}
-            </button>
-          </div>
-        </div>
+        <button
+          onClick={handleSendTelegram}
+          disabled={loading === 'telegram'}
+          className="flex items-center gap-2 bg-sky-600 text-white px-5 py-2.5 rounded-xl hover:bg-sky-500 active:scale-[0.98] transition-all text-sm font-semibold shadow-xs disabled:opacity-60"
+        >
+          {loading === 'telegram' ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+          {loading === 'telegram' ? 'កំពុងផ្ញើ...' : 'ផ្ញើទៅ Telegram'}
+        </button>
       </div>
     </div>
   )

@@ -1,18 +1,19 @@
-import { Search, ShoppingBag } from "lucide-react"
-import Container from "./Container"
-import { useSearch } from "../../../context/SearchContext"
-import { useCart } from "../../../context/CartContext"
+import { Search, ShoppingBag } from "lucide-react";
+import Container from "./Container";
+import { useSearch } from "../../../context/SearchContext";
+import { useCart } from "../../../context/CartContext";
+import { UserLock } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Header() {
-  const { searchItem, setSearchItem, priceRange, setPriceRange } = useSearch()
-  const { cartCount, setIsCartOpen } = useCart()
+  const { searchItem, setSearchItem, priceRange, setPriceRange } = useSearch();
+  const { cartCount, setIsCartOpen } = useCart();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 md:shadow-md shadow-lg  bg-white md:border-b md:border-slate-100  border-b-2 border-red-800">
       <Container className="w-full py-4">
         {/* Mobile: 2 rows (flex-col) | Desktop: 1 row (md:flex-row) */}
         <div className="flex flex-col md:flex-row md:items-center gap-4">
-          
           {/* Row 1 on Mobile / Left side on Desktop */}
           <div className="flex items-center justify-between md:justify-start">
             <span className="font-bold text-lg text-red-900 whitespace-nowrap">
@@ -20,14 +21,26 @@ export default function Header() {
             </span>
 
             {/* Cart on mobile only */}
-            <button className="relative md:hidden" onClick={() => setIsCartOpen(true)}>
-              <ShoppingBag size={22} className="text-slate-800" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                  {cartCount}
-                </span>
-              )}
-            </button>
+            <div  className="flex items-center gap-4 md:hidden">
+              <button
+                className="relative md:hidden"
+                onClick={() => setIsCartOpen(true)}
+              >
+                <ShoppingBag size={22} className="text-slate-800" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+              <Link
+                to="/admin/login"
+                className=" text-sm text-slate-600 hover:text-slate-900"
+              >
+                <UserLock />
+              </Link>
+            </div>
           </div>
 
           {/* Row 2 on Mobile (Search + Dropdown) / Center & Right on Desktop */}
@@ -60,7 +73,10 @@ export default function Header() {
           </div>
 
           {/* Cart on desktop only */}
-          <button className="relative hidden md:block" onClick={() => setIsCartOpen(true)}>
+          <button
+            className="relative hidden md:block"
+            onClick={() => setIsCartOpen(true)}
+          >
             <ShoppingBag size={22} className="text-slate-800" />
             {cartCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
@@ -69,8 +85,14 @@ export default function Header() {
             )}
           </button>
 
+          <Link
+            to="/admin/login"
+            className="hidden md:block text-sm text-slate-600 hover:text-slate-900"
+          >
+            <UserLock />
+          </Link>
         </div>
       </Container>
     </header>
-  )
+  );
 }

@@ -25,9 +25,9 @@ export function DeliveryForm({
   ]
 
   const paymentMehtod = [
-    {id: "aba", name: "ABA Bank", image: "/images/qr.png"},
-    {id: "wing", name: "Wing", image: "/images/qr.png"},
-    {id: "ac", name: "ACLEDA", image: "/images/qr.png"},
+    {id: "aba", name: "ABA Bank", image: "/images/qrbank.JPG"},
+    {id: "wing", name: "Wing", image: "/images/qrbank.JPG"},
+    {id: "acleda", name: "ACLEDA", image: "/images/qrbank.JPG"},
     {id: "cash", name: "Case", image: "null"}
   ]
   const handleDeliveryChange = (option) => {

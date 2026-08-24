@@ -6,12 +6,12 @@ export default function useCheckout({
   grandTotal,
   setIsCartOpen,
   resetCheckoutForm,
+  navigate,
 }) {
   const [showQr, setShowQr] = useState(false)
   const [qrSeconds, setQrSeconds] = useState(0)
   const [qrCompleted, setQrCompleted] = useState(false)
-
-  const [showReceipt, setShowReceipt] = useState(false)
+  const [currentOrderId, setCurrentOrderId] = useState(null)
 
   useEffect(() => {
     if (!showQr || !hasItems) {
@@ -29,7 +29,7 @@ export default function useCheckout({
         }
         return prev - 1
       })
-    }, 1000)
+    }, 100000)
 
     return () => clearInterval(interval)
   }, [showQr, hasItems])
@@ -59,33 +59,28 @@ export default function useCheckout({
       confirmButtonColor: "#7f1d1d",
       allowOutsideClick: false,
     })
-    
-  
 
     const result = await Swal.fire({
       icon: "question",
       title: "Print Receipt?",
       text: "តើអ្នកចង់បោះពុម្ពវិក្កយបត្រដែរឬទេ?",
       showCancelButton: true,
-
       confirmButtonText: "🖨️ Print Receipt",
       cancelButtonText: "រំលង",
-
       confirmButtonColor: "#7f1d1d",
       cancelButtonColor: "#64748b",
-
       allowOutsideClick: false,
     })
 
-    if (result.isConfirmed) {
-      setShowReceipt(true)
-      return
+    if (result.isConfirmed && currentOrderId) {
+      if (navigate) {
+        navigate(`/print-receipt/${currentOrderId}`)
+      }
     }
-
-    // setIsCartOpen(false)
   }
 
-  const startQrPayment = () => {
+  const startQrPayment = (orderId) => {
+    setCurrentOrderId(orderId)
     setQrCompleted(false)
     setQrSeconds(10)
     setShowQr(true)
@@ -94,20 +89,13 @@ export default function useCheckout({
   const closeQr = () => {
     setShowQr(false)
     setQrCompleted(false)
-  }
-
-  const closeReceipt = () => {
-    setShowReceipt(false)
-    setIsCartOpen(false)
+    setCurrentOrderId(null)
   }
 
   return {
     showQr,
     qrSeconds,
-    showReceipt,
-    setShowReceipt,
     startQrPayment,
     closeQr,
-    closeReceipt,
   }
 }

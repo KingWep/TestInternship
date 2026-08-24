@@ -18,9 +18,9 @@ export default function PromoBanner({
       <Button
         variant="white"
         className="
-          rounded-[500px]
           mt-6
           flex items-center gap-2
+          rounded-[800px]
           md:rounded-[100px]
           font-semibold
           animate-[bounce_4s_ease-in-out_infinite]

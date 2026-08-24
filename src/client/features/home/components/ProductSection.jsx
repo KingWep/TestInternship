@@ -30,12 +30,15 @@ export default function ProductSection() {
   return (
     <div className="space-y-8">
       {/* <SectionHeader title=" " /> */}
-      <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 leading-khmer">
-        ស្វែងរកទំនិញតាមប្រភេទ
-      </h2>
-      <FilterTabs
-        tabs={tabs}
-        onChange={setActiveTab} />
+      <div>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 leading-khmer">
+          ស្វែងរកទំនិញតាមប្រភេទ
+        </h2>
+        <FilterTabs
+          tabs={tabs}
+          onChange={setActiveTab} />
+      </div>
+      
       <div>
         <SectionHeader title=" ទំនិញពេញនិយម" />
         <ProductGrid products={filtered} />

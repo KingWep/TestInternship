@@ -56,7 +56,7 @@ export default function ProductCard({ product, index = 0 }) {
             src={img}
             alt={name}
             className={`
-              absolute inset-0 w-full h-64 object-cover
+              absolute inset-0 w-full md:h-64 h-52 object-cover
               transition-opacity duration-500 ease-in-out
               ${index === hoverIndex ? "opacity-100" : "opacity-0"}
             `}
@@ -67,7 +67,7 @@ export default function ProductCard({ product, index = 0 }) {
         <img
           src={gallery[0]}
           alt=""
-          className="w-full h-64 object-cover opacity-0"
+          className="w-full md:h-64 h-52 object-cover opacity-0"
         />
 
         {discount && (
@@ -81,7 +81,7 @@ export default function ProductCard({ product, index = 0 }) {
         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <Link
             to={`/products/${id}`}
-            className="px-3 py-2 bg-white font-semibold text-red-900 rounded-lg shadow-lg hover:bg-slate-100 transition-colors"
+            className="px-2 py-1 md:px-3 md:py-2 bg-red-900 font-medium md:font-semibold text-white rounded-lg shadow-lg hover:bg-red-700 transition-colors"
           >
             View Detail
           </Link>

@@ -1,7 +1,9 @@
 import { useState } from "react"
 import Swal from "sweetalert2"
+import { useNavigate } from "react-router-dom"
 
 import { useCart } from "../../../../context/CartContext"
+import { useOrderContext } from "../../../../context/OrderContext"
 
 import CartHeader from "./CartHeader"
 import CartItemList from "./CartItemList"
@@ -10,9 +12,9 @@ import PaymentQrModal from "./PaymentQrModal"
 import EmptyCart from "./EmptyCart"
 import useCheckout from "../hooks/useCheckout"
 import { DeliveryForm } from "./DeliveryForm"
-import ReceiptModal from "./ReceiptModal"
 
 export default function CartDrawer() {
+  const navigate = useNavigate()
   const {
     cartItems,
     isCartOpen,
@@ -20,6 +22,8 @@ export default function CartDrawer() {
     cartTotal,
     clearCart,
   } = useCart()
+  
+  const { addOrder } = useOrderContext()
 
   const [customerName, setCustomerName] = useState("")
   const [phone, setPhone] = useState("")
@@ -31,27 +35,25 @@ export default function CartDrawer() {
 
   const [paymentMethod, setPaymentMethod] = useState("")
   const [paymentImage, setPaymentImage] = useState(null)
-  const [order, setOrder] = useState(null)
   const hasItems = cartItems.length > 0
 
   const grandTotal =
     cartTotal + (hasItems ? deliveryFee : 0)
 
-  const createOrder = () => {
-    return {
-      id: `ORD-${Date.now()}`,
-      customerName,
-      phone,
-      address,
-      note,
-      deliveryMethod,
-      deliveryFee,
-      paymentMethod,
+  const handleCreateOrder = () => {
+    return addOrder({
       items: cartItems,
       subtotal: cartTotal,
-      total: grandTotal,
-      createdAt: new Date(),
-    }
+      delivery: deliveryFee,
+      paymentMethod: paymentMethod === 'cash' ? 'Cash' : 'QR Payment',
+      customerInfo: {
+        name: customerName,
+        phone,
+        address,
+        note,
+        deliveryMethod,
+      }
+    });
   }
 
   const resetCheckoutForm = () => {
@@ -68,15 +70,14 @@ export default function CartDrawer() {
   const {
     showQr,
     qrSeconds,
-    showReceipt,
     startQrPayment,
     closeQr,
-    setShowReceipt,
   } = useCheckout({
     hasItems,
     grandTotal,
     setIsCartOpen,
     resetCheckoutForm, // ✅ បញ្ជូន resetCheckoutForm ចូលទីនេះ
+    navigate, // ✅ Pass navigate to useCheckout
   })
 
   const showWarning = (message) => {
@@ -115,14 +116,12 @@ export default function CartDrawer() {
       return
     }
 
-    const newOrder = createOrder()
-    setOrder(newOrder)
-    startQrPayment()
+    const newOrder = handleCreateOrder()
+    startQrPayment(newOrder.id)
   }
 
   const handleCashOrder = async () => {
-    const newOrder = createOrder()
-    setOrder(newOrder)
+    const newOrder = handleCreateOrder()
     resetCheckoutForm()
     
     await Swal.fire({
@@ -146,7 +145,7 @@ export default function CartDrawer() {
     })
 
     if (result.isConfirmed) {
-      setShowReceipt(true)
+      navigate(`/print-receipt/${newOrder.id}`)
     } else {
       setIsCartOpen(false)
     }
@@ -163,7 +162,7 @@ export default function CartDrawer() {
         onClick={() => setIsCartOpen(false)}
       />
       <div
-        className={`fixed right-0 top-0 bottom-0 z-50 w-full sm:w-[420px] md:w-[480px] bg-white flex flex-col shadow-2xl rounded-l-3xl overflow-hidden transition-transform duration-300 ease-in-out ${
+        className={`fixed right-0 top-0 bottom-0 z-50 w-full sm:w-[420px] md:w-[480px] bg-white flex flex-col shadow-2xl md:rounded-l-3xl overflow-hidden transition-transform duration-300 ease-in-out ${
           isCartOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -225,16 +224,6 @@ export default function CartDrawer() {
         qrSeconds={qrSeconds}
         onClose={closeQr}
       />
-
-      {showReceipt && order && (
-        <ReceiptModal
-          order={order}
-          onClose={() => {
-            setShowReceipt(false)
-            setIsCartOpen(false)
-          }}
-        />
-      )}
     </>
   )
 }

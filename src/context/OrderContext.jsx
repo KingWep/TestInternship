@@ -163,6 +163,8 @@ export function OrderProvider({ children }) {
       customerName: customerInfo.name || customerInfo.customerName || "",
       phone: customerInfo.phone,
       address: customerInfo.address,
+      note: customerInfo.note || "",
+      deliveryMethod: customerInfo.deliveryMethod || "",
       subtotal: Number(subtotal) || 0,
       delivery: Number(delivery) || 0,
       total,

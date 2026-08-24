@@ -4,7 +4,7 @@ import AdminSidebar from './AdminSidebar'
 import AdminHeader from './AdminHeader'
 
 export default function AdminLayout() {
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [sidebarState, setSidebarState] = useState(window.innerWidth < 768 ? 0 : 2)
   const { pathname } = useLocation()
   const mainRef = useRef(null)
 
@@ -16,7 +16,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden font-sans">
-      <AdminSidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+      <AdminSidebar sidebarState={sidebarState} setSidebarState={setSidebarState} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <AdminHeader />

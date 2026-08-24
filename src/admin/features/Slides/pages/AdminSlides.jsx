@@ -48,10 +48,14 @@ export default function AdminSlides() {
           </div>
         ),
     },
-    { header: 'Tag', accessor: 'tag' },
+    { header: 'Tag', render: (row) => <span className="font-bold bg-slate-100 text-black/70 py-1 px-2 rounded border-2 border-slate-400">{row.tag}</span> },
     { header: 'Title', accessor: 'title' },
     { header: 'Description', accessor: 'description' },
-    { header: 'Discount', accessor: 'discount' },
+    { header: 'Discount', render: (row) => (
+      <span className="font-bold bg-pink-600 text-white py-1 px-2 rounded border-2 border-slate-400">
+        {row.discount ? `${row.discount}%` : 'N/A'}
+      </span>
+    ) },
     { header: 'CTA Text', accessor: 'ctaText' },
     {
       header: 'Status',

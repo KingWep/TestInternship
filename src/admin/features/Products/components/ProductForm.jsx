@@ -4,6 +4,7 @@ import { useCategoryContext } from '../../../../context/CategoryContext'
 
 export default function ProductsForm({ onSubmit, initialData }) {
   const { categories } = useCategoryContext()
+  const [discountPercentage, setDiscountPercentage] = useState(0)
   const [formData, setFormData] = useState({
     name: '',
     sku: '',
@@ -13,23 +14,21 @@ export default function ProductsForm({ onSubmit, initialData }) {
     discount: '',
     price: '',
     description: '',
-    images: [],           // new File objects selected by the user
-    existingImages: [],   // URL strings already saved on the product (edit mode)
+    images: [],
+    existingImages: [],
   })
 
   const fileInputRef = useRef(null)
-
-  // Check if we are editing an existing product
   const isEditing = !!initialData
 
   useEffect(() => {
     if (initialData) {
-      // Support both a single `image` string and an `images` array
-      let existing = []
+      let existingImages = []
+
       if (Array.isArray(initialData.images) && initialData.images.length > 0) {
-        existing = initialData.images
+        existingImages = initialData.images
       } else if (initialData.image) {
-        existing = [initialData.image]
+        existingImages = [initialData.image]
       }
 
       setFormData({
@@ -42,14 +41,14 @@ export default function ProductsForm({ onSubmit, initialData }) {
         price: initialData.price || '',
         description: initialData.description || '',
         images: [],
-        existingImages: existing,
+        existingImages,
       })
     } else {
       setFormData({
         name: '',
         sku: '',
         category: '',
-        stock: 0,
+        stock: '',
         oldPrice: '',
         discount: '',
         price: '',
@@ -57,27 +56,66 @@ export default function ProductsForm({ onSubmit, initialData }) {
         images: [],
         existingImages: [],
       })
+      setDiscountPercentage(0)
     }
   }, [initialData])
 
+  useEffect(() => {
+    const oldPrice = Number(formData.oldPrice)
+    const discount = Number(formData.discount)
+
+    if (oldPrice > 0 && discount > 0) {
+      setDiscountPercentage(
+        Math.min(Math.round((discount / oldPrice) * 100), 100)
+      )
+    } else {
+      setDiscountPercentage(0)
+    }
+  }, [formData.oldPrice, formData.discount])
+
+  const sellPrice = useMemo(() => {
+    if (formData.oldPrice === '') return ''
+
+    const oldPrice = Number(formData.oldPrice)
+    const discount = Number(formData.discount) || 0
+
+    if (oldPrice <= 0) return 0
+
+    return Math.max(0, oldPrice - discount)
+  }, [formData.oldPrice, formData.discount])
+
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
   }
 
-  // Append new files; skip duplicates by name+size
   const handleImageAdd = (e) => {
     const incoming = Array.from(e.target.files)
+
     setFormData((prev) => {
-      const existingKeys = new Set(prev.images.map((f) => f.name + f.size))
-      const newFiles = incoming.filter((f) => !existingKeys.has(f.name + f.size))
-      return { ...prev, images: [...prev.images, ...newFiles] }
+      const existingKeys = new Set(
+        prev.images.map((file) => file.name + file.size)
+      )
+
+      const newFiles = incoming.filter(
+        (file) => !existingKeys.has(file.name + file.size)
+      )
+
+      return {
+        ...prev,
+        images: [...prev.images, ...newFiles],
+      }
     })
-    // Reset so the same file can be re-added after removal
-    if (fileInputRef.current) fileInputRef.current.value = ''
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
-  // Remove a newly selected File by index
   const removeNewImage = (index) => {
     setFormData((prev) => ({
       ...prev,
@@ -85,7 +123,6 @@ export default function ProductsForm({ onSubmit, initialData }) {
     }))
   }
 
-  // Remove a saved URL image by index
   const removeExistingImage = (index) => {
     setFormData((prev) => ({
       ...prev,
@@ -93,35 +130,35 @@ export default function ProductsForm({ onSubmit, initialData }) {
     }))
   }
 
-  const totalImageCount = formData.existingImages.length + formData.images.length;
-
-  const sellPrice = useMemo(() => {
-    if (formData.price !== '') {
-      return formData.price
-    }
-
-    if (formData.oldPrice === '') {
-      return ''
-    }
-
-    const oldPrice = Number(formData.oldPrice)
-    const discount = Number(formData.discount) || 0
-
-    return Math.max(0, oldPrice - discount)
-  }, [formData.price, formData.oldPrice, formData.discount]);
+  const totalImageCount =
+    formData.existingImages.length + formData.images.length
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    const keptExisting = Array.isArray(formData.existingImages)
+      ? formData.existingImages
+      : []
+
+    const newImageUrls = Array.isArray(formData.images)
+      ? formData.images.map((file) => URL.createObjectURL(file))
+      : []
+
+    const allImages = [...keptExisting, ...newImageUrls]
+
     onSubmit({
       ...formData,
-      price: sellPrice === '' ? '' : sellPrice
+      price: sellPrice === '' ? '' : sellPrice,
+      oldPrice: formData.oldPrice === '' ? 0 : Number(formData.oldPrice),
+      discount: formData.discount === '' ? 0 : Number(formData.discount),
+      stock: formData.stock === '' ? 0 : Number(formData.stock),
+      images: allImages,
+      image: allImages[0] ?? (initialData ? initialData.image : ''),
     })
   }
 
-  // console.log("SELL PRICE", sellPrice);
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      {/* ── Name / SKU ── */}
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
@@ -154,7 +191,6 @@ export default function ProductsForm({ onSubmit, initialData }) {
         </div>
       </div>
 
-      {/* ── Category / Stock ── */}
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
@@ -168,8 +204,10 @@ export default function ProductsForm({ onSubmit, initialData }) {
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           >
             <option value="">Select Category</option>
-            {categories.map((cat) => (
-              <option key={cat.name} value={cat.name}>{cat.name}</option>
+            {categories.map((category) => (
+              <option key={category.name} value={category.name}>
+                {category.name}
+              </option>
             ))}
           </select>
         </div>
@@ -190,7 +228,6 @@ export default function ProductsForm({ onSubmit, initialData }) {
         </div>
       </div>
 
-      {/* ── Price / Discount / Sale Price ── */}
       <div className="grid grid-cols-3 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
@@ -209,9 +246,14 @@ export default function ProductsForm({ onSubmit, initialData }) {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Discount ($)
-          </label>
+          <div className="flex items-center gap-2 mb-1">
+            <label className="text-xs font-semibold text-gray-600">
+              Discount ($)
+            </label>
+            <span className="text-xs font-normal text-red-600">
+              ({discountPercentage}% off)
+            </span>
+          </div>
           <input
             type="number"
             name="discount"
@@ -230,18 +272,14 @@ export default function ProductsForm({ onSubmit, initialData }) {
           </label>
           <input
             type="number"
-            name="price"
             value={sellPrice}
-            onChange={handleChange}
-            min="0"
-            step="0.01"
+            readOnly
             placeholder="0.00"
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg outline-none cursor-not-allowed"
           />
         </div>
       </div>
 
-      {/* ── Description ── */}
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1">
           Description
@@ -256,17 +294,17 @@ export default function ProductsForm({ onSubmit, initialData }) {
         />
       </div>
 
-      {/* ── Product Images ── */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <label className="block text-xs font-semibold text-gray-600">
-            Product Images{' '}
+            Product Images
             {totalImageCount > 0 && (
-              <span className="ml-1 text-blue-500">({totalImageCount})</span>
+              <span className="ml-1 text-blue-500">
+                ({totalImageCount})
+              </span>
             )}
           </label>
 
-          {/* Hidden file input triggered by the label/button */}
           <input
             ref={fileInputRef}
             id="product-image-upload"
@@ -286,12 +324,13 @@ export default function ProductsForm({ onSubmit, initialData }) {
           </label>
         </div>
 
-        {/* Image preview grid */}
         {totalImageCount > 0 ? (
           <div className="flex flex-wrap gap-3 p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-            {/* Existing saved URL images */}
             {formData.existingImages.map((url, index) => (
-              <div key={`existing-${index}`} className="relative">
+              <div
+                key={`existing-${index}`}
+                className="relative"
+              >
                 <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
                   <img
                     src={url}
@@ -299,7 +338,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                {/* Red X remove button */}
+
                 <button
                   type="button"
                   onClick={() => removeExistingImage(index)}
@@ -308,6 +347,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
                 >
                   <X size={11} strokeWidth={3} />
                 </button>
+
                 {index === 0 && (
                   <span className="absolute bottom-1 left-1 text-[9px] font-bold bg-blue-500 text-white px-1 rounded">
                     Main
@@ -316,9 +356,11 @@ export default function ProductsForm({ onSubmit, initialData }) {
               </div>
             ))}
 
-            {/* Newly selected File images */}
             {formData.images.map((file, index) => (
-              <div key={`new-${index}`} className="relative">
+              <div
+                key={`new-${index}`}
+                className="relative"
+              >
                 <div className="w-20 h-20 rounded-lg overflow-hidden border border-blue-200 shadow-sm">
                   <img
                     src={URL.createObjectURL(file)}
@@ -326,7 +368,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                {/* Red X remove button */}
+
                 <button
                   type="button"
                   onClick={() => removeNewImage(index)}
@@ -335,11 +377,14 @@ export default function ProductsForm({ onSubmit, initialData }) {
                 >
                   <X size={11} strokeWidth={3} />
                 </button>
-                {formData.existingImages.length === 0 && index === 0 && (
-                  <span className="absolute bottom-1 left-1 text-[9px] font-bold bg-blue-500 text-white px-1 rounded">
-                    Main
-                  </span>
-                )}
+
+                {formData.existingImages.length === 0 &&
+                  index === 0 && (
+                    <span className="absolute bottom-1 left-1 text-[9px] font-bold bg-blue-500 text-white px-1 rounded">
+                      Main
+                    </span>
+                  )}
+
                 <span className="absolute bottom-1 right-1 text-[9px] bg-green-500 text-white px-1 rounded">
                   New
                 </span>
@@ -347,19 +392,21 @@ export default function ProductsForm({ onSubmit, initialData }) {
             ))}
           </div>
         ) : (
-          /* Empty-state: click to open file picker */
           <label
             htmlFor="product-image-upload"
             className="flex flex-col items-center justify-center gap-2 w-full h-28 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 text-gray-400 cursor-pointer hover:border-blue-300 hover:text-blue-400 transition-colors"
           >
             <ImagePlus size={24} />
-            <span className="text-xs font-medium">Click to add product images</span>
-            <span className="text-[10px]">JPG, PNG, WEBP supported</span>
+            <span className="text-xs font-medium">
+              Click to add product images
+            </span>
+            <span className="text-[10px]">
+              JPG, PNG, WEBP supported
+            </span>
           </label>
         )}
       </div>
 
-      {/* ── Submit ── */}
       <div className="flex justify-end pt-2">
         <button
           type="submit"

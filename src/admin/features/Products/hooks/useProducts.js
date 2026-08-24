@@ -124,6 +124,13 @@ export function useProducts() {
     setEditingProduct(null)
   }
 
+  const discountPercentage = editingProduct
+    ? Math.round(
+        ((editingProduct.oldPrice - editingProduct.price) /
+          editingProduct.oldPrice) *
+          100
+      )
+    : 0
   return {
     // state
     products,
@@ -133,6 +140,7 @@ export function useProducts() {
     currentPage,
     isModalOpen,
     editingProduct,
+    discountPercentage,
     // computed
     filteredProducts,
     paginatedProducts,

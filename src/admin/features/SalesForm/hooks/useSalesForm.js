@@ -23,7 +23,7 @@ export default function useSalesForm() {
   // ── Dynamic category filter 
   const filterOptions = useMemo(() => {
     const uniqueCategories = ['ទាំងអស់', ...categories.map(c => c.name)]
-    return [{ key: 'category', options: uniqueCategories }]
+    return [{ key: 'category', options: uniqueCategories, searchable: true }]
   }, [categories])
 
   // ── Filter change handler ──

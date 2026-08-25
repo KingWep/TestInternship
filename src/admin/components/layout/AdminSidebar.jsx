@@ -136,7 +136,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
                       <div className={`grid transition-[grid-template-columns,opacity] duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${
                         isFull ? 'grid-cols-[1fr] opacity-100 ml-3' : 'grid-cols-[0fr] opacity-0 ml-0'
                       }`}>
-                        <span className="whitespace-nowrap overflow-hidden leading-none">
+                        <span className="whitespace-nowrap overflow-hidden leading-normal">
                           {item.label}
                         </span>
                       </div>
@@ -146,7 +146,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
                       <div className={`ml-auto grid transition-[grid-template-columns,opacity] duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${
                         isFull ? 'grid-cols-[auto] opacity-100' : 'grid-cols-[0fr] opacity-0'
                       }`}>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold overflow-hidden whitespace-nowrap leading-none ${
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold overflow-hidden whitespace-nowrap leading-normal ${
                           isActive ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-400'
                         }`}>
                           {item.badge}
@@ -173,7 +173,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
             <div className={`grid transition-[grid-template-columns,opacity] duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${
               isFull ? 'grid-cols-[1fr] opacity-100 ml-3' : 'grid-cols-[0fr] opacity-0 ml-0'
             }`}>
-              <span className="whitespace-nowrap overflow-hidden leading-none">
+              <span className="whitespace-nowrap overflow-hidden leading-normal">
                 ចាកចេញទៅហាង
               </span>
             </div>

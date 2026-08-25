@@ -35,7 +35,7 @@ export default function DataTable({ columns, data, keyField = 'id' }) {
                   {columns.map((col, colIndex) => (
                     <td 
                       key={colIndex} 
-                      className={`px-6 py-4 whitespace-nowrap ${getAlignmentClass(col.align)}`}
+                      className={`px-6 py-4 ${getAlignmentClass(col.align)}`}
                     >
                       {col.render ? col.render(row) : row[col.accessor]}
                     </td>

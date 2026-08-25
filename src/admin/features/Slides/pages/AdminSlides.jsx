@@ -42,10 +42,10 @@ export default function AdminSlides() {
           <img
             src={row.image}
             alt={row.title}
-            className="w-20 h-12 md:w-32 md:h-16 object-cover rounded-lg"
+            className=" h-16 w-16 min-w-[4rem] object-cover rounded"
           />
         ) : (
-          <div className="w-20 h-12 md:w-32 md:h-16 bg-gray-100 rounded-lg flex items-center justify-center text-[10px] md:text-xs text-gray-400">
+          <div className=" h-16 w-16 min-w-[4rem] bg-gray-100 rounded-lg flex items-center justify-center text-[10px] md:text-xs text-gray-400">
             គ្មានរូបភាព
           </div>
         ),

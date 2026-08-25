@@ -45,10 +45,10 @@ export default function AdminProducts() {
           <img
             src={row.image}
             alt={row.name}
-            className="w-16 h-10 md:h-16 object-cover rounded-lg"
+            className=" h-16 w-16 min-w-[4rem] object-cover rounded-lg"
           />
         ) : (
-          <div className="w-16 h-10 md:h-16 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
+          <div className=" h-16 w-16 min-w-[4rem] bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
             គ្មានរូបភាព
           </div>
         ),
@@ -145,6 +145,7 @@ export default function AdminProducts() {
     {
       key: 'category',
       options: ['ទាំងអស់', ...categories.map(c => c.name)],
+      searchable: true,
     },
   ]
   

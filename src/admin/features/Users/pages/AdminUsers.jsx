@@ -66,10 +66,10 @@ export default function AdminUsers() {
           <img
             src={row.image}
             alt={row.name}
-            className="w-10 h-10 object-cover rounded-full ring-2 ring-slate-100"
+            className=" h-16 w-16 min-w-[4rem] object-cover rounded-full ring-2 ring-slate-100"
           />
         ) : (
-          <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-sm font-semibold">
+          <div className=" h-16 w-16 min-w-[4rem] bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-sm font-semibold">
             {row.name?.charAt(0)}
           </div>
         ),

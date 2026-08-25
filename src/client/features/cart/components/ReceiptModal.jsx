@@ -90,10 +90,10 @@ export default function ReceiptModal({
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900 tracking-tight">
-                Order Receipt
+                វិក្កយបត្របញ្ជាទិញ
               </h2>
               <p className="text-xs font-medium text-slate-500">
-                Transaction reference #{order.id || "NEW"}
+                លេខយោងប្រតិបត្តិការ #{order.id || "NEW"}
               </p>
             </div>
           </div>
@@ -123,7 +123,7 @@ export default function ReceiptModal({
                 One Care Shop
               </h1>
               <p className="mt-0.5 text-xs font-medium text-slate-400">
-                Your trusted online store experience
+                បទពិសោធន៍ទិញទំនិញអនឡាញដែលអ្នកទុកចិត្ត
               </p>
 
               <div className="my-5 border-b border-dashed border-slate-200" />
@@ -134,14 +134,14 @@ export default function ReceiptModal({
               <div className="flex items-center gap-2">
                 <FileText size={15} className="text-slate-400 shrink-0" />
                 <div>
-                  <p className="text-slate-400 font-medium">Order ID</p>
+                  <p className="text-slate-400 font-medium">លេខបញ្ជាទិញ</p>
                   <p className="font-bold text-slate-700">#{order.id || "NEW"}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar size={15} className="text-slate-400 shrink-0" />
                 <div>
-                  <p className="text-slate-400 font-medium">Date & Time</p>
+                  <p className="text-slate-400 font-medium">កាលបរិច្ឆេទ និងពេលវេលា</p>
                   <p className="font-bold text-slate-700">
                     {order.createdAt
                       ? new Date(order.createdAt).toLocaleDateString()
@@ -154,7 +154,7 @@ export default function ReceiptModal({
             {/* Customer */}
             <div className="mt-5 border-t border-slate-100 pt-4">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">
-                Customer Details
+                ព័ត៌មានអតិថិជន
               </h3>
 
               <div className="space-y-2 text-xs">
@@ -170,7 +170,7 @@ export default function ReceiptModal({
 
                 {order.note && (
                   <div className="rounded-lg bg-amber-50/60 border border-amber-100 p-2.5 text-amber-900 mt-2">
-                    <span className="font-semibold">Note:</span> {order.note}
+                    <span className="font-semibold">ចំណាំ:</span> {order.note}
                   </div>
                 )}
               </div>
@@ -179,7 +179,7 @@ export default function ReceiptModal({
             {/* Items */}
             <div className="mt-6 border-t border-slate-100 pt-4">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
-                Purchased Items
+                ទំនិញដែលបានទិញ
               </h3>
 
               <div className="space-y-3">
@@ -193,7 +193,7 @@ export default function ReceiptModal({
                         {item.name}
                       </p>
                       <p className="text-[11px] text-slate-400 mt-0.5">
-                        Qty: {item.quantity} × ${Number(item.price).toFixed(2)}
+                        ចំនួន: {item.quantity} × ${Number(item.price).toFixed(2)}
                       </p>
                     </div>
 
@@ -208,18 +208,18 @@ export default function ReceiptModal({
             {/* Summary */}
             <div className="mt-6 border-t border-dashed border-slate-200 pt-4 space-y-2 text-xs">
               <div className="flex justify-between text-slate-500">
-                <span>Subtotal</span>
+                <span>តម្លៃទំនិញ</span>
                 <span className="font-medium text-slate-700">${Number(order.subtotal).toFixed(2)}</span>
               </div>
 
               <div className="flex justify-between text-slate-500">
-                <span>Delivery Fee</span>
+                <span>សេវាដឹកជញ្ជូន</span>
                 <span className="font-medium text-slate-700">${Number(order.deliveryFee).toFixed(2)}</span>
               </div>
 
               <div className="mt-3 border-t border-slate-100 pt-3">
                 <div className="flex justify-between items-center text-base font-bold">
-                  <span className="text-slate-900">Total Amount</span>
+                  <span className="text-slate-900">សរុបរួម</span>
                   <span className="text-red-900 bg-red-50 px-2.5 py-1 rounded-lg">
                     ${Number(order.total).toFixed(2)}
                   </span>
@@ -230,13 +230,13 @@ export default function ReceiptModal({
             {/* Payment & Delivery Badges */}
             <div className="mt-6 grid grid-cols-2 gap-2.5 rounded-xl bg-slate-50 p-3 text-xs border border-slate-100">
               <div>
-                <span className="text-slate-400 block text-[10px] font-medium uppercase tracking-wider">Payment</span>
+                <span className="text-slate-400 block text-[10px] font-medium uppercase tracking-wider">ការបង់ប្រាក់</span>
                 <span className="font-bold text-slate-800 uppercase mt-0.5 block">
                   {order.paymentMethod}
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] font-medium uppercase tracking-wider">Fulfillment</span>
+                <span className="text-slate-400 block text-[10px] font-medium uppercase tracking-wider">ការដឹកជញ្ជូន</span>
                 <span className="font-bold text-slate-800 uppercase mt-0.5 block">
                   {order.deliveryMethod}
                 </span>
@@ -246,13 +246,13 @@ export default function ReceiptModal({
             {/* Footer */}
             <div className="mt-6 text-center border-t border-slate-100 pt-4">
               <div className="inline-flex items-center gap-1.5 text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full text-xs font-semibold mb-2">
-                <CheckCircle2 size={13} /> Verified Transaction
+                <CheckCircle2 size={13} /> ប្រតិបត្តិការបានផ្ទៀងផ្ទាត់
               </div>
               <p className="text-xs font-semibold text-slate-700">
-                Thank you for your order! ❤️
+                អរគុណសម្រាប់ការបញ្ជាទិញរបស់អ្នក! ❤️
               </p>
               <p className="mt-0.5 text-[11px] text-slate-400">
-                Please retain this receipt for your records.
+                សូមរក្សាទុកវិក្កយបត្រនេះសម្រាប់ជាឯកសារយោង។
               </p>
             </div>
 
@@ -264,7 +264,7 @@ export default function ReceiptModal({
             onClick={handleClose}
             className="flex-1 rounded-2xl border border-slate-200 py-3 text-xs font-bold text-slate-600 transition hover:bg-slate-50 active:scale-[0.98] cursor-pointer"
           >
-            Close
+            បិទ
           </button>
 
           <button
@@ -274,7 +274,7 @@ export default function ReceiptModal({
             className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 px-5 py-3 text-xs font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50 active:scale-[0.98] cursor-pointer"
           >
             <FileDown size={16} />
-            {loading ? "Generating..." : "Save PDF"}
+            {loading ? "កំពុងបង្កើត..." : "រក្សាទុក PDF"}
           </button>
 
           <button
@@ -283,7 +283,7 @@ export default function ReceiptModal({
             className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-red-900 py-3 text-xs font-bold text-white shadow-lg shadow-red-900/20 transition hover:bg-red-800 active:scale-[0.98] cursor-pointer"
           >
             <Printer size={16} />
-            Print Receipt
+            បោះពុម្ពវិក្កយបត្រ
           </button>
         </div>
 

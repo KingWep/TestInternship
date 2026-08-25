@@ -6,7 +6,7 @@ export function useOrders() {
   const { orders } = useOrderContext()
 
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('ទាំងអស់ (All)')
+  const [statusFilter, setStatusFilter] = useState('')
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
 
@@ -17,7 +17,7 @@ export function useOrders() {
       order.orderNumber.includes(search) ||
       order.phone.includes(search)
     const matchesStatus =
-      statusFilter === 'ទាំងអស់ (All)' || order.status === statusFilter
+      statusFilter === '' || statusFilter === 'ទាំងអស់ (All)' || order.status === statusFilter
 
     let matchesDate = true
     if (fromDate || toDate) {

@@ -22,7 +22,7 @@ export default function useSalesForm() {
 
   // ── Dynamic category filter 
   const filterOptions = useMemo(() => {
-    const uniqueCategories = ['All', ...categories.map(c => c.name)]
+    const uniqueCategories = ['ទាំងអស់', ...categories.map(c => c.name)]
     return [{ key: 'category', options: uniqueCategories }]
   }, [categories])
 
@@ -147,8 +147,9 @@ export default function useSalesForm() {
       .toLowerCase()
       .includes(search.toLowerCase())
     const matchFilter =
-      filters.category === '' ||
+      !filters.category ||
       filters.category === 'All' ||
+      filters.category === 'ទាំងអស់' ||
       product.category === filters.category
     return matchSearch && matchFilter
   })

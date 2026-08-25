@@ -7,23 +7,23 @@ export default function useDashboard() {
     const { orders, totalRevenue, topSellingProducts } = useOrderContext()
 
     const statsData = [
-        { title: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign, trend: "12", color: "green" , link: "/admin"},
-        { title: "Total Orders", value: orders.length.toString(), icon: ClipboardList, trend: "8", color: "blue", link: "/admin/orders" },
+        { title: "ចំណូលសរុប", value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign, trend: "12", color: "green" , link: "/admin"},
+        { title: "ការបញ្ជាទិញសរុប", value: orders.length.toString(), icon: ClipboardList, trend: "8", color: "blue", link: "/admin/orders" },
         {
-            title: "Low Stock Products",
+            title: "ផលិតផលស្តុកតិច",
             value: lowStockProducts.length.toString(),
             icon: AlertTriangle,
             color: "amber",
             warning: lowStockProducts.length > 0,
-            note: "Needs restocking",
+            note: "ត្រូវការបន្ថែមស្តុក",
             link: "/admin/products",
         },
         {
-            title: "Top Selling Products",
+            title: "ផលិតផលលក់ដាច់បំផុត",
             value: topSellingProducts.length.toString(),
             icon: Trophy,
             color: "purple",
-            note: topSellingProducts.length === 0 ? "No sales data yet" : undefined,
+            note: topSellingProducts.length === 0 ? "មិនទាន់មានទិន្នន័យលក់ទេ" : undefined,
             link: "/admin/products",
         },
     ]

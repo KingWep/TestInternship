@@ -121,14 +121,14 @@ export default function ProductDetail() {
                 <>
                   <button
                     onClick={goPrev}
-                    aria-label="Previous image"
+                    aria-label="រូបភាពមុន"
                     className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/80 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
                   >
                     <ChevronLeft size={20} className="text-slate-800" />
                   </button>
                   <button
                     onClick={goNext}
-                    aria-label="Next image"
+                    aria-label="រូបភាពបន្ទាប់"
                     className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/80 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
                   >
                     <ChevronRight size={20} className="text-slate-800" />
@@ -191,7 +191,7 @@ export default function ProductDetail() {
             {(oldPrice && oldPrice > price) || cashback ? (
               <div className="flex items-center gap-1 mt-1 md:mt-3 text-green-600 text-sm font-medium">
                 <Gift size={16} />
-                សំណូក $
+                សន្សំ $
                 {(oldPrice && oldPrice > price
                   ? oldPrice - price
                   : cashback

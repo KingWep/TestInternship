@@ -2,8 +2,8 @@ import { ArrowRight } from "lucide-react"
 import Button from "../../../components/common/Button"
 
 export default function PromoBanner({
-  tag = "Limited Offer",
-  title = "HOT SALE! 25% OFF",
+  tag = "ការផ្តល់ជូនមានកំណត់",
+  title = "ការលក់ពិសេស! បញ្ចុះតម្លៃ 25%",
   description = "បញ្ចុះតម្លៃពិសេសលើផលិតផលសម្រស់អាគ្រប់ប្រភេទ!",
   buttonText = "ទិញឥឡូវនេះ",
 }) {

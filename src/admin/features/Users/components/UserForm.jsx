@@ -75,14 +75,14 @@ export default function UserForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            User ID
+            លេខសម្គាល់
           </label>
           <input
             type="text"
             name="id"
             value={formData.id}
             onChange={handleChange}
-            placeholder="e.g. USR-102"
+            placeholder="ឧទាហរណ៍: USR-102"
             disabled={isEditing}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200 disabled:opacity-50"
           />
@@ -90,14 +90,14 @@ export default function UserForm({ onSubmit, initialData }) {
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Name {!isEditing && '*'}
+            ឈ្មោះ {!isEditing && '*'}
           </label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="e.g. John Doe"
+            placeholder="ឧទាហរណ៍: សុខ សាន្ត"
             required={!isEditing}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
@@ -108,21 +108,21 @@ export default function UserForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Phone
+            ទូរស័ព្ទ
           </label>
           <input
             type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="e.g. +1 555-0199"
+            placeholder="ឧទាហរណ៍: 012 345 678"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
         </div>
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Role
+            តួនាទី
           </label>
           <select
             name="role"
@@ -130,9 +130,9 @@ export default function UserForm({ onSubmit, initialData }) {
             onChange={handleChange}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           >
-            <option value="Admin">Admin</option>
-            <option value="Editor">Editor</option>
-            <option value="Viewer">Viewer</option>
+            <option value="Admin">អ្នកគ្រប់គ្រង</option>
+            <option value="Editor">អ្នកកែប្រែ</option>
+            <option value="Viewer">អ្នកមើល</option>
           </select>
         </div>
       </div>
@@ -140,7 +140,7 @@ export default function UserForm({ onSubmit, initialData }) {
       {/* Status */}
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1">
-          Status
+          ស្ថានភាព
         </label>
         <select
           name="status"
@@ -148,15 +148,15 @@ export default function UserForm({ onSubmit, initialData }) {
           onChange={handleChange}
           className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
         >
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
+          <option value="Active">សកម្ម</option>
+          <option value="Inactive">អសកម្ម</option>
         </select>
       </div>
 
       {/* Image Upload & Preview */}
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1">
-          User Image
+          រូបភាពអ្នកប្រើប្រាស់
         </label>
         <input
           type="file"
@@ -176,7 +176,7 @@ export default function UserForm({ onSubmit, initialData }) {
               />
             </div>
             <span className="text-xs text-gray-500">
-              {formData.image ? 'Selected file' : 'Current photo'}
+              {formData.image ? 'ឯកសារដែលបានជ្រើសរើស' : 'រូបថតបច្ចុប្បន្ន'}
             </span>
           </div>
         )}
@@ -189,7 +189,7 @@ export default function UserForm({ onSubmit, initialData }) {
           className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
         >
           <Save size={16} />
-          {isEditing ? 'Update User' : 'Save User'}
+          {isEditing ? 'ធ្វើបច្ចុប្បន្នភាពអ្នកប្រើប្រាស់' : 'រក្សាទុកអ្នកប្រើប្រាស់'}
         </button>
       </div>
     </form>

@@ -62,7 +62,7 @@ export default function StatsCard({
             {Number(trend) >= 0 ? "+" : ""}
             {trend}%
           </span>
-          <span className="text-slate-400 font-normal">vs last month</span>
+          <span className="text-slate-400 font-normal">ធៀបនឹងខែមុន</span>
         </p>
       ) : note ? (
         <p

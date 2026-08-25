@@ -135,10 +135,10 @@ export default function CartDrawer() {
 
     const result = await Swal.fire({
       icon: "question",
-      title: "Print Receipt?",
+      title: "បោះពុម្ពវិក្កយបត្រ?",
       text: "តើអ្នកចង់បោះពុម្ពវិក្កយបត្រដែរឬទេ?",
       showCancelButton: true,
-      confirmButtonText: "🖨️ Print Receipt",
+      confirmButtonText: "🖨️ បោះពុម្ពវិក្កយបត្រ",
       cancelButtonText: "រំលង",
       confirmButtonColor: "#7f1d1d",
       cancelButtonColor: "#64748b",

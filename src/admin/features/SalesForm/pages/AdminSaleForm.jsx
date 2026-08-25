@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { PackageOpen } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { PackageOpen, X, ShoppingCart } from 'lucide-react'
 import OrderCartTable from '../../Order/components/OrderCartTable'
 import OrderFormFields from '../../Order/components/OrderFormFields'
 import OrderSummaryBox from '../../Order/components/OrderSummaryBox'
@@ -29,62 +29,86 @@ export default function AdminSaleForm() {
 
   const [customerInfo, setCustomerInfo] = useState(INITIAL_CUSTOMER)
   const [paymentMethod, setPaymentMethod] = useState(INITIAL_PAYMENT)
+  const [isCartOpen, setIsCartOpen] = useState(false)
+
+  useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => { document.body.style.overflow = 'unset' }
+  }, [isCartOpen])
 
   const onCheckout = async () => {
     const result = await handleCheckout({ customerInfo, paymentMethod })
-    // Only reset form fields if the checkout was successful (not blocked by validation)
     if (result) {
       setCustomerInfo(INITIAL_CUSTOMER)
       setPaymentMethod(INITIAL_PAYMENT)
+      setIsCartOpen(false)
     }
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] gap-4">
+    <div className="flex flex-col lg:h-[calc(100vh-8rem)] gap-4 h-auto">
 
-      {/* ── TOP ROW: Header (left) + Filter & Search (right) ── */}
-      <div className="flex items-center justify-between flex-shrink-0">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between flex-shrink-0 gap-4">
         <PageHeader
-          title="Post Sale Form"
-          description="Record and manage sales transactions efficiently."
-          className="w-[30%]"
+          title="ទម្រង់លក់ទំនិញ"
+          description="កត់ត្រា និងគ្រប់គ្រងប្រតិបត្តិការលក់ប្រកបដោយប្រសិទ្ធភាព។"
         />
-        <div className="w-[70%] flex items-center gap-3  justify-end">
-          <SearchBar
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search products..."
-          />
-          <FilterBar
-            filters={filterOptions}
-            values={filters}
-            onChange={handleFilterChange}
-          />
+        <div className="w-full lg:w-[70%] flex flex-row items-center gap-2 lg:gap-3 lg:justify-end bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
+          <div className="flex-1 min-w-0">
+            <SearchBar
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="ស្វែងរកទំនិញ..."
+              className="w-full"
+            />
+          </div>
+          <div className="flex-shrink-0">
+            <FilterBar
+              filters={filterOptions}
+              values={filters}
+              onChange={handleFilterChange}
+            />
+          </div>
         </div>
       </div>
 
-      {/* ── BOTTOM SECTION: 12-col grid, fills remaining height ── */}
-      <div className="flex-1 grid grid-cols-12 gap-6 min-h-0">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
 
-        {/* ── Left column: product catalogue (col-span-7) ── */}
-        <div className="col-span-7 flex flex-col min-h-0">
+        <div className="lg:col-span-7 flex flex-col min-h-0 pb-24 lg:pb-0">
           {filterProducts.length > 0 ? (
-            <div className="flex-1 grid grid-cols-2 xl:grid-cols-3 gap-4 overflow-y-auto pr-2 content-start auto-rows-max will-change-scroll overscroll-contain transform-gpu">
+            <div className="flex-1 grid grid-cols-2 xl:grid-cols-3 gap-4 lg:overflow-y-auto pr-2 content-start auto-rows-max lg:will-change-scroll lg:overscroll-contain transform-gpu">
               {filterProducts.map((p) => (
                 <ProductSelectCard key={p.id} product={p} onSelect={handleAddToCart} />
               ))}
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-white rounded-xl border border-slate-200 border-dashed h-full">
+            <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-white rounded-xl border border-slate-200 border-dashed h-full min-h-[300px] py-8">
               <PackageOpen size={64} className="mb-4 text-slate-300" strokeWidth={1.5} />
-              <h3 className="text-lg font-medium text-slate-600 mb-1">No products found</h3>
-              <p className="text-sm">Try adjusting your search or filters.</p>
+              <h3 className="text-lg font-medium text-slate-600 mb-1">រកមិនឃើញទំនិញ</h3>
+              <p className="text-sm">សូមព្យាយាមផ្លាស់ប្តូរការស្វែងរក ឬការដាក់កម្រិតរបស់អ្នក។</p>
             </div>
           )}
         </div>
 
-        {/* ── Right column: cart + form + summary (col-span-5) ── */}
-        <div className="col-span-5 flex flex-col gap-4 overflow-y-auto will-change-scroll overscroll-contain transform-gpu">
+        <div className={`
+          fixed inset-0 z-50 bg-slate-50 flex flex-col p-4 pb-6 overflow-y-auto transition-transform duration-300
+          ${isCartOpen ? 'translate-y-0' : 'translate-y-full'} 
+          lg:static lg:translate-y-0 lg:z-auto lg:p-0 lg:pb-0 lg:bg-transparent lg:col-span-5 lg:flex lg:flex-col lg:gap-4 lg:overflow-y-auto lg:will-change-scroll lg:overscroll-contain transform-gpu
+        `}>
+          <div className="lg:hidden flex items-center justify-between mb-4 bg-white p-3 rounded-xl border border-slate-200 shadow-sm sticky top-0 z-10 flex-shrink-0">
+            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+              <ShoppingCart size={20} className="text-blue-600" /> 
+              ពិនិត្យមើលការបញ្ជាទិញ
+            </h2>
+            <button onClick={() => setIsCartOpen(false)} className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors">
+              <X size={20} />
+            </button>
+          </div>
+
           <div className="h-64 flex-shrink-0">
             <OrderCartTable
               cart={cart}
@@ -100,22 +124,26 @@ export default function AdminSaleForm() {
             }
           />
 
-          {/* ── Payment Method Selector ── */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
             <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider mb-3">
-              Payment Method
+              វិធីសាស្ត្រទូទាត់ប្រាក់
             </h3>
-            <div className="flex gap-3">
-              {['Cash', 'Card', 'Bank Transfer', 'QR Code'].map((method) => (
+            <div className="flex flex-wrap gap-3">
+              {[
+                { label: 'សាច់ប្រាក់', value: 'Cash' },
+                { label: 'កាតធនាគារ', value: 'Card' },
+                { label: 'វេសប្រាក់', value: 'Bank Transfer' },
+                { label: 'QR កូដ', value: 'QR Code' }
+              ].map((method) => (
                 <button
-                  key={method}
-                  onClick={() => setPaymentMethod(method)}
-                  className={`flex-1 py-1 rounded-lg text-sm font-semibold border transition-all ${paymentMethod === method
+                  key={method.value}
+                  onClick={() => setPaymentMethod(method.value)}
+                  className={`flex-1 py-1 rounded-lg text-sm font-semibold border transition-all ${paymentMethod === method.value
                       ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
                       : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                     }`}
                 >
-                  {method}
+                  {method.label}
                 </button>
               ))}
             </div>
@@ -130,6 +158,20 @@ export default function AdminSaleForm() {
         </div>
 
       </div>
+
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3 bg-white border-t border-slate-200 z-40">
+        <button
+          onClick={() => setIsCartOpen(true)}
+          className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-3xl py-3 px-4 font-bold flex items-center justify-between transition-colors shadow-md"
+        >
+            <span className="bg-white/25 text-white px-2.5 py-0.5 rounded-lg text-sm">
+              {cart.length} មុខទំនិញ
+            </span>
+            <span className="text-lg font-semibold">ពិនិត្យការបញ្ជាទិញ</span>
+            <span className="text-lg">${subtotal.toFixed(2)}</span>
+        </button>
+      </div>
+
     </div>
   )
 }

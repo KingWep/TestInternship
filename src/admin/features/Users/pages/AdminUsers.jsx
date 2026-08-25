@@ -1,5 +1,5 @@
-import React from 'react'
-import { Plus, Edit, Trash2 } from 'lucide-react'
+import React, { useState } from 'react'
+import { Plus, Edit, Trash2, SlidersHorizontal } from 'lucide-react'
 import { useUsers } from '../hooks/useUsers'
 import UserForm from '../components/UserForm'
 import DataTable from '../../../components/common/DataTable'
@@ -18,6 +18,8 @@ const ROLE_COLORS = {
 }
 
 export default function AdminUsers() {
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+
   const {
     search,
     filters,
@@ -38,20 +40,27 @@ export default function AdminUsers() {
     closeModal,
   } = useUsers()
 
-  const userFilters = [
+  const statusFilters = [
     {
       key: 'status',
-      options: ['All', 'Active', 'Inactive'],
-    },
-    {
-      key: 'role',
-      options: ['All', 'Admin', 'Editor', 'Viewer'],
+      options: ['ទាំងអស់', 'Active', 'Inactive'],
     },
   ]
+  const roleFilters = [
+    {
+      key: 'role',
+      options: ['ទាំងអស់', 'Admin', 'Editor', 'Viewer'],
+    },
+  ]
+  const userFilters = [
+    ...statusFilters,
+    ...roleFilters,
+  ]
+
 
   const columns = [
     {
-      header: 'Avatar',
+      header: 'រូបតំណាង',
       render: (row) =>
         row.image ? (
           <img
@@ -66,7 +75,7 @@ export default function AdminUsers() {
         ),
     },
     {
-      header: 'User ID',
+      header: 'លេខសម្គាល់',
       render: (row) => (
         <span className="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">
           {row.id}
@@ -74,28 +83,31 @@ export default function AdminUsers() {
       ),
     },
     {
-      header: 'Name',
+      header: 'ឈ្មោះ',
       accessor: 'name',
     },
     {
-      header: 'Phone',
+      header: 'ទូរស័ព្ទ',
       render: (row) => (
         <span className="text-slate-500">{row.phone || '—'}</span>
       ),
     },
     {
-      header: 'Role',
-      render: (row) => (
+      header: 'តួនាទី',
+      render: (row) => {
+        const roleKhmer = row.role === 'Admin' ? 'អ្នកគ្រប់គ្រង' : row.role === 'Editor' ? 'អ្នកកែប្រែ' : row.role === 'Viewer' ? 'អ្នកមើល' : row.role;
+        return (
         <span
           className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${ROLE_COLORS[row.role] || 'bg-gray-100 text-gray-600'
             }`}
         >
-          {row.role}
+          {roleKhmer}
         </span>
-      ),
+        )
+      },
     },
     {
-      header: 'Status',
+      header: 'ស្ថានភាព',
       render: (row) => (
         <span
           className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${row.status === 'Active'
@@ -103,25 +115,25 @@ export default function AdminUsers() {
               : 'bg-red-100 text-red-700'
             }`}
         >
-          {row.status}
+          {row.status === 'Active' ? 'សកម្ម' : 'អសកម្ម'}
         </span>
       ),
     },
     {
-      header: 'Joined',
+      header: 'ថ្ងៃចូលរួម',
       render: (row) => (
         <span className="text-slate-500 text-sm">{row.createAt}</span>
       ),
     },
     {
-      header: 'Actions',
+      header: 'សកម្មភាព',
       align: 'right',
       render: (row) => (
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
             className="text-slate-400 hover:text-blue-600 transition-colors"
-            title="Edit User"
+            title="កែប្រែអ្នកប្រើប្រាស់"
           >
             <Edit size={18} />
           </button>
@@ -141,7 +153,7 @@ export default function AdminUsers() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingUser ? 'Edit User' : 'Add New User'}
+        title={editingUser ? 'កែប្រែអ្នកប្រើប្រាស់' : 'បន្ថែមអ្នកប្រើប្រាស់ថ្មី'}
       >
         <UserForm
           initialData={editingUser}
@@ -151,39 +163,82 @@ export default function AdminUsers() {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <PageHeader
-          title="User Accounts"
-          description="Manage administrator and staff accounts."
+          title="គណនីអ្នកប្រើប្រាស់"
+          description="គ្រប់គ្រងគណនីអ្នកគ្រប់គ្រង និងបុគ្គលិក។"
         />
       </div>
 
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-3 flex-wrap">
-          <FilterBar
-            filters={userFilters}
-            values={filters}
-            onChange={handleFilterChange}
-          />
-          <FilterBar
-            filters={[{ key: 'sort', options: ['Newest First', 'Oldest First', 'A → Z', 'Z → A'] }]}
-            values={{ sort: sortOrder }}
-            onChange={(key, value) => handleSortChange({ target: { value } })}
-          />
+      <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="hidden md:flex flex-wrap items-center gap-4">
+            <FilterBar
+              filters={userFilters}
+              values={filters}
+              onChange={handleFilterChange}
+            />
+            <FilterBar
+              filters={[{ key: 'sort', options: ['ថ្មីបំផុតមុន', 'ចាស់បំផុតមុន', 'A → Z', 'Z → A'] }]}
+              values={{ sort: sortOrder }}
+              onChange={(key, value) => handleSortChange({ target: { value } })}
+            />
+          </div>
+
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <SearchBar
+              value={search}
+              onChange={handleSearchChange}
+              placeholder="ស្វែងរកអ្នកប្រើប្រាស់..."
+              className="w-full max-w-sm"
+            />
+            <Button
+              variant="primary"
+              onClick={() => openAddModal()}
+              className="shrink-0 whitespace-nowrap h-[42px] px-5"
+            >
+              <Plus size={16} className="mr-2" />
+              <span className="hidden md:inline">បន្ថែមអ្នកប្រើប្រាស់</span>
+              <span className="md:hidden">បន្ថែម</span>
+            </Button>
+            <button
+              type="button"
+              onClick={() => setShowAdvancedFilters(prev => !prev)}
+              className={`md:hidden shrink-0 w-10 py-2.5 flex items-center justify-center rounded-xl border transition-colors ${
+                showAdvancedFilters
+                  ? 'bg-slate-100 border-slate-300 text-slate-700'
+                  : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+              }`}
+              title="បង្ហាញតម្រង"
+              aria-label="បង្ហាញតម្រង"
+            >
+              <SlidersHorizontal size={18} />
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <SearchBar
-            value={search}
-            onChange={handleSearchChange}
-            placeholder="Search users..."
-          />
-          <Button
-            variant="primary"
-            onClick={() => openAddModal()}
-            className="shrink-0 whitespace-nowrap"
-          >
-            <Plus size={16} className="mr-2" />
-            Add User
-          </Button>
+        <div
+          className={`grid transition-all duration-300 ease-in-out md:hidden ${
+            showAdvancedFilters ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 !mt-0'
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <FilterBar
+                filters={statusFilters}
+                values={filters}
+                onChange={handleFilterChange}
+              />
+              <FilterBar
+                filters={roleFilters}
+                values={filters}
+                onChange={handleFilterChange}
+              />
+              <FilterBar
+                filters={[{ key: 'sort', options: ['ថ្មីបំផុតមុន', 'ចាស់បំផុតមុន', 'A → Z', 'Z → A'] }]}
+                values={{ sort: sortOrder }}
+                onChange={(key, value) => handleSortChange({ target: { value } })}
+              />
+            </div>
+          </div>
         </div>
       </div>
 

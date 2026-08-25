@@ -17,7 +17,7 @@ export function ReceiptCard({ order }) {
       id="receipt-card"
       style={{ 
         width: '350px',
-        fontFamily: "'Kantumruy Pro', 'Siemreap', 'Battambang', 'Noto Sans Khmer', sans-serif",
+        fontFamily: "'Geist Variable', 'Battambang', 'Siemreap', 'Kantumruy Pro', 'Noto Sans Khmer', sans-serif",
         boxSizing: 'border-box',
         WebkitFontSmoothing: 'antialiased',
         MozOsxFontSmoothing: 'grayscale',
@@ -115,7 +115,7 @@ export function ReceiptCard({ order }) {
         <p className="text-[11px] font-bold text-slate-900">
           អរគុណសម្រាប់ការគាំទ្រ! 🙏
         </p>
-        <p className="text-[10px] text-slate-900 font-medium tracking-wide uppercase">Thank You! Please Come Again</p>
+        <p className="text-[10px] text-slate-900 font-medium tracking-wide uppercase">អរគុណ! សូមអញ្ជើញមកម្តងទៀត</p>
       </div>
     </div>
   )

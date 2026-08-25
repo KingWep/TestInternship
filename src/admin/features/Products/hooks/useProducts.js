@@ -27,12 +27,12 @@ export function useProducts() {
 
       const matchCategory =
         filters.category === '' ||
-        filters.category === 'All' ||
+        filters.category === 'ទាំងអស់' ||
         product.category === filters.category
 
       const matchStatus =
         filters.status === '' ||
-        filters.status === 'All' ||
+        filters.status === 'ទាំងអស់' ||
         getStockStatus(product.stock) === filters.status
 
       return matchSearch && matchCategory && matchStatus

@@ -1,12 +1,18 @@
 import React from 'react'
 import { Search } from 'lucide-react'
 
-export default function SearchBar({ value, onChange, placeholder = 'Search...' }) {
+export default function SearchBar({
+  value,
+  onChange,
+  placeholder = 'Search...',
+  className = 'w-full max-w-sm',
+}) {
   return (
-    <div className="relative w-full max-w-sm">
+    <div className={`relative ${className}`}>
       <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
         <Search size={18} />
       </span>
+
       <input
         type="text"
         value={value}

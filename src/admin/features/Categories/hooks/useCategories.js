@@ -21,7 +21,7 @@ export function useCategories() {
 
       const matchStatus =
         filters.status === '' ||
-        filters.status === 'All' ||
+        filters.status === 'ទាំងអស់' ||
         category.status === filters.status
 
       return matchSearch && matchStatus

@@ -15,7 +15,7 @@ export default function AdminHeader() {
             className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-125"
           />
         </div>
-        <span className="text-xl font-bold text-slate-600 hidden sm:inline">Admin</span>
+        <span className="text-xl font-bold text-slate-600 hidden sm:inline">អ្នកគ្រប់គ្រង</span>
       </div>
       <div className="flex items-center gap-2 text-slate-600 text-xl">
         {/* Home */}

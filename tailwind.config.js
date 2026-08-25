@@ -11,8 +11,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Kantumruy Pro", "sans-serif"], 
-        khmer: ["Kantumruy Pro", "sans-serif"],  
+        sans: ["Geist Variable", "Battambang", "Siemreap", "Kantumruy Pro", "Suwannaphum", "sans-serif"], 
+        khmer: ["Battambang", "Siemreap", "Kantumruy Pro", "Suwannaphum", "sans-serif"],  
       },
       lineHeight: {
         "khmer": "1.9",       

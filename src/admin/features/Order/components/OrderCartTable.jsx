@@ -49,7 +49,7 @@ const CartItem = memo(({ item, onUpdateQuantity, onRemoveItem }) => {
         <button
           onClick={handleRemove}
           className="text-slate-300 hover:text-red-500 transition-colors"
-          title="Remove item"
+          title="លុបទំនិញ"
         >
           <Trash2 size={16} className=' text-red-600'/>
         </button>
@@ -66,7 +66,7 @@ export default function OrderCartTable({ cart, onUpdateQuantity, onRemoveItem })
       {/* Upgraded Header with dynamic totals */}
       <div className="p-4 border-b border-slate-200 bg-white flex justify-between items-center z-10 shadow-xs">
         <h3 className="font-bold text-slate-800 flex items-center gap-2">
-          Current Order
+          ការបញ្ជាទិញបច្ចុប្បន្ន
           {totalItems > 0 && (
             <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-bold">
               {totalItems}
@@ -92,8 +92,8 @@ export default function OrderCartTable({ cart, onUpdateQuantity, onRemoveItem })
             <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-3">
               <ShoppingCart size={24} className="text-slate-300" />
             </div>
-            <p className="text-sm font-medium text-slate-500">Cart is empty</p>
-            <p className="text-xs mt-1">Select products to begin</p>
+            <p className="text-sm font-medium text-slate-500">កន្ត្រកទទេ</p>
+            <p className="text-xs mt-1">ជ្រើសរើសផលិតផលដើម្បីចាប់ផ្តើម</p>
           </div>
         )}
       </div>

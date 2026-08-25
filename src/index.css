@@ -6,14 +6,12 @@
 
 @layer base {
   html {
-    font-family: "Kantumruy Pro", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     @apply font-sans;
   }
 
   body {
-    font-family: "Kantumruy Pro", sans-serif;
     line-height: 1.9;        /* Khmer needs extra space for stacked vowels */
     font-size: 1rem;
     font-weight: 400;
@@ -21,13 +19,11 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: "Kantumruy Pro", sans-serif;
     line-height: 2.0;
     font-weight: 700;
   }
 
   p, span, a, li, button, input, textarea, select {
-    font-family: "Kantumruy Pro", sans-serif;
     line-height: 1.9;
   }
   .theme {

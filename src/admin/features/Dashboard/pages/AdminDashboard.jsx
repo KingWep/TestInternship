@@ -11,22 +11,28 @@ export default function AdminDashboard() {
   const { statsData, recentOrders } = useDashboard()
 
   const columns = [
-    { header: 'Order Number', accessor: 'orderNumber' },
-    { header: 'Total', render: (row) => `$${row.total.toFixed(2)}` },
-    { header: 'paymentStatus', 
-render: (row) => (
+    { header: 'លេខបញ្ជាទិញ', accessor: 'orderNumber' },
+    { header: 'សរុប', render: (row) => `$${row.total.toFixed(2)}` },
+    { header: 'ស្ថានភាពទូទាត់', 
+render: (row) => {
+      const pStatus = row.paymentStatus === 'Paid' ? 'បានទូទាត់' : row.paymentStatus === 'Pending' ? 'រង់ចាំ' : row.paymentStatus;
+      return (
       <span className={`px-2 py-1 rounded text-xs font-semibold ${row.paymentStatus === 'Paid' ? 'bg-green-100 text-green-800' : row.paymentStatus === 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}`}>
-        {row.paymentStatus}
+        {pStatus}
       </span>
-    )
+      )
+    }
      },
-    { header: 'Status', render: (row) => (
+    { header: 'ស្ថានភាព', render: (row) => {
+      const oStatus = row.status === 'Completed' ? 'បានបញ្ចប់' : row.status === 'Pending' ? 'រង់ចាំ' : row.status;
+      return (
       <span className={`px-2 py-1 rounded text-xs font-semibold ${row.status === 'Completed' ? 'bg-green-100 text-green-800' : row.status === 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}`}>
-        {row.status}
+        {oStatus}
       </span>
-    )},
-    { header: 'Date', render: (row) => `${row.date} ${row.time}` },
-    { header: 'Actions', align: 'right', render: (row) => (
+      )
+    }},
+    { header: 'កាលបរិច្ឆេទ', render: (row) => `${row.date} ${row.time}` },
+    { header: 'សកម្មភាព', align: 'right', render: (row) => (
       <div className="flex justify-end space-x-2">
         <Link 
           to="/admin/orders" 
@@ -41,8 +47,8 @@ render: (row) => (
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Dashboard Overview"
-        description="Welcome back! Here is what's happening in your shop today."
+        title="ទិដ្ឋភាពទូទៅ"
+        description="សូមស្វាគមន៍មកវិញ! នេះជាអ្វីដែលកំពុងកើតឡើងនៅក្នុងហាងរបស់អ្នកថ្ងៃនេះ។"
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -64,7 +70,7 @@ render: (row) => (
       <DashboardCharts />
 
       <div className="mt-8">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Latest Orders</h2>
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">ការបញ្ជាទិញចុងក្រោយ</h2>
         <DataTable
           columns={columns}
           data={recentOrders}

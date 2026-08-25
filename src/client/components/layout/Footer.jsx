@@ -122,10 +122,10 @@ export default function Footer() {
 
       <div className="border-t border-slate-200 pt-4 pb-2">
         <Container className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4 text-center sm:text-left">
-          <p>© {new Date().getFullYear()} One Care Shop. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} One Care Shop. រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
           <div className="flex gap-6">
-            <a href="#privacy" className="hover:text-black transition-colors">Privacy</a>
-            <a href="#terms" className="hover:text-black transition-colors">Terms</a>
+            <a href="#privacy" className="hover:text-black transition-colors">ឯកជនភាព</a>
+            <a href="#terms" className="hover:text-black transition-colors">លក្ខខណ្ឌ</a>
           </div>
         </Container>
       </div>

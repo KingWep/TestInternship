@@ -15,14 +15,13 @@ function AdminReceiptCard({ order }) {
     <div
       id="admin-receipt-card"
       style={{ 
-        width: '350px',
-        fontFamily: "'Kantumruy Pro', 'Siemreap', 'Battambang', 'Noto Sans Khmer', sans-serif",
+        fontFamily: "'Geist Variable', 'Battambang', 'Siemreap', 'Kantumruy Pro', 'Noto Sans Khmer', sans-serif",
         boxSizing: 'border-box',
         WebkitFontSmoothing: 'antialiased',
         MozOsxFontSmoothing: 'grayscale',
         textRendering: 'optimizeLegibility'
       }}
-      className="bg-white text-slate-900 mx-auto text-xs px-6 py-6 shadow-sm border border-slate-900 rounded-xl overflow-hidden flex flex-col"
+      className="bg-white text-slate-900 mx-auto text-xs px-4 md:px-6 print:px-6 py-6 shadow-sm border border-slate-900 rounded-xl overflow-hidden flex flex-col w-full md:w-[300px] print:w-[300px] print:border-none print:shadow-none"
     >
 
       <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
@@ -227,7 +226,7 @@ export default function AdminReceiptPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center py-8 px-4 font-sans text-slate-800">
+    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center py-8 px-8 md:px-4 font-sans text-slate-800">
      
       <div className="w-full max-w-xl flex items-center justify-between mb-5">
         <Link to="/admin/orders" className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3.5 py-1.5 rounded-lg shadow-xs border border-slate-800 text-sm font-medium transition-colors">
@@ -239,8 +238,8 @@ export default function AdminReceiptPage() {
         </span>
       </div>
 
-      <div className="bg-white p-6 shadow-lg rounded-2xl mb-6 border border-slate-800/80 flex items-center justify-center">
-        <div ref={printRef} className="bg-white inline-block">
+      <div className="bg-white p-4 md:p-6 shadow-lg rounded-2xl mb-6 border border-slate-800/80 flex items-center justify-center w-full max-w-[350px] md:w-auto md:max-w-none overflow-x-auto mx-auto">
+        <div ref={printRef} className="bg-white inline-block w-full md:w-auto">
           <AdminReceiptCard order={order} />
         </div>
       </div>

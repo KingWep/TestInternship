@@ -76,14 +76,14 @@ export default function CategoryForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Category Name {!isEditing && '*'}
+            ឈ្មោះប្រភេទ {!isEditing && '*'}
           </label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="e.g. Skincare"
+            placeholder="ឧទាហរណ៍: Skincare"
             required={!isEditing}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
@@ -98,7 +98,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
             name="slug"
             value={formData.slug}
             onChange={handleChange}
-            placeholder="e.g. skincare"
+            placeholder="ឧទាហរណ៍: skincare"
             required={!isEditing}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
@@ -108,7 +108,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
       {/* Status */}
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1">
-          Status
+          ស្ថានភាព
         </label>
         <select
           name="status"
@@ -116,22 +116,22 @@ export default function CategoryForm({ onSubmit, initialData }) {
           onChange={handleChange}
           className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
         >
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
+          <option value="Active">សកម្ម</option>
+          <option value="Inactive">អសកម្ម</option>
         </select>
       </div>
 
       {/* Description */}
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1">
-          Description
+          ការពិពណ៌នា
         </label>
         <textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
           rows="3"
-          placeholder="Category description..."
+          placeholder="ការពិពណ៌នាប្រភេទ..."
           className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none resize-none focus:ring-2 focus:ring-gray-200"
         />
       </div>
@@ -139,7 +139,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
       {/* Category Image */}
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1">
-          Category Image
+          រូបភាពប្រភេទ
         </label>
         <input
           type="file"
@@ -175,7 +175,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
                 />
               </div>
               <span className="text-xs text-gray-400 self-end mb-1">
-                Current image
+                រូបភាពបច្ចុប្បន្ន
               </span>
             </div>
           )
@@ -189,7 +189,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
           className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
         >
           <Save size={16} />
-          {isEditing ? 'Update Category' : 'Save Category'}
+          {isEditing ? 'ធ្វើបច្ចុប្បន្នភាពប្រភេទ' : 'រក្សាទុកប្រភេទ'}
         </button>
       </div>
     </form>

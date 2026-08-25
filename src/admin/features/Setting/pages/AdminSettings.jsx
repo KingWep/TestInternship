@@ -10,17 +10,17 @@ export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('general');
 
   const tabs = [
-    { id: 'general', label: 'General Store', icon: Store },
-    { id: 'profile', label: 'Account Profile', icon: User },
-    { id: 'security', label: 'Security Access', icon: ShieldCheck },
-    { id: 'permissions', label: 'Page Permissions', icon: Settings2 },
+    { id: 'general', label: 'ទូទៅ', icon: Store },
+    { id: 'profile', label: 'ប្រវត្តិរូបគណនី', icon: User },
+    { id: 'security', label: 'សុវត្ថិភាព', icon: ShieldCheck },
+    { id: 'permissions', label: 'ការអនុញ្ញាតទំព័រ', icon: Settings2 },
   ];
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       <PageHeader
-        title="Admin Settings"
-        description="Manage your store preferences, account security, and team permissions."
+        title="ការកំណត់អ្នកគ្រប់គ្រង"
+        description="គ្រប់គ្រងចំណូលចិត្តហាង សុវត្ថិភាពគណនី និងការអនុញ្ញាតក្រុម។"
       />
 
       <div className="flex flex-col md:flex-row gap-8 items-start">

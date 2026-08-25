@@ -63,8 +63,8 @@ export default function PaymentQrModal({
     } else {
       Swal.fire({
         icon: 'info',
-        title: 'Share not supported',
-        text: 'Your browser does not support the Web Share API.',
+        title: 'ការចែករំលែកមិនត្រូវបានគាំទ្រទេ',
+        text: 'កម្មវិធីរុករករបស់អ្នកមិនគាំទ្រ Web Share API ទេ។',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
@@ -84,7 +84,7 @@ export default function PaymentQrModal({
 
     Swal.fire({
       icon: 'success',
-      title: 'Downloaded!',
+      title: 'បានទាញយក!',
       toast: true,
       position: 'top-end',
       showConfirmButton: false,
@@ -108,7 +108,7 @@ export default function PaymentQrModal({
 
       Swal.fire({
         icon: 'success',
-        title: 'Image Copied!',
+        title: 'បានចម្លងរូបភាព!',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
@@ -118,8 +118,8 @@ export default function PaymentQrModal({
       console.error("Copy failed:", err);
       Swal.fire({
         icon: 'error',
-        title: 'Failed to copy',
-        text: 'Your browser may not support copying images directly.',
+        title: 'បរាជ័យក្នុងការចម្លង',
+        text: 'កម្មវិធីរុករករបស់អ្នកប្រហែលជាមិនគាំទ្រការចម្លងរូបភាពដោយផ្ទាល់ទេ។',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,

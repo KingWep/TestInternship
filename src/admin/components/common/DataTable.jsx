@@ -51,7 +51,7 @@ export default function DataTable({ columns, data, keyField = 'id' }) {
                   <div className="flex flex-col items-center justify-center">
                     <FaBoxOpen className="w-20 h-20 text-slate-400 mb-3" />
                     <span className="text-sm">
-                      No data available.
+                      គ្មានទិន្នន័យ
                     </span>
                   </div>
                 </td>

@@ -8,8 +8,8 @@ export default function SecuritySettings() {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div>
-        <h3 className="text-lg font-bold text-slate-800">Security & Access</h3>
-        <p className="text-sm text-slate-500">Manage your password, 2FA, and active sessions.</p>
+        <h3 className="text-lg font-bold text-slate-800">សុវត្ថិភាព និងការចូលប្រើ</h3>
+        <p className="text-sm text-slate-500">គ្រប់គ្រងពាក្យសម្ងាត់ 2FA និងវគ្គសកម្មរបស់អ្នក។</p>
       </div>
 
       {/* Change Password */}
@@ -18,26 +18,26 @@ export default function SecuritySettings() {
           <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
             <Key size={20} />
           </div>
-          <h4 className="font-semibold text-slate-800">Change Password</h4>
+          <h4 className="font-semibold text-slate-800">ផ្លាស់ប្តូរពាក្យសម្ងាត់</h4>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-1 md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-600">Current Password</label>
-            <input type="password" placeholder="Enter current password" className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+            <label className="block text-xs font-semibold text-slate-600">ពាក្យសម្ងាត់បច្ចុប្បន្ន</label>
+            <input type="password" placeholder="បញ្ចូលពាក្យសម្ងាត់បច្ចុប្បន្ន" className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-slate-600">New Password</label>
-            <input type="password" placeholder="Enter new password" className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+            <label className="block text-xs font-semibold text-slate-600">ពាក្យសម្ងាត់ថ្មី</label>
+            <input type="password" placeholder="បញ្ចូលពាក្យសម្ងាត់ថ្មី" className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-slate-600">Confirm New Password</label>
-            <input type="password" placeholder="Confirm new password" className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+            <label className="block text-xs font-semibold text-slate-600">បញ្ជាក់ពាក្យសម្ងាត់ថ្មី</label>
+            <input type="password" placeholder="បញ្ជាក់ពាក្យសម្ងាត់ថ្មី" className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
           </div>
         </div>
 
         <div className="flex justify-end pt-2">
-          <Button variant="primary" className="px-6 rounded-xl">Update Password</Button>
+          <Button variant="primary" className="px-6 rounded-xl">ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់</Button>
         </div>
       </div>
 
@@ -48,8 +48,8 @@ export default function SecuritySettings() {
             <Shield size={24} />
           </div>
           <div>
-            <h4 className="font-semibold text-slate-800">Two-Factor Authentication</h4>
-            <p className="text-xs text-slate-500 mt-0.5">Add an extra layer of security to your account using an authenticator app.</p>
+            <h4 className="font-semibold text-slate-800">ការផ្ទៀងផ្ទាត់កត្តាពីរ</h4>
+            <p className="text-xs text-slate-500 mt-0.5">បន្ថែមស្រទាប់សុវត្ថិភាពមួយទៀតទៅគណនីរបស់អ្នកដោយប្រើកម្មវិធីផ្ទៀងផ្ទាត់។</p>
           </div>
         </div>
         
@@ -66,7 +66,7 @@ export default function SecuritySettings() {
 
       {/* Active Sessions */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
-        <h4 className="font-semibold text-slate-800 mb-4">Active Sessions</h4>
+        <h4 className="font-semibold text-slate-800 mb-4">វគ្គសកម្ម</h4>
         
         <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
           <div className="flex items-center gap-4">
@@ -76,7 +76,7 @@ export default function SecuritySettings() {
               <p className="text-xs text-slate-500">New York, USA • Active now</p>
             </div>
           </div>
-          <span className="text-xs font-semibold text-green-600 bg-green-100 px-2.5 py-1 rounded-full">Current</span>
+          <span className="text-xs font-semibold text-green-600 bg-green-100 px-2.5 py-1 rounded-full">បច្ចុប្បន្ន</span>
         </div>
 
         <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100">
@@ -87,7 +87,7 @@ export default function SecuritySettings() {
               <p className="text-xs text-slate-500">New York, USA • Last active 2 hours ago</p>
             </div>
           </div>
-          <button className="text-xs font-medium text-red-500 hover:text-red-600 transition-colors">Revoke</button>
+          <button className="text-xs font-medium text-red-500 hover:text-red-600 transition-colors">ដកហូត</button>
         </div>
       </div>
     </div>

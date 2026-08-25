@@ -116,10 +116,10 @@ export default function LoginForm() {
             <Zap className="text-red-600" size={28} strokeWidth={2.5} />
           </div>
           <h1 className="text-2xl font-bold tracking-tight">
-            Project Dashboard
+            ផ្ទាំងគ្រប់គ្រងគម្រោង
           </h1>
           <p className="text-white/80 text-sm font-medium mt-1">
-            Sign in to your dashboard
+            ចូលគណនីផ្ទាំងគ្រប់គ្រងរបស់អ្នក
           </p>
         </div>
 
@@ -130,7 +130,7 @@ export default function LoginForm() {
             {/* Email Field */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-foreground/80">
-                Email Address
+                អាសយដ្ឋានអ៊ីមែល
               </label>
               <input 
                 type="email" 
@@ -144,7 +144,7 @@ export default function LoginForm() {
             {/* Password Field */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-foreground/80">
-                Password
+                ពាក្យសម្ងាត់
               </label>
               <div className="relative">
                 <input 
@@ -158,7 +158,7 @@ export default function LoginForm() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={showPassword ? "លាក់ពាក្យសម្ងាត់" : "បង្ហាញពាក្យសម្ងាត់"}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -168,13 +168,13 @@ export default function LoginForm() {
             {/* Sign In Button */}
             <Link to="/admin"
               className="w-full mt-1 bg-red-600 text-white py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg hover:bg-red-700 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2">
-              Sign In
+              ចូលគណនី
             </Link>
 
             {/* Links and Divider */}
             <div className="flex flex-col items-center gap-3.5 pt-1">
               <a href="#" className="text-xs font-semibold text-red-600 hover:underline">
-                Forgot password?
+                ភ្លេចពាក្យសម្ងាត់?
               </a>
               
               <div className="w-full flex items-center justify-center relative my-1">
@@ -182,12 +182,12 @@ export default function LoginForm() {
                   <div className="w-full border-t border-border"></div>
                 </div>
                 <div className="relative flex justify-center text-xs px-3 bg-background text-muted-foreground">
-                  New to Project?
+                  អ្នកប្រើប្រាស់ថ្មី?
                 </div>
               </div>
               
               <a href="#" className="text-sm font-semibold text-red-600 hover:underline">
-                Create an account
+                បង្កើតគណនី
               </a>
             </div>
           </form>
@@ -195,7 +195,7 @@ export default function LoginForm() {
           {/* Footer */}
           <div className="mt-6 text-center">
             <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} Your Project Name. All rights reserved.
+              © {new Date().getFullYear()} Your Project Name. រក្សាសិទ្ធិគ្រប់យ៉ាង។
             </p>
           </div>
         </div>

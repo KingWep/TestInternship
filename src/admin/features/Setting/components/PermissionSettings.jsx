@@ -17,15 +17,15 @@ export default function PermissionSettings() {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div>
-        <h3 className="text-lg font-bold text-slate-800">Page Permissions</h3>
-        <p className="text-sm text-slate-500">Control access to different sections of the admin panel based on roles.</p>
+        <h3 className="text-lg font-bold text-slate-800">ការអនុញ្ញាតទំព័រ</h3>
+        <p className="text-sm text-slate-500">ត្រួតពិនិត្យការចូលប្រើផ្នែកផ្សេងៗនៃផ្ទាំងគ្រប់គ្រងដោយផ្អែកលើតួនាទី។</p>
       </div>
 
       {/* Global Maintenance Mode */}
       <div className="bg-red-50 border border-red-100 rounded-2xl p-6 flex items-center justify-between gap-4">
         <div>
-          <h4 className="font-semibold text-red-900">Maintenance Mode</h4>
-          <p className="text-xs text-red-700 mt-0.5 max-w-md">Lock down the entire storefront and admin panel for all non-admin users. Use only during major updates.</p>
+          <h4 className="font-semibold text-red-900">របៀបថែទាំ</h4>
+          <p className="text-xs text-red-700 mt-0.5 max-w-md">បិទហាង និងផ្ទាំងគ្រប់គ្រងទាំងមូលសម្រាប់អ្នកប្រើប្រាស់ដែលមិនមែនជាអ្នកគ្រប់គ្រង។ ប្រើតែក្នុងអំឡុងពេលធ្វើបច្ចុប្បន្នភាពធំៗប៉ុណ្ណោះ។</p>
         </div>
         <button 
           onClick={() => togglePermission('maintenanceMode')}
@@ -38,8 +38,8 @@ export default function PermissionSettings() {
 
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
         <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-          <h4 className="font-semibold text-slate-700 text-sm">Role Access Configuration</h4>
-          <Button variant="primary" size="sm" className="rounded-lg text-xs py-1.5">Save Changes</Button>
+          <h4 className="font-semibold text-slate-700 text-sm">ការកំណត់រចនាសម្ព័ន្ធការចូលប្រើតាមតួនាទី</h4>
+          <Button variant="primary" size="sm" className="rounded-lg text-xs py-1.5">រក្សាទុកការផ្លាស់ប្តូរ</Button>
         </div>
         
         <div className="divide-y divide-slate-100">
@@ -50,8 +50,8 @@ export default function PermissionSettings() {
                 <LayoutDashboard size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-800">Staff Dashboard Access</p>
-                <p className="text-xs text-slate-500 mt-0.5">Allow 'Staff' role to view the main dashboard analytics.</p>
+                <p className="text-sm font-semibold text-slate-800">ការចូលប្រើផ្ទាំងគ្រប់គ្រងបុគ្គលិក</p>
+                <p className="text-xs text-slate-500 mt-0.5">អនុញ្ញាតឱ្យតួនាទី 'បុគ្គលិក' មើលវិភាគផ្ទាំងគ្រប់គ្រងសំខាន់។</p>
               </div>
             </div>
             <button 
@@ -69,8 +69,8 @@ export default function PermissionSettings() {
                 <ShoppingBag size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-800">Staff Products Management</p>
-                <p className="text-xs text-slate-500 mt-0.5">Allow 'Staff' role to add, edit, or delete products.</p>
+                <p className="text-sm font-semibold text-slate-800">ការគ្រប់គ្រងផលិតផលបុគ្គលិក</p>
+                <p className="text-xs text-slate-500 mt-0.5">អនុញ្ញាតឱ្យតួនាទី 'បុគ្គលិក' បន្ថែម កែប្រែ ឬលុបផលិតផល។</p>
               </div>
             </div>
             <button 
@@ -88,8 +88,8 @@ export default function PermissionSettings() {
                 <Settings size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-800">Manager Settings Access</p>
-                <p className="text-xs text-slate-500 mt-0.5">Allow 'Manager' role to access this settings page.</p>
+                <p className="text-sm font-semibold text-slate-800">ការចូលប្រើការកំណត់អ្នកចាត់ការ</p>
+                <p className="text-xs text-slate-500 mt-0.5">អនុញ្ញាតឱ្យតួនាទី 'អ្នកចាត់ការ' ចូលប្រើទំព័រការកំណត់នេះ។</p>
               </div>
             </div>
             <button 

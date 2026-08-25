@@ -83,7 +83,7 @@ export default function ProductCard({ product, index = 0 }) {
             to={`/products/${id}`}
             className="px-2 py-1 md:px-3 md:py-2 bg-red-900 font-medium md:font-semibold text-white rounded-lg shadow-lg hover:bg-red-700 transition-colors"
           >
-            View Detail
+            មើលលម្អិត
           </Link>
         </div>
       </div>

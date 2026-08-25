@@ -40,26 +40,26 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
   const isHidden = sidebarState === 0
   const menuSections = [
     {
-      title: 'MAIN',
+      title: 'ចម្បង',
       items: [
-        { label: 'Dashboard', path: '/admin', icon: LayoutDashboard },
-        { label: 'Orders', path: '/admin/orders', icon: ClipboardList, badge: 5 },
-        { label: 'Sale Form', path: '/admin/sale-form', icon: PlusCircle },
+        { label: 'ផ្ទាំងគ្រប់គ្រង', path: '/admin', icon: LayoutDashboard },
+        { label: 'ការបញ្ជាទិញ', path: '/admin/orders', icon: ClipboardList, badge: 5 },
+        { label: 'ទម្រង់លក់', path: '/admin/sale-form', icon: PlusCircle },
       ]
     },
     {
-      title: 'CATALOG',
+      title: 'កាតាឡុក',
       items: [
-        { label: 'Products', path: '/admin/products', icon: ShoppingBag, badge: 2 },
-        { label: 'Categories', path: '/admin/categories', icon: Layers },
-        { label: 'Slides', path: '/admin/slides', icon: Image },
+        { label: 'ផលិតផល', path: '/admin/products', icon: ShoppingBag, badge: 2 },
+        { label: 'ប្រភេទ', path: '/admin/categories', icon: Layers },
+        { label: 'ស្លាយ', path: '/admin/slides', icon: Image },
       ]
     },
     {
-      title: 'SYSTEM',
+      title: 'ប្រព័ន្ធ',
       items: [
-        { label: 'Users', path: '/admin/users', icon: Users, badge: 1 },
-        { label: 'Settings', path: '/admin/settings', icon: Settings },
+        { label: 'អ្នកប្រើប្រាស់', path: '/admin/users', icon: Users, badge: 1 },
+        { label: 'ការកំណត់', path: '/admin/settings', icon: Settings },
       ]
     }
   ]
@@ -174,12 +174,12 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
               isFull ? 'grid-cols-[1fr] opacity-100 ml-3' : 'grid-cols-[0fr] opacity-0 ml-0'
             }`}>
               <span className="whitespace-nowrap overflow-hidden leading-none">
-                Exit to Shop
+                ចាកចេញទៅហាង
               </span>
             </div>
             {!isFull && sidebarState !== 0 && (
               <div className="absolute left-[calc(100%+8px)] px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 z-50 whitespace-nowrap shadow-lg">
-                Exit to Shop
+                ចាកចេញទៅហាង
               </div>
             )}
           </Link>

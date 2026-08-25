@@ -19,7 +19,7 @@ export default function RecommendedProducts({
   return (
     <section className="mt-16 w-full">
       <h2 className="text-2xl font-bold text-slate-900 mb-6">
-        Recommended Products
+        ផលិតផលដែលបានណែនាំ
       </h2>
 
       {/* Scroll container with padding to prevent shadow and edge clipping */}

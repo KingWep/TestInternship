@@ -22,17 +22,16 @@ function AdminStickerCard({ order, courier, setCourier }) {
     <div
       id="admin-sticker-card"
       style={{
-        width: '580px',
         minHeight: '385px',
-        fontFamily: "'Kantumruy Pro', 'Siemreap', 'Battambang', 'Noto Sans Khmer', sans-serif",
+        fontFamily: "'Geist Variable', 'Battambang', 'Siemreap', 'Kantumruy Pro', 'Noto Sans Khmer', sans-serif",
         boxSizing: 'border-box',
         WebkitFontSmoothing: 'antialiased',
         MozOsxFontSmoothing: 'grayscale',
         textRendering: 'optimizeLegibility'
       }}
-      className="bg-white border-2 border-slate-900 rounded-xl p-4 text-slate-900 select-none mx-auto flex flex-col justify-between"
+      className="bg-white border-2 border-slate-900 rounded-xl p-4 text-slate-900 select-none mx-auto flex flex-col justify-between w-full md:w-[580px] print:w-[580px]"
     >
-      <div className="flex items-center justify-between pb-2.5 border-b-2 border-slate-900">
+      <div className="flex flex-col md:flex-row print:flex-row items-start md:items-center print:items-center justify-between pb-2.5 border-b-2 border-slate-900 gap-3 md:gap-0 print:gap-0">
         <div className="flex items-center gap-2.5">
           <div className="bg-slate-900 text-white p-2 rounded-lg flex items-center justify-center">
             <ShoppingBag size={20} strokeWidth={2.5} />
@@ -58,10 +57,10 @@ function AdminStickerCard({ order, courier, setCourier }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-2.5 my-2.5 flex-1 items-stretch">
+      <div className="flex flex-col md:grid md:grid-cols-12 print:grid print:grid-cols-12 gap-2.5 my-2.5 flex-1 items-stretch">
 
-        <div className="col-span-7 flex flex-col gap-2 justify-between">
-          <div className="grid grid-cols-2 gap-2">
+        <div className="md:col-span-7 print:col-span-7 flex flex-col gap-2 justify-between">
+          <div className="flex flex-col sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 print:grid-cols-2 gap-2">
             <div className="border border-slate-800 rounded-lg p-2.5 bg-slate-50/60 flex flex-col justify-center">
               <div className="flex items-center gap-1 text-[11px] font-bold text-slate-600 mb-1">
                 <User size={12} /> អ្នកផ្ញើ :
@@ -90,7 +89,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
         </div>
 
         {/* Right Side: KHQR & Pricing Breakdown */}
-        <div className="col-span-5 flex flex-col gap-2 justify-between">
+        <div className="md:col-span-5 print:col-span-5 flex flex-col gap-2 justify-between">
           <div className="border border-slate-800 rounded-lg overflow-hidden flex flex-col items-center bg-white">
             <div className="w-full bg-slate-900 text-white text-center py-1 text-[10px] font-black tracking-widest uppercase">
               KHQR PAYMENT
@@ -125,9 +124,8 @@ function AdminStickerCard({ order, courier, setCourier }) {
         </div>
       </div>
 
-
-      <div className="flex items-center justify-between pt-2 border-t-2 border-slate-900 text-xs">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col md:flex-row print:flex-row items-center justify-between pt-2 border-t-2 border-slate-900 text-xs gap-3 md:gap-0 print:gap-0">
+        <div className="flex flex-wrap items-center justify-center md:justify-start print:justify-start gap-2">
           {couriers.map((c) => {
             const isSelected = courier === c
             return (
@@ -276,7 +274,7 @@ export default function AdminStickerPage() {
       </div>
 
 
-      <div className="bg-white p-4 shadow-lg rounded-2xl mb-6 border border-slate-200">
+      <div className="bg-white p-3 md:p-4 shadow-lg rounded-2xl mb-6 border border-slate-200 w-full overflow-hidden">
         <div ref={printRef} className="flex justify-center items-center w-full">
           <AdminStickerCard order={order} courier={courier} setCourier={setCourier} />
         </div>

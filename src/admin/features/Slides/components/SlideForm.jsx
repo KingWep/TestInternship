@@ -13,6 +13,14 @@ export default function SlideForm({ onSubmit, initialData }) {
     image: [],
   })
 
+  // Generate preview URL only when image array changes to prevent flickering on text input
+  const currentImagePreview = React.useMemo(() => {
+    if (formData.image && formData.image.length > 0) {
+      return URL.createObjectURL(formData.image[0])
+    }
+    return null
+  }, [formData.image])
+
   // Check if we are editing an existing slide
   const isEditing = !!initialData
 
@@ -63,28 +71,28 @@ export default function SlideForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Tag
+            ស្លាក
           </label>
           <input
             type="text"
             name="tag"
             value={formData.tag}
             onChange={handleChange}
-            placeholder="e.g. New Arrival"
+            placeholder="ឧទាហរណ៍: ទំនិញថ្មី"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
         </div>
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Title {!isEditing && '*'}
+            ចំណងជើង {!isEditing && '*'}
           </label>
           <input
             type="text"
             name="title"
             value={formData.title}
             onChange={handleChange}
-            placeholder="e.g. Summer Collection"
+            placeholder="ឧទាហរណ៍: ការប្រមូលរដូវក្តៅ"
             required={!isEditing}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
@@ -95,21 +103,21 @@ export default function SlideForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Discount Label
+            ស្លាកបញ្ចុះតម្លៃ
           </label>
           <input
             type="text"
             name="discount"
             value={formData.discount}
             onChange={handleChange}
-            placeholder="e.g. 20% Off"
+            placeholder="ឧទាហរណ៍: បញ្ចុះ 20%"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
         </div>
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Status
+            ស្ថានភាព
           </label>
           <select
             name="status"
@@ -117,8 +125,8 @@ export default function SlideForm({ onSubmit, initialData }) {
             onChange={handleChange}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
+            <option value="Active">សកម្ម</option>
+            <option value="Inactive">អសកម្ម</option>
           </select>
         </div>
       </div>
@@ -127,21 +135,21 @@ export default function SlideForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            CTA Button Text
+            អត្ថបទប៊ូតុង CTA
           </label>
           <input
             type="text"
             name="ctaText"
             value={formData.ctaText}
             onChange={handleChange}
-            placeholder="e.g. Shop Now"
+            placeholder="ឧទាហរណ៍: ទិញឥឡូវនេះ"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
         </div>
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            CTA Link URL
+            តំណភ្ជាប់ URL
           </label>
           <input
             type="text"
@@ -156,24 +164,24 @@ export default function SlideForm({ onSubmit, initialData }) {
 
       {/* Description */}
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1">
-          Description
-        </label>
+          <label className="block text-xs font-semibold text-gray-600 mb-1">
+            ការពិពណ៌នា
+          </label>
         <textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
           rows="3"
-          placeholder="Slide description..."
+          placeholder="ការពិពណ៌នាស្លាយ..."
           className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none resize-none focus:ring-2 focus:ring-gray-200"
         />
       </div>
 
       {/* Slide Image */}
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1">
-          Slide Image
-        </label>
+          <label className="block text-xs font-semibold text-gray-600 mb-1">
+            រូបភាពស្លាយ
+          </label>
         <input
           type="file"
           name="image"
@@ -182,20 +190,15 @@ export default function SlideForm({ onSubmit, initialData }) {
           className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none"
         />
 
-        {formData.image.length > 0 ? (
+        {currentImagePreview ? (
           <div className="flex flex-wrap gap-2 mt-2">
-            {formData.image.map((file, index) => (
-              <div
-                key={index}
-                className="w-24 h-14 rounded-lg overflow-hidden border"
-              >
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={file.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
+            <div className="w-24 h-14 rounded-lg overflow-hidden border">
+              <img
+                src={currentImagePreview}
+                alt="Selected"
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
         ) : (
           initialData?.image && (
@@ -208,7 +211,7 @@ export default function SlideForm({ onSubmit, initialData }) {
                 />
               </div>
               <span className="text-xs text-gray-400 self-end mb-1">
-                Current image
+                រូបភាពបច្ចុប្បន្ន
               </span>
             </div>
           )
@@ -222,7 +225,7 @@ export default function SlideForm({ onSubmit, initialData }) {
           className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
         >
           <Save size={16} />
-          {isEditing ? 'Update Slide' : 'Save Slide'}
+          {isEditing ? 'ធ្វើបច្ចុប្បន្នភាពស្លាយ' : 'រក្សាទុកស្លាយ'}
         </button>
       </div>
     </form>

@@ -28,7 +28,7 @@ export function DeliveryForm({
     {id: "aba", name: "ABA Bank", image: "/images/qrbank.JPG"},
     {id: "wing", name: "Wing", image: "/images/qrbank.JPG"},
     {id: "acleda", name: "ACLEDA", image: "/images/qrbank.JPG"},
-    {id: "cash", name: "Case", image: "null"}
+    {id: "cash", name: "សាច់ប្រាក់", image: "null"}
   ]
   const handleDeliveryChange = (option) => {
     setDeliveryMethod(option.id)

@@ -44,7 +44,7 @@ export default function DashboardCharts() {
 
   const barChartConfig = {
     total: {
-      label: "Total Sales",
+      label: "ការលក់សរុប",
       color: "hsl(var(--primary))",
     },
   }
@@ -70,7 +70,7 @@ export default function DashboardCharts() {
 
   const pieChartConfig = {
     value: {
-      label: "Stock",
+      label: "ស្តុក",
     },
   }
 
@@ -79,8 +79,8 @@ export default function DashboardCharts() {
       {/* Bar Chart: Total Selling Month */}
       <Card>
         <CardHeader>
-          <CardTitle>Total Sales Per Month</CardTitle>
-          <CardDescription>Monthly revenue overview</CardDescription>
+          <CardTitle>ការលក់សរុបប្រចាំខែ</CardTitle>
+          <CardDescription>ទិដ្ឋភាពទូទៅនៃចំណូលប្រចាំខែ</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={barChartConfig} className="h-[300px] w-full">
@@ -107,8 +107,8 @@ export default function DashboardCharts() {
       {/* Pie Chart: Product Stock */}
       <Card>
         <CardHeader>
-          <CardTitle>Product Stock by Category</CardTitle>
-          <CardDescription>Current inventory distribution</CardDescription>
+          <CardTitle>ស្តុកផលិតផលតាមប្រភេទ</CardTitle>
+          <CardDescription>ការចែកចាយស្តុកបច្ចុប្បន្ន</CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center items-center">
           <ChartContainer config={pieChartConfig} className="h-[300px] w-full">

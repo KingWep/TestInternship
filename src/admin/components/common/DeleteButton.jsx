@@ -6,14 +6,14 @@ export default function DeleteButton({ onConfirm, className = "" }) {
 
     const handleTriggerDelete = async () => {
         Swal.fire({
-            title: 'Are you sure?',
-            text: 'This data will be deleted permanently!',
+            title: 'តើអ្នកប្រាកដទេ?',
+            text: 'ទិន្នន័យនេះនឹងត្រូវបានលុបជាអចិន្ត្រៃយ៍!',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel',
+            confirmButtonText: 'បាទ/ចាស លុបវា!',
+            cancelButtonText: 'បោះបង់',
             reverseButtons: true
         }).then(async (result) => {
             if (!result.isConfirmed) return;
@@ -22,8 +22,8 @@ export default function DeleteButton({ onConfirm, className = "" }) {
                 await onConfirm?.();
             } catch (error) {
                 Swal.fire({
-                    title: 'Delete failed',
-                    text: error?.message || 'Unable to delete data.',
+                    title: 'ការលុបបរាជ័យ',
+                    text: error?.message || 'មិនអាចលុបទិន្នន័យបានទេ។',
                     icon: 'error'
                 });
             }
@@ -34,7 +34,7 @@ export default function DeleteButton({ onConfirm, className = "" }) {
         <button
             onClick={handleTriggerDelete}
             className={`text-red-600 hover:text-red-900 transition-colors ${className}`}
-            title="Delete item"
+            title="លុបធាតុ"
         >
             <HiTrash className="h-4 w-4" />
         </button>

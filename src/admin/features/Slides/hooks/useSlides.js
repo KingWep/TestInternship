@@ -93,7 +93,7 @@ export function useSlides() {
 
       const matchStatus =
         filters.status === '' ||
-        filters.status === 'All' ||
+        filters.status === 'ទាំងអស់' ||
         slide.status === filters.status
 
       return matchSearch && matchStatus

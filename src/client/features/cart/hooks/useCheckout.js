@@ -29,7 +29,7 @@ export default function useCheckout({
         }
         return prev - 1
       })
-    }, 100000)
+    }, 1000)
 
     return () => clearInterval(interval)
   }, [showQr, hasItems])

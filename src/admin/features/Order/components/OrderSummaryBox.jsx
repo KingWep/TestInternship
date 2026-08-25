@@ -36,32 +36,32 @@ export default function OrderSummaryBox({ subtotal = 0, discount = 0, delivery =
     }
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col h-full">
-      <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider mb-4">Order Summary</h3>
+      <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider mb-4">សេចក្តីសង្ខេបនៃការបញ្ជាទិញ</h3>
       
       <div className="space-y-3 flex-1">
         <div className="flex justify-between text-sm text-slate-600">
-          <span>Subtotal</span>
+          <span>តម្លៃទំនិញ</span>
           <span className="font-semibold text-slate-800">${safeSubtotal.toFixed(2)}</span>
         </div>
 
         {/* Conditional rendering for discount */}
         {safeDiscount > 0 && (
           <div className="flex justify-between text-sm text-slate-600 bg-red-50 p-1.5 -mx-1.5 rounded-lg px-2">
-            <span className="text-red-600 font-medium">Discount</span>
+            <span className="text-red-600 font-medium">បញ្ចុះតម្លៃ</span>
             <span className="font-bold text-red-600">-${safeDiscount.toFixed(2)}</span>
           </div>
         )}
 
         {/* Delivery Row gets the bottom border for UI separation */}
         <div className="flex justify-between text-sm text-slate-600 pb-4 border-b border-slate-100">
-          <span>Delivery Fee</span>
+          <span>សេវាដឹកជញ្ជូន</span>
           <span className="font-semibold text-slate-800">${safeDelivery.toFixed(2)}</span>
         </div>
       </div>
 
       {/* Emphasized Total Box */}
       <div className="bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 my-4 flex justify-between items-center">
-        <span className="text-sm font-bold text-slate-700 uppercase">Total Due</span>
+        <span className="text-sm font-bold text-slate-700 uppercase">សរុបត្រូវទូទាត់</span>
         <span className="text-xl font-black text-green-600">${total.toFixed(2)}</span>
       </div>
 
@@ -74,7 +74,7 @@ export default function OrderSummaryBox({ subtotal = 0, discount = 0, delivery =
         disabled={disabled || total === 0}
         className="w-full py-3 bg-blue-500 text-white font-bold text-sm rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all active:scale-[0.98] disabled:opacity-50 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
       >
-        Complete Order & Send Telegram
+        បញ្ចប់ការបញ្ជាទិញ & ផ្ញើទៅ Telegram
       </button>
     </div>
   )

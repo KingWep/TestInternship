@@ -86,12 +86,12 @@ export function useUsers() {
 
       const matchStatus =
         filters.status === '' ||
-        filters.status === 'All' ||
+        filters.status === 'ទាំងអស់' ||
         user.status === filters.status
 
       const matchRole =
         filters.role === '' ||
-        filters.role === 'All' ||
+        filters.role === 'ទាំងអស់' ||
         user.role === filters.role
 
       return matchSearch && matchStatus && matchRole

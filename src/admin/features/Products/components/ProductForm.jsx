@@ -162,14 +162,14 @@ export default function ProductsForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Product Name {!isEditing && '*'}
+            ឈ្មោះផលិតផល {!isEditing && '*'}
           </label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="Product name"
+            placeholder="ឈ្មោះផលិតផល"
             required={!isEditing}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
@@ -194,7 +194,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Category {!isEditing && '*'}
+            ប្រភេទ {!isEditing && '*'}
           </label>
           <select
             name="category"
@@ -203,7 +203,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
             required={!isEditing}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           >
-            <option value="">Select Category</option>
+            <option value="">ជ្រើសរើសប្រភេទ</option>
             {categories.map((category) => (
               <option key={category.name} value={category.name}>
                 {category.name}
@@ -214,7 +214,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Stock
+            ស្តុក
           </label>
           <input
             type="number"
@@ -231,7 +231,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-3 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Old Price ($)
+            តម្លៃចាស់ ($)
           </label>
           <input
             type="number"
@@ -248,10 +248,10 @@ export default function ProductsForm({ onSubmit, initialData }) {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <label className="text-xs font-semibold text-gray-600">
-              Discount ($)
+              បញ្ចុះតម្លៃ ($)
             </label>
             <span className="text-xs font-normal text-red-600">
-              ({discountPercentage}% off)
+              (បញ្ចុះ {discountPercentage}%)
             </span>
           </div>
           <input
@@ -268,7 +268,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            Selling Price ($)
+            តម្លៃលក់ ($)
           </label>
           <input
             type="number"
@@ -282,14 +282,14 @@ export default function ProductsForm({ onSubmit, initialData }) {
 
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1">
-          Description
+          ការពិពណ៌នា
         </label>
         <textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
           rows="3"
-          placeholder="Product description..."
+          placeholder="ការពិពណ៌នាផលិតផល..."
           className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none resize-none focus:ring-2 focus:ring-gray-200"
         />
       </div>
@@ -297,7 +297,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
       <div>
         <div className="flex items-center justify-between mb-2">
           <label className="block text-xs font-semibold text-gray-600">
-            Product Images
+            រូបភាពផលិតផល
             {totalImageCount > 0 && (
               <span className="ml-1 text-blue-500">
                 ({totalImageCount})
@@ -320,7 +320,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 cursor-pointer transition-colors"
           >
             <ImagePlus size={14} />
-            Add Images
+            បន្ថែមរូបភាព
           </label>
         </div>
 
@@ -350,7 +350,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
 
                 {index === 0 && (
                   <span className="absolute bottom-1 left-1 text-[9px] font-bold bg-blue-500 text-white px-1 rounded">
-                    Main
+                    គោល
                   </span>
                 )}
               </div>
@@ -381,12 +381,12 @@ export default function ProductsForm({ onSubmit, initialData }) {
                 {formData.existingImages.length === 0 &&
                   index === 0 && (
                     <span className="absolute bottom-1 left-1 text-[9px] font-bold bg-blue-500 text-white px-1 rounded">
-                      Main
+                      គោល
                     </span>
                   )}
 
                 <span className="absolute bottom-1 right-1 text-[9px] bg-green-500 text-white px-1 rounded">
-                  New
+                  ថ្មី
                 </span>
               </div>
             ))}
@@ -398,10 +398,10 @@ export default function ProductsForm({ onSubmit, initialData }) {
           >
             <ImagePlus size={24} />
             <span className="text-xs font-medium">
-              Click to add product images
+              ចុចដើម្បីបន្ថែមរូបភាពផលិតផល
             </span>
             <span className="text-[10px]">
-              JPG, PNG, WEBP supported
+              គាំទ្រ JPG, PNG, WEBP
             </span>
           </label>
         )}
@@ -413,7 +413,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
           className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
         >
           <Save size={16} />
-          {isEditing ? 'Update Product' : 'Save Product'}
+          {isEditing ? 'ធ្វើបច្ចុប្បន្នភាពផលិតផល' : 'រក្សាទុកផលិតផល'}
         </button>
       </div>
     </form>

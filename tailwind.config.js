@@ -18,6 +18,9 @@ export default {
         "khmer": "1.9",       
         "khmer-heading": "2", 
       },
+      fontSize: {
+        base: 'var(--app-font-size)',
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

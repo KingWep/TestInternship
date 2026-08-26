@@ -6,6 +6,8 @@ export default function OrderFilterBar({
   onSearchChange,
   statusFilter,
   onStatusChange,
+  paymentFilter,
+  onPaymentChange,
   fromDate,
   onFromDateChange,
   toDate,
@@ -31,7 +33,22 @@ export default function OrderFilterBar({
             placeholder="ស្វែងរក..."
           />
         </div>
-
+        
+        <div className="w-[110px] sm:w-44 flex-shrink-0 relative">
+          <select
+          value={paymentFilter}
+          onChange={onPaymentChange}
+          className="appearance-none block w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm cursor-pointer"
+          >
+            <option value="" disabled>ជ្រើសរើស payment</option>
+            <option value="ទាំងអស់ (All)">ទាំងអស់</option>
+            <option value="Paid">បានទូទាត់</option>
+            <option value="Unpaid">មិនទាន់ទូទាត់</option>
+          </select>
+          <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+            <ChevronDown className="h-4 w-4 text-slate-400" />
+          </div>
+        </div>
         {/* Status Dropdown */}
         <div className="w-[110px] sm:w-44 flex-shrink-0 relative">
           <select
@@ -104,6 +121,7 @@ export default function OrderFilterBar({
                 onClick={() => {
                   onSearchChange({ target: { value: "" } });
                   onStatusChange({ target: { value: "" } });
+                  onPaymentChange({ target: { value: "" } });
                   onFromDateChange({ target: { value: "" } });
                   onToDateChange({ target: { value: "" } });
                 }}

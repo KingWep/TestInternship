@@ -15,6 +15,8 @@ export default function AdminOrders() {
     setSearch,
     statusFilter,
     setStatusFilter,
+    paymentFilter,
+    setPaymentFilter,
     fromDate,
     setFromDate,
     toDate,
@@ -60,6 +62,8 @@ export default function AdminOrders() {
         onSearchChange={(e) => setSearch(e.target.value)}
         statusFilter={statusFilter}
         onStatusChange={(e) => setStatusFilter(e.target.value)}
+        paymentFilter={paymentFilter}
+        onPaymentChange={(e) => setPaymentFilter(e.target.value)}
         fromDate={fromDate}
         onFromDateChange={(e) => setFromDate(e.target.value)}
         toDate={toDate}

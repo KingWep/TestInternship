@@ -13,7 +13,7 @@
 
   body {
     line-height: 1.9;        /* Khmer needs extra space for stacked vowels */
-    font-size: 1rem;
+    font-size: var(--app-font-size);
     font-weight: 400;
     @apply bg-background text-foreground;
   }
@@ -25,12 +25,14 @@
 
   p, span, a, li, button, input, textarea, select {
     line-height: 1.9;
+    font-size: inherit;
   }
   .theme {
     --font-heading: var(--font-sans);
     --font-sans: 'Geist Variable', sans-serif;
   }
   :root {
+    --app-font-size: 16px;
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);

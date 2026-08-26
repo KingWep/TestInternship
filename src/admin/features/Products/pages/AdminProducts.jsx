@@ -124,7 +124,7 @@ export default function AdminProducts() {
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
-            className="text-slate-400 hover:text-blue-600 transition-colors"
+            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
             title="កែប្រែផលិតផល"
           >
             <Edit size={18} />
@@ -132,7 +132,7 @@ export default function AdminProducts() {
 
           <DeleteButton
             onConfirm={() => handleDelete(row.id)}
-            className="text-slate-400 hover:text-red-600 transition-colors"
+            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
           >
             <Trash2 size={18} />
           </DeleteButton>

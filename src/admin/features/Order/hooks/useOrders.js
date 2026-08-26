@@ -7,6 +7,7 @@ export function useOrders() {
 
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
+  const [paymentFilter, setPaymentFilter] = useState('')
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
 
@@ -18,6 +19,8 @@ export function useOrders() {
       order.phone.includes(search)
     const matchesStatus =
       statusFilter === '' || statusFilter === 'ទាំងអស់ (All)' || order.status === statusFilter
+    const matchesPayment =
+      paymentFilter === '' || paymentFilter === 'ទាំងអស់ (All)' || order.paymentStatus === paymentFilter
 
     let matchesDate = true
     if (fromDate || toDate) {
@@ -30,7 +33,7 @@ export function useOrders() {
       }
     }
 
-    return matchesSearch && matchesStatus && matchesDate
+    return matchesSearch && matchesStatus && matchesPayment && matchesDate
   })
 
   return {
@@ -43,5 +46,7 @@ export function useOrders() {
     setFromDate,
     toDate,
     setToDate,
+    paymentFilter,
+    setPaymentFilter
   }
 }

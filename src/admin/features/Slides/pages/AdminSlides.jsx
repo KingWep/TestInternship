@@ -50,12 +50,12 @@ export default function AdminSlides() {
           </div>
         ),
     },
-    { header: 'ស្លាក', render: (row) => <span className="font-bold bg-slate-100 text-black/70 py-1 px-2 rounded border-2 border-slate-400">{row.tag}</span> },
+    { header: 'ស្លាក', render: (row) => <span className="inline-block whitespace-nowrap font-bold bg-slate-100 text-black/70 py-1 px-2 rounded border-2 border-slate-400">{row.tag}</span> },
     { header: 'ចំណងជើង', accessor: 'title' },
     { header: 'ការពិពណ៌នា', accessor: 'description' },
     { header: 'បញ្ចុះតម្លៃ', render: (row) => (
-      <span className="font-bold bg-pink-600 text-white py-1 px-2 rounded border-2 border-slate-400">
-        {row.discount ? `${row.discount}%` : 'N/A'}
+      <span className="inline-block whitespace-nowrap font-bold bg-pink-600 text-white py-1 px-2 rounded border-2 border-slate-400">
+        {row.discount || 'N/A'}
       </span>
     ) },
     { header: 'អត្ថបទប៊ូតុង', accessor: 'ctaText' },
@@ -79,14 +79,14 @@ export default function AdminSlides() {
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
-            className="text-slate-400 hover:text-blue-600 transition-colors"
+            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
             title="កែប្រែស្លាយ"
           >
             <Edit size={18} />
           </button>
           <DeleteButton
             onConfirm={() => handleDelete(row.id)}
-            className="text-slate-400 hover:text-red-600 transition-colors"
+            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
           >
             <Trash2 size={18} />
           </DeleteButton>

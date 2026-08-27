@@ -6,20 +6,13 @@ export default function SlideForm({ onSubmit, initialData }) {
     tag: '',
     title: '',
     description: '',
-    discount: '',
+    discountPercentage: '',
     ctaText: '',
-    ctaLink: '',
+    backgroundColor: '#FF5733',
     status: 'Active',
-    image: [],
   })
 
-  // Generate preview URL only when image array changes to prevent flickering on text input
-  const currentImagePreview = React.useMemo(() => {
-    if (formData.image && formData.image.length > 0) {
-      return URL.createObjectURL(formData.image[0])
-    }
-    return null
-  }, [formData.image])
+
 
   // Check if we are editing an existing slide
   const isEditing = !!initialData
@@ -30,22 +23,20 @@ export default function SlideForm({ onSubmit, initialData }) {
         tag: initialData.tag || '',
         title: initialData.title || '',
         description: initialData.description || '',
-        discount: initialData.discount || '',
+        discountPercentage: initialData.discountPercentage || '',
         ctaText: initialData.ctaText || '',
-        ctaLink: initialData.ctaLink || '',
+        backgroundColor: initialData.backgroundColor || '#FF5733',
         status: initialData.status || 'Active',
-        image: [],
       })
     } else {
       setFormData({
         tag: '',
         title: '',
         description: '',
-        discount: '',
+        discountPercentage: '',
         ctaText: '',
-        ctaLink: '',
+        backgroundColor: '#FF5733',
         status: 'Active',
-        image: [],
       })
     }
   }, [initialData])
@@ -55,10 +46,7 @@ export default function SlideForm({ onSubmit, initialData }) {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files)
-    setFormData((prev) => ({ ...prev, image: files }))
-  }
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -103,14 +91,16 @@ export default function SlideForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ស្លាកបញ្ចុះតម្លៃ
+            ភាគរយបញ្ចុះតម្លៃ (%)
           </label>
           <input
-            type="text"
-            name="discount"
-            value={formData.discount}
+            type="number"
+            name="discountPercentage"
+            value={formData.discountPercentage}
             onChange={handleChange}
-            placeholder="ឧទាហរណ៍: បញ្ចុះ 20%"
+            placeholder="ឧទាហរណ៍: 25"
+            min="0"
+            max="100"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
         </div>
@@ -131,7 +121,7 @@ export default function SlideForm({ onSubmit, initialData }) {
         </div>
       </div>
 
-      {/* CTA Text & CTA Link */}
+      {/* CTA Text & Background Color */}
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
@@ -149,16 +139,25 @@ export default function SlideForm({ onSubmit, initialData }) {
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            តំណភ្ជាប់ URL
+            ពណ៌ផ្ទៃខាងក្រោយ
           </label>
-          <input
-            type="text"
-            name="ctaLink"
-            value={formData.ctaLink}
-            onChange={handleChange}
-            placeholder="e.g. /shop/summer"
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
-          />
+          <div className="flex items-center gap-2">
+            <input
+              type="color"
+              name="backgroundColor"
+              value={formData.backgroundColor}
+              onChange={handleChange}
+              className="w-10 h-10 p-1 bg-gray-50 rounded-lg outline-none cursor-pointer"
+            />
+            <input
+              type="text"
+              name="backgroundColor"
+              value={formData.backgroundColor}
+              onChange={handleChange}
+              placeholder="#FF5733"
+              className="flex-1 px-3 py-2 text-sm uppercase bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            />
+          </div>
         </div>
       </div>
 
@@ -177,46 +176,7 @@ export default function SlideForm({ onSubmit, initialData }) {
         />
       </div>
 
-      {/* Slide Image */}
-      <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            រូបភាពស្លាយ
-          </label>
-        <input
-          type="file"
-          name="image"
-          accept="image/jpeg,image/png,image/webp"
-          onChange={handleImageChange}
-          className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none"
-        />
 
-        {currentImagePreview ? (
-          <div className="flex flex-wrap gap-2 mt-2">
-            <div className="w-24 h-14 rounded-lg overflow-hidden border">
-              <img
-                src={currentImagePreview}
-                alt="Selected"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        ) : (
-          initialData?.image && (
-            <div className="flex flex-wrap gap-2 mt-2">
-              <div className="w-24 h-14 rounded-lg overflow-hidden border">
-                <img
-                  src={initialData.image}
-                  alt="Current slide"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <span className="text-xs text-gray-400 self-end mb-1">
-                រូបភាពបច្ចុប្បន្ន
-              </span>
-            </div>
-          )
-        )}
-      </div>
 
       {/* Submit */}
       <div className="flex justify-end pt-2">

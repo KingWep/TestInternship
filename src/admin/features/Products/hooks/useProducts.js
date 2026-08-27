@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useProductContext } from '../../../../context/ProductContext'
+import Swal from 'sweetalert2'
 
 const ITEMS_PER_PAGE = 5
 
@@ -10,7 +11,8 @@ export function getStockStatus(stock) {
 }
 
 export function useProducts() {
-  const { products, setProducts } = useProductContext()
+  const { products, addProduct, updateProduct, deleteProduct } = useProductContext()
+
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState({ category: '', status: '' })
   const [sortOrder, setSortOrder] = useState('')
@@ -18,37 +20,41 @@ export function useProducts() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
 
-  // ── Filter & Sort ──────────────────────────────────────────────────────────
-  const filteredProducts = products
-    .filter((product) => {
-      const matchSearch = product.name
-        .toLowerCase()
-        .includes(search.toLowerCase())
+  // ── Filter & Sort (Memoized for Performance) ───────────────────────────────
+  const filteredProducts = useMemo(() => {
+    return products
+      .filter((product) => {
+        const matchSearch = product.name.toLowerCase().includes(search.toLowerCase())
 
-      const matchCategory =
-        filters.category === '' ||
-        filters.category === 'ទាំងអស់' ||
-        product.category === filters.category
+        const matchCategory =
+          filters.category === '' ||
+          filters.category === 'ទាំងអស់' ||
+          product.categoryName === filters.category
 
-      const matchStatus =
-        filters.status === '' ||
-        filters.status === 'ទាំងអស់' ||
-        getStockStatus(product.stock) === filters.status
+        // Using stockQuantity as mapped in ProductContext
+        const matchStatus =
+          filters.status === '' ||
+          filters.status === 'ទាំងអស់' ||
+          getStockStatus(product.stockQuantity) === filters.status
 
-      return matchSearch && matchCategory && matchStatus
-    })
-    .sort((a, b) => {
-      if (sortOrder === 'Newest First' || sortOrder === 'newest' || sortOrder === '') return b.id - a.id
-      if (sortOrder === 'A → Z' || sortOrder === 'asc') return a.name.localeCompare(b.name)
-      return b.name.localeCompare(a.name)
-    })
+        return matchSearch && matchCategory && matchStatus
+      })
+      .sort((a, b) => {
+        if (sortOrder === 'Newest First' || sortOrder === 'newest' || sortOrder === '') return b.id - a.id
+        if (sortOrder === 'A → Z' || sortOrder === 'asc') return a.name.localeCompare(b.name)
+        return b.name.localeCompare(a.name)
+      })
+  }, [products, search, filters, sortOrder])
 
-  // ── Pagination ─────────────────────────────────────────────────────────────
+  // ── Pagination (Memoized) ──────────────────────────────────────────────────
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE)
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  )
+
+  const paginatedProducts = useMemo(() => {
+    return filteredProducts.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE
+    )
+  }, [filteredProducts, currentPage])
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleFilterChange = (key, value) => {
@@ -66,43 +72,43 @@ export function useProducts() {
     setCurrentPage(1)
   }
 
-  const handleSubmit = (data) => {
-    // Build the combined images array:
-    // 1. Keep any existing URL images the user did not remove
-    const keptExisting = Array.isArray(data.existingImages) ? data.existingImages : []
-    // 2. Convert newly uploaded File objects to object URLs
-    const newImageUrls = Array.isArray(data.images)
-      ? data.images.map((f) => URL.createObjectURL(f))
-      : []
-
-    const allImages = [...keptExisting, ...newImageUrls]
-
-    const formattedData = {
-      name: data.name,
-      sku: data.sku,
-      category: data.category,
-      price: Number(data.price) || 0,
-      oldPrice: Number(data.oldPrice) || 0,
-      discount: Number(data.discount) || 0,
-      stock: Number(data.stock) || 0,
-      description: data.description || '',
-      // Multi-image array
-      images: allImages,
-      // Backward-compatible single image for table display
-      image: allImages[0] ?? (editingProduct ? editingProduct.image : ''),
+  // Receives the FormData payload from ProductsForm.jsx
+  const handleSubmit = async (formDataToSend) => {
+    try {
+      if (editingProduct) {
+        await updateProduct(formDataToSend)
+        Swal.fire({
+          icon: 'success',
+          title: 'ជោគជ័យ', // Success
+          text: 'Product updated successfully!',
+          timer: 1500,
+          showConfirmButton: false
+        })
+      } else {
+        await addProduct(formDataToSend)
+        Swal.fire({
+          icon: 'success',
+          title: 'ជោគជ័យ', // Success
+          text: 'Product added successfully!',
+          timer: 1500,
+          showConfirmButton: false
+        })
+      }
+      closeModal()
+    } catch (error) {
+      const data = error?.response?.data
+      const backendMsg = data?.message || data?.error || JSON.stringify(data) || error.message
+      console.error('Submit error details:', {
+        status: error?.response?.status,
+        data:   JSON.stringify(data),
+        message: error?.message,
+      })
+      Swal.fire({
+        icon: 'error',
+        title: `Error ${error?.response?.status || ''}`,
+        text: backendMsg,
+      })
     }
-
-    if (editingProduct) {
-      setProducts((prev) =>
-        prev.map((p) =>
-          p.id === editingProduct.id ? { ...p, ...formattedData } : p
-        )
-      )
-    } else {
-      setProducts((prev) => [{ id: Date.now(), ...formattedData }, ...prev])
-    }
-
-    closeModal()
   }
 
   const handleEdit = (product) => {
@@ -111,7 +117,25 @@ export function useProducts() {
   }
 
   const handleDelete = (id) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id))
+    Swal.fire({
+      title: 'តើអ្នកប្រាកដទេ?', // Are you sure?
+      text: "អ្នកនឹងមិនអាចទាញទិន្នន័យនេះមកវិញបានទេ!", // You won't be able to revert this!
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'បាទ/ចាស លុបវា', // Yes, delete it
+      cancelButtonText: 'បោះបង់' // Cancel
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteProduct(id)
+          Swal.fire('លុបបានជោគជ័យ!', 'ទិន្នន័យត្រូវបានលុប.', 'success')
+        } catch (error) {
+          Swal.fire('បរាជ័យ!', 'មានបញ្ហាក្នុងការលុបទិន្នន័យ.', 'error')
+        }
+      }
+    })
   }
 
   const openAddModal = () => {
@@ -124,13 +148,10 @@ export function useProducts() {
     setEditingProduct(null)
   }
 
-  const discountPercentage = editingProduct
-    ? Math.round(
-        ((editingProduct.oldPrice - editingProduct.price) /
-          editingProduct.oldPrice) *
-          100
-      )
+  const discountPercentage = editingProduct && editingProduct.oldPrice && editingProduct.price
+    ? Math.round(((editingProduct.oldPrice - editingProduct.price) / editingProduct.oldPrice) * 100)
     : 0
+
   return {
     // state
     products,
@@ -145,7 +166,7 @@ export function useProducts() {
     filteredProducts,
     paginatedProducts,
     totalPages,
-    // raw setters (for inline handlers in the page)
+    // setters
     setSearch,
     setSortOrder,
     setCurrentPage,

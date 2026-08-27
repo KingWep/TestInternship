@@ -10,8 +10,10 @@ import PageHeader from '../../../components/common/PageHeader'
 import FilterBar from '../../../components/common/FilterBar'
 import DeleteButton from '../../../components/common/DeleteButton'
 import Pagination from '../../../components/common/Pagination'
-
+import { useProducts } from '../../Products/hooks/useProducts'
 export default function AdminCategories() {
+
+  const {products} = useProducts() // Access products from the context
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
   const {
@@ -43,21 +45,6 @@ export default function AdminCategories() {
 
   const columns = [
     {
-      header: 'រូបភាព',
-      render: (row) =>
-        row.image ? (
-          <img
-            src={row.image}
-            alt={row.name}
-            className=" h-16 w-16 min-w-[4rem] object-cover rounded-lg"
-          />
-        ) : (
-          <div className="h-16 w-16 min-w-[4rem] bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
-            គ្មានរូបភាព
-          </div>
-        ),
-    },
-    {
       header: 'ឈ្មោះប្រភេទ',
       accessor: 'name',
     },
@@ -71,18 +58,50 @@ export default function AdminCategories() {
     },
     {
       header: 'ផលិតផល',
-      accessor: 'productCount',
+      render: (row) => {
+        const count = products.filter(
+          (product) => String(product.categoryId) === String(row.id)
+        ).length;
+        return (
+          <span className="font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+            {count}
+          </span>
+        );
+      }
+    },
+    // {
+    //   header: 'ស្ថានភាព',
+    //   render: (row) => {
+    //     const status = row.status || 'Active'
+    //     return (
+    //       <span
+    //         className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${status === 'Active'
+    //             ? 'bg-green-100 text-green-700'
+    //             : 'bg-red-100 text-red-700'
+    //           }`}
+    //       >
+    //         {status === 'Active' ? 'សកម្ម' : 'អសកម្ម'}
+    //       </span>
+    //     )
+    //   },
+    // },
+    {
+      header: 'description',
+      accessor: 'description',
     },
     {
-      header: 'ស្ថានភាព',
-      render: (row) => (
-        <span
-          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${row.status === 'Active'
-              ? 'bg-green-100 text-green-700'
-              : 'bg-red-100 text-red-700'
-            }`}
-        >
-          {row.status === 'Active' ? 'សកម្ម' : 'អសកម្ម'}
+        header: 'កាលបរិច្ឆេទបង្កើត',
+        render: (row) => (
+        <span className="text-sm text-slate-600">
+          {row.createdAt
+            ? new Date(row.createdAt).toLocaleString("km-KH", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "—"}
         </span>
       ),
     },

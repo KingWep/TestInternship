@@ -150,7 +150,7 @@ export default function useSalesForm() {
       !filters.category ||
       filters.category === 'All' ||
       filters.category === 'ទាំងអស់' ||
-      product.category === filters.category
+      product.categoryName === filters.category
     return matchSearch && matchFilter
   })
 

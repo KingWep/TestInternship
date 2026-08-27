@@ -1,19 +1,23 @@
 import { useState } from 'react'
 import { useCategoryContext } from '../../../../context/CategoryContext'
+import axiosClient from '../../../../api/axiosClient'
+import { API_ENDPOINTS } from '../../../../api/endpoints'
+import Swal from 'sweetalert2'
 
 const ITEMS_PER_PAGE = 5
 
 export function useCategories() {
-  const { categories, setCategories } = useCategoryContext()
+  const { categories, setCategories, fetchCategories, isLoading: isCategoriesLoading } = useCategoryContext()
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState({ status: '' })
   const [sortOrder, setSortOrder] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // ── Filter & Sort
-  const filteredCategories = categories
+  const filteredCategories = (categories || [])
     .filter((category) => {
       const matchSearch = category.name
         .toLowerCase()
@@ -22,7 +26,7 @@ export function useCategories() {
       const matchStatus =
         filters.status === '' ||
         filters.status === 'ទាំងអស់' ||
-        category.status === filters.status
+        (category.status && category.status === filters.status)
 
       return matchSearch && matchStatus
     })
@@ -55,34 +59,49 @@ export function useCategories() {
     setCurrentPage(1)
   }
 
-  const handleSubmit = (data) => {
-    const formattedData = {
-      name: data.name,
-      slug: data.slug,
-      status: data.status,
-      description: data.description || '',
-      image: data.image?.[0]
-        ? URL.createObjectURL(data.image[0])
-        : editingCategory
-        ? editingCategory.image
-        : '',
-      productCount: editingCategory ? editingCategory.productCount : 0,
-    }
+  const handleSubmit = async (data) => {
+    setIsSubmitting(true)
+    try {
+      const payload = {
+        name: data.name,
+        slug: data.slug,
+        description: data.description || '',
+      }
 
-    if (editingCategory) {
-      setCategories((prev) =>
-        prev.map((c) =>
-          c.id === editingCategory.id ? { ...c, ...formattedData } : c
-        )
-      )
-    } else {
-      setCategories((prev) => [
-        ...prev,
-        { id: Date.now(), ...formattedData },
-      ])
+      if (editingCategory) {
+        payload.id = editingCategory.id
+        await axiosClient.put(API_ENDPOINTS.CATEGORIES.UPDATE(editingCategory.id), payload)
+        Swal.fire({
+          icon: 'success',
+          title: 'ជោគជ័យ',
+          text: 'Category updated successfully!',
+          timer: 1500,
+          showConfirmButton: false
+        })
+      } else {
+        await axiosClient.post(API_ENDPOINTS.CATEGORIES.CREATE, payload)
+        Swal.fire({
+          icon: 'success',
+          title: 'ជោគជ័យ',
+          text: 'Category added successfully!',
+          timer: 1500,
+          showConfirmButton: false
+        })
+      }
+      await fetchCategories()
+      closeModal()
+    } catch (error) {
+      const errorData = error?.response?.data
+      const backendMsg = errorData?.message || errorData?.error || JSON.stringify(errorData) || error.message
+      console.error('Error saving category:', error)
+      Swal.fire({
+        icon: 'error',
+        title: `Error ${error?.response?.status || ''}`,
+        text: backendMsg,
+      })
+    } finally {
+      setIsSubmitting(false)
     }
-
-    closeModal()
   }
 
   const handleEdit = (category) => {
@@ -91,7 +110,27 @@ export function useCategories() {
   }
 
   const handleDelete = (id) => {
-    setCategories((prev) => prev.filter((c) => c.id !== id))
+    Swal.fire({
+      title: 'តើអ្នកប្រាកដទេ?',
+      text: "អ្នកនឹងមិនអាចទាញទិន្នន័យនេះមកវិញបានទេ!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'បាទ/ចាស លុបវា',
+      cancelButtonText: 'បោះបង់'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axiosClient.delete(API_ENDPOINTS.CATEGORIES.DELETE(id))
+          await fetchCategories()
+          Swal.fire('លុបបានជោគជ័យ!', 'ទិន្នន័យត្រូវបានលុប.', 'success')
+        } catch (error) {
+          console.error('Error deleting category:', error)
+          Swal.fire('បរាជ័យ!', 'មានបញ្ហាក្នុងការលុបទិន្នន័យ.', 'error')
+        }
+      }
+    })
   }
 
   const openAddModal = () => {
@@ -113,6 +152,8 @@ export function useCategories() {
     currentPage,
     isModalOpen,
     editingCategory,
+    isSubmitting,
+    isCategoriesLoading,
     // computed
     filteredCategories,
     paginatedCategories,

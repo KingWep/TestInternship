@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
+import ProtectedRoute from './ProtectedRoute'
 import Home from "../client/features/home/pages/Home"
 import ProductDetail from "../client/features/products/pages/ProductDetail"
 import Receipt from "../client/features/receipt/pages/Receipt"
@@ -16,7 +17,7 @@ import AdminUsers from '../admin/features/Users/pages/AdminUsers'
 import AdminSettings from '../admin/features/Setting/pages/AdminSettings'
 import AdminReceiptPage from '../admin/features/Order/pages/AdminReceiptPage'
 import AdminStickerPage from '../admin/features/Order/pages/AdminStickerPage'
-import LoginForm from '@/client/features/auth/components/LoginForm'
+import LoginForm from '@/admin/features/Auth/components/LoginForm'
 
 export default function AppRouter() {
   return (
@@ -28,15 +29,17 @@ export default function AppRouter() {
       <Route path="/admin/print-sticker/:id" element={<AdminStickerPage />} />
       <Route path="/admin/login" element={<LoginForm/>} />
 
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<AdminDashboard />} />
-        <Route path="products" element={<AdminProducts />} />
-        <Route path="sale-form" element={<AdminSaleForm />} />
-        <Route path="orders" element={<AdminOrders />} />
-        <Route path="users" element={<AdminUsers />} />
-        <Route path="categories" element={<AdminCategories />} />
-        <Route path="slides" element={<AdminSlides />} />
-        <Route path="settings" element={<AdminSettings />} />
+      <Route path="/admin" element={<ProtectedRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="sale-form" element={<AdminSaleForm />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="categories" element={<AdminCategories />} />
+          <Route path="slides" element={<AdminSlides />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
       </Route>
     </Routes>
   )

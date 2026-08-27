@@ -24,9 +24,13 @@ export default function ProductSection() {
   }
 
   const filtered = products
-    .filter((products) => activeTab === "ទាំងអស់" || products.category === activeTab)
-    .filter((products) => products.name.toLowerCase().includes(searchItem.toLowerCase()))
-    .filter((products) => matchPriceRange(products.price))
+    .filter((product) => {
+      if (activeTab === "ទាំងអស់") return true
+      const catName = product.categoryName || (categories.find(c => c.id === product.categoryId)?.name)
+      return catName === activeTab
+    })
+    .filter((product) => product.name.toLowerCase().includes(searchItem.toLowerCase()))
+    .filter((product) => matchPriceRange(product.price))
   return (
     <div className="space-y-8">
       {/* <SectionHeader title=" " /> */}

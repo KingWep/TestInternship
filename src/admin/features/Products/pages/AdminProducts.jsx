@@ -1,19 +1,19 @@
-import { useState } from 'react'
-import { Plus, Edit, Trash2, SlidersHorizontal } from 'lucide-react'
-import { useProducts, getStockStatus } from '../hooks/useProducts'
-import ProductsForm from '../components/ProductForm'
-import DataTable from '../../../components/common/DataTable'
-import SearchBar from '../../../components/common/SearchBar'
-import Button from '../../../components/common/Button'
-import Modal from '../../../components/common/Modal'
-import PageHeader from '../../../components/common/PageHeader'
-import FilterBar from '../../../components/common/FilterBar'
-import DeleteButton from '../../../components/common/DeleteButton'
-import Pagination from '../../../components/common/Pagination'
-import { useCategoryContext } from '../../../../context/CategoryContext'
+import { useState } from "react";
+import { Plus, Edit, Trash2, SlidersHorizontal } from "lucide-react";
+import { useProducts, getStockStatus } from "../hooks/useProducts";
+import ProductsForm from "../components/ProductForm";
+import DataTable from "../../../components/common/DataTable";
+import SearchBar from "../../../components/common/SearchBar";
+import Button from "../../../components/common/Button";
+import Modal from "../../../components/common/Modal";
+import PageHeader from "../../../components/common/PageHeader";
+import FilterBar from "../../../components/common/FilterBar";
+import DeleteButton from "../../../components/common/DeleteButton";
+import Pagination from "../../../components/common/Pagination";
+import { useCategoryContext } from "../../../../context/CategoryContext";
 
 export default function AdminProducts() {
-  const { categories } = useCategoryContext()
+  const { categories } = useCategoryContext();
 
   const {
     search,
@@ -33,80 +33,95 @@ export default function AdminProducts() {
     handleDelete,
     openAddModal,
     closeModal,
-  } = useProducts()
+  } = useProducts();
 
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
   const columns = [
     {
-      header: 'រូបភាព',
-      render: row =>
+      header: "រូបភាព",
+      render: (row) =>
         row.image ? (
           <img
             src={row.image}
             alt={row.name}
-            className=" h-16 w-16 min-w-[4rem] object-cover rounded-lg"
+            className="h-16 w-16 min-w-[4rem] object-cover rounded-lg"
           />
         ) : (
-          <div className=" h-16 w-16 min-w-[4rem] bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
+          <div className="h-16 w-16 min-w-[4rem] bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
             គ្មានរូបភាព
           </div>
         ),
     },
+
     {
-      header: 'ឈ្មោះផលិតផល',
-      accessor: 'name',
+      header: "ឈ្មោះផលិតផល",
+      accessor: "name",
     },
+
     {
-      header: 'SKU',
-      accessor: 'sku',
+      header: "SKU",
+      accessor: "sku",
     },
+
     {
-      header: 'ប្រភេទ',
-      accessor: 'category',
+      header: "ប្រភេទ",
+      accessor: "categoryName",
     },
+
     {
-      header: 'បញ្ចុះតម្លៃ',
-      render: row =>
-        Number(row.discount) > 0 ? (
-          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-700">
-            ${Number(row.discount).toFixed(2)}
-          </span>
-        ) : (
-          <span className="text-slate-400 text-sm">—</span>
-        ),
-    },
-    {
-      header: 'តម្លៃ',
-      render: row => (
-        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700">
+      header: "តម្លៃដើម",
+      render: (row) => (
+        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-slate-100 text-slate-600">
           ${Number(row.price).toFixed(2)}
         </span>
       ),
     },
     {
-      header: 'ស្តុក',
-      accessor: 'stock',
+      header: "បញ្ចុះតម្លៃ",
+      render: (row) =>
+        Number(row.discountPrice) > 0 ? (
+          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-700">
+            ${Number(row.discountPrice).toFixed(2)}
+          </span>
+        ) : (
+          <span className="text-slate-400 text-sm">—</span>
+        ),
     },
+
     {
-      header: 'ស្ថានភាព',
-      render: row => {
-        const status = getStockStatus(row.stock)
+      header: "តម្លៃលក់",
+      render: (row) => (
+        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700">
+          ${Number(row.salePrice).toFixed(2)}
+        </span>
+      ),
+    },
+
+    {
+      header: "ស្តុក",
+      accessor: "stockQuantity",
+    },
+
+    {
+      header: "ស្ថានភាព",
+      render: (row) => {
+        const status = getStockStatus(row.stockQuantity);
 
         const styles = {
-          'In Stock': 'bg-green-100 text-green-700',
-          'Low Stock': 'bg-yellow-100 text-yellow-700',
-          'Out of Stock': 'bg-red-100 text-red-700',
-        }
+          "In Stock": "bg-green-100 text-green-700",
+          "Low Stock": "bg-yellow-100 text-yellow-700",
+          "Out of Stock": "bg-red-100 text-red-700",
+        };
 
         const statusKhmer =
-          status === 'In Stock'
-            ? 'មានក្នុងស្តុក'
-            : status === 'Low Stock'
-              ? 'ស្តុកតិច'
-              : status === 'Out of Stock'
-                ? 'អស់ពីស្តុក'
-                : status
+          status === "In Stock"
+            ? "មានក្នុងស្តុក"
+            : status === "Low Stock"
+              ? "ស្តុកតិច"
+              : status === "Out of Stock"
+                ? "អស់ពីស្តុក"
+                : status;
 
         return (
           <span
@@ -114,13 +129,30 @@ export default function AdminProducts() {
           >
             {statusKhmer}
           </span>
-        )
+        );
       },
     },
     {
-      header: 'សកម្មភាព',
-      align: 'right',
-      render: row => (
+      header: "កាលបរិច្ឆេទបង្កើត",
+      render: (row) => (
+        <span className="text-sm text-slate-600">
+          {row.createdAt
+            ? new Date(row.createdAt).toLocaleString("km-KH", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "—"}
+        </span>
+      ),
+    },
+
+    {
+      header: "សកម្មភាព",
+      align: "right",
+      render: (row) => (
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
@@ -139,34 +171,31 @@ export default function AdminProducts() {
         </div>
       ),
     },
-  ]
+  ];
 
   const productFilters = [
     {
-      key: 'category',
-      options: ['ទាំងអស់', ...categories.map(c => c.name)],
+      key: "category",
+      options: ["ទាំងអស់", ...categories.map((c) => c.name)],
       searchable: true,
     },
-  ]
-  
+  ];
+
   const categoryFilters = [
     {
-      key: 'status',
-      options: ['ទាំងអស់', 'In Stock', 'Low Stock', 'Out of Stock'],
+      key: "status",
+      options: ["ទាំងអស់", "In Stock", "Low Stock", "Out of Stock"],
     },
-  ]
+  ];
 
   return (
     <div className="space-y-6">
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingProduct ? 'កែប្រែផលិតផល' : 'បន្ថែមផលិតផលថ្មី'}
+        title={editingProduct ? "កែប្រែផលិតផល" : "បន្ថែមផលិតផលថ្មី"}
       >
-        <ProductsForm
-          initialData={editingProduct}
-          onSubmit={handleSubmit}
-        />
+        <ProductsForm initialData={editingProduct} onSubmit={handleSubmit} />
       </Modal>
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -195,8 +224,8 @@ export default function AdminProducts() {
             <FilterBar
               filters={[
                 {
-                  key: 'sort',
-                  options: ['ថ្មីបំផុតមុន', 'A → Z', 'Z → A'],
+                  key: "sort",
+                  options: ["ថ្មីបំផុតមុន", "A → Z", "Z → A"],
                 },
               ]}
               values={{ sort: sortOrder }}
@@ -223,24 +252,18 @@ export default function AdminProducts() {
             >
               <Plus size={16} className="mr-2" />
 
-              <span className="hidden md:inline">
-                បន្ថែមផលិតផល
-              </span>
+              <span className="hidden md:inline">បន្ថែមផលិតផល</span>
 
-              <span className="md:hidden">
-                បន្ថែម
-              </span>
+              <span className="md:hidden">បន្ថែម</span>
             </Button>
 
             <button
               type="button"
-              onClick={() =>
-                setShowAdvancedFilters(prev => !prev)
-              }
+              onClick={() => setShowAdvancedFilters((prev) => !prev)}
               className={`md:hidden shrink-0 w-10 py-2.5 flex items-center justify-center rounded-xl border transition-colors ${
                 showAdvancedFilters
-                  ? 'bg-slate-100 border-slate-300 text-slate-700'
-                  : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+                  ? "bg-slate-100 border-slate-300 text-slate-700"
+                  : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
               }`}
               title="បង្ហាញតម្រង"
               aria-label="បង្ហាញតម្រង"
@@ -253,7 +276,9 @@ export default function AdminProducts() {
         {/* Mobile Filters Dropdown Layout: Category -- Status -- Sort */}
         <div
           className={`grid transition-all duration-300 ease-in-out md:hidden ${
-            showAdvancedFilters ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 !mt-0'
+            showAdvancedFilters
+              ? "grid-rows-[1fr] opacity-100"
+              : "grid-rows-[0fr] opacity-0 !mt-0"
           }`}
         >
           <div className="overflow-hidden">
@@ -263,7 +288,7 @@ export default function AdminProducts() {
                 values={filters}
                 onChange={handleFilterChange}
               />
-              
+
               <FilterBar
                 filters={categoryFilters}
                 values={filters}
@@ -273,8 +298,8 @@ export default function AdminProducts() {
               <FilterBar
                 filters={[
                   {
-                    key: 'sort',
-                    options: ['ថ្មីបំផុតមុន', 'A → Z', 'Z → A'],
+                    key: "sort",
+                    options: ["ថ្មីបំផុតមុន", "A → Z", "Z → A"],
                   },
                 ]}
                 values={{ sort: sortOrder }}
@@ -290,10 +315,7 @@ export default function AdminProducts() {
       </div>
 
       <div className="overflow-x-auto bg-white border border-slate-200 rounded-2xl">
-        <DataTable
-          columns={columns}
-          data={paginatedProducts}
-        />
+        <DataTable columns={columns} data={paginatedProducts} />
 
         <Pagination
           currentPage={currentPage}
@@ -302,5 +324,5 @@ export default function AdminProducts() {
         />
       </div>
     </div>
-  )
+  );
 }

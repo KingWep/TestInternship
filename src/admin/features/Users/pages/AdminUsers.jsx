@@ -13,8 +13,7 @@ import Pagination from '../../../components/common/Pagination'
 
 const ROLE_COLORS = {
   Admin: 'bg-purple-100 text-purple-700',
-  Editor: 'bg-blue-100 text-blue-700',
-  Viewer: 'bg-slate-100 text-slate-600',
+  User: 'bg-blue-100 text-blue-700',
 }
 
 export default function AdminUsers() {
@@ -40,20 +39,17 @@ export default function AdminUsers() {
     closeModal,
   } = useUsers()
 
-  const statusFilters = [
-    {
-      key: 'status',
-      options: ['ទាំងអស់', 'Active', 'Inactive'],
-    },
-  ]
   const roleFilters = [
     {
       key: 'role',
-      options: ['ទាំងអស់', 'Admin', 'Editor', 'Viewer'],
+      options: [
+        { label: 'ទាំងអស់', value: '' },
+        { label: 'អ្នកគ្រប់គ្រង', value: 'Admin' },
+        { label: 'អ្នកប្រើប្រាស់', value: 'User' },
+      ],
     },
   ]
   const userFilters = [
-    ...statusFilters,
     ...roleFilters,
   ]
 
@@ -61,18 +57,11 @@ export default function AdminUsers() {
   const columns = [
     {
       header: 'រូបតំណាង',
-      render: (row) =>
-        row.image ? (
-          <img
-            src={row.image}
-            alt={row.name}
-            className=" h-16 w-16 min-w-[4rem] object-cover rounded-full ring-2 ring-slate-100"
-          />
-        ) : (
-          <div className=" h-16 w-16 min-w-[4rem] bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-sm font-semibold">
-            {row.name?.charAt(0)}
-          </div>
-        ),
+      render: (row) => (
+        <div className=" h-10 w-10 min-w-[2.5rem] bg-blue-100 border border-blue-200 rounded-full flex items-center justify-center text-blue-600 text-sm font-bold">
+          {row.name?.charAt(0)?.toUpperCase()}
+        </div>
+      ),
     },
     {
       header: 'លេខសម្គាល់',
@@ -87,15 +76,15 @@ export default function AdminUsers() {
       accessor: 'name',
     },
     {
-      header: 'ទូរស័ព្ទ',
+      header: 'អ៊ីមែល',
       render: (row) => (
-        <span className="text-slate-500">{row.phone || '—'}</span>
+        <span className="text-slate-500">{row.email || '—'}</span>
       ),
     },
     {
       header: 'តួនាទី',
       render: (row) => {
-        const roleKhmer = row.role === 'Admin' ? 'អ្នកគ្រប់គ្រង' : row.role === 'Editor' ? 'អ្នកកែប្រែ' : row.role === 'Viewer' ? 'អ្នកមើល' : row.role;
+        const roleKhmer = row.role === 'Admin' ? 'អ្នកគ្រប់គ្រង' : row.role === 'User' ? 'អ្នកប្រើប្រាស់' : row.role;
         return (
         <span
           className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${ROLE_COLORS[row.role] || 'bg-gray-100 text-gray-600'
@@ -107,22 +96,19 @@ export default function AdminUsers() {
       },
     },
     {
-      header: 'ស្ថានភាព',
-      render: (row) => (
-        <span
-          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${row.status === 'Active'
-              ? 'bg-green-100 text-green-700'
-              : 'bg-red-100 text-red-700'
-            }`}
-        >
-          {row.status === 'Active' ? 'សកម្ម' : 'អសកម្ម'}
-        </span>
-      ),
-    },
-    {
       header: 'ថ្ងៃចូលរួម',
       render: (row) => (
-        <span className="text-slate-500 text-sm">{row.createAt}</span>
+        <span className="text-slate-500 text-sm">
+          {row.createdAt
+            ? new Date(row.createdAt).toLocaleString("km-KH", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "—"}
+        </span>
       ),
     },
     {
@@ -158,6 +144,7 @@ export default function AdminUsers() {
         <UserForm
           initialData={editingUser}
           onSubmit={handleSubmit}
+          onClose={closeModal}
         />
       </Modal>
 
@@ -222,11 +209,7 @@ export default function AdminUsers() {
         >
           <div className="overflow-hidden">
             <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
-              <FilterBar
-                filters={statusFilters}
-                values={filters}
-                onChange={handleFilterChange}
-              />
+
               <FilterBar
                 filters={roleFilters}
                 values={filters}

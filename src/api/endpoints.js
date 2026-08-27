@@ -1,0 +1,33 @@
+export const API_ENDPOINTS = {
+    USERS: {
+        LOGIN: 'api/auth/login',
+        REGISTER: 'api/users',
+        GET_ALL: 'api/users',
+        UPDATE: (id) => `api/users?id=${id}`,
+    },
+    CATEGORIES: {
+        GET_ALL: 'api/categories',
+        CREATE: 'api/categories',
+        UPDATE: (id) => `api/categories?id=${id}`,
+        DELETE: (id) => `api/categories?id=${id}`,
+    },
+    PRODUCTS: {
+        GET_ALL: 'api/products',
+        CREATE: 'api/products',
+        UPDATE: (id) => `api/products?id=${id}`,
+        DELETE: (id) => `api/products?id=${id}`,
+    },
+    ORDERS: {
+        GET_ALL: 'api/orders',
+        CREATE: 'api/orders',
+        UPDATE: (id) => `api/orders?id=${id}`,
+    },
+    // PROMOTIONS: {
+    //     GET_ALL: 'api/promotions',
+    //     UPDATE: (id) => `api/promotions?id=${id}`,
+    // },
+    SLIDES: {
+        GET_ALL: 'api/promotions',
+        UPDATE: (id) => `api/promotions?id=${id}`,
+    }
+};

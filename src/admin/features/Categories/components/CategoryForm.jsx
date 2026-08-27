@@ -5,9 +5,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
-    status: 'Active',
     description: '',
-    image: [],
   })
 
   // Edit 
@@ -18,17 +16,13 @@ export default function CategoryForm({ onSubmit, initialData }) {
       setFormData({
         name: initialData.name || '',
         slug: initialData.slug || '',
-        status: initialData.status || 'Active',
         description: initialData.description || '',
-        image: [],
       })
     } else {
       setFormData({
         name: '',
         slug: '',
-        status: 'Active',
         description: '',
-        image: [],
       })
     }
   }, [initialData])
@@ -57,13 +51,6 @@ export default function CategoryForm({ onSubmit, initialData }) {
     }))
   }
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files)
-    setFormData((prev) => ({
-      ...prev,
-      image: files,
-    }))
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -105,21 +92,6 @@ export default function CategoryForm({ onSubmit, initialData }) {
         </div>
       </div>
 
-      {/* Status */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1">
-          ស្ថានភាព
-        </label>
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-          className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
-        >
-          <option value="Active">សកម្ម</option>
-          <option value="Inactive">អសកម្ម</option>
-        </select>
-      </div>
 
       {/* Description */}
       <div>
@@ -136,51 +108,6 @@ export default function CategoryForm({ onSubmit, initialData }) {
         />
       </div>
 
-      {/* Category Image */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1">
-          រូបភាពប្រភេទ
-        </label>
-        <input
-          type="file"
-          name="image"
-          accept="image/jpeg,image/png"
-          onChange={handleImageChange}
-          className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none"
-        />
-
-        {formData.image.length > 0 ? (
-          <div className="flex flex-wrap gap-2 mt-2">
-            {formData.image.map((file, index) => (
-              <div
-                key={index}
-                className="w-14 h-14 rounded-lg overflow-hidden border"
-              >
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={file.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          initialData?.image && (
-            <div className="flex flex-wrap gap-2 mt-2">
-              <div className="w-14 h-14 rounded-lg overflow-hidden border">
-                <img
-                  src={initialData.image}
-                  alt="Current category"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <span className="text-xs text-gray-400 self-end mb-1">
-                រូបភាពបច្ចុប្បន្ន
-              </span>
-            </div>
-          )
-        )}
-      </div>
 
       {/* Submit */}
       <div className="flex justify-end pt-2">

@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Eye, EyeOff, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
+import axiosClient from '../../../../api/axiosClient';
+import { API_ENDPOINTS } from '../../../../api/endpoints';
+import { useAuth } from '@/hooks/useAuth';
+import Swal from 'sweetalert2';
 const ParticleBackground = () => {
   const canvasRef = useRef(null);
 
@@ -99,6 +102,68 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      Swal.fire({
+        icon: 'error',
+        title: 'បរាជ័យ',
+        text: 'សូមបំពេញព័ត៌មានទាំងអស់',
+      });
+      return;
+    }
+    
+    setLoading(true);
+    console.log("Submitting login with:", { email, password });
+    try {
+      const response = await axiosClient.
+      post(API_ENDPOINTS.USERS.LOGIN,
+      { 
+        email, 
+        password
+      });
+
+      console.log("Login API Response:", response.data);
+      
+      const token = response.data?.token || response.data?.access_token;
+      console.log("Extracted Token:", token);
+      
+      if (token) {
+        login(token, response.data?.user || { email });
+        Swal.fire({
+          icon: 'success',
+          title: 'ជោគជ័យ',
+          text: 'អ្នកបានចូលគណនីដោយជោគជ័យ',
+          timer: 1500,
+          showConfirmButton: false
+        }).then(() => {
+          navigate('/admin');
+        });
+      }
+    } catch (error) {
+      console.error("Login API Error:", error);
+      console.log("Error Response Data:", error.response?.data);
+      
+      let errorMessage = 'ការចូលគណនីបរាជ័យ (Login Failed)';
+      if (!error.response) {
+        errorMessage = 'មិនអាចភ្ជាប់ទៅកាន់ម៉ាស៊ីនមេបានទេ (Network Error/CORS)';
+      } else {
+        errorMessage = error.response.data?.error || error.response.data?.message || errorMessage;
+      }
+
+      Swal.fire({
+        icon: 'error',
+        title: 'បរាជ័យ',
+        text: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     // Full screen background
@@ -116,7 +181,7 @@ export default function LoginForm() {
             <Zap className="text-red-600" size={28} strokeWidth={2.5} />
           </div>
           <h1 className="text-2xl font-bold tracking-tight">
-            ផ្ទាំងគ្រប់គ្រងគម្រោង
+            ONE CARE SHOP
           </h1>
           <p className="text-white/80 text-sm font-medium mt-1">
             ចូលគណនីផ្ទាំងគ្រប់គ្រងរបស់អ្នក
@@ -125,7 +190,7 @@ export default function LoginForm() {
 
         {/* Card Body */}
         <div className="p-6 sm:p-8">
-          <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             
             {/* Email Field */}
             <div className="flex flex-col gap-1.5">
@@ -166,26 +231,15 @@ export default function LoginForm() {
             </div>
             
             {/* Sign In Button */}
-            <Link to="/admin"
-              className="w-full mt-1 bg-red-600 text-white py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg hover:bg-red-700 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2">
-              ចូលគណនី
-            </Link>
+            <button 
+              type="submit"
+              disabled={loading}
+              className="w-full mt-1 bg-red-600 text-white py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg hover:bg-red-700 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+              {loading ? 'កំពុងដំណើរការ...' : 'ចូលគណនី'}
+            </button>
 
             {/* Links and Divider */}
             <div className="flex flex-col items-center gap-3.5 pt-1">
-              <a href="#" className="text-xs font-semibold text-red-600 hover:underline">
-                ភ្លេចពាក្យសម្ងាត់?
-              </a>
-              
-              <div className="w-full flex items-center justify-center relative my-1">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border"></div>
-                </div>
-                <div className="relative flex justify-center text-xs px-3 bg-background text-muted-foreground">
-                  អ្នកប្រើប្រាស់ថ្មី?
-                </div>
-              </div>
-              
               <a href="#" className="text-sm font-semibold text-red-600 hover:underline">
                 បង្កើតគណនី
               </a>
@@ -195,7 +249,7 @@ export default function LoginForm() {
           {/* Footer */}
           <div className="mt-6 text-center">
             <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} Your Project Name. រក្សាសិទ្ធិគ្រប់យ៉ាង។
+              © {new Date().getFullYear()} One Care Shop. រក្សាសិទ្ធិគ្រប់យ៉ាង
             </p>
           </div>
         </div>

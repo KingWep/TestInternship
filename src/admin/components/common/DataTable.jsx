@@ -12,7 +12,7 @@ export default function DataTable({ columns, data, keyField = 'id' }) {
   return (
     <div className="bg-white border border-slate-200 rounded-t-2xl shadow-xs overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse whitespace-nowrap">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
               {columns.map((col, index) => (
@@ -25,7 +25,7 @@ export default function DataTable({ columns, data, keyField = 'id' }) {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200 text-sm text-slate-700">
+          <tbody className="divide-y divide-slate-200 text-sm text-slate-700 ">
             {data && data.length > 0 ? (
               data.map((row, rowIndex) => (
                 <tr 

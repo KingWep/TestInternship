@@ -1,106 +1,57 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Swal from 'sweetalert2'
+import { userService } from '../../../../services/userService'
 
 const ITEMS_PER_PAGE = 5
 
-const initialUsers = [
-  {
-    id: 'USR-001',
-    name: 'សុខ សាន្ត',
-    phone: '+855 12 345 678',
-    role: 'Admin',
-    status: 'Active',
-    image: 'https://i.pinimg.com/1200x/76/08/bf/7608bfe61d770600b0dda782e14f2393.jpg',
-    createAt: '2024-01-15',
-  },
-  {
-    id: 'USR-002',
-    name: 'ចាន់ តារា',
-    phone: '+855 16 234 567',
-    role: 'Editor',
-    status: 'Active',
-    image: 'https://i.pravatar.cc/150?img=2',
-    createAt: '2024-02-20',
-  },
-  {
-    id: 'USR-003',
-    name: 'ពេជ្រ សុវណ្ណ',
-    phone: '+855 93 456 789',
-    role: 'Viewer',
-    status: 'Inactive',
-    image: 'https://i.pinimg.com/736x/15/69/98/1569986d34a96e52a2e69d17f6980b76.jpg',
-    createAt: '2024-03-10',
-  },
-  {
-    id: 'USR-004',
-    name: 'ម៉ៅ សុខា',
-    phone: '+855 98 123 456',
-    role: 'Editor',
-    status: 'Active',
-    image: 'https://i.pinimg.com/736x/ed/b3/d6/edb3d6f937a4481be64b08d7b001baff.jpg',
-    createAt: '2024-04-05',
-  },
-  {
-    id: 'USR-005',
-    name: 'រស់ សេរី',
-    phone: '+855 11 222 333',
-    role: 'Admin',
-    status: 'Active',
-    image: 'https://i.pinimg.com/736x/a7/81/fa/a781fa3022b40053b714509fbf3867d2.jpg',
-    createAt: '2024-05-18',
-  },
-  {
-    id: 'USR-006',
-    name: 'កែវ ចរិយា',
-    phone: '+855 81 999 888',
-    role: 'Viewer',
-    status: 'Inactive',
-    image: 'https://i.pinimg.com/736x/a7/81/fa/a781fa3022b40053b714509fbf3867d2.jpg',
-    createAt: '2024-06-22',
-  },
-  {
-    id: 'USR-007',
-    name: 'លឹម ពិសិដ្ឋ',
-    phone: '+855 10 777 666',
-    role: 'Editor',
-    status: 'Active',
-    image: 'https://i.pinimg.com/736x/a7/81/fa/a781fa3022b40053b714509fbf3867d2.jpg',
-    createAt: '2024-07-30',
-  },
-];
-
 export function useUsers() {
-  const [users, setUsers] = useState(initialUsers)
+  const [users, setUsers] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState({ status: '', role: '' })
   const [sortOrder, setSortOrder] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingUser, setEditingUser] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const fetchUsers = async () => {
+    setIsLoading(true)
+    try {
+      const response = await userService.getUsers()
+      setUsers(response.data || response || [])
+    } catch (error) {
+      console.error('Error fetching users:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
 
   // ── Filter & Sort ──────────────────────────────────────────────────────────
-  const filteredUsers = users
+  const filteredUsers = (users || [])
     .filter((user) => {
-      const matchSearch = user.name
-        .toLowerCase()
-        .includes(search.toLowerCase())
-
-      const matchStatus =
-        filters.status === '' ||
-        filters.status === 'ទាំងអស់' ||
-        user.status === filters.status
+      const matchSearch = 
+        (user.name || '').toLowerCase().includes(search.toLowerCase()) ||
+        (user.email || '').toLowerCase().includes(search.toLowerCase())
 
       const matchRole =
         filters.role === '' ||
         filters.role === 'ទាំងអស់' ||
         user.role === filters.role
 
-      return matchSearch && matchStatus && matchRole
+      return matchSearch && matchRole
     })
     .sort((a, b) => {
-      if (sortOrder === 'Newest First' || sortOrder === '') return b.createAt.localeCompare(a.createAt)
-      if (sortOrder === 'Oldest First') return a.createAt.localeCompare(b.createAt)
-      if (sortOrder === 'A → Z') return a.name.localeCompare(b.name)
-      return b.name.localeCompare(a.name) // 'Z → A'
+      const dateA = a.createAt || a.createdAt || ''
+      const dateB = b.createAt || b.createdAt || ''
+      if (sortOrder === 'Newest First' || sortOrder === '') return dateB.localeCompare(dateA)
+      if (sortOrder === 'Oldest First') return dateA.localeCompare(dateB)
+      if (sortOrder === 'A → Z') return (a.name || '').localeCompare(b.name || '')
+      return (b.name || '').localeCompare(a.name || '') // 'Z → A'
     })
 
   // ── Pagination ─────────────────────────────────────────────────────────────
@@ -126,34 +77,63 @@ export function useUsers() {
     setCurrentPage(1)
   }
 
-  const handleSubmit = (data) => {
-    const formattedData = {
-      name: data.name,
-      phone: data.phone || '',
-      role: data.role || 'Viewer',
-      status: data.status || 'Active',
-      image: data.image
-        ? URL.createObjectURL(data.image)
-        : editingUser
-        ? editingUser.image
-        : '',
-      createAt: editingUser
-        ? editingUser.createAt
-        : new Date().toISOString().split('T')[0],
-    }
+  const handleSubmit = async (data) => {
+    setIsSubmitting(true)
+    Swal.fire({
+      title: 'កំពុងដំណើរការ...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+    })
 
-    if (editingUser) {
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.id === editingUser.id ? { ...u, ...formattedData } : u
-        )
-      )
-    } else {
-      const newId = `USR-${String(Date.now()).slice(-3)}`
-      setUsers((prev) => [...prev, { id: data.id || newId, ...formattedData }])
-    }
+    try {
+      const payload = {
+        name: data.name,
+        email: data.email || '',
+        role: data.role || 'User',
+        token:"",
+      }
 
-    closeModal()
+      if (editingUser) {
+        payload.id = editingUser.id
+        const res = await userService.updateUser(editingUser.id, payload)
+        closeModal()
+        Swal.fire({
+          icon: 'success',
+          title: 'ជោគជ័យ',
+          text: res.message || 'User updated successfully!',
+          timer: 1500,
+          showConfirmButton: false
+        })
+      } else {
+        // When creating, we include the password
+        payload.password = data.password
+        payload.confirmPassword = data.confirmPassword
+        const res = await userService.registerUser(payload)
+        closeModal()
+        Swal.fire({
+          icon: 'success',
+          title: 'ជោគជ័យ',
+          text: res.message || 'User registered successfully!',
+          timer: 1500,
+          showConfirmButton: false
+        })
+      }
+      
+      await fetchUsers()
+    } catch (error) {
+      closeModal()
+      const errorData = error?.response?.data
+      const backendMsg = errorData?.message || errorData?.error || JSON.stringify(errorData) || error.message
+      Swal.fire({
+        icon: 'error',
+        title: `Error ${error?.response?.status || '500'}`,
+        text: backendMsg,
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleEdit = (user) => {
@@ -162,7 +142,22 @@ export function useUsers() {
   }
 
   const handleDelete = (id) => {
-    setUsers((prev) => prev.filter((u) => u.id !== id))
+    Swal.fire({
+      title: 'តើអ្នកប្រាកដទេ?',
+      text: "អ្នកនឹងមិនអាចទាញទិន្នន័យនេះមកវិញបានទេ!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'បាទ/ចាស លុបវា',
+      cancelButtonText: 'បោះបង់'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Fallback for delete since backend only supports get, update, register
+        setUsers((prev) => prev.filter((s) => s.id !== id))
+        Swal.fire('លុបបានជោគជ័យ!', 'ទិន្នន័យត្រូវបានលុប (Locally).', 'success')
+      }
+    })
   }
 
   const openAddModal = () => {
@@ -178,12 +173,14 @@ export function useUsers() {
   return {
     // state
     users,
+    isLoading,
     search,
     filters,
     sortOrder,
     currentPage,
     isModalOpen,
     editingUser,
+    isSubmitting,
     // computed
     filteredUsers,
     paginatedUsers,

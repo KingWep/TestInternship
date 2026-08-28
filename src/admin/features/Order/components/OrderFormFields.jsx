@@ -11,7 +11,7 @@ export default function OrderFormFields({ customerInfo, onChange }) {
         <input
           type="text"
           name="phone"
-          value={customerInfo.phone}
+          value={customerInfo.customerPhone}
           onChange={onChange}
           placeholder="បញ្ចូលលេខទូរស័ព្ទ"
           className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-hidden focus:border-blue-500 transition-colors"
@@ -23,7 +23,7 @@ export default function OrderFormFields({ customerInfo, onChange }) {
         <label className="block text-xs font-semibold text-slate-600 mb-1">អាសយដ្ឋាន</label>
         <textarea
           name="address"
-          value={customerInfo.address}
+          value={customerInfo.customerAddress}
           onChange={onChange}
           placeholder="បញ្ចូលអាសយដ្ឋាន"
           rows={3}

@@ -59,8 +59,10 @@ export default function OrderFilterBar({
             <option value="" disabled>ជ្រើសរើស status</option>
             <option value="ទាំងអស់ (All)">ទាំងអស់</option>
             <option value="Pending">រង់ចាំ</option>
+            <option value="Pickup">បានយកទំនិញ</option>
+            <option value="Delivering">កំពុងដឹក</option>
             <option value="Completed">បានបញ្ចប់</option>
-            <option value="Cancelled">បានលុបចោល</option>
+            <option value="Cancelled">បានបោះបង់</option>
           </select>
           <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
             <ChevronDown className="h-4 w-4 text-slate-400" />

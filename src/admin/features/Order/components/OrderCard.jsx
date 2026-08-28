@@ -12,14 +12,19 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { useOrderContext } from '../../../../context/OrderContext'
 
-export default function OrderCard({ order }) {
+export default function OrderCard({ order, onEdit }) {
   const navigate = useNavigate()
-  const { updatePaymentStatus } = useOrderContext()
+  const { updatePaymentStatus, updateOrderStatus } = useOrderContext()
 
+  // Updated to match OrderList statusConfig styles (adjusted for card aesthetics)
   const getStatusStyle = (status) => {
     switch (status) {
       case 'Pending':
         return 'bg-amber-50 text-amber-700 border-amber-200'
+      case 'Pickup':
+        return 'bg-blue-50 text-blue-700 border-blue-200'
+      case 'Delivering':
+        return 'bg-purple-50 text-purple-700 border-purple-200'
       case 'Completed':
         return 'bg-emerald-50 text-emerald-700 border-emerald-200'
       case 'Cancelled':
@@ -29,14 +34,19 @@ export default function OrderCard({ order }) {
     }
   }
 
+  // Updated to match OrderList labels
   const getStatusText = (status) => {
     switch (status) {
       case 'Pending':
         return 'រង់ចាំ'
+      case 'Pickup':
+        return 'បានយកទំនិញ'
+      case 'Delivering':
+        return 'កំពុងដឹក'
       case 'Completed':
         return 'បានបញ្ចប់'
       case 'Cancelled':
-        return 'បានលុបចោល'
+        return 'បានបោះបង់'
       default:
         return status || 'មិនដឹង'
     }
@@ -44,6 +54,11 @@ export default function OrderCard({ order }) {
 
   const formatCurrency = (amount) =>
     typeof amount === 'number' ? amount.toFixed(2) : '0.00'
+
+  // Calculations synced with OrderList logic
+  const totalAmount = Number(order?.totalAmount || order?.total || 0)
+  const deliveryFee = Number(order?.deliveryFee || 0)
+  const subtotal = totalAmount - deliveryFee
 
   return (
     <div className="group flex h-full min-w-0 w-full flex-col overflow-hidden rounded-lg sm:rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
@@ -69,24 +84,42 @@ export default function OrderCard({ order }) {
                 </span>
 
                 <span className="max-w-[70px] truncate rounded-md border border-slate-200/80 bg-white/80 px-1 py-0.5 font-mono text-[8px] font-bold text-slate-500 sm:max-w-none sm:text-[9px]">
-                  {order?.orderNumber}
+                  {order?.orderNo || `ORD-${order?.orderNumber}`}
                 </span>
               </div>
 
               <div className="mt-0.5 flex min-w-0 items-center gap-1 text-[8px] font-medium text-slate-400 sm:text-[9px]">
                 <Clock className="h-2 w-2 shrink-0 text-slate-400 sm:h-2.5 sm:w-2.5" />
-                <span className="truncate">{order?.date}</span>
+                <span className="truncate">
+                  {order?.createdAt
+                    ? new Date(order.createdAt).toLocaleString("km-KH", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "—"}
+                </span>
               </div>
             </div>
           </div>
 
-          <span
-            className={`shrink-0 rounded-full border px-1.5 py-0.5 text-[8px] font-bold shadow-sm sm:px-2 sm:py-1 sm:text-[9px] ${getStatusStyle(
-              order?.status
-            )}`}
-          >
-            {getStatusText(order?.status)}
-          </span>
+          <div className="relative shrink-0">
+            <select
+              aria-label="Order Status"
+              value={order?.status || 'Pending'}
+              onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+              className={`appearance-none rounded-full border pl-2 pr-5 py-0.5 text-[8px] font-bold shadow-sm outline-none transition-all sm:pl-2.5 sm:pr-6 sm:py-1 sm:text-[9px] cursor-pointer ${getStatusStyle(order?.status)}`}
+            >
+              <option value="Pending">រង់ចាំ</option>
+              <option value="Pickup">បានយកទំនិញ</option>
+              <option value="Delivering">កំពុងដឹក</option>
+              <option value="Completed">បានបញ្ចប់</option>
+              <option value="Cancelled">បានបោះបង់</option>
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-1.5 top-1/2 h-2.5 w-2.5 -translate-y-1/2 opacity-70" />
+          </div>
         </div>
       </div>
 
@@ -105,7 +138,7 @@ export default function OrderCard({ order }) {
               </p>
 
               <p className="truncate text-[10px] font-semibold text-slate-700 sm:text-[11px]">
-                {order?.phone || 'គ្មានលេខទូរស័ព្ទ'}
+                {order?.customerPhone || order?.phone || 'គ្មានលេខទូរស័ព្ទ'}
               </p>
             </div>
           </div>
@@ -121,7 +154,7 @@ export default function OrderCard({ order }) {
               </p>
 
               <p className="line-clamp-2 break-words text-[10px] font-medium leading-3.5 text-slate-600 sm:text-[11px] sm:leading-4">
-                {order?.address || 'មិនមានអាសយដ្ឋាន'}
+                {order?.customerAddress || order?.address || 'មិនមានអាសយដ្ឋាន'}
               </p>
             </div>
           </div>
@@ -135,7 +168,7 @@ export default function OrderCard({ order }) {
           <span className="text-slate-500">តម្លៃទំនិញ</span>
 
           <span className="shrink-0 font-semibold text-slate-700">
-            ${formatCurrency(order?.subtotal)}
+            ${formatCurrency(subtotal)}
           </span>
         </div>
 
@@ -143,7 +176,7 @@ export default function OrderCard({ order }) {
           <span className="text-slate-500">សេវាដឹក</span>
 
           <span className="shrink-0 font-semibold text-slate-700">
-            ${formatCurrency(order?.delivery)}
+            ${formatCurrency(deliveryFee)}
           </span>
         </div>
 
@@ -153,7 +186,7 @@ export default function OrderCard({ order }) {
           </span>
 
           <span className="shrink-0 text-xs font-black text-blue-600 sm:text-sm">
-            ${formatCurrency(order?.total)}
+            ${formatCurrency(totalAmount)}
           </span>
         </div>
       </div>
@@ -201,7 +234,7 @@ export default function OrderCard({ order }) {
       <div className="mx-2 mb-2 grid grid-cols-3 overflow-hidden rounded-md border border-slate-200 bg-white sm:mx-3 sm:mb-2.5 sm:rounded-lg">
 
         <button
-          onClick={() => navigate(`/admin/orders/edit/${order.id}`)}
+          onClick={onEdit}
           className="flex min-w-0 items-center justify-center gap-0.5 bg-white px-1 py-1.5 text-[8px] font-semibold text-slate-600 transition-all hover:bg-blue-50 hover:text-blue-600 sm:gap-1 sm:py-1.5 sm:text-[9px]"
         >
           <Edit3 className="h-2.5 w-2.5 shrink-0 sm:h-3 sm:w-3" />

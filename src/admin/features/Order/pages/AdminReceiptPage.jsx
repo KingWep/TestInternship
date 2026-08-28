@@ -7,9 +7,9 @@ import { toPng } from 'html-to-image'
 import { useOrderContext } from '../../../../context/OrderContext'
 import { sendOrderToTelegram } from '../../../../services/telegramService'
 function AdminReceiptCard({ order }) {
-  const subtotal = Number(order?.subtotal) || 0
-  const delivery = Number(order?.delivery) || 0
-  const total    = Number(order?.total)    || 0
+  const delivery = Number(order?.deliveryFee) || 0
+  const total    = Number(order?.totalAmount)    || 0
+  const subtotal = total - delivery
 
   return (
     <div
@@ -33,11 +33,13 @@ function AdminReceiptCard({ order }) {
       <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">
         <div className="flex justify-between items-center w-full">
           <span className="font-medium text-slate-900">លេខវិក្កយបត្រ:</span> 
-          <span className="font-mono font-bold text-slate-900">ORD:{order?.orderNumber || order?.id}</span>
+          <span className="font-mono font-bold text-slate-900">{order?.orderNo || order?.orderNumber || `ORD-${order?.id}`}</span>
         </div>
         <div className="flex justify-between items-center w-full">
           <span className="font-medium text-slate-900">កាលបរិច្ឆេទ:</span> 
-          <span className="font-mono text-slate-800">{order?.date} {order?.time}</span>
+          <span className="font-mono text-slate-800">
+            {order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : (order?.date || '')} {order?.createdAt ? new Date(order.createdAt).toLocaleTimeString() : (order?.time || '')}
+          </span>
         </div>
         {order?.customerName && (
           <div className="flex justify-between items-center w-full">
@@ -47,7 +49,7 @@ function AdminReceiptCard({ order }) {
         )}
         <div className="flex justify-between items-center w-full">
           <span className="font-medium text-slate-900">លេខទូរស័ព្ទ:</span> 
-          <span className="font-mono text-slate-900 font-semibold">{order?.phone || '—'}</span>
+          <span className="font-mono text-slate-900 font-semibold">{order?.customerPhone || order?.phone || '—'}</span>
         </div>
       </div>
 
@@ -62,14 +64,14 @@ function AdminReceiptCard({ order }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {order?.items && order.items.length > 0 ? (
-              order.items.map((item, idx) => {
+            {(order?.orderDetails || order?.items) && (order?.orderDetails || order?.items).length > 0 ? (
+              (order?.orderDetails || order?.items).map((item, idx) => {
                 const price = Number(item.price) || Number(item.salePrice) || 0
                 const qty   = Number(item.quantity) || 0
                 return (
                   <tr key={item.id ?? idx} className="text-slate-800">
                     <td className="py-1.5 pr-1 font-medium break-words text-left align-top leading-snug">
-                      {item.name}
+                      {item.product_name || item.name}
                     </td>
                     <td className="py-1.5 text-center tabular-nums text-slate-600 font-semibold align-top">
                       {qty}
@@ -122,7 +124,7 @@ function AdminReceiptCard({ order }) {
 export default function AdminReceiptPage() {
   const { id } = useParams()
   const { orders } = useOrderContext()
-  const order = orders?.find((o) => o.id === id || o.orderNumber === id)
+  const order = orders?.find((o) => String(o.id) === String(id) || o.orderNo === id || o.orderNumber === id)
 
   const printRef = useRef(null)
   const [loading, setLoading] = useState(null)
@@ -141,7 +143,7 @@ export default function AdminReceiptPage() {
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `Receipt-ORD-${order.orderNumber || order.id}`,
+    documentTitle: `Receipt-${order.orderNo || order.orderNumber || order.id}`,
     pageStyle: `
       @page { 
         size: auto; 
@@ -181,7 +183,7 @@ export default function AdminReceiptPage() {
       })
 
       const link = document.createElement('a')
-      link.download = `Receipt-ORD-${order.orderNumber || order.id}.png`
+      link.download = `Receipt-${order.orderNo || order.orderNumber || order.id}.png`
       link.href = dataUrl
       link.click()
     } catch (err) {

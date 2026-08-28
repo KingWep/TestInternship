@@ -24,11 +24,9 @@ export default function AdminSaleForm() {
     handleCheckout,
     subtotal,
     INITIAL_CUSTOMER,
-    INITIAL_PAYMENT,
   } = useSalesForm()
 
   const [customerInfo, setCustomerInfo] = useState(INITIAL_CUSTOMER)
-  const [paymentMethod, setPaymentMethod] = useState(INITIAL_PAYMENT)
   const [isCartOpen, setIsCartOpen] = useState(false)
 
   useEffect(() => {
@@ -41,10 +39,9 @@ export default function AdminSaleForm() {
   }, [isCartOpen])
 
   const onCheckout = async () => {
-    const result = await handleCheckout({ customerInfo, paymentMethod })
+    const result = await handleCheckout({ customerInfo })
     if (result) {
       setCustomerInfo(INITIAL_CUSTOMER)
-      setPaymentMethod(INITIAL_PAYMENT)
       setIsCartOpen(false)
     }
   }
@@ -123,32 +120,7 @@ export default function AdminSaleForm() {
               setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value })
             }
           />
-
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
-            <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider mb-3">
-              វិធីសាស្ត្រទូទាត់ប្រាក់
-            </h3>
-            <div className="flex flex-wrap gap-3">
-              {[
-                { label: 'សាច់ប្រាក់', value: 'Cash' },
-                { label: 'កាតធនាគារ', value: 'Card' },
-                { label: 'វេសប្រាក់', value: 'Bank Transfer' },
-                { label: 'QR កូដ', value: 'QR Code' }
-              ].map((method) => (
-                <button
-                  key={method.value}
-                  onClick={() => setPaymentMethod(method.value)}
-                  className={`flex-1 py-1 rounded-lg text-sm font-semibold border transition-all ${paymentMethod === method.value
-                      ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
-                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                    }`}
-                >
-                  {method.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
+          
           <OrderSummaryBox
             subtotal={subtotal}
             onCheckout={onCheckout}

@@ -8,7 +8,6 @@ import { useCategoryContext } from '../../../../context/CategoryContext'
 
 // ─── Initial state helpers ─────
 const INITIAL_CUSTOMER = { name: '', phone: '', address: '', deliveryFee: '' }
-const INITIAL_PAYMENT = 'Cash'
 
 // ─── Hook ──
 export default function useSalesForm() {
@@ -67,7 +66,7 @@ export default function useSalesForm() {
   }
 
   // ── Checkout with validation & SweetAlert2 
-  const handleCheckout = async ({ customerInfo, paymentMethod }) => {
+  const handleCheckout = async ({ customerInfo }) => {
     if (cart.length === 0) {
       Swal.fire({
         icon: 'warning',
@@ -102,13 +101,23 @@ export default function useSalesForm() {
     }
 
     // ── All valid → create order via context ───
-    const newOrder = addOrder({
-      items: cart,
-      subtotal,
-      delivery: Number(customerInfo.deliveryFee) || 0,
-      paymentMethod,
-      customerInfo,
-    })
+    let newOrder;
+    try {
+      newOrder = await addOrder({
+        items: cart,
+        subtotal,
+        delivery: Number(customerInfo.deliveryFee) || 0,
+        customerInfo,
+      })
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'បរាជ័យ (Failed)',
+        text: 'មានបញ្ហាក្នុងការបង្កើតការបញ្ជាទិញ។',
+        confirmButtonColor: '#3b82f6',
+      })
+      return null
+    }
 
     // ── Reset state ─
     setCart([])
@@ -138,7 +147,7 @@ export default function useSalesForm() {
 
   // ── Derived values ──
   const subtotal = cart.reduce(
-    (acc, item) => acc + (item.price || 0) * item.quantity,
+    (acc, item) => acc + (item.salePrice || 0) * item.quantity,
     0
   )
 
@@ -170,8 +179,7 @@ export default function useSalesForm() {
     handleCheckout,
     // Summary
     subtotal,
-    // Customer / payment defaults
+    // Customer defaults
     INITIAL_CUSTOMER,
-    INITIAL_PAYMENT,
   }
 }

@@ -90,7 +90,7 @@ export default function CartDrawer() {
     })
   }
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     if (!phone.trim()) {
       showWarning("សូមបញ្ចូលលេខទូរស័ព្ទ")
       return
@@ -112,42 +112,60 @@ export default function CartDrawer() {
     }
 
     if (paymentMethod === "cash") {
-      handleCashOrder()
+      await handleCashOrder()
       return
     }
 
-    const newOrder = handleCreateOrder()
-    startQrPayment(newOrder.id)
+    try {
+      const newOrder = await handleCreateOrder()
+      startQrPayment(newOrder.id)
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "បរាជ័យ",
+        text: "មានបញ្ហាក្នុងការបង្កើតការបញ្ជាទិញ",
+        confirmButtonColor: "#7f1d1d",
+      })
+    }
   }
 
   const handleCashOrder = async () => {
-    const newOrder = handleCreateOrder()
-    resetCheckoutForm()
-    
-    await Swal.fire({
-      icon: "success",
-      title: "បញ្ជាទិញជោគជ័យ 🎉",
-      text: `ចំនួនសរុប $${grandTotal.toFixed(2)}`,
-      confirmButtonText: "យល់ព្រម",
-      confirmButtonColor: "#7f1d1d",
-      allowOutsideClick: false,
-    })
+    try {
+      const newOrder = await handleCreateOrder()
+      resetCheckoutForm()
+      
+      await Swal.fire({
+        icon: "success",
+        title: "បញ្ជាទិញជោគជ័យ 🎉",
+        text: `ចំនួនសរុប $${grandTotal.toFixed(2)}`,
+        confirmButtonText: "យល់ព្រម",
+        confirmButtonColor: "#7f1d1d",
+        allowOutsideClick: false,
+      })
 
-    const result = await Swal.fire({
-      icon: "question",
-      title: "បោះពុម្ពវិក្កយបត្រ?",
-      text: "តើអ្នកចង់បោះពុម្ពវិក្កយបត្រដែរឬទេ?",
-      showCancelButton: true,
-      confirmButtonText: "🖨️ បោះពុម្ពវិក្កយបត្រ",
-      cancelButtonText: "រំលង",
-      confirmButtonColor: "#7f1d1d",
-      cancelButtonColor: "#64748b",
-    })
+      const result = await Swal.fire({
+        icon: "question",
+        title: "បោះពុម្ពវិក្កយបត្រ?",
+        text: "តើអ្នកចង់បោះពុម្ពវិក្កយបត្រដែរឬទេ?",
+        showCancelButton: true,
+        confirmButtonText: "🖨️ បោះពុម្ពវិក្កយបត្រ",
+        cancelButtonText: "រំលង",
+        confirmButtonColor: "#7f1d1d",
+        cancelButtonColor: "#64748b",
+      })
 
-    if (result.isConfirmed) {
-      navigate(`/print-receipt/${newOrder.id}`)
-    } else {
-      setIsCartOpen(false)
+      if (result.isConfirmed) {
+        navigate(`/print-receipt/${newOrder.id}`)
+      } else {
+        setIsCartOpen(false)
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "បរាជ័យ",
+        text: "មានបញ្ហាក្នុងការបង្កើតការបញ្ជាទិញ",
+        confirmButtonColor: "#7f1d1d",
+      })
     }
   }
 

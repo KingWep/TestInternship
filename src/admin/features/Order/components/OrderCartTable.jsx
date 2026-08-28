@@ -21,7 +21,7 @@ const CartItem = memo(({ item, onUpdateQuantity, onRemoveItem }) => {
       {/* Info */}
       <div className="flex-1 min-w-0">
         <h4 className="font-semibold text-slate-800 text-sm truncate">{item.name}</h4>
-        <p className="text-xs text-slate-500 font-medium">${(item.price || 0).toFixed(2)}</p>
+        <p className="text-xs text-slate-500 font-medium">${(item.salePrice || 0).toFixed(2)}</p>
       </div>
 
       {/* Grouped Controls */}
@@ -44,7 +44,7 @@ const CartItem = memo(({ item, onUpdateQuantity, onRemoveItem }) => {
       {/* Total & Action */}
       <div className="flex flex-col items-end gap-1 ml-2 w-16">
         <span className="font-bold text-slate-800 text-sm">
-          ${((item.price || 0) * item.quantity).toFixed(2)}
+          ${((item.salePrice || 0) * item.quantity).toFixed(2)}
         </span>
         <button
           onClick={handleRemove}

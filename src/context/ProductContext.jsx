@@ -29,6 +29,10 @@ export function ProductProvider({ children }) {
       ? item.images.map(formatImageUrl)
       : [];
 
+    // Preserve raw image objects (with IDs) so ProductForm can track which
+    // image was removed and build the correct replacement mapping.
+    const rawImages = Array.isArray(item.images) ? item.images : [];
+
     return {
       id: item.id,
       name: item.name || "",
@@ -39,6 +43,7 @@ export function ProductProvider({ children }) {
       stockQuantity: item.stockQuantity ?? item.stock ?? 0,
       stock: item.stockQuantity ?? item.stock ?? 0,
       images: mappedImages,
+      rawImages,
       image: mappedImages[0] || "",
       description: item.description || "",
       categoryId: item.categoryId || item.category_id,
@@ -68,8 +73,7 @@ export function ProductProvider({ children }) {
     fetchProducts();
   }, []);
 
-  // Dynamically attach category names to products to prevent race conditions
-  // in case the categories data loads after the products data.
+  // mapping of products to include category names 
   const productsWithCategory = useMemo(() => {
     return products.map((product) => {
       const matchedCategory = categories?.find(

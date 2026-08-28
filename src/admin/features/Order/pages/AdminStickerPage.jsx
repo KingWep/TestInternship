@@ -12,9 +12,9 @@ import { useOrderContext } from '../../../../context/OrderContext'
 import { sendStickerToTelegram } from '../../../../services/telegramService'
 
 function AdminStickerCard({ order, courier, setCourier }) {
-  const subtotal = Number(order?.subtotal) || 0
-  const delivery = Number(order?.delivery) || 0
-  const total = Number(order?.total) || 0
+  const delivery = Number(order?.deliveryFee) || 0
+  const total = Number(order?.totalAmount) || 0
+  const subtotal = total - delivery
 
   const couriers = ['វីរៈប៊ុនថាំ', 'J&T Express', 'កាពីតូល', 'ផ្សេងៗ']
 
@@ -74,7 +74,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
                 <Phone size={12} /> អ្នកទទួល :
               </div>
               <p className="font-bold text-xs text-slate-900 truncate">{order?.customerName || 'អតិថិជនទូទៅ'}</p>
-              <p className="text-[11px] font-bold text-slate-900 tracking-wide">{order?.phone || '—'}</p>
+              <p className="text-[11px] font-bold text-slate-900 tracking-wide">{order?.customerPhone || order?.phone || '—'}</p>
             </div>
           </div>
 
@@ -83,7 +83,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
               <MapPin size={13} className="text-slate-900" /> អាស័យដ្ឋានដឹកជញ្ជូន :
             </div>
             <p className="font-bold text-xs text-slate-900 leading-relaxed line-clamp-3">
-              {order?.address || 'មិនមានអាសយដ្ឋាន'}
+              {order?.customerAddress || order?.address || 'មិនមានអាសយដ្ឋាន'}
             </p>
           </div>
         </div>
@@ -158,7 +158,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
 export default function AdminStickerPage() {
   const { id } = useParams()
   const { orders } = useOrderContext()
-  const order = orders?.find((o) => o.id === id || o.orderNumber === id)
+  const order = orders?.find((o) => String(o.id) === String(id) || o.orderNo === id || o.orderNumber === id)
 
   const printRef = useRef(null)
   const [loading, setLoading] = useState(null)
@@ -178,7 +178,7 @@ export default function AdminStickerPage() {
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `Sticker-ORD-${order.orderNumber || order.id}`,
+    documentTitle: `Sticker-${order.orderNo || order.orderNumber || order.id}`,
     pageStyle: `
       @page { 
         size: 150mm 100mm landscape; 
@@ -218,7 +218,7 @@ export default function AdminStickerPage() {
       })
 
       const link = document.createElement('a')
-      link.download = `Sticker-ORD-${order.orderNumber || order.id}.png`
+      link.download = `Sticker-${order.orderNo || order.orderNumber || order.id}.png`
       link.href = dataUrl
       link.click()
     } catch (err) {

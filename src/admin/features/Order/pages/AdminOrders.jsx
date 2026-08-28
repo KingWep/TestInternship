@@ -3,6 +3,8 @@ import PageHeader from '../../../components/common/PageHeader'
 import OrderFilterBar from '../components/OrderFilterBar'
 import OrderCard from '../components/OrderCard'
 import OrderList from '../components/OrderList'
+import OrderUpdateForm from '../components/OrderUpdateForm'
+import Modal from '../../../components/common/Modal'
 import { PackageOpen, LayoutGrid, List } from 'lucide-react'
 
 import { useOrders } from '../hooks/useOrders'
@@ -20,11 +22,30 @@ export default function AdminOrders() {
     fromDate,
     setFromDate,
     toDate,
-    setToDate
+    setToDate,
+    isModalOpen,
+    editingOrder,
+    isSubmitting,
+    closeModal,
+    openEditModal,
+    handleUpdateSubmit
   } = useOrders()
 
   return (
     <div className="space-y-6">
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={editingOrder ? `#${editingOrder.orderNo}` : 'កែប្រែការបញ្ជាទិញ'}
+      >
+        <OrderUpdateForm
+          initialData={editingOrder}
+          onSubmit={handleUpdateSubmit}
+          onCancel={closeModal}
+          isSubmitting={isSubmitting}
+        />
+      </Modal>
+
       <div className="flex flex-row items-center justify-between gap-2 sm:gap-4">
         <PageHeader
           title="ការបញ្ជាទិញ"
@@ -77,11 +98,11 @@ export default function AdminOrders() {
             {[...orders]
               .sort((a, b) => b.id - a.id)
               .map(order => (
-                <OrderCard key={order.id} order={order} />
+                <OrderCard key={order.id} order={order} onEdit={() => openEditModal(order)} />
               ))}
           </div>
         ) : (
-          <OrderList orders={orders} />
+          <OrderList orders={orders} onEdit={openEditModal} />
         )
       ) : (
         <div className=" flex flex-col items-center justify-center py-16 text-slate-400">

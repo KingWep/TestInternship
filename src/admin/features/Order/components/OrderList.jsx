@@ -185,7 +185,7 @@ export default function OrderList({ orders, onEdit }) {
   return (
     <DataTable
       columns={columns}
-      data={[...orders].sort((a, b) => b.id - a.id)}
+      data={orders}
       keyField="id"
     />
   );

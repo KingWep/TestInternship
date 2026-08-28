@@ -3,18 +3,23 @@ import { useOrderContext } from '../../../../context/OrderContext'
 import { AlertTriangle, ClipboardList, Trophy, DollarSign } from 'lucide-react'
 
 export default function useDashboard() {
-    const { products, lowStockProducts } = useProductContext()
+    const {totalLowStockProducts } = useProductContext()
     const { orders, totalRevenue, topSellingProducts } = useOrderContext()
 
     const statsData = [
-        { title: "ចំណូលសរុប", value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign, trend: "12", color: "green" , link: "/admin"},
+        {   title: "ចំណូលសរុប", 
+            value: `$${Number(totalRevenue || 0).toFixed(2)}`, 
+            icon: DollarSign, 
+            trend: "12", 
+            color: "green" ,
+            link: "/admin"},
         { title: "ការបញ្ជាទិញសរុប", value: orders.length.toString(), icon: ClipboardList, trend: "8", color: "blue", link: "/admin/orders" },
         {
             title: "ផលិតផលស្តុកតិច",
-            value: lowStockProducts.length.toString(),
+            value: totalLowStockProducts?.toString() || "0",
             icon: AlertTriangle,
             color: "amber",
-            warning: lowStockProducts.length > 0,
+            warning: totalLowStockProducts > 0,
             note: "ត្រូវការបន្ថែមស្តុក",
             link: "/admin/products",
         },

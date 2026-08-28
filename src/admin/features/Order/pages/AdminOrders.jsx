@@ -5,6 +5,7 @@ import OrderCard from '../components/OrderCard'
 import OrderList from '../components/OrderList'
 import OrderUpdateForm from '../components/OrderUpdateForm'
 import Modal from '../../../components/common/Modal'
+import Pagination from '../../../components/common/Pagination'
 import { PackageOpen, LayoutGrid, List } from 'lucide-react'
 
 import { useOrders } from '../hooks/useOrders'
@@ -13,6 +14,7 @@ export default function AdminOrders() {
   const [viewMode, setViewMode] = useState('list')
   const {
     orders,
+    paginatedOrders,
     search,
     setSearch,
     statusFilter,
@@ -23,6 +25,9 @@ export default function AdminOrders() {
     setFromDate,
     toDate,
     setToDate,
+    currentPage,
+    setCurrentPage,
+    totalPages,
     isModalOpen,
     editingOrder,
     isSubmitting,
@@ -93,17 +98,25 @@ export default function AdminOrders() {
 
       {/* CORRECTED CONDITIONAL RENDERING */}
       {orders.length > 0 ? (
-        viewMode === 'card' ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-            {[...orders]
-              .sort((a, b) => b.id - a.id)
-              .map(order => (
+        <div className="flex flex-col gap-4">
+          {viewMode === 'card' ? (
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+              {paginatedOrders.map(order => (
                 <OrderCard key={order.id} order={order} onEdit={() => openEditModal(order)} />
               ))}
+            </div>
+          ) : (
+            <OrderList orders={paginatedOrders} onEdit={openEditModal} />
+          )}
+          
+          <div className="mt-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </div>
-        ) : (
-          <OrderList orders={orders} onEdit={openEditModal} />
-        )
+        </div>
       ) : (
         <div className=" flex flex-col items-center justify-center py-16 text-slate-400">
           <PackageOpen size={64} className="mb-4 mt-20 text-slate-300" strokeWidth={1.5} />

@@ -30,7 +30,7 @@ export default function OrderFilterBar({
             value={search}
             onChange={onSearchChange}
             className="block w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-xs sm:text-sm"
-            placeholder="ស្វែងរក..."
+            placeholder="ស្វែងរកតាមលេខកូដ ឬ លេខទូរស័ព្ទ"
           />
         </div>
         

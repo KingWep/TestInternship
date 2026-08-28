@@ -74,7 +74,7 @@ export function ProductProvider({ children }) {
   }, []);
 
   // mapping of products to include category names 
-  const productsWithCategory = useMemo(() => {
+  const productswithCategory = useMemo(() => {
     return products.map((product) => {
       const matchedCategory = categories?.find(
         (cat) => String(cat.id) === String(product.categoryId)
@@ -98,9 +98,10 @@ export function ProductProvider({ children }) {
   }, [products, categories]); 
 
   // Filter based on the fully mapped products
-  const lowStockProducts = productsWithCategory.filter(
-    (product) => product.stockQuantity < 10
-  );
+  const totalLowStockProducts = productswithCategory.filter(
+    (product) => product.stockQuantity > 0 && product.stockQuantity <= 10
+  ).length;
+
 
   const addProduct = async (product) => {
     try {
@@ -146,12 +147,12 @@ export function ProductProvider({ children }) {
   return (
     <ProductContext.Provider
       value={{
-        products: productsWithCategory, 
+        products: productswithCategory, 
         setProducts,
         addProduct,
         updateProduct,
         deleteProduct,
-        lowStockProducts,
+        totalLowStockProducts,
         loading,
         error,
         refreshProducts: fetchProducts,

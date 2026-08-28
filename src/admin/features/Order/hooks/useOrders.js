@@ -12,6 +12,9 @@ export function useOrders() {
   const [paymentFilter, setPaymentFilter] = useState('')
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const ITEMS_PER_PAGE = 5
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -62,12 +65,37 @@ export function useOrders() {
     }
   }
 
-  // Filter logic
+  const handleSearchChange = (val) => {
+    setSearch(val)
+    setCurrentPage(1)
+  }
+
+  const handleStatusFilterChange = (val) => {
+    setStatusFilter(val)
+    setCurrentPage(1)
+  }
+
+  const handlePaymentFilterChange = (val) => {
+    setPaymentFilter(val)
+    setCurrentPage(1)
+  }
+
+  const handleFromDateChange = (val) => {
+    setFromDate(val)
+    setCurrentPage(1)
+  }
+
+  const handleToDateChange = (val) => {
+    setToDate(val)
+    setCurrentPage(1)
+  }
+
+  // Filter and sort logic
   const filteredOrders = orders.filter(order => {
     const matchesSearch =
       search === '' ||
-      order.orderNumber.includes(search) ||
-      order.phone.includes(search)
+      order.orderNo.includes(search) ||
+      order.customerPhone.includes(search)
     const matchesStatus =
       statusFilter === '' || statusFilter === 'ទាំងអស់ (All)' || order.status === statusFilter
     const matchesPayment =
@@ -87,20 +115,31 @@ export function useOrders() {
     }
 
     return matchesSearch && matchesStatus && matchesPayment && matchesDate
-  })
+  }).sort((a, b) => b.id - a.id) // Ensure most recent orders are first
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE)
+  const paginatedOrders = filteredOrders.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  )
 
   return {
     orders: filteredOrders,
+    paginatedOrders,
     search,
-    setSearch,
+    setSearch: handleSearchChange,
     statusFilter,
-    setStatusFilter,
+    setStatusFilter: handleStatusFilterChange,
     fromDate,
-    setFromDate,
+    setFromDate: handleFromDateChange,
     toDate,
-    setToDate,
+    setToDate: handleToDateChange,
     paymentFilter,
-    setPaymentFilter,
+    setPaymentFilter: handlePaymentFilterChange,
+    currentPage,
+    setCurrentPage,
+    totalPages,
     isModalOpen,
     editingOrder,
     isSubmitting,

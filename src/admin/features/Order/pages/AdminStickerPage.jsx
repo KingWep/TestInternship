@@ -259,10 +259,8 @@ export default function AdminStickerPage() {
       setLoading(null)
     }
   }
-
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col items-center py-8 px-4 font-sans text-slate-800">
-
       <div className="w-full max-w-2xl flex items-center justify-between mb-5">
         <Link to="/admin/orders" className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3.5 py-1.5 rounded-lg shadow-xs border border-slate-200 text-sm font-medium transition-colors">
           <ArrowLeft size={16} />
@@ -274,7 +272,8 @@ export default function AdminStickerPage() {
       </div>
 
 
-      <div className="bg-white p-3 md:p-4 shadow-lg rounded-2xl mb-6 border border-slate-200 w-full overflow-hidden">
+
+      <div className=" p-3 md:p-4 shadow-lg rounded-2xl mb-6 border border-slate-200 overflow-hidden">
         <div ref={printRef} className="flex justify-center items-center w-full">
           <AdminStickerCard order={order} courier={courier} setCourier={setCourier} />
         </div>

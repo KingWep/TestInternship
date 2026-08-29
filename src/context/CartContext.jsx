@@ -7,17 +7,18 @@ export function CartProvider({ children }) {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const deliveryFee = 2.5
 
-  const addToCart = (product) => {
+  const addToCart = (product, quantityToAdd = 1) => {
+    const count = Math.max(1, Number(quantityToAdd) || 1)
     setCartItems((prev) => {
       const existingItem = prev.find((item) => item.id === product.id)
       if (existingItem) {
         return prev.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + count }
             : item
         )
       }
-      return [...prev, { ...product, quantity: 1 }]
+      return [...prev, { ...product, quantity: count }]
     })
   }
 
@@ -37,16 +38,17 @@ export function CartProvider({ children }) {
     }
   }
 
-  const cartTotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  )
+  const cartTotal = cartItems.reduce((sum, item) => {
+    const itemPrice = Number(item.salePrice || item.price || 0)
+    return sum + itemPrice * item.quantity
+  }, 0)
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
-  const clearCart =()=>{
+  const clearCart = () => {
     setCartItems([])
   }
+
   return (
     <CartContext.Provider
       value={{
@@ -59,7 +61,7 @@ export function CartProvider({ children }) {
         updateQuantity,
         cartTotal,
         cartCount,
-        clearCart
+        clearCart,
       }}
     >
       {children}

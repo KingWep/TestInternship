@@ -21,7 +21,7 @@ function AdminReceiptCard({ order }) {
         MozOsxFontSmoothing: 'grayscale',
         textRendering: 'optimizeLegibility'
       }}
-      className="bg-white text-slate-900 mx-auto text-xs px-4 md:px-6 print:px-6 py-6 shadow-sm border border-slate-900 rounded-xl overflow-hidden flex flex-col w-full md:w-[300px] print:w-[300px] print:border-none print:shadow-none"
+      className="bg-white text-slate-900 mx-auto text-xs px-4 md:px-6 print:px-6 py-6 shadow-sm  rounded-xl overflow-hidden flex flex-col w-full md:w-[300px] print:w-[300px] print:border-none print:shadow-none"
     >
 
       <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
@@ -240,7 +240,7 @@ export default function AdminReceiptPage() {
         </span>
       </div>
 
-      <div className="bg-white p-4 md:p-6 shadow-lg rounded-2xl mb-6 border border-slate-800/80 flex items-center justify-center w-full max-w-[350px] md:w-auto md:max-w-none overflow-x-auto mx-auto">
+      <div className="shadow-lg  mb-6  flex items-center justify-center w-full max-w-[350px] md:w-auto md:max-w-none overflow-x-auto mx-auto">
         <div ref={printRef} className="bg-white inline-block w-full md:w-auto">
           <AdminReceiptCard order={order} />
         </div>

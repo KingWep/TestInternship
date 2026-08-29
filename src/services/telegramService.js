@@ -36,39 +36,59 @@ const sendMessage = async (text) => {
 }
 
 // ── Receipt message ────────────────────────────────────────────────────────
-const buildOrderMessage = (order) => {
-  const items = (order.items || [])
+const buildOrderMessage = (order = {}) => {
+  const rawItems = order.orderDetails || order.items || []
+  const items = rawItems
     .map((item) => {
       const price = Number(item.price) || Number(item.salePrice) || 0
-      const quantity = Number(item.quantity) || 0
+      const quantity = Number(item.quantity) || 1
       const total = price * quantity
-      return `• ${item.name} × ${quantity} — $${total.toFixed(2)}`
+      const name = item.product_name || item.name || 'ទំនិញ'
+      return `• ${name} × ${quantity} — $${total.toFixed(2)}`
     })
     .join('\n')
 
+  const orderNum = order.orderNo || order.orderNumber || order.id || 'N/A'
+  const customerName = order.customerName || order.customerInfo?.name || 'អតិថិជនទូទៅ'
+  const phone = order.customerPhone || order.phone || order.customerInfo?.phone || '—'
+  const address = order.customerAddress || order.address || order.customerInfo?.address || '—'
+  const dateStr = order.createdAt
+    ? new Date(order.createdAt).toLocaleString('km-KH')
+    : `${order.date || ''} ${order.time || ''}`.trim() || '—'
+
+  const delivery = Number(order.deliveryFee ?? order.delivery ?? 0)
+  const total = Number(order.totalAmount ?? order.total ?? 0)
+  const subtotal = Number(order.subtotal) || (total > delivery ? total - delivery : 0)
+
   return (
-    `🧾 <b>វិក្កយបត្រ — ORD:${order.orderNumber || order.id}</b>\n\n` +
-    `👤 <b>អតិថិជន:</b> ${order.customerName?.trim() || 'អតិថិជនទូទៅ'}\n` +
-    `📲 <b>លេខទូរស័ព្ទ:</b> ${order.phone?.trim() || '—'}\n` +
-    `📍 <b>អាសយដ្ឋាន:</b> ${order.address?.trim() || '—'}\n` +
-    `📅 <b>កាលបរិច្ឆេទ:</b> ${order.date || '—'} ${order.time || ''}\n\n` +
+    `🧾 <b>វិក្កយបត្រ — ORD:${orderNum}</b>\n\n` +
+    `👤 <b>អតិថិជន:</b> ${customerName.trim()}\n` +
+    `📲 <b>លេខទូរស័ព្ទ:</b> ${phone.trim()}\n` +
+    `📍 <b>អាសយដ្ឋាន:</b> ${address.trim()}\n` +
+    `📅 <b>កាលបរិច្ឆេទ:</b> ${dateStr}\n\n` +
     `------------------------\n` +
     `${items || '• គ្មានទំនិញ'}\n` +
     `------------------------\n\n` +
-    `🔹 <b>Subtotal:</b> $${(Number(order.subtotal) || 0).toFixed(2)}\n` +
-    `🚚 <b>Delivery:</b> $${(Number(order.delivery) || 0).toFixed(2)}\n` +
-    `💰 <b>Total:</b> $${(Number(order.total) || 0).toFixed(2)}`
+    `🔹 <b>Subtotal:</b> $${subtotal.toFixed(2)}\n` +
+    `🚚 <b>Delivery:</b> $${delivery.toFixed(2)}\n` +
+    `💰 <b>Total:</b> $${(total > 0 ? total : subtotal + delivery).toFixed(2)}`
   )
 }
 
 // ── Sticker message ────────────────────────────────────────────────────────
-const buildStickerMessage = (order, courier) => {
+const buildStickerMessage = (order = {}, courier) => {
+  const orderNum = order.orderNo || order.orderNumber || order.id || 'N/A'
+  const customerName = order.customerName || order.customerInfo?.name || 'អតិថិជនទូទៅ'
+  const phone = order.customerPhone || order.phone || order.customerInfo?.phone || '—'
+  const address = order.customerAddress || order.address || order.customerInfo?.address || '—'
+  const total = Number(order.totalAmount ?? order.total ?? 0)
+
   return (
-    `📦 <b>ប័ណ្ណដឹកជញ្ជូន — ORD:${order.orderNumber || order.id}</b>\n\n` +
-    `👤 <b>អតិថិជន:</b> ${order.customerName?.trim() || 'អតិថិជនទូទៅ'}\n` +
-    `📲 <b>លេខទូរស័ព្ទ:</b> ${order.phone?.trim() || '—'}\n` +
-    `📍 <b>អាសយដ្ឋាន:</b> ${order.address?.trim() || '—'}\n` +
-    `💰 <b>សរុប:</b> $${(Number(order.total) || 0).toFixed(2)}` +
+    `📦 <b>ប័ណ្ណដឹកជញ្ជូន — ORD:${orderNum}</b>\n\n` +
+    `👤 <b>អតិថិជន:</b> ${customerName.trim()}\n` +
+    `📲 <b>លេខទូរស័ព្ទ:</b> ${phone.trim()}\n` +
+    `📍 <b>អាសយដ្ឋាន:</b> ${address.trim()}\n` +
+    `💰 <b>សរុប:</b> $${total.toFixed(2)}` +
     (courier ? `\n🚚 <b>សេវាដឹក:</b> ${courier}` : '')
   )
 }

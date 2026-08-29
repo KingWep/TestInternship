@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Save, Plus, Trash2, Search, ChevronDown } from "lucide-react";
+import { Save, Plus, Trash2, Search, ChevronDown, Calculator } from "lucide-react";
 import { useProductContext } from "../../../../context/ProductContext";
 
 function SearchableProductSelect({ value, onChange, products }) {
@@ -7,9 +7,9 @@ function SearchableProductSelect({ value, onChange, products }) {
   const [search, setSearch] = useState("");
   const dropdownRef = useRef(null);
 
-  // Find the selected product's name
+  // Find the selected product's name safely with type normalization
   const selectedProduct = products.find(
-    (p) => p.id === value && p.stockQuantity > 0,
+    (p) => Number(p.id) === Number(value)
   );
   const displayValue = selectedProduct ? selectedProduct.name : "";
 
@@ -23,10 +23,8 @@ function SearchableProductSelect({ value, onChange, products }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredProducts = products.filter(
-    (p) =>
-      p.stockQuantity > 0 &&
-      p.name.toLowerCase().includes(search.toLowerCase()),
+  const filteredProducts = products.filter((p) =>
+    p.name?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -35,15 +33,15 @@ function SearchableProductSelect({ value, onChange, products }) {
         className="flex items-center justify-between w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg cursor-pointer hover:border-blue-400 shadow-sm transition-all"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className={displayValue ? "text-slate-800" : "text-slate-400"}>
+        <span className={displayValue ? "text-slate-800 font-medium truncate" : "text-slate-400"}>
           {displayValue || "-- ជ្រើសរើសទំនិញ --"}
         </span>
-        <ChevronDown size={16} className="text-slate-400" />
+        <ChevronDown size={16} className="text-slate-400 shrink-0 ml-1" />
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg max-h-48 flex flex-col">
-          <div className="p-2 border-b border-slate-100 sticky top-0 bg-white">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg max-h-56 flex flex-col">
+          <div className="p-2 border-b border-slate-100 sticky top-0 bg-white z-10">
             <div className="relative">
               <Search
                 size={12}
@@ -59,21 +57,37 @@ function SearchableProductSelect({ value, onChange, products }) {
               />
             </div>
           </div>
-          <div className="overflow-y-auto">
+          <div className="overflow-y-auto max-h-44 divide-y divide-slate-50">
             {filteredProducts.length > 0 ? (
-              filteredProducts.map((p) => (
-                <div
-                  key={p.id}
-                  onClick={() => {
-                    onChange(p.id);
-                    setIsOpen(false);
-                    setSearch("");
-                  }}
-                  className={`px-2 py-1.5 text-xs cursor-pointer hover:bg-blue-50 ${value === p.id ? "bg-blue-50 text-blue-600 font-medium" : "text-slate-700"}`}
-                >
-                  {p.name}
-                </div>
-              ))
+              filteredProducts.map((p) => {
+                const isSelected = Number(value) === Number(p.id);
+                const itemPrice = Number(p.salePrice || p.price || 0);
+                const stockCount = p.stockQuantity ?? p.stock ?? 0;
+
+                return (
+                  <div
+                    key={p.id}
+                    onClick={() => {
+                      onChange(p.id);
+                      setIsOpen(false);
+                      setSearch("");
+                    }}
+                    className={`px-3 py-2 text-xs cursor-pointer hover:bg-blue-50 flex items-center justify-between transition-colors ${
+                      isSelected ? "bg-blue-50 text-blue-600 font-semibold" : "text-slate-700"
+                    }`}
+                  >
+                    <span className="truncate mr-2">{p.name}</span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[11px] font-mono text-emerald-600 font-semibold">
+                        ${itemPrice.toFixed(2)}
+                      </span>
+                      <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+                        ស្តុក: {stockCount}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })
             ) : (
               <div className="px-2 py-3 text-xs text-center text-slate-500">
                 រកមិនឃើញទំនិញទេ
@@ -115,14 +129,22 @@ export default function OrderUpdateForm({
         deliveryFee: Number(
           initialData.deliveryFee || initialData.delivery || 0,
         ),
-        items: initialItems.map((item) => ({
-          productId: Number(item.product_id || item.productId || item.id),
-          quantity: Number(item.quantity) || 1,
-          price: Number(item.price) || 0,
-        })),
+        items: initialItems.map((item) => {
+          const prodId = Number(item.product_id || item.productId || item.id);
+          const matchedProd = products.find((p) => Number(p.id) === prodId);
+          const itemPrice = Number(
+            item.price ?? item.salePrice ?? (matchedProd ? (matchedProd.salePrice || matchedProd.price) : 0)
+          );
+
+          return {
+            productId: prodId,
+            quantity: Number(item.quantity) || 1,
+            price: itemPrice,
+          };
+        }),
       });
     }
-  }, [initialData]);
+  }, [initialData, products]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -153,23 +175,30 @@ export default function OrderUpdateForm({
 
       if (field === "productId") {
         const productId = Number(value);
-        const selectedProduct = products.find((p) => p.id === productId);
+        const selectedProduct = products.find((p) => Number(p.id) === productId);
 
         newItems[index] = {
           ...newItems[index],
           productId: productId,
-          price: selectedProduct ? Number(selectedProduct.salePrice) : 0,
+          price: selectedProduct ? Number(selectedProduct.salePrice || selectedProduct.price || 0) : 0,
         };
       } else if (field === "quantity") {
         newItems[index] = {
           ...newItems[index],
-          quantity: Number(value),
+          quantity: Math.max(1, Number(value) || 1),
         };
       }
 
       return { ...prev, items: newItems };
     });
   };
+
+  // Real-time calculation of Subtotal and Grand Total
+  const subtotal = formData.items.reduce((sum, item) => {
+    return sum + (Number(item.price || 0) * Number(item.quantity || 0));
+  }, 0);
+  const deliveryFee = Number(formData.deliveryFee || 0);
+  const grandTotal = subtotal + deliveryFee;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -193,7 +222,7 @@ export default function OrderUpdateForm({
               value={formData.status}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-medium"
             >
               <option value="Pending">Pending (រង់ចាំ)</option>
               <option value="Pickup">Pickup (បានយកទំនិញ)</option>
@@ -211,7 +240,7 @@ export default function OrderUpdateForm({
               value={formData.paymentStatus}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-medium"
             >
               <option value="Paid">Paid (បានបង់)</option>
               <option value="Unpaid">Unpaid (មិនទាន់បង់)</option>
@@ -276,7 +305,7 @@ export default function OrderUpdateForm({
         </div>
       </div>
 
-      {/* ផ្នែកទំនិញ (Items) ដែលបានរចនាថ្មី */}
+      {/* ផ្នែកទំនិញ (Items) */}
       <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2">
           <h3 className="text-sm font-bold text-slate-800">
@@ -302,7 +331,7 @@ export default function OrderUpdateForm({
               className="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-slate-50/50 p-3.5 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-sm transition-all"
             >
               {/* Product Select */}
-              <div className="flex-1">
+              <div className="flex-1 w-full sm:w-auto">
                 <SearchableProductSelect
                   value={item.productId}
                   onChange={(productId) =>
@@ -313,7 +342,7 @@ export default function OrderUpdateForm({
               </div>
 
               {/* Quantity, Price, and Delete Controls */}
-              <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+              <div className="flex items-center justify-between w-full sm:w-auto gap-3">
                 {/* Quantity Control */}
                 <div className="flex items-center border border-slate-200 bg-white rounded-lg shadow-sm h-[38px]">
                   <button
@@ -336,7 +365,7 @@ export default function OrderUpdateForm({
                       handleItemChange(
                         index,
                         "quantity",
-                        Math.max(1, Number(e.target.value)),
+                        Math.max(1, Number(e.target.value) || 1),
                       )
                     }
                     min="1"
@@ -347,15 +376,13 @@ export default function OrderUpdateForm({
                     type="button"
                     onClick={() => {
                       const product = products.find(
-                        (p) => p.id === item.productId,
+                        (p) => Number(p.id) === Number(item.productId),
                       );
-
-                      if (!product) return;
-
+                      const maxStock = product ? Number(product.stockQuantity ?? product.stock ?? 9999) : 9999;
                       handleItemChange(
                         index,
                         "quantity",
-                        Math.min(item.quantity + 1, product.stockQuantity),
+                        Math.min(item.quantity + 1, Math.max(maxStock, 1)),
                       );
                     }}
                     className="w-9 h-full flex items-center justify-center text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition-colors rounded-r-lg"
@@ -364,16 +391,21 @@ export default function OrderUpdateForm({
                   </button>
                 </div>
 
-                {/* Price Display */}
-                <div className="min-w-[80px] h-[38px] flex items-center justify-center px-3 text-sm font-bold text-slate-700 bg-white border border-slate-200 rounded-lg shadow-sm">
+                {/* Unit Price Display */}
+                <div className="min-w-[75px] h-[38px] flex items-center justify-center px-2.5 text-xs font-bold text-slate-700 bg-white border border-slate-200 rounded-lg shadow-sm">
                   ${Number(item.price ?? 0).toFixed(2)}
+                </div>
+
+                {/* Row Subtotal Display */}
+                <div className="min-w-[85px] h-[38px] flex items-center justify-center px-2.5 text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg shadow-sm">
+                  ${(Number(item.price || 0) * Number(item.quantity || 0)).toFixed(2)}
                 </div>
 
                 {/* Delete Button */}
                 <button
                   type="button"
                   onClick={() => handleRemoveItem(index)}
-                  className="w-[38px] h-[38px] flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-100 rounded-lg transition-all"
+                  className="w-[38px] h-[38px] flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-100 rounded-lg transition-all shrink-0"
                   title="លុបទំនិញ"
                 >
                   <Trash2 size={18} />
@@ -387,10 +419,26 @@ export default function OrderUpdateForm({
         <button
           type="button"
           onClick={handleAddItem}
-          className="mt-4 flex items-center justify-center gap-2 w-full py-3 text-sm font-semibold text-blue-600 border-2 border-dashed border-blue-200 bg-blue-50/50 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all"
+          className="mt-4 flex items-center justify-center gap-2 w-full py-3 text-sm font-semibold text-blue-600 border-2 border-dashed border-blue-200 bg-blue-50/50 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer"
         >
           <Plus size={16} /> បន្ថែមទំនិញ (Add Product)
         </button>
+      </div>
+
+      {/* ផ្នែកសង្ខេបតម្លៃ (Order Summary Breakdown) */}
+      <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2">
+        <div className="flex justify-between text-xs text-slate-600">
+          <span>តម្លៃទំនិញសរុប (Subtotal):</span>
+          <span className="font-semibold text-slate-800">${subtotal.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between text-xs text-slate-600 pb-2 border-b border-slate-200">
+          <span>សេវាដឹកជញ្ជូន (Delivery Fee):</span>
+          <span className="font-semibold text-slate-800">${deliveryFee.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between items-center pt-1">
+          <span className="text-sm font-bold text-slate-800">សរុបត្រូវទូទាត់ (Total):</span>
+          <span className="text-base font-black text-emerald-600">${grandTotal.toFixed(2)}</span>
+        </div>
       </div>
 
       {/* ប៊ូតុងបញ្ជាក់ */}
@@ -399,14 +447,14 @@ export default function OrderUpdateForm({
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="px-5 py-2.5 text-sm font-semibold text-white bg-red-600 border border-slate-200 rounded-lg hover:bg-red-800 transition-colors disabled:opacity-50"
+          className="px-5 py-2.5 text-sm font-semibold text-slate-700 bg-slate-100 border border-slate-200 rounded-lg hover:bg-slate-200 transition-colors disabled:opacity-50 cursor-pointer"
         >
           បោះបង់ (Cancel)
         </button>
         <button
           type="submit"
           disabled={isSubmitting || formData.items.length === 0}
-          className="flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-slate-200 transition-all disabled:opacity-50"
+          className="flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 transition-all disabled:opacity-50 cursor-pointer shadow-sm"
         >
           <Save size={18} />
           {isSubmitting ? "កំពុងរក្សាទុក..." : "រក្សាទុក (Update Order)"}

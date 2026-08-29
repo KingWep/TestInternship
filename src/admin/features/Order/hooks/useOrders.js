@@ -92,10 +92,13 @@ export function useOrders() {
 
   // Filter and sort logic
   const filteredOrders = orders.filter(order => {
+    const searchLower = search.trim().toLowerCase()
     const matchesSearch =
-      search === '' ||
-      order.orderNo.includes(search) ||
-      order.customerPhone.includes(search)
+      searchLower === '' ||
+      (order.orderNo && String(order.orderNo).toLowerCase().includes(searchLower)) ||
+      (order.customerPhone && String(order.customerPhone).includes(searchLower)) ||
+      (order.customerName && String(order.customerName).toLowerCase().includes(searchLower)) ||
+      (order.id && String(order.id).includes(searchLower))
     const matchesStatus =
       statusFilter === '' || statusFilter === 'ទាំងអស់ (All)' || order.status === statusFilter
     const matchesPayment =

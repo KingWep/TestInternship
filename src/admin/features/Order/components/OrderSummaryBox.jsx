@@ -1,39 +1,13 @@
 import React from 'react'
+
 export default function OrderSummaryBox({ subtotal = 0, discount = 0, delivery = 0, onCheckout, disabled }) {
   const safeSubtotal = Number(subtotal) || 0
   const safeDiscount = Number(discount) || 0
   const safeDelivery = Number(delivery) || 0 
   
-  // Total Calculation updated: Tax completely removed
+  // Total Calculation: Subtotal - Discount + Delivery
   const total = safeSubtotal - safeDiscount + safeDelivery
 
-    const handleSendTelegram = async () => {
-      setLoading('telegram')
-  
-      try {
-        await sendOrderToTelegram(order)
-  
-        Swal.fire({
-          icon: 'success',
-          title: 'ជោគជ័យ! ✅',
-          text: 'បានផ្ញើវិក្កយបត្រទៅ Telegram រួចរាល់ហើយ!',
-          confirmButtonColor: '#0284c7',
-          timer: 3000,
-          timerProgressBar: true,
-        })
-      } catch (error) {
-        console.error('Telegram error:', error)
-  
-        Swal.fire({
-          icon: 'error',
-          title: 'បរាជ័យ!',
-          text: error.message || 'មិនអាចផ្ញើទៅ Telegram បានទេ',
-          confirmButtonColor: '#0f172a',
-        })
-      } finally {
-        setLoading(null)
-      }
-    }
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col h-full">
       <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider mb-4">សេចក្តីសង្ខេបនៃការបញ្ជាទិញ</h3>
@@ -52,7 +26,7 @@ export default function OrderSummaryBox({ subtotal = 0, discount = 0, delivery =
           </div>
         )}
 
-        {/* Delivery Row gets the bottom border for UI separation */}
+        {/* Delivery Row */}
         <div className="flex justify-between text-sm text-slate-600 pb-4 border-b border-slate-100">
           <span>សេវាដឹកជញ្ជូន</span>
           <span className="font-semibold text-slate-800">${safeDelivery.toFixed(2)}</span>
@@ -60,21 +34,18 @@ export default function OrderSummaryBox({ subtotal = 0, discount = 0, delivery =
       </div>
 
       {/* Emphasized Total Box */}
-      <div className="bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 my-4 flex justify-between items-center">
+      <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 my-4 flex justify-between items-center">
         <span className="text-sm font-bold text-slate-700 uppercase">សរុបត្រូវទូទាត់</span>
         <span className="text-xl font-black text-green-600">${total.toFixed(2)}</span>
       </div>
 
       {/* Checkout Button */}
       <button
-        onClick={()=>{
-          onCheckout();
-          handleSendTelegram();
-        }}
+        onClick={onCheckout}
         disabled={disabled || total === 0}
-        className="w-full py-3 bg-blue-500 text-white font-bold text-sm rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all active:scale-[0.98] disabled:opacity-50 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
+        className="w-full py-3 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all active:scale-[0.98] disabled:opacity-50 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed cursor-pointer"
       >
-        បញ្ចប់ការបញ្ជាទិញ & ផ្ញើទៅ Telegram
+        បញ្ចប់ការបញ្ជាទិញ
       </button>
     </div>
   )

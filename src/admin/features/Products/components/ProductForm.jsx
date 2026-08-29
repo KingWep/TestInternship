@@ -215,12 +215,14 @@ export default function ProductsForm({ onSubmit, initialData }) {
         const slot = finalSlots[index]
         let file = slot.file
 
-        if (!file && slot.url) {
-          file = await urlToFile(slot.url, `product-image-${index + 1}.jpg`)
-        }
+        // if (!file && slot.url) {
+        //   file = await urlToFile(slot.url, `product-image-${index + 1}.jpg`)
+        // }
 
         if (file) {
           payload.append('images', file, file.name)
+        } else {
+          payload.append('images', '')
         }
       }
 

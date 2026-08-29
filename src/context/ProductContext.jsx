@@ -95,7 +95,7 @@ export function ProductProvider({ children }) {
         categoryName: product.categoryName || matchedCategory?.name || "",
       };
     });
-  }, [products, categories]); 
+  }, [products, categories]);
 
   // Filter based on the fully mapped products
   const totalLowStockProducts = productswithCategory.filter(
@@ -119,8 +119,8 @@ export function ProductProvider({ children }) {
     try {
       // Extract ID depending on whether payload is FormData or a standard Object
       const id = updatedProduct instanceof FormData
-          ? Number(updatedProduct.get('id'))
-          : updatedProduct.id;
+        ? Number(updatedProduct.get('id'))
+        : updatedProduct.id;
 
       const result = await productService.updateProduct(id, updatedProduct);
       const rawResult = result?.data || result;
@@ -147,7 +147,7 @@ export function ProductProvider({ children }) {
   return (
     <ProductContext.Provider
       value={{
-        products: productswithCategory, 
+        products: productswithCategory,
         setProducts,
         addProduct,
         updateProduct,

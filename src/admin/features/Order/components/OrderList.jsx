@@ -38,7 +38,9 @@ export default function OrderList({ orders, onEdit }) {
       render: (order) => (
         <div>
           <div className="font-bold text-blue-600">#{order.id}</div>
-          <div className="text-xs text-slate-400">{order.orderNo || `ORD-${order.orderNumber}`}</div>
+          <div className="text-xs text-slate-400">
+            {order.orderNo || `ORD-${order.orderNumber}`}
+          </div>
         </div>
       ),
     },
@@ -49,11 +51,13 @@ export default function OrderList({ orders, onEdit }) {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Phone size={12} className="text-slate-400" />
-            <span>{order.customerPhone || order.phone || '—'}</span>
+            <span>{order.customerPhone || order.phone || "—"}</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-slate-500 max-w-[200px] truncate">
             <MapPin size={12} className="text-slate-400 flex-shrink-0" />
-            <span className="truncate">{order.customerAddress || order.address || '—'}</span>
+            <span className="truncate">
+              {order.customerAddress || order.address || "—"}
+            </span>
           </div>
         </div>
       ),
@@ -62,27 +66,29 @@ export default function OrderList({ orders, onEdit }) {
       header: "សរុប",
       accessor: "totalAmount",
       render: (order) => {
-        const total = Number(order.totalAmount || order.total || 0)
+        const total = Number(order.totalAmount || order.total || 0);
         return (
           <div>
-            <div className="font-bold text-emerald-600 px-2.5 py-1 rounded bg-green-100">${total.toFixed(2)}</div>
+            <div className="font-bold text-emerald-600 px-2.5 py-1 rounded bg-green-100">
+              ${total.toFixed(2)}
+            </div>
           </div>
-        )
+        );
       },
     },
     {
-      header: 'តម្លៃទំនិញ',
-      accessor: 'subtotal',
+      header: "តម្លៃទំនិញ",
+      accessor: "subtotal",
       render: (order) => {
-        const total = Number(order.totalAmount || order.total || 0)
-        const delivery = Number(order.deliveryFee || order.delivery || 0)
-        const subtotal = total - delivery
+        const total = Number(order.totalAmount || 0);
+        const delivery = Number(order.deliveryFee || 0);
+        const subtotal = total - delivery;
         return (
           <div>
             <div className="font-bold text-red-500">${subtotal.toFixed(2)}</div>
           </div>
-        )
-      }
+        );
+      },
     },
     {
       header: "សេវាដឹក",
@@ -101,14 +107,14 @@ export default function OrderList({ orders, onEdit }) {
       render: (order) => {
         const config = statusConfig[order.status] || {
           styles: "bg-gray-100 text-gray-700",
-          label: order.status,
+          label: order.status || "មិនស្គាល់",
         };
 
         return (
           <select
-            className={`text-xs px-2 py-1 rounded-md font-bold outline-none cursor-pointer ${config.styles}`}
-            value={order.status}
+            value={order.status || "Pending"}
             onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+            className={`text-xs px-2.5 py-1.5 rounded-md font-bold outline-none cursor-pointer border-none ${config.styles}`}
           >
             <option value="Pending">រង់ចាំ</option>
             <option value="Pickup">បានយកទំនិញ</option>
@@ -124,11 +130,11 @@ export default function OrderList({ orders, onEdit }) {
       accessor: "paymentStatus",
       render: (order) => (
         <select
-        className={`text-xs px-2 py-1 rounded-md font-bold outline-none cursor-pointer
+          className={`text-xs px-2 py-1 rounded-md font-bold outline-none cursor-pointer
           ${order.paymentStatus === "Paid" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
           value={order.paymentStatus}
           onChange={(e) => updatePaymentStatus(order.id, e.target.value)}
-          >
+        >
           <option value="Unpaid">មិនទាន់ទូទាត់</option>
           <option value="Paid">បានទូទាត់</option>
         </select>
@@ -158,10 +164,10 @@ export default function OrderList({ orders, onEdit }) {
         <div className="flex justify-end gap-2">
           <button
             onClick={() => onEdit(order)}
-            className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-colors"
+            className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-600 transition-colors"
             title="កែប្រែ"
           >
-            <SquarePen size={16} className=" text-yellow-600" />
+            <SquarePen size={16} className="text-yellow-600" />
           </button>
           <button
             onClick={() => navigate(`/admin/print-receipt/${order.id}`)}
@@ -185,7 +191,7 @@ export default function OrderList({ orders, onEdit }) {
   return (
     <DataTable
       columns={columns}
-      data={orders}
+      data={[...orders].sort((a, b) => b.id - a.id)}
       keyField="id"
     />
   );

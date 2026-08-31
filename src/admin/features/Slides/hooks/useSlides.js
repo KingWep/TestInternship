@@ -19,7 +19,7 @@ export function useSlides() {
     setIsLoading(true)
     try {
       const response = await slideService.getSlides()
-      console.log('Fetched slides:', response) // Log the entire response for debugging
+      console.log('Fetched slides:', response) 
       // Adapt based on backend response format
       setSlides(response.data || response || [])
     } catch (error) {

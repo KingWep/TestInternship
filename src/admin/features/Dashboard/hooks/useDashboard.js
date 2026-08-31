@@ -1,10 +1,11 @@
-import { useProductContext } from '../../../../context/ProductContext'
-import { useOrderContext } from '../../../../context/OrderContext'
+import { useLowStockProductsQuery } from '../../../../queries/products/useProductQueries'
+import { useOrdersQuery, useOrderStats } from '../../../../queries/orders/useOrderQueries'
 import { AlertTriangle, ClipboardList, Trophy, DollarSign } from 'lucide-react'
 
 export default function useDashboard() {
-    const {totalLowStockProducts } = useProductContext()
-    const { orders, totalRevenue, topSellingProducts } = useOrderContext()
+    const { totalLowStockProducts } = useLowStockProductsQuery()
+    const { data: orders = [] } = useOrdersQuery()
+    const { totalRevenue, topSellingProducts } = useOrderStats()
 
     const statsData = [
         {   title: "ចំណូលសរុប", 

@@ -1,19 +1,19 @@
 import { useState, useMemo } from 'react'
 import Swal from 'sweetalert2'
-import { useOrderContext } from '../../../../context/OrderContext'
+import { useCreateOrderMutation } from '../../../../queries/orders/useOrderQueries'
 import { sendOrderToTelegram } from '../../../../services/telegramService'
 
-import { useProductContext } from '../../../../context/ProductContext'
-import { useCategoryContext } from '../../../../context/CategoryContext'
+import { useProductsQuery } from '../../../../queries/products/useProductQueries'
+import { useCategoriesQuery } from '../../../../queries/categories/useCategoryQueries'
 
 // ─── Initial state helpers ─────
 const INITIAL_CUSTOMER = { name: '', phone: '', address: '', deliveryFee: '' }
 
 // ─── Hook ──
 export default function useSalesForm() {
-  const { products } = useProductContext()
-  const { categories } = useCategoryContext()
-  const { addOrder } = useOrderContext()
+  const { data: products = [] } = useProductsQuery()
+  const { data: categories = [] } = useCategoriesQuery()
+  const createOrderMutation = useCreateOrderMutation()
 
   const [cart, setCart] = useState([])
   const [search, setSearch] = useState('')
@@ -103,7 +103,7 @@ export default function useSalesForm() {
     // ── All valid → create order via context ───
     let newOrder;
     try {
-      newOrder = await addOrder({
+      newOrder = await createOrderMutation.mutateAsync({
         items: cart,
         subtotal,
         delivery: Number(customerInfo.deliveryFee) || 0,

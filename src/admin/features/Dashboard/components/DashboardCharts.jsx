@@ -26,12 +26,12 @@ import {
   ChartTooltipContent,
 } from '@/admin/components/ui/chart'
 
-import { useOrderContext } from '../../../../context/OrderContext'
-import { useProductContext } from '../../../../context/ProductContext'
+import { useOrdersQuery } from '../../../../queries/orders/useOrderQueries'
+import { useProductsQuery } from '../../../../queries/products/useProductQueries'
 
 export default function DashboardCharts() {
-  const { orders = [] } = useOrderContext()
-  const { products = [] } = useProductContext()
+  const { data: orders = [] } = useOrdersQuery()
+  const { data: products = [] } = useProductsQuery()
 
   const barChartData = useMemo(() => {
     const monthlySales = orders

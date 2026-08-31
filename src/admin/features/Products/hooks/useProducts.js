@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { useProductContext } from '../../../../context/ProductContext'
+import { useProductsQuery, useCreateProductMutation, useUpdateProductMutation, useDeleteProductMutation } from '../../../../queries/products/useProductQueries'
 import Swal from 'sweetalert2'
 
 const ITEMS_PER_PAGE = 5
@@ -11,7 +11,10 @@ export function getStockStatus(stock) {
 }
 
 export function useProducts() {
-  const { products, addProduct, updateProduct, deleteProduct } = useProductContext()
+  const { data: products = [] } = useProductsQuery()
+  const createMutation = useCreateProductMutation()
+  const updateMutation = useUpdateProductMutation()
+  const deleteMutation = useDeleteProductMutation()
 
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState({ category: '', status: '' })
@@ -76,19 +79,24 @@ export function useProducts() {
   const handleSubmit = async (formDataToSend) => {
     try {
       if (editingProduct) {
-        await updateProduct(formDataToSend)
+        // Extract ID depending on whether payload is FormData or a standard Object
+        const id = formDataToSend instanceof FormData
+          ? Number(formDataToSend.get('id'))
+          : formDataToSend.id;
+
+        await updateMutation.mutateAsync({ id, data: formDataToSend })
         Swal.fire({
           icon: 'success',
-          title: 'ជោគជ័យ', // Success
+          title: 'ជោគជ័យ',
           text: 'Product updated successfully!',
           timer: 1500,
           showConfirmButton: false
         })
       } else {
-        await addProduct(formDataToSend)
+        await createMutation.mutateAsync(formDataToSend)
         Swal.fire({
           icon: 'success',
-          title: 'ជោគជ័យ', // Success
+          title: 'ជោគជ័យ', 
           text: 'Product added successfully!',
           timer: 1500,
           showConfirmButton: false
@@ -129,7 +137,7 @@ export function useProducts() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await deleteProduct(id)
+          await deleteMutation.mutateAsync(id)
           Swal.fire('លុបបានជោគជ័យ!', 'ទិន្នន័យត្រូវបានលុប.', 'success')
         } catch (error) {
           Swal.fire('បរាជ័យ!', 'មានបញ្ហាក្នុងការលុបទិន្នន័យ.', 'error')

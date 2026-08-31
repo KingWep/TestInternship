@@ -4,7 +4,7 @@ import { useParams, Link } from 'react-router-dom'
 import { Printer, FileDown, Send, ArrowLeft, Loader2, Package } from 'lucide-react'
 import { useReactToPrint } from 'react-to-print'
 import { toPng } from 'html-to-image'
-import { useOrderContext } from '../../../../context/OrderContext'
+import { useOrdersQuery } from '../../../../queries/orders/useOrderQueries'
 import { orderService } from '../../../../services/orderService'
 import { sendOrderToTelegram } from '../../../../services/telegramService'
 
@@ -155,7 +155,7 @@ export function ReceiptCard({ order }) {
 
 export default function Receipt() {
   const { orderId } = useParams()
-  const { orders } = useOrderContext()
+  const { data: orders = [] } = useOrdersQuery()
   const [fetchedOrder, setFetchedOrder] = useState(null)
   const [fetching, setFetching] = useState(false)
 

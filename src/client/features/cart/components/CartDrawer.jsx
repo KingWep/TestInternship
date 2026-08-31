@@ -3,7 +3,7 @@ import Swal from "sweetalert2"
 import { useNavigate } from "react-router-dom"
 
 import { useCart } from "../../../../context/CartContext"
-import { useOrderContext } from "../../../../context/OrderContext"
+import { useCreateOrderMutation } from "../../../../queries/orders/useOrderQueries"
 
 import CartHeader from "./CartHeader"
 import CartItemList from "./CartItemList"
@@ -23,7 +23,7 @@ export default function CartDrawer() {
     clearCart,
   } = useCart()
   
-  const { addOrder } = useOrderContext()
+  const createOrderMutation = useCreateOrderMutation()
 
   const [customerName, setCustomerName] = useState("")
   const [phone, setPhone] = useState("")
@@ -41,7 +41,7 @@ export default function CartDrawer() {
     cartTotal + (hasItems ? deliveryFee : 0)
 
   const handleCreateOrder = () => {
-    return addOrder({
+    return createOrderMutation.mutateAsync({
       items: cartItems,
       subtotal: cartTotal,
       delivery: deliveryFee,

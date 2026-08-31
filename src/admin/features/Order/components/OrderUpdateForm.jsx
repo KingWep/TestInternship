@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Save, Plus, Trash2, Search, ChevronDown, Calculator } from "lucide-react";
-import { useProductContext } from "../../../../context/ProductContext";
+import { useProductsQuery } from "../../../../queries/products/useProductQueries";
 
 function SearchableProductSelect({ value, onChange, products }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -106,7 +106,7 @@ export default function OrderUpdateForm({
   onCancel,
   isSubmitting,
 }) {
-  const { products } = useProductContext();
+  const { data: products = [] } = useProductsQuery();
   const [formData, setFormData] = useState({
     status: "Pending",
     paymentStatus: "Unpaid",

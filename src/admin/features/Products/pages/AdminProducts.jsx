@@ -10,10 +10,10 @@ import PageHeader from "../../../components/common/PageHeader";
 import FilterBar from "../../../components/common/FilterBar";
 import DeleteButton from "../../../components/common/DeleteButton";
 import Pagination from "../../../components/common/Pagination";
-import { useCategoryContext } from "../../../../context/CategoryContext";
+import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
 
 export default function AdminProducts() {
-  const { categories } = useCategoryContext();
+  const { data: categories = [] } = useCategoriesQuery();
 
   const {
     search,

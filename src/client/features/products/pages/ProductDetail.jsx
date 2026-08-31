@@ -21,14 +21,14 @@ import Container from "../../../components/layout/Container";
 import CartDrawer from "../../cart/components/CartDrawer";
 import Badge from "../../../components/common/Badge";
 import { useCart } from "../../../../context/CartContext";
-import { useProductContext } from "../../../../context/ProductContext";
+import { useProductsQuery } from "../../../../queries/products/useProductQueries";
 import RecommendedProducts from "../components/RecommendedProducts";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart, setIsCartOpen } = useCart();
-  const { products, loading } = useProductContext();
+  const { data: products = [], isLoading: loading } = useProductsQuery();
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
 

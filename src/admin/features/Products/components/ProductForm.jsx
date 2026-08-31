@@ -1,310 +1,382 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
-import { Save, ImagePlus, X, ChevronDown, Search } from 'lucide-react'
-import { useCategoryContext } from '../../../../context/CategoryContext'
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Save,
+  ImagePlus,
+  X,
+  ChevronDown,
+  Search,
+  RefreshCw,
+} from "lucide-react";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { productSchema } from "../schemas/productSchema";
+import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
 
 export default function ProductsForm({ onSubmit, initialData }) {
-  const { categories } = useCategoryContext()
-  const [discountPercentage, setDiscountPercentage] = useState(0)
+  const { data: categories = [] } = useCategoriesQuery();
 
-  const [formData, setFormData] = useState({
-    name: '',
-    sku: '',
-    categoryId: '',
-    stockQuantity: '',
-    price: '',
-    discountPrice: '',
-    salePrice: '',
-    description: '',
-    imageSlots: [],
-  })
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const fileInputRef = useRef(null);
+  const replaceInputRef = useRef(null);
+  const [replaceIndex, setReplaceIndex] = useState(null);
+  const isEditing = !!initialData;
 
-  const fileInputRef = useRef(null)
-  const isEditing = !!initialData
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(productSchema),
+
+    defaultValues: {
+      name: "",
+      sku: "",
+      categoryId: "",
+      stockQuantity: "",
+      price: "",
+      discountPrice: "",
+      salePrice: "",
+      description: "",
+      images: [],
+    },
+  });
+
+  const name = watch("name");
+  const price = watch("price");
+  const discountPrice = watch("discountPrice");
+  const stockQuantity = watch("stockQuantity");
+  const images = watch("images");
 
   useEffect(() => {
     if (!initialData) {
-      setFormData({
-        name: '',
-        sku: '',
-        categoryId: '',
-        stockQuantity: '',
-        price: '',
-        discountPrice: '',
-        salePrice: '',
-        description: '',
-        imageSlots: [],
-      })
-      setDiscountPercentage(0)
-      return
+      reset({
+        name: "",
+        sku: "",
+        categoryId: "",
+        stockQuantity: "",
+        price: "",
+        discountPrice: "",
+        salePrice: "",
+        description: "",
+        images: [],
+      });
+
+      setDiscountPercentage(0);
+
+      return;
     }
 
-    const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || ''
-    let imageSlots = []
+reset({
+  name: initialData.name || "",
+  sku: initialData.sku || "",
 
-    if (Array.isArray(initialData.rawImages) && initialData.rawImages.length > 0) {
-      imageSlots = initialData.rawImages.map((img, index) => {
-        const imagePath = typeof img === 'string' ? img : (img.image || '')
-        const imgId = typeof img === 'object' && img.id ? img.id : index + 1
-        const url = imagePath.startsWith('http') ? imagePath : `${baseUrl}${imagePath}`
+  categoryId: String(
+    initialData.categoryId ??
+    initialData.category_id ??
+    ""
+  ),
 
-        return {
-          id: imgId,
-          url,
-          file: null,
-          isNew: false,
-        }
-      })
-    } else if (Array.isArray(initialData.images) && initialData.images.length > 0) {
-      imageSlots = initialData.images.map((url, index) => ({
-        id: index + 1,
-        url,
-        file: null,
-        isNew: false,
-      }))
-    } else if (initialData.image) {
-      imageSlots = [
-        {
-          id: 1,
-          url: initialData.image,
-          file: null,
-          isNew: false,
-        },
-      ]
-    }
+  stockQuantity:
+    initialData.stockQuantity ??
+    initialData.stock_quantity ??
+    0,
 
-    setFormData({
-      name: initialData.name || '',
-      sku: initialData.sku || '',
-      categoryId: initialData.categoryId ?? initialData.category_id ?? '',
-      stockQuantity: initialData.stockQuantity ?? initialData.stock_quantity ?? 0,
-      price: initialData.price ?? '',
-      discountPrice: initialData.discountPrice ?? initialData.discount_price ?? 0,
-      salePrice: initialData.salePrice ?? initialData.sale_price ?? '',
-      description: initialData.description || '',
-      imageSlots,
-    })
-  }, [initialData])
+  price: initialData.price ?? "",
+
+  discountPrice:
+    initialData.discountPrice ??
+    initialData.discount_price ??
+    0,
+
+  salePrice:
+    initialData.salePrice ??
+    initialData.sale_price ??
+    "",
+
+  description: initialData.description || "",
+  images: (initialData.images || []).map((img, i) =>
+    typeof img === "string" ? { id: `existing-${i}`, url: img } : img
+  ),
+});
+  }, [initialData, reset]);
 
   useEffect(() => {
-    const price = Number(formData.price)
-    const discountPrice = Number(formData.discountPrice)
+    const currentPrice = Number(price);
+    const currentDiscount = Number(discountPrice);
 
-    if (price > 0 && discountPrice > 0) {
+    if (currentPrice > 0 && currentDiscount > 0) {
       setDiscountPercentage(
-        Math.min(Math.round((discountPrice / price) * 100), 100)
-      )
+        Math.min(
+          Math.round((currentDiscount / currentPrice) * 100),
+          100
+        )
+      );
     } else {
-      setDiscountPercentage(0)
+      setDiscountPercentage(0);
     }
-  }, [formData.price, formData.discountPrice])
+  }, [price, discountPrice]);
 
   const calculatedSalePrice = useMemo(() => {
-    if (formData.price === '') return ''
+    if (price === "") return "";
 
-    const price = Number(formData.price)
-    const discountPrice = Number(formData.discountPrice) || 0
+    const currentPrice = Number(price);
+    const currentDiscount = Number(discountPrice) || 0;
 
-    if (price <= 0) return 0
-    return Math.max(0, price - discountPrice)
-  }, [formData.price, formData.discountPrice])
+    if (currentPrice <= 0) return 0;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
+    return Math.max(0, currentPrice - currentDiscount);
+  }, [price, discountPrice]);
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
+  useEffect(() => {
+    setValue("salePrice", calculatedSalePrice, {
+      shouldValidate: true,
+    });
+  }, [calculatedSalePrice, setValue]);
 
   const handleImageAdd = (e) => {
-    const incoming = Array.from(e.target.files || [])
-    if (!incoming.length) return
+    const incomingFiles = Array.from(e.target.files || []);
 
-    const MAX_FILE_SIZE = 5 * 1024 * 1024
+    if (!incomingFiles.length) return;
 
-    const validFiles = incoming.filter((file) => {
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+    const validFiles = incomingFiles.filter((file) => {
       if (file.size > MAX_FILE_SIZE) {
-        alert(`${file.name} is larger than 5MB`)
-        return false
+        alert(`${file.name} is larger than 5MB`);
+        return false;
       }
-      return true
-    })
 
-    if (!validFiles.length) return
+      return true;
+    });
 
-    setFormData((prev) => {
-      const slots = [...prev.imageSlots]
+    if (!validFiles.length) return;
 
-      validFiles.forEach((file) => {
-        const emptyIndex = slots.findIndex((slot) => slot === null)
+    const currentImages = watch("images") || [];
 
-        if (emptyIndex !== -1) {
-          slots[emptyIndex] = {
-            id: prev.imageSlots[emptyIndex]?.id ?? emptyIndex + 1,
-            url: URL.createObjectURL(file),
-            file,
-            isNew: true,
-          }
-        } else {
-          slots.push({
-            id: null,
-            url: URL.createObjectURL(file),
-            file,
-            isNew: true,
-          })
-        }
-      })
+    const newImages = [
+      ...currentImages,
+      ...validFiles.map((file) => ({
+        id: null,
+        url: URL.createObjectURL(file),
+        file,
+        isNew: true,
+      })),
+    ];
 
-      return {
-        ...prev,
-        imageSlots: slots,
-      }
-    })
+    setValue("images", newImages, {
+      shouldValidate: true,
+    });
 
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+      fileInputRef.current.value = "";
     }
-  }
+  };
+
+  const handleImageReplaceClick = (index) => {
+    setReplaceIndex(index);
+    if (replaceInputRef.current) {
+      replaceInputRef.current.value = "";
+      replaceInputRef.current.click();
+    }
+  };
+
+  const handleImageReplace = (e) => {
+    const file = e.target.files?.[0];
+    if (!file || replaceIndex === null) return;
+
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      alert(`${file.name} is larger than 5MB`);
+      return;
+    }
+
+    const currentImages = [...(watch("images") || [])];
+    const oldImage = currentImages[replaceIndex];
+
+    if (oldImage?.isNew && oldImage?.url) {
+      URL.revokeObjectURL(oldImage.url);
+    }
+
+    currentImages[replaceIndex] = {
+      id: null,
+      url: URL.createObjectURL(file),
+      file,
+      isNew: true,
+    };
+
+    setValue("images", currentImages, {
+      shouldValidate: true,
+    });
+    setReplaceIndex(null);
+  };
 
   const removeImage = (index) => {
-    setFormData((prev) => {
-      const slots = [...prev.imageSlots]
-      slots[index] = null
-      return {
-        ...prev,
-        imageSlots: slots,
-      }
-    })
-  }
+    const currentImages = [...(watch("images") || [])];
 
-  const urlToFile = async (url, filename) => {
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error(`Failed to download image: ${url}`)
+    const removedImage = currentImages[index];
+
+    if (removedImage?.isNew && removedImage?.url) {
+      URL.revokeObjectURL(removedImage.url);
     }
-    const blob = await response.blob()
 
-    return new File([blob], filename, {
-      type: blob.type || 'image/jpeg',
-    })
-  }
+    currentImages.splice(index, 1);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+    setValue("images", currentImages, {
+      shouldValidate: true,
+    });
+  };
 
+  const handleFormSubmit = async (data) => {
     try {
-      const payload = new FormData()
+      const payload = new FormData();
 
       if (isEditing && initialData?.id) {
-        payload.append('id', String(initialData.id))
+        payload.append("id", String(initialData.id));
       }
 
-      payload.append('name', formData.name.trim())
-      payload.append('sku', formData.sku.trim())
-      payload.append('category_id', String(formData.categoryId || ''))
-      payload.append('stock_quantity', String(formData.stockQuantity === '' ? 0 : Number(formData.stockQuantity)))
-      payload.append('price', String(formData.price === '' ? 0 : Number(formData.price)))
-      payload.append('discount_price', String(formData.discountPrice === '' ? 0 : Number(formData.discountPrice)))
-      payload.append('salePrice', String(calculatedSalePrice === '' ? 0 : Number(calculatedSalePrice)))
-      payload.append('description', formData.description || '')
+      payload.append("name", data.name.trim());
+      payload.append("sku", data.sku.trim());
 
-      const finalSlots = formData.imageSlots.filter(Boolean)
+      payload.append(
+        "category_id",
+        String(data.categoryId || "")
+      );
 
-      for (let index = 0; index < finalSlots.length; index++) {
-        const slot = finalSlots[index]
-        let file = slot.file
+      payload.append(
+        "stock_quantity",
+        String(data.stockQuantity || 0)
+      );
 
-        // if (!file && slot.url) {
-        //   file = await urlToFile(slot.url, `product-image-${index + 1}.jpg`)
-        // }
+      payload.append(
+        "price",
+        String(data.price || 0)
+      );
 
-        if (file) {
-          payload.append('images', file, file.name)
-        } else {
-          payload.append('images', '')
+      payload.append(
+        "discount_price",
+        String(data.discountPrice || 0)
+      );
+
+      payload.append(
+        "salePrice",
+        String(data.salePrice || 0)
+      );
+
+      payload.append(
+        "description",
+        data.description || ""
+      );
+
+      const finalImages = data.images || [];
+
+      finalImages.forEach((image) => {
+        if (image?.file) {
+          payload.append("images", image.file, image.file.name);
+        } else if (image?.url) {
+          // Append existing image URL so the backend knows to keep it
+          payload.append("images", image.url);
         }
-      }
+      });
 
-      console.log('========== PRODUCT UPDATE ==========')
-      for (const [key, value] of payload.entries()) {
-        if (value instanceof File) {
-          console.log(key, 'FILE:', value.name)
-        } else {
-          console.log(key, value)
-        }
-      }
-      console.log('=====================================')
-
-      onSubmit(payload)
+      onSubmit(payload);
     } catch (error) {
-      console.error('Failed to prepare product images:', error)
-      alert('Failed to prepare product images')
+      console.error("Failed to prepare product:", error);
     }
-  }
+  };
 
-  const totalImageCount = formData.imageSlots.filter(Boolean).length
+  const totalImageCount = images?.length || 0;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      className="space-y-8"
+    >
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ឈ្មោះផលិតផល {!isEditing && '*'}
+            ឈ្មោះផលិតផល {!isEditing && "*"}
           </label>
+
           <input
             type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
+            {...register("name")}
             placeholder="ឈ្មោះផលិតផល"
-            required={!isEditing}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
+
+          {errors.name && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.name.message}
+            </p>
+          )}
         </div>
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            SKU {!isEditing && '*'}
+            SKU {!isEditing && "*"}
           </label>
+
           <input
             type="text"
-            name="sku"
-            value={formData.sku}
-            onChange={handleChange}
+            {...register("sku")}
             placeholder="SKU code"
-            required={!isEditing}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
+
+          {errors.sku && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.sku.message}
+            </p>
+          )}
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ប្រភេទ {!isEditing && '*'}
+            ប្រភេទ {!isEditing && "*"}
           </label>
+
           <SearchableCategorySelect
             categories={categories}
-            value={formData.categoryId}
-            onChange={handleChange}
-            isEditing={isEditing}
+            value={watch("categoryId")}
+            onChange={(value) =>
+              setValue("categoryId", String(value), {
+                shouldValidate: true,
+              })
+            }
           />
+
+          {errors.categoryId && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.categoryId.message}
+            </p>
+          )}
         </div>
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
             ស្តុក
           </label>
+
           <input
             type="number"
-            name="stockQuantity"
-            value={formData.stockQuantity}
-            onChange={handleChange}
+            {...register("stockQuantity")}
             min="0"
             placeholder="0"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
+
+          {errors.stockQuantity && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.stockQuantity.message}
+            </p>
+          )}
         </div>
       </div>
 
@@ -313,16 +385,21 @@ export default function ProductsForm({ onSubmit, initialData }) {
           <label className="block text-xs font-semibold text-gray-600 mb-1">
             តម្លៃដើម ($)
           </label>
+
           <input
             type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
+            {...register("price")}
             min="0"
             step="0.01"
             placeholder="0.00"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
+
+          {errors.price && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.price.message}
+            </p>
+          )}
         </div>
 
         <div>
@@ -330,26 +407,33 @@ export default function ProductsForm({ onSubmit, initialData }) {
             <label className="text-xs font-semibold text-gray-600">
               បញ្ចុះតម្លៃ ($)
             </label>
-            <span className="text-xs font-normal text-red-600">
+
+            <span className="text-xs text-red-600">
               ({discountPercentage}%)
             </span>
           </div>
+
           <input
             type="number"
-            name="discountPrice"
-            value={formData.discountPrice}
-            onChange={handleChange}
+            {...register("discountPrice")}
             min="0"
             step="0.01"
             placeholder="0.00"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
+
+          {errors.discountPrice && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.discountPrice.message}
+            </p>
+          )}
         </div>
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
             តម្លៃលក់ ($)
           </label>
+
           <input
             type="number"
             value={calculatedSalePrice}
@@ -363,20 +447,26 @@ export default function ProductsForm({ onSubmit, initialData }) {
         <label className="block text-xs font-semibold text-gray-600 mb-1">
           ការពិពណ៌នា
         </label>
+
         <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
+          {...register("description")}
           rows="3"
           placeholder="ការពិពណ៌នាផលិតផល..."
           className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none resize-none focus:ring-2 focus:ring-gray-200"
         />
+
+        {errors.description && (
+          <p className="text-xs text-red-500 ">
+            {errors.description.message}
+          </p>
+        )}
       </div>
 
       <div>
         <div className="flex items-center justify-between mb-2">
           <label className="block text-xs font-semibold text-gray-600">
             រូបភាពផលិតផល
+
             {totalImageCount > 0 && (
               <span className="ml-1 text-blue-500">
                 ({totalImageCount})
@@ -394,6 +484,14 @@ export default function ProductsForm({ onSubmit, initialData }) {
             className="hidden"
           />
 
+          <input
+            ref={replaceInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleImageReplace}
+            className="hidden"
+          />
+
           <label
             htmlFor="product-image-upload"
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 cursor-pointer transition-colors"
@@ -405,44 +503,44 @@ export default function ProductsForm({ onSubmit, initialData }) {
 
         {totalImageCount > 0 ? (
           <div className="flex flex-wrap gap-3 p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-            {formData.imageSlots.map((slot, index) => {
-              if (!slot) return null
-
-              return (
-                <div
-                  key={slot.id ?? `new-${index}`}
-                  className="relative"
-                >
-                  <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
-                    <img
-                      src={slot.url}
-                      alt={`Product image ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => removeImage(index)}
-                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md hover:bg-red-600 transition-colors z-10"
-                  >
-                    <X size={11} strokeWidth={3} />
-                  </button>
-
-                  {slot.isNew && (
-                    <span className="absolute bottom-1 right-1 text-[9px] bg-green-500 text-white px-1 rounded">
-                      ថ្មី
-                    </span>
-                  )}
-
-                  {!slot.isNew && slot.id && (
-                    <span className="absolute bottom-1 left-1 text-[9px] bg-black/60 text-white px-1 rounded">
-                      ID {slot.id}
-                    </span>
-                  )}
+            {images.map((image, index) => (
+              <div
+                key={image.id ?? `new-${index}`}
+                className="relative"
+              >
+                <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+                  <img
+                    src={image.url}
+                    alt={`Product image ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              )
-            })}
+
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md hover:bg-red-600 z-10"
+                  title="លុបរូបភាព"
+                >
+                  <X size={11} strokeWidth={3} />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleImageReplaceClick(index)}
+                  className="absolute -top-2 -left-2 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-md hover:bg-blue-600 z-10"
+                  title="ផ្លាស់ប្តូររូបភាព"
+                >
+                  <RefreshCw size={11} strokeWidth={3} />
+                </button>
+
+                {image.isNew && (
+                  <span className="absolute bottom-1 right-1 text-[9px] bg-green-500 text-white px-1 rounded">
+                    ថ្មី
+                  </span>
+                )}
+              </div>
+            ))}
           </div>
         ) : (
           <label
@@ -450,9 +548,11 @@ export default function ProductsForm({ onSubmit, initialData }) {
             className="flex flex-col items-center justify-center gap-2 w-full h-28 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 text-gray-400 cursor-pointer hover:border-blue-300 hover:text-blue-400 transition-colors"
           >
             <ImagePlus size={24} />
+
             <span className="text-xs font-medium">
               ចុចដើម្បីបន្ថែមរូបភាពផលិតផល
             </span>
+
             <span className="text-[10px]">
               គាំទ្រ JPG, PNG, WEBP — Max 5MB/image
             </span>
@@ -466,66 +566,95 @@ export default function ProductsForm({ onSubmit, initialData }) {
           className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
         >
           <Save size={16} />
-          {isEditing ? 'ធ្វើបច្ចុប្បន្នភាពផលិតផល' : 'រក្សាទុកផលិតផល'}
+
+          {isEditing
+            ? "ធ្វើបច្ចុប្បន្នភាពផលិតផល"
+            : "រក្សាទុកផលិតផល"}
         </button>
       </div>
     </form>
-  )
+  );
 }
 
-const SearchableCategorySelect = ({
+function SearchableCategorySelect({
   categories,
   value,
   onChange,
-  isEditing,
-}) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [search, setSearch] = useState('')
-  const dropdownRef = useRef(null)
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false)
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
 
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
 
-  const selectedCategory = categories.find((c) => String(c.id) === String(value))
-  const filteredCategories = categories.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase())
-  )
+  const selectedCategory = categories.find(
+    (category) =>
+      String(category.id) === String(value)
+  );
+
+  const filteredCategories = categories.filter(
+    (category) =>
+      category.name
+        .toLowerCase()
+        .includes(search.toLowerCase())
+  );
 
   const handleSelect = (categoryId) => {
-    onChange({
-      target: {
-        name: 'categoryId',
-        value: categoryId,
-      },
-    })
-    setIsOpen(false)
-    setSearch('')
-  }
+    onChange((String(categoryId)));
+
+    setIsOpen(false);
+    setSearch("");
+  };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div
+      className="relative"
+      ref={dropdownRef}
+    >
       <div
-        className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none flex justify-between items-center cursor-pointer ${
-          isOpen ? 'ring-2 ring-gray-200' : ''
+        className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg flex justify-between items-center cursor-pointer ${
+          isOpen ? "ring-2 ring-gray-200" : ""
         }`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className={selectedCategory ? 'text-gray-900' : 'text-gray-500'}>
-          {selectedCategory ? selectedCategory.name : 'ជ្រើសរើសប្រភេទ'}
+        <span
+          className={
+            selectedCategory
+              ? "text-gray-900"
+              : "text-gray-500"
+          }
+        >
+          {selectedCategory
+            ? selectedCategory.name
+            : "ជ្រើសរើសប្រភេទ"}
         </span>
+
         <ChevronDown
           size={16}
           className={`text-gray-400 transition-transform ${
-            isOpen ? 'rotate-180' : ''
+            isOpen ? "rotate-180" : ""
           }`}
         />
       </div>
@@ -537,23 +666,26 @@ const SearchableCategorySelect = ({
               size={14}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
             />
+
             <input
               type="text"
-              className="w-full pl-8 pr-3 py-1.5 text-sm bg-gray-50 rounded-md outline-none focus:ring-2 focus:ring-blue-100 transition-shadow"
+              className="w-full pl-8 pr-3 py-1.5 text-sm bg-gray-50 rounded-md outline-none"
               placeholder="ស្វែងរកប្រភេទ..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onClick={(e) => e.stopPropagation()}
+              onChange={(e) =>
+                setSearch(e.target.value)
+              }
+              onClick={(e) =>
+                e.stopPropagation()
+              }
               autoFocus
             />
           </div>
 
           <div className="max-h-48 overflow-y-auto py-1">
             <div
-              className={`px-3 py-2 text-sm cursor-pointer hover:bg-blue-50 ${
-                !value ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'
-              }`}
-              onClick={() => handleSelect('')}
+              className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50"
+              onClick={() => handleSelect("")}
             >
               ជ្រើសរើសប្រភេទ
             </div>
@@ -563,11 +695,14 @@ const SearchableCategorySelect = ({
                 <div
                   key={category.id}
                   className={`px-3 py-2 text-sm cursor-pointer hover:bg-blue-50 ${
-                    String(value) === String(category.id)
-                      ? 'bg-blue-50 text-blue-600 font-medium'
-                      : 'text-gray-700'
+                    String(value) ===
+                    String(category.id)
+                      ? "bg-blue-50 text-blue-600 font-medium"
+                      : "text-gray-700"
                   }`}
-                  onClick={() => handleSelect(category.id)}
+                  onClick={() =>
+                    handleSelect(category.id)
+                  }
                 >
                   {category.name}
                 </div>
@@ -580,22 +715,6 @@ const SearchableCategorySelect = ({
           </div>
         </div>
       )}
-
-      <select
-        name="categoryId"
-        value={value}
-        onChange={onChange}
-        required={!isEditing}
-        className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
-        tabIndex="-1"
-      >
-        <option value="">ជ្រើសរើសប្រភេទ</option>
-        {categories.map((category) => (
-          <option key={category.id} value={category.id}>
-            {category.name}
-          </option>
-        ))}
-      </select>
     </div>
-  )
+  );
 }

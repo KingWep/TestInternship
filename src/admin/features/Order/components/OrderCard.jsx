@@ -10,11 +10,20 @@ import {
   Package
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { useOrderContext } from '../../../../context/OrderContext'
+import { useUpdateOrderStatusMutation, useUpdateOrderPaymentStatusMutation } from '../../../../queries/orders/useOrderQueries'
 
 export default function OrderCard({ order, onEdit }) {
   const navigate = useNavigate()
-  const { updatePaymentStatus, updateOrderStatus } = useOrderContext()
+  const updateOrderStatusMutation = useUpdateOrderStatusMutation()
+  const updatePaymentStatusMutation = useUpdateOrderPaymentStatusMutation()
+
+  const updateOrderStatus = (orderId, newStatus) => {
+    updateOrderStatusMutation.mutate({ orderId, newStatus })
+  }
+
+  const updatePaymentStatus = (orderId, newPaymentStatus) => {
+    updatePaymentStatusMutation.mutate({ orderId, newPaymentStatus })
+  }
 
   // Updated to match OrderList statusConfig styles (adjusted for card aesthetics)
   const getStatusStyle = (status) => {

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import { useReactToPrint } from 'react-to-print'
 import { toPng } from 'html-to-image'
-import { useOrderContext } from '../../../../context/OrderContext'
+import { useOrdersQuery } from '../../../../queries/orders/useOrderQueries'
 import { sendStickerToTelegram } from '../../../../services/telegramService'
 
 function AdminStickerCard({ order, courier, setCourier }) {
@@ -157,7 +157,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
 
 export default function AdminStickerPage() {
   const { id } = useParams()
-  const { orders } = useOrderContext()
+  const { data: orders = [] } = useOrdersQuery()
   const order = orders?.find((o) => String(o.id) === String(id) || o.orderNo === id || o.orderNumber === id)
 
   const printRef = useRef(null)

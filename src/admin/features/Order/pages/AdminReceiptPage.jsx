@@ -4,7 +4,7 @@ import { useParams, Link } from 'react-router-dom'
 import { Printer, FileDown, Send, ArrowLeft, Loader2} from 'lucide-react'
 import { useReactToPrint } from 'react-to-print'
 import { toPng } from 'html-to-image'
-import { useOrderContext } from '../../../../context/OrderContext'
+import { useOrdersQuery } from '../../../../queries/orders/useOrderQueries'
 import { sendOrderToTelegram } from '../../../../services/telegramService'
 function AdminReceiptCard({ order }) {
   const delivery = Number(order?.deliveryFee) || 0
@@ -123,7 +123,7 @@ function AdminReceiptCard({ order }) {
 
 export default function AdminReceiptPage() {
   const { id } = useParams()
-  const { orders } = useOrderContext()
+  const { data: orders = [] } = useOrdersQuery()
   const order = orders?.find((o) => String(o.id) === String(id) || o.orderNo === id || o.orderNumber === id)
 
   const printRef = useRef(null)

@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import Swal from 'sweetalert2'
-import { useOrderContext } from '../../../../context/OrderContext'
-import { orderService } from '../../../../services/orderService'
+import { useOrdersQuery, useUpdateOrderMutation } from '../../../../queries/orders/useOrderQueries'
 
 export function useOrders() {
-  // ── Pull shared orders from context (includes orders added from SaleForm) ──
-  const { orders, refreshOrders } = useOrderContext()
+  const { data: orders = [] } = useOrdersQuery()
+  const updateOrderMutation = useUpdateOrderMutation()
 
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
@@ -19,7 +18,8 @@ export function useOrders() {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingOrder, setEditingOrder] = useState(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  const isSubmitting = updateOrderMutation.isPending
 
   // Handlers
   const openEditModal = (order) => {
@@ -34,10 +34,9 @@ export function useOrders() {
 
   const handleUpdateSubmit = async (formData) => {
     if (!editingOrder) return
-    setIsSubmitting(true)
     
     try {
-      await orderService.updateOrder(editingOrder.id, formData)
+      await updateOrderMutation.mutateAsync({ orderId: editingOrder.id, formData })
       
       Swal.fire({
         icon: 'success',
@@ -48,10 +47,6 @@ export function useOrders() {
       })
       
       closeModal()
-      // Refresh the orders list to get the updated data
-      if (refreshOrders) {
-        refreshOrders()
-      }
     } catch (error) {
       console.error('Update error:', error)
       const errorMsg = error?.response?.data?.message || error.message || 'Error updating order'
@@ -60,8 +55,6 @@ export function useOrders() {
         title: 'បរាជ័យ!',
         text: errorMsg,
       })
-    } finally {
-      setIsSubmitting(false)
     }
   }
 

@@ -1,20 +1,23 @@
 import { useState } from 'react'
-import { useCategoryContext } from '../../../../context/CategoryContext'
-import axiosClient from '../../../../api/axiosClient'
-import { API_ENDPOINTS } from '../../../../api/endpoints'
+import { useCategoriesQuery, useCreateCategoryMutation, useUpdateCategoryMutation, useDeleteCategoryMutation } from '../../../../queries/categories/useCategoryQueries'
 import Swal from 'sweetalert2'
 
 const ITEMS_PER_PAGE = 5
 
 export function useCategories() {
-  const { categories, setCategories, fetchCategories, isLoading: isCategoriesLoading } = useCategoryContext()
+  const { data: categories = [], isLoading: isCategoriesLoading } = useCategoriesQuery()
+  const createMutation = useCreateCategoryMutation()
+  const updateMutation = useUpdateCategoryMutation()
+  const deleteMutation = useDeleteCategoryMutation()
+
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState({ status: '' })
   const [sortOrder, setSortOrder] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  const isSubmitting = createMutation.isPending || updateMutation.isPending
 
   // ── Filter & Sort
   const filteredCategories = (categories || [])
@@ -60,7 +63,6 @@ export function useCategories() {
   }
 
   const handleSubmit = async (data) => {
-    setIsSubmitting(true)
     try {
       const payload = {
         name: data.name,
@@ -70,7 +72,7 @@ export function useCategories() {
 
       if (editingCategory) {
         payload.id = editingCategory.id
-        await axiosClient.put(API_ENDPOINTS.CATEGORIES.UPDATE(editingCategory.id), payload)
+        await updateMutation.mutateAsync({ id: editingCategory.id, data: payload })
         Swal.fire({
           icon: 'success',
           title: 'ជោគជ័យ',
@@ -79,7 +81,7 @@ export function useCategories() {
           showConfirmButton: false
         })
       } else {
-        await axiosClient.post(API_ENDPOINTS.CATEGORIES.CREATE, payload)
+        await createMutation.mutateAsync(payload)
         Swal.fire({
           icon: 'success',
           title: 'ជោគជ័យ',
@@ -88,7 +90,6 @@ export function useCategories() {
           showConfirmButton: false
         })
       }
-      await fetchCategories()
       closeModal()
     } catch (error) {
       const errorData = error?.response?.data
@@ -99,8 +100,6 @@ export function useCategories() {
         title: `Error ${error?.response?.status || ''}`,
         text: backendMsg,
       })
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -122,8 +121,7 @@ export function useCategories() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axiosClient.delete(API_ENDPOINTS.CATEGORIES.DELETE(id))
-          await fetchCategories()
+          await deleteMutation.mutateAsync(id)
           Swal.fire('លុបបានជោគជ័យ!', 'ទិន្នន័យត្រូវបានលុប.', 'success')
         } catch (error) {
           console.error('Error deleting category:', error)
@@ -173,3 +171,4 @@ export function useCategories() {
     closeModal,
   }
 }
+

@@ -3,16 +3,20 @@ import FilterTabs from "../../../components/common/FilterTabs";
 import SectionHeader from "../../../components/common/SectionHeader";
 import ProductGrid from "../../products/components/ProductGrid";
 import HorizontalProductGrid from "../../products/components/HorizontalProductGrid";
+import ProductSkeletonGrid from "../../../components/common/ProductSkeletonGrid";
+import HorizontalProductSkeletonGrid from "../../../components/common/HorizontalProductSkeletonGrid";
 import { useSearch } from "../../../../context/SearchContext";
-import { useProductContext } from "../../../../context/ProductContext";
-import { useCategoryContext } from "../../../../context/CategoryContext";
-import { useOrderContext } from "../../../../context/OrderContext";
+import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
+import { useProductsQuery } from "../../../../queries/products/useProductQueries";
+import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
 
 export default function ProductSection() {
-  const { products = [] } = useProductContext();
-  const { categories = [] } = useCategoryContext();
-  const { orders = [] } = useOrderContext();
+  const { data: products = [], isPending: isProductsPending } = useProductsQuery();
+  const { data: categories = [], isPending: isCategoriesPending } = useCategoriesQuery();
+  const { data: orders = [], isPending: isOrdersPending } = useOrdersQuery();
   const { searchItem = "", priceRange = "all" } = useSearch();
+
+  const isLoading = isProductsPending || isCategoriesPending || isOrdersPending;
 
   const [activeTab, setActiveTab] = useState("ទាំងអស់");
   const allProductsRef = useRef(null);
@@ -132,7 +136,7 @@ export default function ProductSection() {
       {!shouldHideHighlights && (
         <section>
           <SectionHeader title="ទំនិញលក់ដាច់បំផុត" />
-          <HorizontalProductGrid products={bestSellingProducts} />
+          {isLoading ? <HorizontalProductSkeletonGrid count={5} /> : <HorizontalProductGrid products={bestSellingProducts} />}
         </section>
       )}
 
@@ -140,7 +144,7 @@ export default function ProductSection() {
       {!shouldHideHighlights && (
         <section>
           <SectionHeader title="ទំនិញពេញថ្មី" />
-          <HorizontalProductGrid products={latestProducts} />
+          {isLoading ? <HorizontalProductSkeletonGrid count={5} /> : <HorizontalProductGrid products={latestProducts} />}
         </section>
       )}
 
@@ -155,7 +159,7 @@ export default function ProductSection() {
               : "ទំនិញពេញទាំងអស់"
           }
         />
-        <ProductGrid products={filteredProducts} />
+        {isLoading ? <ProductSkeletonGrid count={8} /> : <ProductGrid products={filteredProducts} />}
       </section>
     </div>
   );

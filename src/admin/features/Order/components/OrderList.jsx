@@ -1,13 +1,22 @@
 import React from "react";
 import { Phone, MapPin, Receipt, Printer, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useOrderContext } from "../../../../context/OrderContext";
+import { useUpdateOrderStatusMutation, useUpdateOrderPaymentStatusMutation } from "../../../../queries/orders/useOrderQueries";
 import DataTable from "../../../components/common/DataTable";
 import { ReceiptText, SquarePen } from "lucide-react";
 
 export default function OrderList({ orders, onEdit }) {
   const navigate = useNavigate();
-  const { updatePaymentStatus, updateOrderStatus } = useOrderContext();
+  const updateOrderStatusMutation = useUpdateOrderStatusMutation();
+  const updatePaymentStatusMutation = useUpdateOrderPaymentStatusMutation();
+
+  const updateOrderStatus = (orderId, newStatus) => {
+    updateOrderStatusMutation.mutate({ orderId, newStatus });
+  };
+
+  const updatePaymentStatus = (orderId, newPaymentStatus) => {
+    updatePaymentStatusMutation.mutate({ orderId, newPaymentStatus });
+  };
 
   const statusConfig = {
     Pending: {

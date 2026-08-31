@@ -528,7 +528,7 @@ reset({
                 <button
                   type="button"
                   onClick={() => handleImageReplaceClick(index)}
-                  className="absolute -top-2 -left-2 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-md hover:bg-blue-600 z-10"
+                  className="absolute -top-2 -left-0 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-md hover:bg-blue-600 z-10"
                   title="ផ្លាស់ប្តូររូបភាព"
                 >
                   <RefreshCw size={11} strokeWidth={3} />

@@ -3,8 +3,8 @@ import { ArrowRight, Percent } from "lucide-react";
 import Button from "../../../components/common/Button";
 import { useSlides } from "@/admin/features/slides/hooks/useSlides";
 import PromoBannerSkeleton from "../../../components/common/PromoBannerSkeleton";
-
-export default function PromoBanner() {
+ 
+export default function PromoBanner({ onShopClick }) {
   const { slides, isLoading } = useSlides();
 
   if (isLoading) {
@@ -31,12 +31,10 @@ export default function PromoBanner() {
       {/* Discount Badge */}
       {slide.discountPercentage > 0 && (
         <div className="absolute top-10 right-4 md:top-10 md:right-8">
-          <div className="relative flex flex-col items-center justify-center w-20 h-20 md:w-24 md:h-24 rounded-full bg-white text-red-600 shadow-xl rotate-6 animate-[float_3s_ease-in-out_infinite]">
-            <span className="flex text-2xl md:text-3xl font-extrabold leading-none">
-              {slide.discountPercentage} <Percent size={18} strokeWidth={3} />
+          <div className="relative flex flex-col items-center justify-center w-14 h-14 md:w-24 md:h-24 rounded-full bg-white text-red-600 shadow-xl rotate-6 animate-[float_3s_ease-in-out_infinite]">
+            <span className="flex text-xl md:text-3xl font-extrabold leading-none">
+              {slide.discountPercentage} <Percent size={18} strokeWidth={3}/>
             </span>
-            
-
             <span className="text-[10px] md:text-xs font-bold uppercase">
               OFF
             </span>
@@ -58,11 +56,13 @@ export default function PromoBanner() {
       </p>
 
       <Button
+        onClick={onShopClick}
         variant="white"
         className="
           mt-6
           flex items-center gap-2
-          rounded-[100px]
+          rounded-[500px]
+          md:rounded-[100px]
           font-semibold
           animate-[bounce_4s_ease-in-out_infinite]
           transition-transform

@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import FilterTabs from "../../../components/common/FilterTabs";
 import SectionHeader from "../../../components/common/SectionHeader";
 import ProductGrid from "../../products/components/ProductGrid";
@@ -10,7 +10,7 @@ import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
 import { useProductsQuery } from "../../../../queries/products/useProductQueries";
 import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
 
-export default function ProductSection() {
+export default function ProductSection({allProductsRef}) {
   const { data: products = [], isPending: isProductsPending } = useProductsQuery();
   const { data: categories = [], isPending: isCategoriesPending } = useCategoriesQuery();
   const { data: orders = [], isPending: isOrdersPending } = useOrdersQuery();
@@ -19,7 +19,6 @@ export default function ProductSection() {
   const isLoading = isProductsPending || isCategoriesPending || isOrdersPending;
 
   const [activeTab, setActiveTab] = useState("ទាំងអស់");
-  const allProductsRef = useRef(null);
 
   // Determine if searching, filtering by price, or filtering by a specific category
   const isSearching = searchItem.trim() !== "" || priceRange !== "all";

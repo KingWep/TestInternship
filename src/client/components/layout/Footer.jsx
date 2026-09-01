@@ -14,7 +14,7 @@ import Container from "./Container";
 
 export default function Footer() {
   return (
-    <footer className="bg-white text-slate-300 pt-8 pb-4 mt-20 border-t flex-col">
+    <footer className="bg-white text-slate-300 pt-8 pb-4 mt-8 border-t flex-col">
       <Container>
         <div className="flex flex-wrap justify-between gap-x-8 gap-y-10 mb-5">
           <div className="space-y-3 w-full sm:w-[calc(50%-1rem)] lg:w-[260px]">

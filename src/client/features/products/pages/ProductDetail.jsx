@@ -153,7 +153,7 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-slate-100">
       <Header />
 
       <Container className="pt-36 pb-0 md:pt-28 md:pb-16 flex-1">
@@ -173,21 +173,21 @@ export default function ProductDetail() {
           )}
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-4 sm:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 sm:p-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
             {/* Left Column: Image Gallery */}
-            <div>
-              <div className="group relative bg-slate-100 rounded-2xl overflow-hidden aspect-square border border-slate-100">
+            <div className="flex flex-col gap-4">
+              <div className="group relative bg-white rounded-3xl overflow-hidden aspect-square border border-slate-100 shadow-sm">
                 {gallery.length > 0 ? (
                   <img
                     src={gallery[activeImage]}
                     alt={name}
-                    className="w-full h-full object-cover transition-all duration-300"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
-                    <ImageIcon size={48} />
-                    <span className="text-xs mt-2">គ្មានរូបភាព</span>
+                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 bg-slate-50">
+                    <ImageIcon size={48} className="mb-2 opacity-50" />
+                    <span className="text-sm font-medium">គ្មានរូបភាព</span>
                   </div>
                 )}
 
@@ -204,16 +204,16 @@ export default function ProductDetail() {
                     <button
                       onClick={goPrev}
                       aria-label="រូបភាពមុន"
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full shadow-md flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 transition-all cursor-pointer z-10"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 hover:text-red-700 transition-all cursor-pointer z-10"
                     >
-                      <ChevronLeft size={22} />
+                      <ChevronLeft size={24} />
                     </button>
                     <button
                       onClick={goNext}
                       aria-label="រូបភាពបន្ទាប់"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full shadow-md flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 transition-all cursor-pointer z-10"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 hover:text-red-700 transition-all cursor-pointer z-10"
                     >
-                      <ChevronRight size={22} />
+                      <ChevronRight size={24} />
                     </button>
 
                     {/* Image Counter Badge */}
@@ -226,15 +226,15 @@ export default function ProductDetail() {
 
               {/* Thumbnails */}
               {gallery.length > 1 && (
-                <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-none">
+                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x">
                   {gallery.map((img, i) => (
                     <button
                       key={i}
                       onClick={() => setActiveImage(i)}
-                      className={`w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 cursor-pointer ${
+                      className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden transition-all duration-300 flex-shrink-0 cursor-pointer snap-start relative ${
                         activeImage === i
-                          ? "border-red-700 ring-2 ring-red-100 shadow-sm"
-                          : "border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100"
+                          ? "ring-2 ring-red-600 ring-offset-2 ring-offset-white shadow-md scale-[1.02]"
+                          : "border border-slate-200 hover:border-slate-300 opacity-60 hover:opacity-100 hover:scale-[1.02]"
                       }`}
                     >
                       <img
@@ -249,7 +249,7 @@ export default function ProductDetail() {
             </div>
 
             {/* Right Column: Details & Purchase Controls */}
-            <div className="flex flex-col justify-between">
+            <div className="flex flex-col">
               <div className="space-y-4">
                 {/* Category & SKU */}
                 <div className="flex items-center gap-2 flex-wrap text-xs">
@@ -261,17 +261,17 @@ export default function ProductDetail() {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-tight tracking-tight">
                   {name}
                 </h1>
 
                 {/* Price Display */}
-                <div className="flex items-baseline gap-3 pt-1">
-                  <span className="text-green-700 font-black text-3xl sm:text-4xl tracking-tight">
+                <div className="flex items-baseline gap-3 pt-2">
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500 font-black text-4xl sm:text-5xl tracking-tight">
                     ${displayPrice.toFixed(2)}
                   </span>
                   {originalPrice && (
-                    <span className="text-red-700 text-lg sm:text-xl line-through">
+                    <span className="text-slate-400 text-lg sm:text-xl line-through font-medium">
                       ${originalPrice.toFixed(2)}
                     </span>
                   )}
@@ -279,8 +279,8 @@ export default function ProductDetail() {
 
                 {/* Savings Pill */}
                 {savingsAmount > 0 && (
-                  <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs sm:text-sm font-semibold px-3 py-1 rounded-lg border border-emerald-100">
-                    <Gift size={15} />
+                  <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-800 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-xl border border-emerald-100 shadow-sm">
+                    <Gift size={16} className="text-emerald-600" />
                     <span>អ្នកចំណេញបាន ${Number(savingsAmount).toFixed(2)} ក្នុងការទិញនេះ!</span>
                   </div>
                 )}
@@ -310,20 +310,24 @@ export default function ProductDetail() {
                 )}
 
                 {/* Highlights / Badges */}
-                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100 text-xs text-slate-600">
-                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50">
-                    <Truck size={18} className="text-red-800" />
+                <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-100 text-xs sm:text-sm text-slate-700 font-medium">
+                  <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all">
+                    <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                      <Truck size={20} className="text-red-600" />
+                    </div>
                     <span>ដឹកជញ្ជូនរហ័សទូទាំងប្រទេស</span>
                   </div>
-                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50">
-                    <ShieldCheck size={18} className="text-emerald-600" />
+                  <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all">
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                      <ShieldCheck size={20} className="text-emerald-600" />
+                    </div>
                     <span>ធានាផលិតផលសុទ្ធ 100%</span>
                   </div>
                 </div>
               </div>
 
               {/* Add to Cart / Buy Actions */}
-              <div className="pt-8 mt-6 border-t border-slate-100 space-y-4">
+              <div className="pt-6 mt-4 border-t border-slate-100 space-y-4">
                 <div className="flex items-center gap-4 flex-wrap">
                   {/* Quantity selector */}
                   <div className="flex items-center gap-1">
@@ -356,10 +360,11 @@ export default function ProductDetail() {
                     type="button"
                     onClick={handleAddToCart}
                     disabled={availableStock === 0}
-                    className="flex-1 min-w-[160px] flex items-center justify-center gap-2 bg-red-900 text-white font-semibold text-sm px-5 py-3 rounded-xl hover:bg-red-800 active:scale-[0.99] transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    className="relative overflow-hidden group flex-1 min-w-[160px] flex items-center justify-center gap-2 bg-gradient-to-r from-red-800 to-red-900 text-white font-bold text-base px-6 py-4 rounded-2xl hover:shadow-[0_8px_20px_rgba(153,27,27,0.25)] hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   >
-                    <ShoppingCart size={18} />
-                    {availableStock === 0 ? "អស់ពីស្តុក" : "បន្ថែមទៅកន្ត្រក"}
+                    <div className="absolute top-0 -left-full w-[120%] h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 group-hover:animate-[none] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out"></div>
+                    <ShoppingCart size={20} className="relative z-10" />
+                    <span className="relative z-10">{availableStock === 0 ? "អស់ពីស្តុក" : "បន្ថែមទៅកន្ត្រក"}</span>
                   </button>
 
                   {/* Buy Now Button */}
@@ -367,7 +372,7 @@ export default function ProductDetail() {
                     type="button"
                     onClick={handleBuyNow}
                     disabled={availableStock === 0}
-                    className="flex-1 min-w-[140px] flex items-center justify-center gap-2 bg-emerald-600 text-white font-semibold text-sm px-5 py-3 rounded-xl hover:bg-emerald-700 active:scale-[0.99] transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    className="flex-1 min-w-[140px] flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-base px-6 py-4 rounded-2xl hover:shadow-[0_8px_20px_rgba(16,185,129,0.25)] hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   >
                     ទិញឥឡូវនេះ
                   </button>

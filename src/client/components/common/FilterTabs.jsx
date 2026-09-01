@@ -27,7 +27,7 @@ export default function FilterTabs({ tabs, onChange }) {
           <button
             key={tab}
             onClick={() => handleClick(tab)}
-            className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-5 py-2.5 text-sm leading-khmer transition-colors duration-150 ${
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-3 py-1 md:px-5 md:py-1.5 text-sm leading-khmer transition-colors duration-150 ${
               isActive
                 ? "bg-red-900 text-white font-medium"
                 : "bg-red-50 text-slate-700 border border-slate-200 font-normal hover:bg-red-50/70 hover:border-slate-300"

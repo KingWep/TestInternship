@@ -78,28 +78,6 @@ export default function useSalesForm() {
       return null
     }
 
-    if (!customerInfo.phone || !customerInfo.phone.trim()) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Phone Number Required',
-        text: 'Please enter the customer\'s phone number.',
-        confirmButtonColor: '#3b82f6',
-        confirmButtonText: 'OK',
-      })
-      return null
-    }
-
-    if (!customerInfo.address || !customerInfo.address.trim()) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Address Required',
-        text: 'Please enter the delivery address.',
-        confirmButtonColor: '#3b82f6',
-        confirmButtonText: 'OK',
-      })
-      return null
-    }
-
     // ── All valid → create order via context ───
     let newOrder;
     try {

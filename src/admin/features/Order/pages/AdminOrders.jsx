@@ -34,7 +34,7 @@ export default function AdminOrders() {
     closeModal,
     openEditModal,
     handleUpdateSubmit
-  } = useOrders()
+  } = useOrders(viewMode)
 
   return (
     <div className="space-y-6">

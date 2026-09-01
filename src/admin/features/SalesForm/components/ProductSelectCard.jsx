@@ -7,7 +7,7 @@ export default function ProductSelectCard({ product, onSelect }) {
   return (
     <div
       onClick={() => !isOutOfStock && onSelect(product)}
-      className={`bg-white border rounded-2xl p-3 sm:p-4 shadow-xs flex flex-col justify-between group transition-all duration-200 w-full h-full
+      className={`bg-white border rounded-2xl p-4 shadow-xs flex flex-col justify-between group transition-all duration-200 w-full h-full
         ${
           isOutOfStock
             ? "border-slate-200 opacity-50 cursor-not-allowed"
@@ -16,7 +16,7 @@ export default function ProductSelectCard({ product, onSelect }) {
     >
       {/* Top Section: Image, Stock Badge, & Name */}
       <div>
-        <div className="h-24 sm:h-28 bg-slate-100 rounded-xl mb-3 overflow-hidden flex items-center justify-center text-slate-400 font-bold">
+        <div className="h-40 md:h-52 -mx-3 -mt-3 mb-3 rounded-xl overflow-hidden flex items-center justify-center text-slate-400 font-bold">
           {product.image ? (
             <img
               src={product.image}

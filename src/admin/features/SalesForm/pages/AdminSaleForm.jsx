@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { saleFormSchema } from '../schemas/saleFormSchema'
 import { PackageOpen, X, ShoppingCart } from 'lucide-react'
 import OrderCartTable from '../../Order/components/OrderCartTable'
 import OrderFormFields from '../../Order/components/OrderFormFields'
@@ -26,8 +29,20 @@ export default function AdminSaleForm() {
     INITIAL_CUSTOMER,
   } = useSalesForm()
 
-  const [customerInfo, setCustomerInfo] = useState(INITIAL_CUSTOMER)
   const [isCartOpen, setIsCartOpen] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(saleFormSchema),
+    defaultValues: INITIAL_CUSTOMER,
+  })
+
+  const deliveryFee = watch('deliveryFee')
 
   useEffect(() => {
     if (isCartOpen) {
@@ -38,10 +53,10 @@ export default function AdminSaleForm() {
     return () => { document.body.style.overflow = 'unset' }
   }, [isCartOpen])
 
-  const onCheckout = async () => {
-    const result = await handleCheckout({ customerInfo })
+  const onCheckout = async (data) => {
+    const result = await handleCheckout({ customerInfo: data })
     if (result) {
-      setCustomerInfo(INITIAL_CUSTOMER)
+      reset()
       setIsCartOpen(false)
     }
   }
@@ -91,7 +106,7 @@ export default function AdminSaleForm() {
           )}
         </div>
 
-        <div className={`
+        <form onSubmit={handleSubmit(onCheckout)} className={`
           fixed inset-0 z-50 bg-slate-50 flex flex-col p-4 pb-6 overflow-y-auto transition-transform duration-300
           ${isCartOpen ? 'translate-y-0' : 'translate-y-full'} 
           lg:static lg:translate-y-0 lg:z-auto lg:p-0 lg:pb-0 lg:bg-transparent lg:col-span-5 lg:flex lg:flex-col lg:gap-4 lg:overflow-y-auto lg:will-change-scroll lg:overscroll-contain transform-gpu
@@ -115,19 +130,16 @@ export default function AdminSaleForm() {
           </div>
 
           <OrderFormFields
-            customerInfo={customerInfo}
-            onChange={(e) =>
-              setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value })
-            }
+            register={register}
+            errors={errors}
           />
           
           <OrderSummaryBox
             subtotal={subtotal}
-            onCheckout={onCheckout}
-            delivery={customerInfo.deliveryFee}
+            delivery={deliveryFee}
             disabled={cart.length === 0}
           />
-        </div>
+        </form>
 
       </div>
 

@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <div>
       <Header className="fixed top-0 left-0 w-full z-50" />
-      <Container className="py-6 space-y-8 mt-28 md:mt-20">
+      <Container className="py-5 md:space-y-6 mt-28 md:mt-20">
         {!isFiltering && <PromoBanner onShopClick={scrollToAllProducts} />}
         <ProductSection allProductsRef={allProductsRef} />
       </Container>

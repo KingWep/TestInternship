@@ -13,7 +13,7 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 md:shadow-md shadow-lg  bg-white md:border-b md:border-slate-100  border-b-2 border-red-800">
       <Container className="w-full py-4">
         {/* Mobile: 2 rows (flex-col) | Desktop: 1 row (md:flex-row) */}
-        <div className="flex flex-col md:flex-row md:items-center gap-4">
+        <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
           {/* Row 1 on Mobile / Left side on Desktop */}
           <div className="flex items-center justify-between md:justify-start">
             <span className="font-bold text-lg text-red-900 whitespace-nowrap">
@@ -21,7 +21,7 @@ export default function Header() {
             </span>
 
             {/* Cart on mobile only */}
-            <div  className="flex items-center gap-4 md:hidden">
+            <div  className="flex items-center gap-3 md:gap-4 md:hidden">
               <button
                 className="relative md:hidden"
                 onClick={() => setIsCartOpen(true)}
@@ -47,7 +47,8 @@ export default function Header() {
           <div className="flex flex-1 items-center gap-4">
             <div className="flex-1 relative">
               <Search
-                size={18}
+                size={16}
+                md:size={18}
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               />
               <input
@@ -55,14 +56,14 @@ export default function Header() {
                 value={searchItem}
                 onChange={(e) => setSearchItem(e.target.value)}
                 placeholder="ស្វែងរក..."
-                className="w-full bg-slate-100 rounded-full pl-10 pr-2 py-1 md:py-2 text-base leading-khmer outline-none focus:ring-2 focus:ring-red-400 placeholder:text-slate-400"
+                className="w-full bg-slate-100 rounded-md md:rounded-full pl-10 pr-2 py-0 md:py-2 text-base leading-khmer outline-none focus:ring-2 focus:ring-red-400 placeholder:text-slate-400"
               />
             </div>
 
             <select
               value={priceRange}
               onChange={(e) => setPriceRange(e.target.value)}
-              className="text-sm border border-slate-200 rounded-lg px-3 py-2 outline-none"
+              className="text-sm border border-slate-200 rounded-lg px-1 py-1 md:px-3 md:py-2 outline-none"
             >
               <option value="all">តម្លៃទាំងអស់</option>
               <option value="under-20">ក្រោម $20</option>

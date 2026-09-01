@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react"
 export default function SectionHeader({ title, subtitle, action }) {
   return (
-    <div className="flex items-center gap-1 mb-4 mt-6">
+    <div className="flex items-center gap-1 mb-1">
       <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 leading-khmer">
       {title}
       </h2>

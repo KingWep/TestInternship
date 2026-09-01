@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Swal from 'sweetalert2'
 import { useOrdersQuery, useUpdateOrderMutation } from '../../../../queries/orders/useOrderQueries'
 
-export function useOrders() {
+export function useOrders(viewMode) {
   const { data: orders = [] } = useOrdersQuery()
   const updateOrderMutation = useUpdateOrderMutation()
 
@@ -13,7 +13,7 @@ export function useOrders() {
   const [toDate, setToDate] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
 
-  const ITEMS_PER_PAGE = 5
+  const ITEMS_PER_PAGE = viewMode === 'list' ? 5 : 8
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false)

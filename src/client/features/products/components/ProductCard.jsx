@@ -107,8 +107,8 @@ export default function ProductCard({ product = {}, index = 0 }) {
         </div>
       </div>
 
-      <div className="p-4 sm:p-5 flex flex-col flex-1 gap-2.5">
-        <div className="flex items-center justify-between gap-2">
+      <div className="p-4 flex flex-col flex-1">
+        <div className="flex items-center justify-between">
           <span className="text-[11px] sm:text-xs text-gray-400 font-medium uppercase tracking-wider truncate">
             {categoryName || "ទូទៅ"}
           </span>
@@ -123,18 +123,18 @@ export default function ProductCard({ product = {}, index = 0 }) {
           </h3>
         </Link>
 
-        <div className="mt-auto pt-3 border-t border-gray-100 flex flex-col gap-2 min-h-[64px] justify-end">
+        <div className="mt-auto pt-1 border-t border-gray-100 flex flex-col min-h-[64px] justify-end">
           <ProductPrice price={displayPrice} oldPrice={originalPrice} />
 
           {savingsAmount > 0 ? (
-            <div className="inline-flex items-center gap-1.5 bg-emerald-50/80 w-fit px-2.5 py-1 rounded-md border border-emerald-100">
+            <div className="inline-flex items-center gap-1.5 bg-emerald-50/80 w-fit px-2 py-1 rounded-md border border-emerald-100">
               <Gift size={12} className="text-emerald-600" />
               <span className="text-[11px] text-emerald-700 font-medium">
                 ចំណេញ ${Number(savingsAmount).toFixed(2)}
               </span>
             </div>
           ) : (
-            <div className="inline-flex items-center gap-1.5 bg-gray-50 w-fit px-2.5 py-1 rounded-md border border-gray-200">
+            <div className="inline-flex items-center gap-1.5 bg-gray-50 w-fit px-2 py-1 rounded-md border border-gray-200">
               <ShieldCheck size={12} className="text-blue-500" />
               <span className="text-[11px] text-gray-600 font-medium tracking-wide">
                 ផលិតផលសុទ្ធ 100%

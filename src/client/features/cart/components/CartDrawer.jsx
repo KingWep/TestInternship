@@ -12,6 +12,7 @@ import PaymentQrModal from "./PaymentQrModal"
 import EmptyCart from "./EmptyCart"
 import useCheckout from "../hooks/useCheckout"
 import { DeliveryForm } from "./DeliveryForm"
+import { clientOrderSchema } from "../schemas/clientOrderSchema"
 
 export default function CartDrawer() {
   const navigate = useNavigate()
@@ -37,10 +38,12 @@ export default function CartDrawer() {
   const [paymentImage, setPaymentImage] = useState(null)
   const hasItems = cartItems.length > 0
 
+  const [errors, setErrors] = useState({})
+
   const grandTotal =
     cartTotal + (hasItems ? deliveryFee : 0)
 
-  const handleCreateOrder = () => {
+  const handleCreateOrder = (formattedPhone) => {
     return createOrderMutation.mutateAsync({
       items: cartItems,
       subtotal: cartTotal,
@@ -48,7 +51,7 @@ export default function CartDrawer() {
       paymentMethod: paymentMethod === 'cash' ? 'Cash' : 'QR Payment',
       customerInfo: {
         name: customerName,
-        phone,
+        phone: formattedPhone,
         address,
         note,
         deliveryMethod,
@@ -64,6 +67,7 @@ export default function CartDrawer() {
     setDeliveryMethod("")
     setPaymentMethod("")
     setPaymentImage(null)
+    setErrors({})
     clearCart() // clear data in cart
   }
 
@@ -80,44 +84,30 @@ export default function CartDrawer() {
     navigate, // ✅ Pass navigate to useCheckout
   })
 
-  const showWarning = (message) => {
-    Swal.fire({
-      icon: "warning",
-      title: "ព័ត៌មានមិនទាន់ពេញ",
-      text: message,
-      confirmButtonText: "យល់ព្រម",
-      confirmButtonColor: "#7f1d1d",
-    })
-  }
-
   const handleOrder = async () => {
-    if (!phone.trim()) {
-      showWarning("សូមបញ្ចូលលេខទូរស័ព្ទ")
-      return
+    const dataToValidate = { phone, address, deliveryMethod, paymentMethod };
+    const result = clientOrderSchema.safeParse(dataToValidate);
+
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      const formattedErrors = {};
+      for (const key in fieldErrors) {
+        formattedErrors[key] = fieldErrors[key][0];
+      }
+      setErrors(formattedErrors);
+      return;
     }
 
-    if (!address.trim()) {
-      showWarning("សូមបញ្ចូលអាសយដ្ឋាន")
-      return
-    }
-
-    if (!deliveryMethod) {
-      showWarning("សូមជ្រើសរើសសេវាដឹកជញ្ជូន")
-      return
-    }
-
-    if (!paymentMethod) {
-      showWarning("សូមជ្រើសរើសវិធីបង់ប្រាក់")
-      return
-    }
+    setErrors({});
+    const formattedPhone = result.data.phone;
 
     if (paymentMethod === "cash") {
-      await handleCashOrder()
+      await handleCashOrder(formattedPhone)
       return
     }
 
     try {
-      const newOrder = await handleCreateOrder()
+      const newOrder = await handleCreateOrder(formattedPhone)
       startQrPayment(newOrder.id)
     } catch (error) {
       Swal.fire({
@@ -129,9 +119,9 @@ export default function CartDrawer() {
     }
   }
 
-  const handleCashOrder = async () => {
+  const handleCashOrder = async (formattedPhone) => {
     try {
-      const newOrder = await handleCreateOrder()
+      const newOrder = await handleCreateOrder(formattedPhone)
       resetCheckoutForm()
       
       await Swal.fire({
@@ -206,6 +196,7 @@ export default function CartDrawer() {
                 setPaymentMethod={setPaymentMethod}
                 paymentImage={paymentImage}
                 setPaymentImage={setPaymentImage}
+                errors={errors}
               />
             </>
           ) : (

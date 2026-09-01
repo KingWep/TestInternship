@@ -122,10 +122,10 @@ export default function ProductSection({allProductsRef}) {
   }, [products, categories, activeTab, searchItem, priceRange]);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-5">
       {/* Category Filter Tabs */}
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 leading-khmer mb-3">
+        <h2 className="flex items-center text-xl mt-3 md:mt-0 font-bold text-slate-800 leading-khmer">
           ស្វែងរកទំនិញតាមប្រភេទ
         </h2>
         <FilterTabs tabs={tabs} onChange={handleTabChange} />

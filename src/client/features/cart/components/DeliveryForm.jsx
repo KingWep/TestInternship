@@ -15,7 +15,8 @@ export function DeliveryForm({
   setPaymentMethod,
   paymentImage,
   setPaymentImage,
-  setQr
+  setQr,
+  errors = {}
 }) {
   const deliveryOptions = [
     { id: "grab", name: "Grab", fee: 2.0 },
@@ -52,14 +53,29 @@ export function DeliveryForm({
         <label className="block text-xs font-medium text-slate-600 mb-1">
           លេខទូរស័ព្ទ
         </label>
-        <input
-          type="tel"
-          name="phone"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="បញ្ចូលលេខទូរស័ព្ទ"
-          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-400 transition"
-        />
+        <div 
+          className={`flex items-center w-full bg-slate-50 border rounded-lg overflow-hidden focus-within:bg-white focus-within:ring-2 focus-within:ring-red-100 focus-within:border-red-400 transition ${
+            errors.phone ? 'border-red-500' : 'border-slate-200'
+          }`}
+        >
+          <div className="pl-3 pr-2 py-2 text-slate-600 text-sm font-semibold select-none flex items-center bg-slate-100 border-r border-slate-200 h-full">
+            +855 <span className="text-slate-300 ml-1.5 text-xs">|</span>
+          </div>
+          <input
+            type="tel"
+            name="phone"
+            value={phone}
+            onChange={(e) => {
+              const digitsOnly = e.target.value.replace(/\D/g, '');
+              setPhone(digitsOnly);
+            }}
+            placeholder="12 345 678"
+            className="flex-1 px-3 py-2 bg-transparent text-sm outline-none"
+          />
+        </div>
+        {errors.phone && (
+          <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+        )}
       </div>
 
       <div>
@@ -72,15 +88,25 @@ export function DeliveryForm({
           onChange={(e) => setAddress(e.target.value)}
           placeholder="បញ្ចូលអាសយដ្ឋានដឹកជញ្ជូន"
           rows={2}
-          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none resize-none focus:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-400 transition"
+          className={`w-full bg-slate-50 border rounded-lg px-3 py-2 text-sm outline-none resize-none focus:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-400 transition ${
+            errors.address ? 'border-red-500' : 'border-slate-200'
+          }`}
         />
+        {errors.address && (
+          <p className="text-red-500 text-xs mt-1">{errors.address}</p>
+        )}
       </div>
 
       {/* Compact & Clean Delivery Option Selector */}
       <div>
-        <label className="block text-xs font-medium text-slate-600 mb-1.5">
-          សេវាដឹកជញ្ជូន
-        </label>
+        <div className="flex justify-between items-center mb-1.5">
+          <label className="block text-xs font-medium text-slate-600">
+            សេវាដឹកជញ្ជូន
+          </label>
+          {errors.deliveryMethod && (
+            <span className="text-red-500 text-[10px]">{errors.deliveryMethod}</span>
+          )}
+        </div>
         <div className="grid grid-cols-4 gap-1.5">
           {deliveryOptions.map((option) => (
             <button
@@ -90,6 +116,8 @@ export function DeliveryForm({
               className={`flex flex-col items-center justify-center p-2 rounded-lg border text-xs transition ${
                 deliveryMethod === option.id
                   ? "border-red-700 bg-red-50 text-red-900 font-medium shadow-sm"
+                  : errors.deliveryMethod
+                  ? "border-red-300 bg-red-50/30 text-slate-600 hover:border-red-400"
                   : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
               }`}
             >
@@ -102,9 +130,14 @@ export function DeliveryForm({
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1.5 mt-2">
-            សេវាបង់ប្រាក់
-          </label>
+          <div className="flex justify-between items-center mb-1.5 mt-2">
+            <label className="block text-xs font-medium text-slate-600">
+              សេវាបង់ប្រាក់
+            </label>
+            {errors.paymentMethod && (
+              <span className="text-red-500 text-[10px]">{errors.paymentMethod}</span>
+            )}
+          </div>
           <div className="grid grid-cols-4 gap-1.5">
             {paymentMehtod.map((pay)=>(
               <button
@@ -114,6 +147,8 @@ export function DeliveryForm({
                 className={`flex flex-col items-center justify-center p-2 rounded-lg border text-xs transition ${
                   paymentMethod === pay.id
                     ? "border-red-700 bg-red-50 text-red-900 font-medium shadow-sm"
+                    : errors.paymentMethod
+                    ? "border-red-300 bg-red-50/30 text-slate-600 hover:border-red-400"
                     : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
                 }`}
               >

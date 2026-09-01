@@ -22,7 +22,7 @@ export default function RecommendedProducts({
   }
 
   return (
-    <section className="mt-16 w-full border-t border-slate-100 pt-10">
+    <section className="w-full border-t border-slate-100 pt-10">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl md:text-2xl font-bold text-slate-900">
           ផលិតផលស្រដៀងគ្នា (Related Products)

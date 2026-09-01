@@ -214,7 +214,7 @@ export default function CartDrawer() {
             type="button"
             onClick={handleOrder}
             disabled={!hasItems}
-            className={`w-full py-3 rounded-full font-semibold transition ${
+            className={`w-full py-2 rounded-full font-semibold transition ${
               hasItems
                 ? "bg-red-900 text-white hover:bg-red-800"
                 : "bg-slate-300 text-slate-500 cursor-not-allowed"

@@ -13,6 +13,7 @@ import {
   Image as ImageIcon,
   Truck,
   ShieldCheck,
+  SquareChevronDown,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import Header from "../../../components/layout/Header";
@@ -34,10 +35,16 @@ export default function ProductDetail() {
 
   const product = products.find((p) => Number(p.id) === Number(id));
 
-  const validImages = Array.isArray(product?.images) && product.images.length > 0
-    ? product.images.filter(Boolean)
-    : [];
-  const gallery = validImages.length > 0 ? validImages : (product?.image ? [product.image] : []);
+  const validImages =
+    Array.isArray(product?.images) && product.images.length > 0
+      ? product.images.filter(Boolean)
+      : [];
+  const gallery =
+    validImages.length > 0
+      ? validImages
+      : product?.image
+        ? [product.image]
+        : [];
 
   const goPrev = useCallback(() => {
     if (gallery.length <= 1) return;
@@ -93,8 +100,12 @@ export default function ProductDetail() {
           <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
             <Package size={32} />
           </div>
-          <h2 className="text-xl font-bold text-slate-800">រកមិនឃើញផលិតផលនេះទេ</h2>
-          <p className="text-slate-500 text-sm mt-1">ផលិតផលដែលអ្នកកំពុងស្វែងរកប្រហែលជាត្រូវបានលុប ឬផ្លាស់ប្តូរទីតាំង។</p>
+          <h2 className="text-xl font-bold text-slate-800">
+            រកមិនឃើញផលិតផលនេះទេ
+          </h2>
+          <p className="text-slate-500 text-sm mt-1">
+            ផលិតផលដែលអ្នកកំពុងស្វែងរកប្រហែលជាត្រូវបានលុប ឬផ្លាស់ប្តូរទីតាំង។
+          </p>
           <Link
             to="/"
             className="mt-6 inline-flex items-center gap-2 bg-red-800 text-white font-medium px-5 py-2.5 rounded-xl hover:bg-red-900 transition-all shadow-sm"
@@ -125,13 +136,18 @@ export default function ProductDetail() {
   const numSalePrice = Number(salePrice || 0);
   const numPrice = Number(price || 0);
   const displayPrice = numSalePrice > 0 ? numSalePrice : numPrice;
-  const originalPrice = numSalePrice > 0 && numPrice > numSalePrice ? numPrice : null;
+  const originalPrice =
+    numSalePrice > 0 && numPrice > numSalePrice ? numPrice : null;
 
   const discountPercent =
     discount ||
-    (originalPrice ? Math.round(((originalPrice - displayPrice) / originalPrice) * 100) : null);
+    (originalPrice
+      ? Math.round(((originalPrice - displayPrice) / originalPrice) * 100)
+      : null);
 
-  const savingsAmount = originalPrice ? originalPrice - displayPrice : (cashback || 0);
+  const savingsAmount = originalPrice
+    ? originalPrice - displayPrice
+    : cashback || 0;
 
   const handleAddToCart = () => {
     if (availableStock <= 0) return;
@@ -156,9 +172,9 @@ export default function ProductDetail() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-slate-100">
       <Header />
 
-      <Container className="pt-36 pb-0 md:pt-28 md:pb-16 flex-1">
+      <Container className="pt-28 md:pt-24 flex-1">
         {/* Breadcrumb / Back Link */}
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-4 flex items-center justify-between">
           <Link
             to="/"
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white bg-red-600 border border-slate-200 px-3.5 py-2 rounded-bl-xl rounded-tr-xl hover:text-red-700 hover:border-red-200 hover:bg-red-200/50 transition-all shadow-xs"
@@ -167,90 +183,94 @@ export default function ProductDetail() {
             ត្រឡប់ក្រោយ
           </Link>
           {categoryName && (
-            <span className="text-xs font-semibold text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-lg">
+            <span className="text-xs font-semibold text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-md">
               ប្រភេទ: <strong className="text-slate-800">{categoryName}</strong>
             </span>
           )}
         </div>
 
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 sm:p-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
+        <div className="bg-white/80 backdrop-blur-xl rounded-lg border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-4 sm:p-5 lg:p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6 items-stretch">
             {/* Left Column: Image Gallery */}
-            <div className="flex flex-col gap-4">
-              <div className="group relative bg-white rounded-3xl overflow-hidden aspect-square border border-slate-100 shadow-sm">
-                {gallery.length > 0 ? (
-                  <img
-                    src={gallery[activeImage]}
-                    alt={name}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 bg-slate-50">
-                    <ImageIcon size={48} className="mb-2 opacity-50" />
-                    <span className="text-sm font-medium">គ្មានរូបភាព</span>
+            <div className="min-w-0">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                {/* Thumbnails - left of the main image on desktop */}
+                {gallery.length > 1 && (
+                  <div className="order-2 sm:order-1 flex sm:flex-col gap-2.5 sm:gap-3 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0 sm:w-[76px] lg:w-[82px] flex-shrink-0 scrollbar-none">
+                    {gallery.map((img, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setActiveImage(i)}
+                        aria-label={`បង្ហាញរូបភាពទី ${i + 1}`}
+                        className={`ml-2 mt-2 md:ml-0 md:mt-0 w-[68px] h-[68px] sm:w-[72px] sm:h-[72px] lg:w-[78px] lg:h-[78px] rounded-xl overflow-hidden transition-all duration-200 flex-shrink-0 cursor-pointer relative ${
+                          activeImage === i
+                            ? "ring-2 ring-red-600 ring-offset-2 ring-offset-white shadow-md"
+                            : "border border-slate-200 hover:border-slate-300 opacity-65 hover:opacity-100"
+                        }`}
+                      >
+                        <img
+                          src={img}
+                          alt={`${name} thumbnail ${i + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
                   </div>
                 )}
 
-                {/* Discount Tag */}
-                {discountPercent > 0 && (
-                  <span className="absolute top-4 left-4 bg-red-600 text-white text-xs sm:text-sm font-bold px-3 py-1 rounded-lg shadow-md z-10">
-                    -{discountPercent}%
-                  </span>
-                )}
+                {/* Main image */}
+                <div className="order-1 sm:order-2 group relative bg-white rounded-2xl overflow-hidden aspect-square border border-slate-100 shadow-sm flex-1 min-w-0 max-h-[520px]">
+                  {gallery.length > 0 ? (
+                    <img
+                      src={gallery[activeImage]}
+                      alt={name}
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 bg-slate-50">
+                      <ImageIcon size={48} className="mb-2 opacity-50" />
+                      <span className="text-sm font-medium">គ្មានរូបភាព</span>
+                    </div>
+                  )}
 
-                {/* Image Navigation Arrows */}
-                {gallery.length > 1 && (
-                  <>
-                    <button
-                      onClick={goPrev}
-                      aria-label="រូបភាពមុន"
-                      className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 hover:text-red-700 transition-all cursor-pointer z-10"
-                    >
-                      <ChevronLeft size={24} />
-                    </button>
-                    <button
-                      onClick={goNext}
-                      aria-label="រូបភាពបន្ទាប់"
-                      className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 hover:text-red-700 transition-all cursor-pointer z-10"
-                    >
-                      <ChevronRight size={24} />
-                    </button>
-
-                    {/* Image Counter Badge */}
-                    <span className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-xs text-white text-xs font-medium px-2.5 py-1 rounded-full z-10">
-                      {activeImage + 1} / {gallery.length}
+                  {/* Discount Tag */}
+                  {discountPercent > 0 && (
+                    <span className="absolute top-4 left-4 bg-red-600 text-white text-xs sm:text-sm font-bold px-3 py-1 rounded-lg shadow-md z-10">
+                      -{discountPercent}%
                     </span>
-                  </>
-                )}
-              </div>
+                  )}
 
-              {/* Thumbnails */}
-              {gallery.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x">
-                  {gallery.map((img, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActiveImage(i)}
-                      className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden transition-all duration-300 flex-shrink-0 cursor-pointer snap-start relative ${
-                        activeImage === i
-                          ? "ring-2 ring-red-600 ring-offset-2 ring-offset-white shadow-md scale-[1.02]"
-                          : "border border-slate-200 hover:border-slate-300 opacity-60 hover:opacity-100 hover:scale-[1.02]"
-                      }`}
-                    >
-                      <img
-                        src={img}
-                        alt={`${name} thumbnail ${i + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
+                  {/* Image Navigation Arrows */}
+                  {gallery.length > 1 && (
+                    <>
+                      <button
+                        onClick={goPrev}
+                        aria-label="រូបភាពមុន"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 hover:text-red-700 transition-all cursor-pointer z-10"
+                      >
+                        <ChevronLeft size={24} />
+                      </button>
+                      <button
+                        onClick={goNext}
+                        aria-label="រូបភាពបន្ទាប់"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 hover:text-red-700 transition-all cursor-pointer z-10"
+                      >
+                        <ChevronRight size={24} />
+                      </button>
+
+                      {/* Image Counter Badge */}
+                      <span className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-xs text-white text-xs font-medium px-2.5 py-1 rounded-full z-10">
+                        {activeImage + 1} / {gallery.length}
+                      </span>
+                    </>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Right Column: Details & Purchase Controls */}
-            <div className="flex flex-col">
-              <div className="space-y-4">
+            <div className="flex flex-col h-full min-h-0">
+              <div className="space-y-2.5 lg:space-y-3">
                 {/* Category & SKU */}
                 <div className="flex items-center gap-2 flex-wrap text-xs">
                   {sku && (
@@ -261,17 +281,17 @@ export default function ProductDetail() {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-tight tracking-tight">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 leading-tight tracking-tight">
                   {name}
                 </h1>
 
                 {/* Price Display */}
-                <div className="flex items-baseline gap-3 pt-2">
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500 font-black text-4xl sm:text-5xl tracking-tight">
+                <div className="flex items-baseline gap-2 pt-1">
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500 font-black text-2xl sm:text-3xl tracking-tight">
                     ${displayPrice.toFixed(2)}
                   </span>
                   {originalPrice && (
-                    <span className="text-slate-400 text-lg sm:text-xl line-through font-medium">
+                    <span className="text-slate-400 text-sm sm:text-base line-through font-medium">
                       ${originalPrice.toFixed(2)}
                     </span>
                   )}
@@ -279,16 +299,21 @@ export default function ProductDetail() {
 
                 {/* Savings Pill */}
                 {savingsAmount > 0 && (
-                  <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-800 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-xl border border-emerald-100 shadow-sm">
+                  <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-800 text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-lg border border-emerald-100 shadow-sm">
                     <Gift size={16} className="text-emerald-600" />
-                    <span>អ្នកចំណេញបាន ${Number(savingsAmount).toFixed(2)} ក្នុងការទិញនេះ!</span>
+                    <span>
+                      អ្នកចំណេញបាន ${Number(savingsAmount).toFixed(2)}{" "}
+                      ក្នុងការទិញនេះ!
+                    </span>
                   </div>
                 )}
 
                 {/* Stock Status */}
-                <div className="flex items-center gap-2 pt-2">
+                <div className="flex items-center gap-2 pt-1">
                   <Badge variant="stock">
-                    {availableStock > 0 ? `ស្តុកនៅសល់: ${availableStock}` : "អស់ពីស្តុក"}
+                    {availableStock > 0
+                      ? `ស្តុកនៅសល់: ${availableStock}`
+                      : "អស់ពីស្តុក"}
                   </Badge>
                   {availableStock > 0 && (
                     <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
@@ -299,27 +324,27 @@ export default function ProductDetail() {
 
                 {/* Description */}
                 {description && (
-                  <div className="pt-4 border-t border-slate-100">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                  <div className="pt-2.5 border-t border-slate-100">
+                    <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                       ព័ត៌មានលម្អិតអំពីទំនិញ
                     </h3>
-                    <p className="text-slate-600 text-sm sm:text-base leading-relaxed break-words whitespace-pre-line">
+                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed break-words whitespace-pre-line">
                       {description}
                     </p>
                   </div>
                 )}
 
                 {/* Highlights / Badges */}
-                <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-100 text-xs sm:text-sm text-slate-700 font-medium">
-                  <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all">
-                    <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
-                      <Truck size={20} className="text-red-600" />
+                <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 text-[11px] sm:text-xs text-slate-700 font-medium">
+                  <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all">
+                    <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                      <Truck size={16} className="text-red-600" />
                     </div>
                     <span>ដឹកជញ្ជូនរហ័សទូទាំងប្រទេស</span>
                   </div>
-                  <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all">
-                    <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
-                      <ShieldCheck size={20} className="text-emerald-600" />
+                  <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all">
+                    <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                      <ShieldCheck size={16} className="text-emerald-600" />
                     </div>
                     <span>ធានាផលិតផលសុទ្ធ 100%</span>
                   </div>
@@ -327,28 +352,34 @@ export default function ProductDetail() {
               </div>
 
               {/* Add to Cart / Buy Actions */}
-              <div className="pt-6 mt-4 border-t border-slate-100 space-y-4">
-                <div className="flex items-center gap-4 flex-wrap">
+              <div className="pt-3 mt-auto border-t border-slate-100">
+                <div className="flex items-center gap-2 sm:gap-3 w-full flex-nowrap">
                   {/* Quantity selector */}
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs font-bold text-slate-600 mr-1">ចំនួន:</span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <span className="text-xs font-bold text-slate-600 mr-1">
+                      ចំនួន:
+                    </span>
                     <div className="flex items-center border border-slate-200 rounded-xl bg-white shadow-xs p-1">
                       <button
                         type="button"
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                         disabled={quantity <= 1 || availableStock === 0}
-                        className="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-30 cursor-pointer"
+                        className="w-7 h-7 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-30 cursor-pointer"
                       >
                         <Minus size={14} />
                       </button>
-                      <span className="w-10 text-center font-bold text-sm text-slate-800">
+                      <span className="w-8 text-center font-bold text-xs text-slate-800">
                         {quantity}
                       </span>
                       <button
                         type="button"
-                        onClick={() => setQuantity((q) => Math.min(q + 1, availableStock))}
-                        disabled={quantity >= availableStock || availableStock === 0}
-                        className="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-30 cursor-pointer"
+                        onClick={() =>
+                          setQuantity((q) => Math.min(q + 1, availableStock))
+                        }
+                        disabled={
+                          quantity >= availableStock || availableStock === 0
+                        }
+                        className="w-7 h-7 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-30 cursor-pointer"
                       >
                         <Plus size={14} />
                       </button>
@@ -360,11 +391,13 @@ export default function ProductDetail() {
                     type="button"
                     onClick={handleAddToCart}
                     disabled={availableStock === 0}
-                    className="relative overflow-hidden group flex-1 min-w-[160px] flex items-center justify-center gap-2 bg-gradient-to-r from-red-800 to-red-900 text-white font-bold text-base px-6 py-4 rounded-2xl hover:shadow-[0_8px_20px_rgba(153,27,27,0.25)] hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    className="relative overflow-hidden group flex-1 basis-0 min-w-0 h-10 flex items-center justify-center gap-1.5 bg-gradient-to-r from-red-800 to-red-900 text-white font-bold text-xs sm:text-sm px-3 py-2 rounded-lg hover:shadow-[0_8px_20px_rgba(153,27,27,0.25)] hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   >
                     <div className="absolute top-0 -left-full w-[120%] h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 group-hover:animate-[none] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out"></div>
-                    <ShoppingCart size={20} className="relative z-10" />
-                    <span className="relative z-10">{availableStock === 0 ? "អស់ពីស្តុក" : "បន្ថែមទៅកន្ត្រក"}</span>
+                    <ShoppingCart size={18} className="relative z-10" />
+                    <span className="relative z-10">
+                      {availableStock === 0 ? "អស់ពីស្តុក" : "បន្ថែមទៅកន្ត្រក"}
+                    </span>
                   </button>
 
                   {/* Buy Now Button */}
@@ -372,9 +405,14 @@ export default function ProductDetail() {
                     type="button"
                     onClick={handleBuyNow}
                     disabled={availableStock === 0}
-                    className="flex-1 min-w-[140px] flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-base px-6 py-4 rounded-2xl hover:shadow-[0_8px_20px_rgba(16,185,129,0.25)] hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    className="flex-1 basis-0 min-w-0 h-10 flex items-center justify-center gap-1.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-xs sm:text-sm px-3 py-2 rounded-lg hover:shadow-[0_8px_20px_rgba(16,185,129,0.25)] hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   >
-                    ទិញឥឡូវនេះ
+                    <div className="absolute top-0 -left-full w-[120%] h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 group-hover:animate-[none] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out"></div>
+                    <SquareChevronDown size={18} className="relative z-10"/>
+                    <span className="relative z-10">
+                      ទិញឥឡូវនេះ
+                    </span>
+                   
                   </button>
                 </div>
               </div>

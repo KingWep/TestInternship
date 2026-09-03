@@ -26,8 +26,6 @@ export default function Home() {
 
   return (
     // Replaced standard div with a relative wrapper and padding-top
-    // Replaced standard div with a relative wrapper and padding-top
-    // Replaced standard div with a relative wrapper and padding-top
     <div className="relative">
       <Header />
       <Container className="py-5 md:space-y-6">

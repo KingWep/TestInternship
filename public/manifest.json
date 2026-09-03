@@ -1,20 +1,15 @@
 {
-  "short_name": "iShop",
-  "name": "iShop Mobile Application",
+  "short_name": "MyTestApp",
+  "name": "My Test Application",
   "icons": [
     {
-      "src": "qr.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "qr.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#0b132b",
-  "background_color": "#0b132b"
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
 }

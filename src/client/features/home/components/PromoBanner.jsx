@@ -1,7 +1,7 @@
 import { ArrowRight, Percent } from "lucide-react";
 
 import Button from "../../../components/common/Button";
-import { useSlides } from "@/admin/features/slides/hooks/useSlides";
+import { useSlides } from "@/admin/features/Slides/hooks/useSlides";
 import PromoBannerSkeleton from "../../../components/common/PromoBannerSkeleton";
  
 export default function PromoBanner({ onShopClick }) {

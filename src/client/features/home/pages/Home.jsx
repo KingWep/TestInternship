@@ -13,6 +13,7 @@ export default function Home() {
   const isFiltering = searchItem.trim() !== "" || priceRange !== "all";
 
   const allProductsRef = useRef(null);
+  
   const scrollToAllProducts = () => {
     if (!allProductsRef.current) return;
     const headerOffset = 100;
@@ -22,13 +23,16 @@ export default function Home() {
       behavior: "smooth",
     });
   };
+
   return (
-    <div>
-      <Header className="fixed top-0 left-0 w-full z-50" />
-      <Container className="py-5 md:space-y-6 mt-28 md:mt-20">
+    // Replaced standard div with a relative wrapper and padding-top
+    <div className="relative">
+      <Header />
+      <Container className="py-5 md:space-y-6">
         {!isFiltering && <PromoBanner onShopClick={scrollToAllProducts} />}
         <ProductSection allProductsRef={allProductsRef} />
       </Container>
+      
       <CartDrawer />
       <ScrollToTopButton />
       <Footer />

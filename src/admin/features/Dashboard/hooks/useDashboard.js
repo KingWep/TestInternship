@@ -3,9 +3,11 @@ import { useOrdersQuery, useOrderStats } from '../../../../queries/orders/useOrd
 import { AlertTriangle, ClipboardList, Trophy, DollarSign } from 'lucide-react'
 
 export default function useDashboard() {
-    const { totalLowStockProducts } = useLowStockProductsQuery()
-    const { data: orders = [] } = useOrdersQuery()
-    const { totalRevenue, topSellingProducts } = useOrderStats()
+    const { totalLowStockProducts, isPending: isLowStockPending } = useLowStockProductsQuery()
+    const { data: orders = [], isPending: isOrdersPending } = useOrdersQuery()
+    const { totalRevenue, topSellingProducts, isPending: isStatsPending } = useOrderStats()
+
+    const isLoading = isLowStockPending || isOrdersPending || isStatsPending
 
     const statsData = [
         {   title: "ចំណូលសរុប", 
@@ -42,5 +44,5 @@ export default function useDashboard() {
         })
         .slice(0, 10);
 
-    return { statsData, recentOrders }
+    return { statsData, recentOrders, isLoading }
 }

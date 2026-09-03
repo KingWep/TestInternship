@@ -6,6 +6,8 @@ import OrderList from '../components/OrderList'
 import OrderUpdateForm from '../components/OrderUpdateForm'
 import Modal from '../../../components/common/Modal'
 import Pagination from '../../../components/common/Pagination'
+import DataTableSkeleton from '../../../components/common/DataTableSkeleton'
+import DataCardSkeletonGrid from '../../../components/common/DataCardSkeleton'
 import { PackageOpen, LayoutGrid, List } from 'lucide-react'
 
 import { useOrders } from '../hooks/useOrders'
@@ -31,6 +33,7 @@ export default function AdminOrders() {
     isModalOpen,
     editingOrder,
     isSubmitting,
+    isLoading,
     closeModal,
     openEditModal,
     handleUpdateSubmit
@@ -54,7 +57,7 @@ export default function AdminOrders() {
       <div className="flex flex-row items-center justify-between gap-2 sm:gap-4">
         <PageHeader
           title="ការបញ្ជាទិញ"
-          description="គ្រប់គ្រង និងតាមដានរាល់ការបញ្ជាទិញរបស់អតិថិជននៅទីនេះ។"
+          description="គ្រប់គ្រង និងតាមដានរាល់ការបញ្ជាទិញរបស់អតិថិជននៅទីនេះ。"
         />
         {/* View Toggle */}
         <div className="flex items-center bg-slate-100 p-1 rounded-xl w-fit">
@@ -96,8 +99,15 @@ export default function AdminOrders() {
         onToDateChange={(e) => setToDate(e.target.value)}
       />
 
-      {/* CORRECTED CONDITIONAL RENDERING */}
-      {orders.length > 0 ? (
+      {isLoading ? (
+        viewMode === 'card' ? (
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+            <DataCardSkeletonGrid count={8} />
+          </div>
+        ) : (
+          <DataTableSkeleton columns={9} rows={5} />
+        )
+      ) : orders.length > 0 ? (
         <div className="flex flex-col gap-4">
           {viewMode === 'card' ? (
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">

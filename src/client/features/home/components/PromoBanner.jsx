@@ -30,7 +30,7 @@ export default function PromoBanner({ onShopClick }) {
 
       {/* Discount Badge */}
       {slide.discountPercentage > 0 && (
-        <div className="absolute top-10 right-4 md:top-10 md:right-8">
+        <div className="absolute top-4 right-4 md:top-10 md:right-8">
           <div className="relative flex flex-col items-center justify-center w-12 h-12 md:w-24 md:h-24 rounded-full bg-white text-red-600 shadow-xl rotate-6 animate-[float_3s_ease-in-out_infinite]">
             <span className="flex text-sm md:text-3xl font-extrabold leading-none">
               {slide.discountPercentage} 

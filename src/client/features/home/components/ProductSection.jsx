@@ -9,6 +9,7 @@ import { useSearch } from "../../../../context/SearchContext";
 import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
 import { useProductsQuery } from "../../../../queries/products/useProductQueries";
 import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
+import FilterTabsSkeleton from "../../../components/common/FilterTabsSkeleton";
 
 export default function ProductSection({allProductsRef}) {
   const { data: products = [], isPending: isProductsPending } = useProductsQuery();
@@ -128,7 +129,11 @@ export default function ProductSection({allProductsRef}) {
         <h2 className="flex items-center text-xl mt-3 md:mt-0 font-bold text-slate-800 leading-khmer">
           ស្វែងរកទំនិញតាមប្រភេទ
         </h2>
-        <FilterTabs tabs={tabs} onChange={handleTabChange} />
+        {isCategoriesPending ? (
+          <FilterTabsSkeleton count={6} />
+        ) : (
+          <FilterTabs tabs={tabs} onChange={handleTabChange} />
+        )}
       </div>
 
       {/* 1. Best Selling Section - Hidden during search or category filtering */}

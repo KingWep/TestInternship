@@ -23,10 +23,6 @@ export const API_ENDPOINTS = {
         CREATE: 'api/orders',
         UPDATE: (id) => `api/orders?id=${id}`,
     },
-    // PROMOTIONS: {
-    //     GET_ALL: 'api/promotions',
-    //     UPDATE: (id) => `api/promotions?id=${id}`,
-    // },
     SLIDES: {
         GET_ALL: 'api/promotions',
         UPDATE: (id) => `api/promotions?id=${id}`,

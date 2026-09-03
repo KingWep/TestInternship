@@ -4,10 +4,12 @@ import PageHeader from "../../../components/common/PageHeader";
 import useDashboard from "../hooks/useDashboard";
 import DashboardCharts from "../components/DashboardCharts";
 import DataTable from "@/admin/components/common/DataTable";
+import DataTableSkeleton from "@/admin/components/common/DataTableSkeleton";
+import StatsCardSkeletonGrid from "@/admin/components/common/StatsCardSkeleton";
 import { Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 export default function AdminDashboard() {
-  const { statsData, recentOrders } = useDashboard();
+  const { statsData, recentOrders, isLoading } = useDashboard();
 
   const statusConfig = {
     Pending: {
@@ -108,21 +110,25 @@ export default function AdminDashboard() {
         description="សូមស្វាគមន៍មកវិញ! នេះជាអ្វីដែលកំពុងកើតឡើងនៅក្នុងហាងរបស់អ្នកថ្ងៃនេះ។"
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statsData.map((stat, index) => (
-          <StatsCard
-            key={stat.title || index}
-            title={stat.title}
-            value={stat.value}
-            icon={stat.icon}
-            trend={stat.trend}
-            color={stat.color}
-            warning={stat.warning}
-            note={stat.note}
-            link={stat.link}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <StatsCardSkeletonGrid count={4} />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {statsData.map((stat, index) => (
+            <StatsCard
+              key={stat.title || index}
+              title={stat.title}
+              value={stat.value}
+              icon={stat.icon}
+              trend={stat.trend}
+              color={stat.color}
+              warning={stat.warning}
+              note={stat.note}
+              link={stat.link}
+            />
+          ))}
+        </div>
+      )}
 
       <DashboardCharts />
 
@@ -130,7 +136,11 @@ export default function AdminDashboard() {
         <h2 className="text-lg font-semibold text-slate-800 mb-4">
           ការបញ្ជាទិញចុងក្រោយ
         </h2>
-        <DataTable columns={columns} data={recentOrders} />
+        {isLoading ? (
+          <DataTableSkeleton columns={columns.length} rows={5} />
+        ) : (
+          <DataTable columns={columns} data={recentOrders} />
+        )}
       </div>
     </div>
   );

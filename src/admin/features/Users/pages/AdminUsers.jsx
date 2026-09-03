@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, SlidersHorizontal } from 'lucide-react'
 import { useUsers } from '../hooks/useUsers'
 import UserForm from '../components/UserForm'
 import DataTable from '../../../components/common/DataTable'
+import DataTableSkeleton from '../../../components/common/DataTableSkeleton'
 import SearchBar from '../../../components/common/SearchBar'
 import Button from '../../../components/common/Button'
 import Modal from '../../../components/common/Modal'
@@ -28,6 +29,7 @@ export default function AdminUsers() {
     editingUser,
     paginatedUsers,
     totalPages,
+    isLoading,
     setCurrentPage,
     handleFilterChange,
     handleSearchChange,
@@ -226,12 +228,18 @@ export default function AdminUsers() {
       </div>
 
       <div className="overflow-x-auto bg-white border border-slate-200 rounded-2xl">
-        <DataTable columns={columns} data={paginatedUsers} />
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        {isLoading ? (
+          <DataTableSkeleton columns={columns.length} rows={5} />
+        ) : (
+          <>
+            <DataTable columns={columns} data={paginatedUsers} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </>
+        )}
       </div>
     </div>
   )

@@ -3,7 +3,7 @@ import Swal from 'sweetalert2'
 import { useOrdersQuery, useUpdateOrderMutation } from '../../../../queries/orders/useOrderQueries'
 
 export function useOrders(viewMode) {
-  const { data: orders = [] } = useOrdersQuery()
+  const { data: orders = [], isPending: isLoading } = useOrdersQuery()
   const updateOrderMutation = useUpdateOrderMutation()
 
   const [search, setSearch] = useState('')
@@ -141,6 +141,7 @@ export function useOrders(viewMode) {
     isSubmitting,
     openEditModal,
     closeModal,
-    handleUpdateSubmit
+    handleUpdateSubmit,
+    isLoading
   }
 }

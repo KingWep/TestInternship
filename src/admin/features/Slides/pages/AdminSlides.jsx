@@ -4,6 +4,7 @@ import { useSlides } from "../hooks/useSlides";
 import SlideForm from "../components/SlideForm";
 import PageHeader from "../../../components/common/PageHeader";
 import DataTable from "../../../components/common/DataTable";
+import DataTableSkeleton from "../../../components/common/DataTableSkeleton";
 import Modal from "../../../components/common/Modal";
 import Pagination from "../../../components/common/Pagination";
 
@@ -14,6 +15,7 @@ export default function AdminSlides() {
     editingSlide,
     paginatedSlides,
     totalPages,
+    isLoading,
     setCurrentPage,
     handleSubmit,
     handleEdit,
@@ -116,12 +118,18 @@ export default function AdminSlides() {
         />
       </div>
       <div className="overflow-x-auto bg-white border border-slate-200 rounded-2xl">
-        <DataTable columns={columns} data={paginatedSlides} />
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        {isLoading ? (
+          <DataTableSkeleton columns={columns.length} rows={5} />
+        ) : (
+          <>
+            <DataTable columns={columns} data={paginatedSlides} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </>
+        )}
       </div>
     </div>
   );

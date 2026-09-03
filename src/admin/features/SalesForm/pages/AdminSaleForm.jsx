@@ -10,6 +10,7 @@ import ProductSelectCard from '../components/ProductSelectCard'
 import PageHeader from '../../../components/common/PageHeader'
 import SearchBar from '../../../components/common/SearchBar'
 import FilterBar from '../../../components/common/FilterBar'
+import DataCardSkeletonGrid from '../../../components/common/DataCardSkeleton'
 import useSalesForm from '../hooks/useSalesForm'
 
 export default function AdminSaleForm() {
@@ -27,6 +28,7 @@ export default function AdminSaleForm() {
     handleCheckout,
     subtotal,
     INITIAL_CUSTOMER,
+    isLoading,
   } = useSalesForm()
 
   const [isCartOpen, setIsCartOpen] = useState(false)
@@ -91,8 +93,12 @@ export default function AdminSaleForm() {
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
 
         <div className="lg:col-span-7 flex flex-col min-h-0 pb-24 lg:pb-0">
-          {filterProducts.length > 0 ? (
+          {isLoading ? (
             <div className="flex-1 grid grid-cols-2 xl:grid-cols-3 gap-4 lg:overflow-y-auto pr-2 content-start auto-rows-max lg:will-change-scroll lg:overscroll-contain transform-gpu">
+              <DataCardSkeletonGrid count={6} />
+            </div>
+          ) : filterProducts.length > 0 ? (
+            <div className="flex-1 grid grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 lg:overflow-y-auto pr-2 content-start auto-rows-max lg:will-change-scroll lg:overscroll-contain transform-gpu">
               {filterProducts.map((p) => (
                 <ProductSelectCard key={p.id} product={p} onSelect={handleAddToCart} />
               ))}

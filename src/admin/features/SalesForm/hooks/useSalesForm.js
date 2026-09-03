@@ -11,9 +11,10 @@ const INITIAL_CUSTOMER = { name: '', phone: '', address: '', deliveryFee: '' }
 
 // ─── Hook ──
 export default function useSalesForm() {
-  const { data: products = [] } = useProductsQuery()
-  const { data: categories = [] } = useCategoriesQuery()
+  const { data: products = [], isPending: isProductsLoading } = useProductsQuery()
+  const { data: categories = [], isPending: isCategoriesLoading } = useCategoriesQuery()
   const createOrderMutation = useCreateOrderMutation()
+  const isLoading = isProductsLoading || isCategoriesLoading
 
   const [cart, setCart] = useState([])
   const [search, setSearch] = useState('')
@@ -159,5 +160,6 @@ export default function useSalesForm() {
     subtotal,
     // Customer defaults
     INITIAL_CUSTOMER,
+    isLoading
   }
 }

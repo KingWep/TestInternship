@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, SlidersHorizontal } from "lucide-react";
 import { useProducts, getStockStatus } from "../hooks/useProducts";
 import ProductsForm from "../components/ProductForm";
 import DataTable from "../../../components/common/DataTable";
+import DataTableSkeleton from "../../../components/common/DataTableSkeleton";
 import SearchBar from "../../../components/common/SearchBar";
 import Button from "../../../components/common/Button";
 import Modal from "../../../components/common/Modal";
@@ -13,7 +14,7 @@ import Pagination from "../../../components/common/Pagination";
 import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
 
 export default function AdminProducts() {
-  const { data: categories = [] } = useCategoriesQuery();
+  const { data: categories = [], isPending: isCategoriesPending } = useCategoriesQuery();
 
   const {
     search,
@@ -24,6 +25,7 @@ export default function AdminProducts() {
     editingProduct,
     paginatedProducts,
     totalPages,
+    isLoading: isProductsLoading,
     setCurrentPage,
     handleFilterChange,
     handleSearchChange,
@@ -34,6 +36,8 @@ export default function AdminProducts() {
     openAddModal,
     closeModal,
   } = useProducts();
+
+  const isLoading = isCategoriesPending || isProductsLoading;
 
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
@@ -315,13 +319,18 @@ export default function AdminProducts() {
       </div>
 
       <div className="overflow-x-auto bg-white border border-slate-200 rounded-2xl">
-        <DataTable columns={columns} data={paginatedProducts} />
-
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        {isLoading ? (
+          <DataTableSkeleton columns={columns.length} rows={5} />
+        ) : (
+          <>
+            <DataTable columns={columns} data={paginatedProducts} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </>
+        )}
       </div>
     </div>
   );

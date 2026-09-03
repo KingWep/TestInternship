@@ -16,7 +16,7 @@ export default function ProductSelectCard({ product, onSelect }) {
     >
       {/* Top Section: Image, Stock Badge, & Name */}
       <div>
-        <div className="h-40 md:h-52 -mx-3 -mt-3 mb-3 rounded-xl overflow-hidden flex items-center justify-center text-slate-400 font-bold">
+        <div className="h-40 md:h-52 -mx-3 -mt-3 md:mb-3 rounded-xl overflow-hidden flex items-center justify-center text-slate-400 font-bold">
           {product.image ? (
             <img
               src={product.image}
@@ -43,7 +43,7 @@ export default function ProductSelectCard({ product, onSelect }) {
 
         {/* Product Name */}
         <h4
-          className="font-semibold text-slate-800 text-xs sm:text-sm mb-1 mt-2 line-clamp-1"
+          className="font-semibold text-slate-800 text-md sm:text-sm mt-0 md:mt-1 line-clamp-1"
           title={product.name}
         >
           {product.name}
@@ -51,7 +51,7 @@ export default function ProductSelectCard({ product, onSelect }) {
       </div>
 
       {/* Middle Section: Price Info */}
-      <div className="my-1">
+      <div>
         <div className="flex items-center flex-wrap gap-1.5 sm:gap-2">
           <span className="font-bold text-green-600 text-xs sm:text-sm">
             ${(product.salePrice ?? 0).toFixed(2)}
@@ -79,7 +79,7 @@ export default function ProductSelectCard({ product, onSelect }) {
       </div>
 
       {/* CTA button */}
-      <div className="mt-2 pt-2 border-t border-slate-50">
+      <div className="mt-1 border-t border-slate-50">
         <span
           className={`block w-full text-center text-xs px-2.5 py-1.5 rounded-lg font-semibold transition-colors
             ${

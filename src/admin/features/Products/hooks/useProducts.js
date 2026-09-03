@@ -11,7 +11,7 @@ export function getStockStatus(stock) {
 }
 
 export function useProducts() {
-  const { data: products = [] } = useProductsQuery()
+  const { data: products = [], isPending: isLoading } = useProductsQuery()
   const createMutation = useCreateProductMutation()
   const updateMutation = useUpdateProductMutation()
   const deleteMutation = useDeleteProductMutation()
@@ -163,6 +163,7 @@ export function useProducts() {
   return {
     // state
     products,
+    isLoading,
     search,
     filters,
     sortOrder,

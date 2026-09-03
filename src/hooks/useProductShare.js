@@ -72,13 +72,7 @@ export default function useProductShare() {
         files,
       });
 
-      Swal.fire({
-        icon: "success",
-        title: "Shared successfully!",
-        text: "Your products have been shared.",
-        timer: 2000,
-        showConfirmButton: false,
-      });
+
 
       return true;
     } catch (error) {

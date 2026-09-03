@@ -1,10 +1,11 @@
 import { useState, useCallback } from "react";
+import Swal from "sweetalert2";
 
 export default function useProductShare() {
   const [isSharing, setIsSharing] = useState(false);
 
   const shareProducts = useCallback(async (products) => {
-    if (!products?.length) return;
+    if (!products?.length) return false;
 
     setIsSharing(true);
 
@@ -68,21 +69,32 @@ export default function useProductShare() {
       }
 
       await navigator.share({
-        title:
-          files.length === 1
-            ? productsWithImages[0].name
-            : "Selected Products",
         files,
       });
 
+      Swal.fire({
+        icon: "success",
+        title: "Shared successfully!",
+        text: "Your products have been shared.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      return true;
     } catch (error) {
       if (error?.name === "AbortError") {
-        return;
+        return false;
       }
 
       console.error("Share error:", error);
 
-      alert(error.message);
+      Swal.fire({
+        icon: "error",
+        title: "Share failed",
+        text: error.message,
+      });
+
+      return false;
     } finally {
       setIsSharing(false);
     }

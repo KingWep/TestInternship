@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './ProtectedRoute'
 import Home from "../client/features/home/pages/Home"
 import ProductDetail from "../client/features/products/pages/ProductDetail"
-import SharedProducts from "../client/features/products/pages/SharedProducts"
+
 import Receipt from "../client/features/receipt/pages/Receipt"
 
 // Admin Layout & Pages
@@ -24,7 +24,7 @@ export default function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/share-products" element={<SharedProducts />} />
+
       <Route path="/products/:id" element={<ProductDetail />} />
       <Route path="/print-receipt/:orderId" element={<Receipt />} />
       <Route path="/admin/print-receipt/:id" element={<AdminReceiptPage />} />

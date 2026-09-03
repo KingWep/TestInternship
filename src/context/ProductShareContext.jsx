@@ -61,8 +61,11 @@ export const ProductShareProvider = ({ children }) => {
   const handleShare = useCallback(async () => {
     if (selectedProducts.length === 0) return;
 
-    await shareProducts(selectedProducts);
-  }, [selectedProducts, shareProducts]);
+    const success = await shareProducts(selectedProducts);
+    if (success) {
+      clearSelection();
+    }
+  }, [selectedProducts, shareProducts, clearSelection]);
 
   const selectedCount = selectedProducts.length;
 

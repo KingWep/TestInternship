@@ -32,7 +32,6 @@ export default function Home() {
         {!isFiltering && <PromoBanner onShopClick={scrollToAllProducts} />}
         <ProductSection allProductsRef={allProductsRef} />
       </Container>
-      
       <CartDrawer />
       <ScrollToTopButton />
       <Footer />

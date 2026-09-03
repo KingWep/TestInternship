@@ -1,15 +1,22 @@
 import React from 'react';
+import { useLocation, matchPath } from 'react-router-dom';
 import { useProductShareContext } from '../../../context/ProductShareContext';
 import { Share, Loader2 } from 'lucide-react';
 
 export default function ProductShareBar() {
   const { selectedCount, clearSelection, handleShare, isSharing } = useProductShareContext();
+  const location = useLocation();
+
+  const isHome = location.pathname === '/';
+  const isProductDetail = matchPath('/products/:id', location.pathname);
+
+  if (!isHome && !isProductDetail) return null;
 
   if (selectedCount === 0) return null;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[100] px-4 pb-4 sm:pb-6 pointer-events-none flex justify-center animate-in slide-in-from-bottom-5 fade-in duration-300">
-      <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-200 pointer-events-auto p-4 flex items-center justify-between gap-6 max-w-md w-full">
+      <div className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-200 pointer-events-auto p-3 flex items-center justify-between gap-6 max-w-md w-full">
         
         <div className="flex flex-col">
           <span className="text-sm font-bold text-gray-800">
@@ -18,7 +25,7 @@ export default function ProductShareBar() {
           <button 
             onClick={clearSelection}
             disabled={isSharing}
-            className="text-xs text-gray-500 hover:text-red-600 font-medium text-left mt-0.5 disabled:opacity-50 transition-colors"
+            className="text-xs text-red-400 hover:text-red-600 font-medium text-left mt-0.5 disabled:opacity-50 transition-colors"
           >
             Clear selection
           </button>
@@ -32,7 +39,7 @@ export default function ProductShareBar() {
           {isSharing ? (
             <>
               <Loader2 size={18} className="animate-spin" />
-              Preparing images...
+              Preparing...
             </>
           ) : (
             <>

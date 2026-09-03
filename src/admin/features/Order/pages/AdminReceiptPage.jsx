@@ -1,58 +1,96 @@
-import React, { useRef, useState } from 'react'
-import Swal from 'sweetalert2'
-import { useParams, Link } from 'react-router-dom'
-import { Printer, FileDown, Send, ArrowLeft, Loader2} from 'lucide-react'
-import { useReactToPrint } from 'react-to-print'
-import { toPng } from 'html-to-image'
-import { useOrdersQuery } from '../../../../queries/orders/useOrderQueries'
-import { sendOrderToTelegram } from '../../../../services/telegramService'
+import React, { useRef, useState, useEffect } from "react";
+import Swal from "sweetalert2";
+import { useParams, Link } from "react-router-dom";
+import {
+  Printer,
+  FileDown,
+  Send,
+  ArrowLeft,
+  Loader2,
+  Package,
+} from "lucide-react";
+import { useReactToPrint } from "react-to-print";
+import { toPng } from "html-to-image";
+import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
+import { orderService } from "../../../../services/orderService"; // រក្សាទុកតាម Logic ដើមបើមាន ឬទុករ้อยគាប់តាមប្រភព
+import { sendOrderToTelegram } from "../../../../services/telegramService";
+
 function AdminReceiptCard({ order }) {
-  const delivery = Number(order?.deliveryFee) || 0
-  const total    = Number(order?.totalAmount)    || 0
-  const subtotal = total - delivery
+  const delivery = Number(order?.deliveryFee) || 0;
+  const total = Number(order?.totalAmount) || 0;
+  const subtotal = total - delivery;
 
   return (
     <div
       id="admin-receipt-card"
-      style={{ 
-        fontFamily: "'Geist Variable', 'Battambang', 'Siemreap', 'Kantumruy Pro', 'Noto Sans Khmer', sans-serif",
-        boxSizing: 'border-box',
-        WebkitFontSmoothing: 'antialiased',
-        MozOsxFontSmoothing: 'grayscale',
-        textRendering: 'optimizeLegibility'
+      style={{
+        width: "340px",
+        fontFamily:
+          "'Geist Variable', 'Battambang', 'Siemreap', 'Kantumruy Pro', 'Noto Sans Khmer', sans-serif",
+        boxSizing: "border-box",
+        WebkitFontSmoothing: "antialiased",
+        MozOsxFontSmoothing: "grayscale",
+        textRendering: "optimizeLegibility",
       }}
-      className="bg-white text-slate-900 mx-auto text-xs px-4 md:px-6 print:px-6 py-6 shadow-sm  rounded-xl overflow-hidden flex flex-col w-full md:w-[300px] print:w-[300px] print:border-none print:shadow-none"
+      className="bg-white text-slate-900 mx-auto text-xs px-5 py-6 shadow-sm overflow-hidden flex flex-col"
     >
-
+      {/* Header */}
       <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
-        <h2 className="font-black text-base tracking-wider uppercase text-slate-900 leading-tight">ONE CARE SHOP</h2>
-        <p className="text-[11px] text-slate-900 mt-1">ទូរស័ព្ទ: 088 66 77 456</p>
+        <h2 className="font-black text-base tracking-wider uppercase text-slate-900 leading-tight">
+          ONE CARE SHOP
+        </h2>
+        <p className="text-[11px] text-slate-900 mt-1">
+          ទូរស័ព្ទ: 088 66 77 456
+        </p>
         <p className="text-[11px] text-slate-900">ភ្នំពេញ, កម្ពុជា</p>
       </div>
 
+      {/* Meta Info */}
       <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">
         <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">លេខវិក្កយបត្រ:</span> 
-          <span className="font-mono font-bold text-slate-900">{order?.orderNo || order?.orderNumber || `ORD-${order?.id}`}</span>
+          <span className="font-medium text-slate-900">លេខវិក្កយបត្រ:</span>
+          <span className="font-mono font-bold text-slate-900">
+            {order?.orderNo || order?.orderNumber || `ORD-${order?.id}`}
+          </span>
         </div>
         <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">កាលបរិច្ឆេទ:</span> 
+          <span className="font-medium text-slate-900">កាលបរិច្ឆេទ:</span>
           <span className="font-mono text-slate-800">
-            {order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : (order?.date || '')} {order?.createdAt ? new Date(order.createdAt).toLocaleTimeString() : (order?.time || '')}
+            {order?.createdAt
+              ? new Date(order.createdAt).toLocaleDateString()
+              : order?.date || ""}{" "}
+            {order?.createdAt
+              ? new Date(order.createdAt).toLocaleTimeString()
+              : order?.time || ""}
           </span>
         </div>
         {order?.customerName && (
           <div className="flex justify-between items-center w-full">
-            <span className="font-medium text-slate-900">អតិថិជន</span> 
-            <span className="font-bold text-slate-900 truncate max-w-[180px]">{order.customerName || 'អតិថិជនទូទៅ'}</span>
+            <span className="font-medium text-slate-900">អតិថិជន:</span>
+            <span className="font-bold text-slate-900 truncate max-w-[180px]">
+              {order.customerName || "អតិថិជនទូទៅ"}
+            </span>
           </div>
         )}
         <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">លេខទូរស័ព្ទ:</span> 
-          <span className="font-mono text-slate-900 font-semibold">{order?.customerPhone || order?.phone || '—'}</span>
+          <span className="font-medium text-slate-900">លេខទូរស័ព្ទ:</span>
+          <span className="font-mono text-slate-900 font-semibold">
+            {order?.customerPhone || order?.phone || "—"}
+          </span>
         </div>
+        {(order?.customerAddress || order?.address) && (
+          <div className="flex justify-between items-start w-full">
+            <span className="font-medium text-slate-900 shrink-0">
+              អាសយដ្ឋាន:
+            </span>
+            <span className="text-slate-800 text-right truncate max-w-[190px]">
+              {order.customerAddress || order.address}
+            </span>
+          </div>
+        )}
       </div>
 
+      {/* Items Table */}
       <div className="mb-3 w-full border-b border-dashed border-slate-800 pb-3">
         <table className="w-full text-[11px] table-fixed border-collapse">
           <thead>
@@ -64,10 +102,12 @@ function AdminReceiptCard({ order }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {(order?.orderDetails || order?.items) && (order?.orderDetails || order?.items).length > 0 ? (
+            {(order?.orderDetails || order?.items) &&
+            (order?.orderDetails || order?.items).length > 0 ? (
               (order?.orderDetails || order?.items).map((item, idx) => {
-                const price = Number(item.price) || Number(item.salePrice) || 0
-                const qty   = Number(item.quantity) || 0
+                const price =
+                  Number(item.price) || Number(item.salePrice) || 0;
+                const qty = Number(item.quantity) || 0;
                 return (
                   <tr key={item.id ?? idx} className="text-slate-800">
                     <td className="py-1.5 pr-1 font-medium break-words text-left align-top leading-snug">
@@ -83,7 +123,7 @@ function AdminReceiptCard({ order }) {
                       ${(price * qty).toFixed(2)}
                     </td>
                   </tr>
-                )
+                );
               })
             ) : (
               <tr>
@@ -96,49 +136,73 @@ function AdminReceiptCard({ order }) {
         </table>
       </div>
 
+      {/* Pricing Summary */}
       <div className="space-y-1.5 pb-3 mb-3 border-b border-dashed border-slate-800 text-[11px] text-slate-700 w-full">
         <div className="flex justify-between items-center">
           <span className="text-slate-900">តម្លៃទំនិញសរុប (Subtotal):</span>
-          <span className="tabular-nums font-medium text-slate-800">${subtotal.toFixed(2)}</span>
+          <span className="tabular-nums font-medium text-slate-800">
+            ${subtotal.toFixed(2)}
+          </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-slate-900">សេវាដឹកជញ្ជូន (Delivery):</span>
-          <span className="tabular-nums font-medium text-slate-800">${delivery.toFixed(2)}</span>
+          <span className="tabular-nums font-medium text-slate-800">
+            ${delivery.toFixed(2)}
+          </span>
         </div>
         <div className="flex justify-between items-center pt-1.5 border-t border-slate-800 text-sm font-bold text-slate-900">
           <span>ទឹកប្រាក់សរុប (Total):</span>
-          <span className="tabular-nums font-black text-slate-950">${total.toFixed(2)}</span>
+          <span className="tabular-nums font-black text-slate-950">
+            ${total.toFixed(2)}
+          </span>
         </div>
       </div>
 
+      {/* Footer message */}
       <div className="text-center space-y-0.5 pt-0.5 w-full">
         <p className="text-[11px] font-bold text-slate-900">
           អរគុណសម្រាប់ការគាំទ្រ! 🙏
         </p>
-        <p className="text-[10px] text-slate-900 font-medium tracking-wide uppercase">Thank You! Please Come Again</p>
+        <p className="text-[10px] text-slate-900 font-medium tracking-wide uppercase">
+          សូមអញ្ជើញមកម្តងទៀត
+        </p>
       </div>
     </div>
-  )
+  );
 }
 
 export default function AdminReceiptPage() {
-  const { id } = useParams()
-  const { data: orders = [] } = useOrdersQuery()
-  const order = orders?.find((o) => String(o.id) === String(id) || o.orderNo === id || o.orderNumber === id)
+  const { id } = useParams();
+  const { data: orders = [] } = useOrdersQuery();
+  const order = orders?.find(
+    (o) =>
+      String(o.id) === String(id) ||
+      o.orderNo === id ||
+      o.orderNumber === id
+  );
 
-  const printRef = useRef(null)
-  const [loading, setLoading] = useState(null)
+  const printRef = useRef(null);
+  const [loading, setLoading] = useState(null);
 
   if (!order) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
-        <p className="text-base font-semibold text-slate-600 mb-4">រកមិនឃើញវិក្កយបត្រនេះទេ</p>
-        <Link to="/admin/orders" className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3.5 py-1.5 rounded-lg shadow-xs border border-slate-800 text-sm font-medium transition-colors">
+        <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+          <Package size={28} />
+        </div>
+        <p className="text-base font-semibold text-slate-700 mb-1">
+          រកមិនឃើញវិក្កយបត្រនេះទេ
+        </p>
+        <p className="text-xs text-slate-400 mb-4">លេខសម្គាល់: #{id}</p>
+        <Link
+          to="/admin/orders"
+          className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white px-3 py-1 rounded-xl shadow-xs border border-slate-200 text-sm font-medium transition-colors"
+        >
           <ArrowLeft size={16} />
           <span>ត្រលប់ក្រោយ</span>
         </Link>
       </div>
-    )
+    );
   }
 
   const handlePrint = useReactToPrint({
@@ -168,112 +232,134 @@ export default function AdminReceiptPage() {
         }
       }
     `,
-  })
+  });
 
   const handleSaveImage = async () => {
-    if (!printRef.current) return
-    setLoading('img')
+    if (!printRef.current) return;
+    setLoading("img");
     try {
-      await document.fonts.ready
+      await document.fonts.ready;
 
       const dataUrl = await toPng(printRef.current, {
         cacheBust: true,
         pixelRatio: 4,
-        backgroundColor: '#ffffff'
-      })
+        backgroundColor: "#ffffff",
+      });
 
-      const link = document.createElement('a')
-      link.download = `Receipt-${order.orderNo || order.orderNumber || order.id}.png`
-      link.href = dataUrl
-      link.click()
+      const link = document.createElement("a");
+      link.download = `Receipt-${order.orderNo || order.orderNumber || order.id}.png`;
+      link.href = dataUrl;
+      link.click();
     } catch (err) {
-      console.error('Image export failed:', err)
+      console.error("Image export failed:", err);
       Swal.fire({
-        icon: 'error',
-        title: 'បរាជ័យ!',
-        text: 'មានបញ្ហាក្នុងការទាញយករូបភាព!',
-        confirmButtonColor: '#0f172a',
-      })
+        icon: "error",
+        title: "បរាជ័យ!",
+        text: "មានបញ្ហាក្នុងការទាញយករូបភាព!",
+        confirmButtonColor: "#0f172a",
+      });
     } finally {
-      setLoading(null)
+      setLoading(null);
     }
-  }
+  };
 
   const handleSendTelegram = async () => {
-    setLoading('telegram')
+    setLoading("telegram");
 
     try {
-      await sendOrderToTelegram(order)
+      await sendOrderToTelegram(order);
 
       Swal.fire({
-        icon: 'success',
-        title: 'ជោគជ័យ! ✅',
-        text: 'បានផ្ញើវិក្កយបត្រទៅ Telegram រួចរាល់ហើយ!',
-        confirmButtonColor: '#0284c7',
+        icon: "success",
+        title: "ជោគជ័យ! ✅",
+        text: "បានផ្ញើវិក្កយបត្រទៅ Telegram រួចរាល់ហើយ!",
+        confirmButtonColor: "#0284c7",
         timer: 3000,
         timerProgressBar: true,
-      })
-    } catch (error) {
-      console.error('Telegram error:', error)
+      });
+    }  catch (error) {
+      console.error("Telegram error:", error);
 
       Swal.fire({
-        icon: 'error',
-        title: 'បរាជ័យ!',
-        text: error.message || 'មិនអាចផ្ញើទៅ Telegram បានទេ',
-        confirmButtonColor: '#0f172a',
-      })
+        icon: "error",
+        title: "បរាជ័យ!",
+        text: error.message || "មិនអាចផ្ញើទៅ Telegram បានទេ",
+        confirmButtonColor: "#0f172a",
+      });
     } finally {
-      setLoading(null)
+      setLoading(null);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center py-8 px-8 md:px-4 font-sans text-slate-800">
-     
-      <div className="w-full max-w-xl flex items-center justify-between mb-5">
-        <Link to="/admin/orders" className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3.5 py-1.5 rounded-lg shadow-xs border border-slate-800 text-sm font-medium transition-colors">
+    <div className="min-h-screen bg-slate-100 flex flex-col items-center py-8 px-4 font-sans text-slate-800">
+      <div className="w-full max-w-md flex items-center justify-between mb-5">
+        <Link
+          to="/admin/orders"
+          className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3 py-1 rounded-lg shadow-xs border border-slate-200 text-sm font-medium transition-colors"
+        >
           <ArrowLeft size={16} />
           <span>ត្រលប់ក្រោយ</span>
         </Link>
         <span className="text-xs font-bold text-slate-900 bg-slate-200/70 px-2.5 py-1 rounded">
-          ទម្រង់វិក្ក័យបត្រ (Receipt)
+          ទម្រង់វិក្កយបត្រ (Receipt)
         </span>
       </div>
 
-      <div className="shadow-lg  mb-6  flex items-center justify-center w-full max-w-[350px] md:w-auto md:max-w-none overflow-x-auto mx-auto">
-        <div ref={printRef} className="bg-white inline-block w-full md:w-auto">
+      <div className="bg-white mb-6 border border-slate-200 flex items-center justify-center">
+        <div ref={printRef} className="bg-white inline-block">
           <AdminReceiptCard order={order} />
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      <div className="flex items-center justify-center gap-2 max-w-md w-full pt-1">
+        {/* Print Button */}
         <button
           onClick={handlePrint}
-          className="flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-xl hover:bg-slate-800 active:scale-[0.98] transition-all text-sm font-semibold shadow-sm"
+          className="flex-1 flex items-center justify-center gap-1.5 bg-slate-900 text-white px-0 py-0.5 rounded-lg hover:bg-slate-800 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs cursor-pointer group"
         >
-          <Printer size={16} />
-          បោះពុម្ពវិក្កយបត្រ
+          <Printer
+            size={14}
+            className="transition-transform group-hover:-translate-y-0.5"
+          />
+          <span>បោះពុម្ព</span>
         </button>
 
+        {/* Download PNG Button */}
         <button
           onClick={handleSaveImage}
-          disabled={loading === 'img'}
-          className="flex items-center gap-2 bg-white text-slate-700 border border-slate-800 px-5 py-2.5 rounded-xl hover:bg-slate-50 active:scale-[0.98] transition-all text-sm font-semibold shadow-xs disabled:opacity-60"
+          disabled={loading === "img"}
+          className="flex-1 flex items-center justify-center gap-1.5 bg-white text-slate-700 border border-slate-200 px-0 py-0.5 rounded-lg hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:scale-[0.98] transition-all text-xs font-semibold shadow-2xs disabled:opacity-60 cursor-pointer group"
         >
-          {loading === 'img' ? <Loader2 size={16} className="animate-spin text-slate-900" /> : <FileDown size={16} />}
-          {loading === 'img' ? 'កំពុងរក្សាទុក...' : 'ទាញយករូបភាព PNG'}
+          {loading === "img" ? (
+            <Loader2 size={14} className="animate-spin text-slate-900" />
+          ) : (
+            <FileDown
+              size={14}
+              className="transition-transform group-hover:translate-y-0.5 text-slate-500 group-hover:text-slate-900"
+            />
+          )}
+          <span>{loading === "img" ? "កំពុងទាញយក..." : "ទាញយក PNG"}</span>
         </button>
 
+        {/* Telegram Button */}
         <button
           onClick={handleSendTelegram}
-          disabled={loading === 'telegram'}
-          className="flex items-center gap-2 bg-sky-600 text-white px-5 py-2.5 rounded-xl hover:bg-sky-500 active:scale-[0.98] transition-all text-sm font-semibold shadow-xs disabled:opacity-60"
+          disabled={loading === "telegram"}
+          className="flex-1 flex items-center justify-center gap-1.5 bg-sky-600 text-white px-0 py-0.5 rounded-lg hover:bg-sky-500 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer group"
         >
-          {loading === 'telegram' ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-          {loading === 'telegram' ? 'កំពុងផ្ញើ...' : 'ផ្ញើទៅ Telegram'}
+          {loading === "telegram" ? (
+            <Loader2 size={14} className="animate-spin" />
+          ) : (
+            <Send
+              size={14}
+              className="transition-transform group-hover:translate-x-0.5"
+            />
+          )}
+          <span>{loading === "telegram" ? "កំពុងផ្ញើ..." : "តេឡេក្រាម"}</span>
         </button>
       </div>
     </div>
-  )
+  );
 }

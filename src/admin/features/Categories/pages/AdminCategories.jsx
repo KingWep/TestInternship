@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Plus, Edit, Trash2, SlidersHorizontal } from 'lucide-react'
+import { Plus, Edit, Trash2, SlidersHorizontal, Ban } from 'lucide-react'
 import { useCategories } from '../hooks/useCategories'
 import CategoryForm from '../components/CategoryForm'
 import DataTable from '../../../components/common/DataTable'
@@ -12,9 +12,10 @@ import FilterBar from '../../../components/common/FilterBar'
 import DeleteButton from '../../../components/common/DeleteButton'
 import Pagination from '../../../components/common/Pagination'
 import { useProducts } from '../../Products/hooks/useProducts'
+
 export default function AdminCategories() {
 
-  const {products} = useProducts() // Access products from the context
+  const {products} = useProducts()
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
   const {
@@ -47,6 +48,24 @@ export default function AdminCategories() {
 
   const columns = [
     {
+      header: 'image',
+      render: (row) => (
+        <div className="w-10 h-10 rounded-lg overflow-hidden">
+          {row.image ? (
+            <img
+              src={row.image}
+              alt={row.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-slate-200 flex items-center justify-center">
+              <Ban size={20} className="text-gray-400" />
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
       header: 'ឈ្មោះប្រភេទ',
       accessor: 'name',
     },
@@ -71,22 +90,6 @@ export default function AdminCategories() {
         );
       }
     },
-    // {
-    //   header: 'ស្ថានភាព',
-    //   render: (row) => {
-    //     const status = row.status || 'Active'
-    //     return (
-    //       <span
-    //         className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${status === 'Active'
-    //             ? 'bg-green-100 text-green-700'
-    //             : 'bg-red-100 text-red-700'
-    //           }`}
-    //       >
-    //         {status === 'Active' ? 'សកម្ម' : 'អសកម្ម'}
-    //       </span>
-    //     )
-    //   },
-    // },
     {
       header: 'description',
       accessor: 'description',

@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import PageHeader from '../../../components/common/PageHeader';
 import GeneralSettings from '../components/GeneralSettings';
 import ProfileSettings from '../components/ProfileSettings';
-import SecuritySettings from '../components/SecuritySettings';
-import PermissionSettings from '../components/PermissionSettings';
+// import PermissionSettings from '../components/PermissionSettings';
 import { Store, User, ShieldCheck, Settings2 } from 'lucide-react';
 
 export default function AdminSettings() {
@@ -12,8 +11,7 @@ export default function AdminSettings() {
   const tabs = [
     { id: 'general', label: 'ទូទៅ', icon: Store },
     { id: 'profile', label: 'ប្រវត្តិរូបគណនី', icon: User },
-    { id: 'security', label: 'សុវត្ថិភាព', icon: ShieldCheck },
-    { id: 'permissions', label: 'ការអនុញ្ញាតទំព័រ', icon: Settings2 },
+    // { id: 'permissions', label: 'ការអនុញ្ញាតទំព័រ', icon: Settings2 },
   ];
 
   return (
@@ -50,8 +48,7 @@ export default function AdminSettings() {
         <div className="flex-1 w-full min-w-0">
           {activeTab === 'general' && <GeneralSettings />}
           {activeTab === 'profile' && <ProfileSettings />}
-          {activeTab === 'security' && <SecuritySettings />}
-          {activeTab === 'permissions' && <PermissionSettings />}
+          {/* {activeTab === 'permissions' && <PermissionSettings />} */}
         </div>
       </div>
     </div>

@@ -12,10 +12,12 @@ import PaymentQrModal from "./PaymentQrModal"
 import EmptyCart from "./EmptyCart"
 import useCheckout from "../hooks/useCheckout"
 import { DeliveryForm } from "./DeliveryForm"
-import { clientOrderSchema } from "../schemas/clientOrderSchema"
+import useClientOrder from "../hooks/useClientOrder"
+import { useParams } from "react-router-dom"
 
 export default function CartDrawer() {
   const navigate = useNavigate()
+  const { shop_code } = useParams() // Added shop_code just in case it's needed for createOrder mutation
   const {
     cartItems,
     isCartOpen,
@@ -26,25 +28,28 @@ export default function CartDrawer() {
   
   const createOrderMutation = useCreateOrderMutation()
 
-  const [customerName, setCustomerName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [address, setAddress] = useState("")
-  const [note, setNote] = useState("")
+  const {
+    customerName, setCustomerName,
+    phone, setPhone,
+    address, setAddress,
+    note, setNote,
+    deliveryMethod, setDeliveryMethod,
+    deliveryFee, setDeliveryFee,
+    paymentMethod, setPaymentMethod,
+    paymentImage, setPaymentImage,
+    errors, 
+    validateOrderForm,
+    resetForm,
+  } = useClientOrder()
 
-  const [deliveryMethod, setDeliveryMethod] = useState("")
-  const [deliveryFee, setDeliveryFee] = useState(2.0)
-
-  const [paymentMethod, setPaymentMethod] = useState("")
-  const [paymentImage, setPaymentImage] = useState(null)
   const hasItems = cartItems.length > 0
-
-  const [errors, setErrors] = useState({})
 
   const grandTotal =
     cartTotal + (hasItems ? deliveryFee : 0)
 
   const handleCreateOrder = (formattedPhone) => {
     return createOrderMutation.mutateAsync({
+      shop_code, // Pass shop_code to the mutation payload
       items: cartItems,
       subtotal: cartTotal,
       delivery: deliveryFee,
@@ -60,14 +65,7 @@ export default function CartDrawer() {
   }
 
   const resetCheckoutForm = () => {
-    setCustomerName("")
-    setPhone("")
-    setAddress("")
-    setNote("")
-    setDeliveryMethod("")
-    setPaymentMethod("")
-    setPaymentImage(null)
-    setErrors({})
+    resetForm()
     clearCart() // clear data in cart
   }
 
@@ -80,26 +78,14 @@ export default function CartDrawer() {
     hasItems,
     grandTotal,
     setIsCartOpen,
-    resetCheckoutForm, // ✅ បញ្ជូន resetCheckoutForm ចូលទីនេះ
-    navigate, // ✅ Pass navigate to useCheckout
+    resetCheckoutForm, 
+    navigate, 
   })
 
   const handleOrder = async () => {
-    const dataToValidate = { phone, address, deliveryMethod, paymentMethod };
-    const result = clientOrderSchema.safeParse(dataToValidate);
+    const { isValid, formattedPhone } = validateOrderForm()
 
-    if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
-      const formattedErrors = {};
-      for (const key in fieldErrors) {
-        formattedErrors[key] = fieldErrors[key][0];
-      }
-      setErrors(formattedErrors);
-      return;
-    }
-
-    setErrors({});
-    const formattedPhone = result.data.phone;
+    if (!isValid) return;
 
     if (paymentMethod === "cash") {
       await handleCashOrder(formattedPhone)

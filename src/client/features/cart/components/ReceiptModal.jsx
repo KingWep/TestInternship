@@ -4,6 +4,7 @@ import { X, Printer, FileDown, CheckCircle2, ShoppingBag, Calendar, Phone, MapPi
 import { useReactToPrint } from "react-to-print"
 import html2canvas from "html2canvas"
 import jsPDF from "jspdf"
+import { useSettingsQuery } from "../../../../queries/settings/useSettingQueries"
 
 export default function ReceiptModal({
   order,
@@ -12,6 +13,13 @@ export default function ReceiptModal({
   const receiptRef = useRef(null)
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const [imgError, setImgError] = useState(false)
+
+  const { data: settingData } = useSettingsQuery();
+  const shopName = settingData?.shop_name || "Shop";
+  const rawLogo = settingData?.logo;
+  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
+  const logoUrl = rawLogo ? (rawLogo.startsWith('http') ? rawLogo : `${baseUrl}${rawLogo.startsWith('/') ? '' : '/'}${rawLogo}`) : "";
 
   const handleClose = () => {
     if (onClose) {
@@ -116,11 +124,15 @@ export default function ReceiptModal({
 
             {/* Store Branding */}
             <div className="text-center">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-900 text-white font-black text-xl mb-3 shadow-md shadow-red-900/20">
-                One
-              </div>
+              {logoUrl && !imgError ? (
+                <img src={logoUrl} alt={shopName} className="h-12 w-auto mx-auto mb-3 object-contain" onError={() => setImgError(true)} />
+              ) : (
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-900 text-white font-black text-xl mb-3 shadow-md shadow-red-900/20">
+                  {shopName.charAt(0).toUpperCase()}
+                </div>
+              )}
               <h1 className="text-xl font-black tracking-wider text-slate-900">
-                One Care Shop
+                {shopName}
               </h1>
               <p className="mt-0.5 text-xs font-medium text-slate-400">
                 បទពិសោធន៍ទិញទំនិញអនឡាញដែលអ្នកទុកចិត្ត

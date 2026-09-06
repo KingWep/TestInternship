@@ -35,5 +35,10 @@ export const slideSchema = z.object({
       "សូមបញ្ចូលពណ៌ HEX ត្រឹមត្រូវ"
     ),
 
+  shop_code: z
+    .string()
+    .max(50, "Shop Code មិនអាចលើស 50 តួអក្សរ")
+    .optional(),
+
   status: z.enum(["Active", "Inactive"]),
 });

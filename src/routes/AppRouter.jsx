@@ -1,10 +1,13 @@
 import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
 import ProtectedRoute from './ProtectedRoute'
 import Home from "../client/features/home/pages/Home"
 import ProductDetail from "../client/features/products/pages/ProductDetail"
 
 import Receipt from "../client/features/receipt/pages/Receipt"
+import GlobalPage from "../global/feature/overview/GlobalPage"
+import GlobalLogin from "../global/feature/auth/GlobalLogin"
+import GlobalRegister from "../global/feature/auth/GlobalRegister"
 
 // Admin Layout & Pages
 import AdminLayout from '../admin/components/layout/AdminLayout'
@@ -18,18 +21,24 @@ import AdminUsers from '../admin/features/Users/pages/AdminUsers'
 import AdminSettings from '../admin/features/Setting/pages/AdminSettings'
 import AdminReceiptPage from '../admin/features/Order/pages/AdminReceiptPage'
 import AdminStickerPage from '../admin/features/Order/pages/AdminStickerPage'
-import LoginForm from '@/admin/features/Auth/components/LoginForm'
+import AdminQRCode from '../admin/features/QRCode/pages/AdminQRCode'
 
 export default function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      {/* Global Entry Point */}
+      <Route path="/" element={<GlobalPage />} />
+      <Route path="/login" element={<GlobalLogin />} />
+      <Route path="/register" element={<GlobalRegister />} />
 
-      <Route path="/products/:id" element={<ProductDetail />} />
+      {/* Existing Digital E-Commerce (Moved to /shop) */}
+      <Route path="/shop/:shop_code" element={<Home />} />
+      <Route path="/shop/:shop_code/products/:id" element={<ProductDetail />} />
+      
       <Route path="/print-receipt/:orderId" element={<Receipt />} />
       <Route path="/admin/print-receipt/:id" element={<AdminReceiptPage />} />
       <Route path="/admin/print-sticker/:id" element={<AdminStickerPage />} />
-      <Route path="/admin/login" element={<LoginForm/>} />
+      <Route path="/dashboard" element={<Navigate to="/admin" replace />} />
 
       <Route path="/admin" element={<ProtectedRoute />}>
         <Route element={<AdminLayout />}>
@@ -40,6 +49,7 @@ export default function AppRouter() {
           <Route path="users" element={<AdminUsers />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="slides" element={<AdminSlides />} />
+          <Route path="qr-code" element={<AdminQRCode />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Route>

@@ -10,11 +10,13 @@ import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
 import { useProductsQuery } from "../../../../queries/products/useProductQueries";
 import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
 import FilterTabsSkeleton from "../../../components/common/FilterTabsSkeleton";
+import { useParams } from "react-router-dom";
 
 export default function ProductSection({allProductsRef}) {
-  const { data: products = [], isPending: isProductsPending } = useProductsQuery();
-  const { data: categories = [], isPending: isCategoriesPending } = useCategoriesQuery();
-  const { data: orders = [], isPending: isOrdersPending } = useOrdersQuery();
+  const { shop_code } = useParams();
+  const { data: products = [], isPending: isProductsPending } = useProductsQuery({ shop_code });
+  const { data: categories = [], isPending: isCategoriesPending } = useCategoriesQuery({ shop_code });
+  const { data: orders = [], isPending: isOrdersPending } = useOrdersQuery({ shop_code });
   const { searchItem = "", priceRange = "all" } = useSearch();
 
   const isLoading = isProductsPending || isCategoriesPending || isOrdersPending;

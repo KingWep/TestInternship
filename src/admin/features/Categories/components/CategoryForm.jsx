@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Save } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Save, Image as ImageIcon, Upload } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { categorySchema } from "../schemas/categorySchema";
@@ -17,11 +17,12 @@ export default function CategoryForm({ onSubmit, initialData }) {
     defaultValues: {
       name: "",
       slug: "",
+      image: "", // Can be a URL string or File object depending on your backend
       description: "",
     },
   });
 
-  // Edit
+  const [previewImage, setPreviewImage] = useState(null);
   const isEditing = !!initialData;
 
   useEffect(() => {
@@ -29,17 +30,25 @@ export default function CategoryForm({ onSubmit, initialData }) {
       reset({
         name: initialData.name || "",
         slug: initialData.slug || "",
+        image: initialData.image || "",
         description: initialData.description || "",
       });
+      // If initialData has an existing image URL/path, show it in preview
+      if (initialData.image) {
+        setPreviewImage(initialData.image);
+      }
     } else {
       reset({
         name: "",
         slug: "",
+        image: "",
         description: "",
       });
+      setPreviewImage(null);
     }
   }, [initialData, reset]);
 
+  // Auto-generate slug from name
   const name = watch("name");
   useEffect(() => {
     if (!isEditing && name) {
@@ -54,6 +63,17 @@ export default function CategoryForm({ onSubmit, initialData }) {
       });
     }
   }, [name, isEditing, setValue]);
+
+  // Handle file selection change
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setValue("image", file, { shouldValidate: true });
+      // Create local temporary URL for instant preview
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewImage(objectUrl);
+    }
+  };
 
   const handleFormSubmit = (data) => {
     onSubmit(data);
@@ -112,7 +132,46 @@ export default function CategoryForm({ onSubmit, initialData }) {
         )}
       </div>
 
-      {/* Submit */}
+      {/* File Input & Preview */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-600 mb-1">
+          រូបភាព (ICON / Image File)
+        </label>
+        <div className="flex items-center gap-3">
+          <label className="flex-1 flex items-center gap-2 px-3 py-2 text-sm bg-gray-50 rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition">
+            <Upload size={16} className="text-gray-500" />
+            <span className="text-gray-500 truncate">
+              {watch("image")?.name ? watch("image").name : "ជ្រើសរើសរូបភាព..."}
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+          </label>
+
+          {/* Live Preview Box */}
+          <div className="w-12 h-12 rounded-lg border border-gray-200 bg-gray-100 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+            {previewImage ? (
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <ImageIcon size={20} className="text-gray-400" />
+            )}
+          </div>
+        </div>
+        {errors.image && (
+          <p className="text-xs text-red-500 mt-1">
+            {errors.image.message}
+          </p>
+        )}
+      </div>
+
+      {/* Submit Button */}
       <div className="flex justify-end pt-2">
         <button
           type="submit"

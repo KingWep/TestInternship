@@ -12,10 +12,17 @@ import {
 import { useReactToPrint } from "react-to-print";
 import { toPng } from "html-to-image";
 import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
-import { orderService } from "../../../../services/orderService"; // រក្សាទុកតាម Logic ដើមបើមាន ឬទុករ้อยគាប់តាមប្រភព
+import { orderService } from "../../../../services/orderService";
 import { sendOrderToTelegram } from "../../../../services/telegramService";
+import { useSettingsQuery } from "../../../../queries/settings/useSettingQueries";
 
 function AdminReceiptCard({ order }) {
+  const { data: settingData } = useSettingsQuery();
+  const [imgError, setImgError] = useState(false);
+  const shopName = settingData?.shop_name || "Shop";
+  const rawLogo = settingData?.logo;
+  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
+  const logoUrl = rawLogo ? (rawLogo.startsWith('http') ? rawLogo : `${baseUrl}${rawLogo.startsWith('/') ? '' : '/'}${rawLogo}`) : "";
   const delivery = Number(order?.deliveryFee) || 0;
   const total = Number(order?.totalAmount) || 0;
   const subtotal = total - delivery;
@@ -36,8 +43,11 @@ function AdminReceiptCard({ order }) {
     >
       {/* Header */}
       <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
+        {logoUrl && !imgError ? (
+          <img src={logoUrl} alt={shopName} className="h-10 mx-auto mb-2 object-contain" onError={() => setImgError(true)} />
+        ) : null}
         <h2 className="font-black text-base tracking-wider uppercase text-slate-900 leading-tight">
-          ONE CARE SHOP
+          {shopName}
         </h2>
         <p className="text-[11px] text-slate-900 mt-1">
           ទូរស័ព្ទ: 088 66 77 456

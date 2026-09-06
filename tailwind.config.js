@@ -27,6 +27,11 @@ export default {
         sm: 'calc(var(--radius) - 4px)'
       },
       colors: {
+        brand: {
+          navy: '#0B132B',
+          gold: '#D4AF37',
+          silver: '#94A3B8',
+        },
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         card: {

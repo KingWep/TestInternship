@@ -10,8 +10,15 @@ import { useReactToPrint } from 'react-to-print'
 import { toPng } from 'html-to-image'
 import { useOrdersQuery } from '../../../../queries/orders/useOrderQueries'
 import { sendStickerToTelegram } from '../../../../services/telegramService'
+import { useSettingsQuery } from "../../../../queries/settings/useSettingQueries";
 
 function AdminStickerCard({ order, courier, setCourier }) {
+  const { data: settingData } = useSettingsQuery();
+  const [imgError, setImgError] = useState(false);
+  const shopName = settingData?.shop_name || "Shop";
+  const rawLogo = settingData?.logo;
+  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
+  const logoUrl = rawLogo ? (rawLogo.startsWith('http') ? rawLogo : `${baseUrl}${rawLogo.startsWith('/') ? '' : '/'}${rawLogo}`) : "";
   const delivery = Number(order?.deliveryFee) || 0
   const total = Number(order?.totalAmount) || 0
   const subtotal = total - delivery
@@ -34,11 +41,15 @@ function AdminStickerCard({ order, courier, setCourier }) {
       <div className="flex flex-col md:flex-row print:flex-row items-start md:items-center print:items-center justify-between pb-2.5 border-b-2 border-slate-900 gap-3 md:gap-0 print:gap-0">
         <div className="flex items-center gap-2.5">
           <div className="bg-slate-900 text-white p-2 rounded-lg flex items-center justify-center">
-            <ShoppingBag size={20} strokeWidth={2.5} />
+            {logoUrl && !imgError ? (
+               <img src={logoUrl} alt={shopName} className="w-5 h-5 object-contain" onError={() => setImgError(true)} />
+            ) : (
+               <ShoppingBag size={20} strokeWidth={2.5} />
+            )}
           </div>
           <div>
             <span className="text-[11px] font-bold text-slate-600 block leading-tight">ប័ណ្ណដឹកជញ្ជូនទំនិញ</span>
-            <h1 className="font-black text-xl tracking-wider text-slate-900 leading-none">ONE STORE</h1>
+            <h1 className="font-black text-xl tracking-wider text-slate-900 leading-none">{shopName}</h1>
           </div>
         </div>
 
@@ -52,7 +63,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" className="text-slate-900">
               <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
             </svg>
-            <span>One Store</span>
+            <span>{shopName}</span>
           </div>
         </div>
       </div>

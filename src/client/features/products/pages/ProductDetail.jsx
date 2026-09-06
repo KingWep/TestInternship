@@ -26,10 +26,10 @@ import { useProductsQuery } from "../../../../queries/products/useProductQueries
 import RecommendedProducts from "../components/RecommendedProducts";
 
 export default function ProductDetail() {
-  const { id } = useParams();
+  const { shop_code, id } = useParams();
   const navigate = useNavigate();
   const { addToCart, setIsCartOpen } = useCart();
-  const { data: products = [], isLoading: loading } = useProductsQuery();
+  const { data: products = [], isLoading: loading } = useProductsQuery({ shop_code });
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false); // State សម្រាប់គ្រប់គ្រងការបង្ហាញរូបភាពទាំងអស់និង Scroll
@@ -109,7 +109,7 @@ export default function ProductDetail() {
             ផលិតផលដែលអ្នកកំពុងស្វែងរកប្រហែលជាត្រូវបានលុប ឬផ្លាស់ប្តូរទីតាំង។
           </p>
           <Link
-            to="/"
+            to={`/shop/${shop_code}`}
             className="mt-6 inline-flex items-center gap-2 bg-red-800 text-white font-medium px-5 py-2.5 rounded-xl hover:bg-red-900 transition-all shadow-sm"
           >
             <ArrowLeft size={16} />
@@ -178,7 +178,7 @@ export default function ProductDetail() {
         {/* Breadcrumb / Back Link */}
         <div className="mb-4 flex items-center justify-between">
           <Link
-            to="/"
+            to={`/shop/${shop_code}`}
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white bg-red-600 border border-slate-200 px-3.5 py-2 rounded-bl-xl rounded-tr-xl hover:text-red-700 hover:border-red-200 hover:bg-red-200/50 transition-all shadow-xs"
           >
             <ArrowLeft size={16} />

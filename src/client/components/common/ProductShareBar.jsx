@@ -7,8 +7,8 @@ export default function ProductShareBar() {
   const { selectedCount, clearSelection, handleShare, isSharing } = useProductShareContext();
   const location = useLocation();
 
-  const isHome = location.pathname === '/';
-  const isProductDetail = matchPath('/products/:id', location.pathname);
+  const isHome = matchPath('/shop/:shop_code', location.pathname);
+  const isProductDetail = matchPath('/shop/:shop_code/products/:id', location.pathname);
 
   if (!isHome && !isProductDetail) return null;
 

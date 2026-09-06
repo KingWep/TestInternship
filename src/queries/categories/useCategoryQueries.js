@@ -6,7 +6,19 @@ export function useCategoriesQuery(params = {}) {
   return useQuery({
     queryKey: categoryKeys.list(params),
     queryFn: () => categoryService.getCategories(params),
-    select: (data) => data?.data || data || [], // Extract array of categories as Context did
+    select: (data) => {
+      const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
+      const rawCategories = data?.data || data || [];
+      return rawCategories.map((cat) => {
+        if (cat.image && !cat.image.startsWith('http')) {
+          return {
+            ...cat,
+            image: `${baseUrl}${cat.image.startsWith('/') ? '' : '/'}${cat.image}`,
+          };
+        }
+        return cat;
+      });
+    },
   });
 }
 

@@ -1,10 +1,38 @@
-import React, { useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, ShoppingBag, PlusCircle, ClipboardList, Users, Layers, Image, Settings, LogOut, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
+import { LayoutDashboard, ShoppingBag, PlusCircle, ClipboardList, Users, Layers, Image, Settings, LogOut, ChevronsLeft, ChevronsRight, QrCode } from 'lucide-react'
+import Swal from 'sweetalert2';
+import { useSettingsQuery } from "../../../queries/settings/useSettingQueries";
 
 export default function AdminSidebar({ sidebarState, setSidebarState }) {
+  const { data: settingData, isLoading } = useSettingsQuery();
+  const [imgError, setImgError] = useState(false);
+  const shopName = settingData?.shop_name || "Shop";
+  const rawLogo = settingData?.logo;
+  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
+  const logoUrl = rawLogo ? (rawLogo.startsWith('http') ? rawLogo : `${baseUrl}${rawLogo.startsWith('/') ? '' : '/'}${rawLogo}`) : "";
   const location = useLocation()
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
+  const handleLogout = () => {
+    Swal.fire({
+      title: 'តើអ្នកពិតជាចង់ចាកចេញមែនទេ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ចាកចេញ',
+      cancelButtonText: 'បោះបង់'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();
+        navigate('/login');
+      }
+    });
+  };
+  
   // Close sidebar on mobile on resize
   useEffect(() => {
     const handleResize = () => {
@@ -59,6 +87,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
       title: 'ប្រព័ន្ធ',
       items: [
         { label: 'អ្នកប្រើប្រាស់', path: '/admin/users', icon: Users, badge: 1 },
+        { label: 'QR Code', path: '/admin/qr-code', icon: QrCode },
         { label: 'ការកំណត់', path: '/admin/settings', icon: Settings },
       ]
     }
@@ -81,7 +110,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
         ${sidebarState === 1 ? 'w-[80px]' : ''}
         ${sidebarState === 2 ? 'w-64' : ''}
       `}>
-        {/* Your Exact Button & Position */}
+        {/* Toggle Button */}
         <button 
           onClick={handleToggle}
           className="absolute -right-6 top-1/2 -translate-y-1/2 bg-blue-500 text-white flex items-center justify-center w-6 h-24 rounded-r-xl shadow-lg hover:bg-blue-600 transition-colors duration-200 focus:outline-none z-10"
@@ -93,19 +122,23 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
         {/* Logo Section */}
         <div className="p-6 h-[76px] font-bold text-lg text-white border-b border-slate-800 flex items-center overflow-hidden shrink-0">
           <div className="w-8 h-8 shrink-0 rounded overflow-hidden flex items-center justify-center bg-white">
-            <img src="/images/ShoppingJunction.png" alt="Shopping" className='object-cover w-full h-full'/>
+            {logoUrl && !imgError ? (
+              <img src={logoUrl} alt={shopName} className="object-cover w-full h-full" onError={() => setImgError(true)} />
+            ) : (
+              <img src="/images/ShoppingJunction.png" alt={shopName} className='object-cover w-full h-full'/>
+            )}
           </div>
           <div className={`grid transition-[grid-template-columns,opacity] duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${
             isFull ? 'grid-cols-[1fr] opacity-100 ml-4' : 'grid-cols-[0fr] opacity-0 ml-0'
           }`}>
             <span className="text-white text-xl whitespace-nowrap overflow-hidden leading-none">
-              ONE CARE
+              {isLoading ? "..." : shopName}
             </span>
           </div>
         </div>
       
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-6 overflow-y-auto overflow-x-hidden">
+        <nav className="flex-1 p-4 space-y-6 overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {menuSections.map((section, idx) => (
             <div key={idx} className="space-y-1">
               <div className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${
@@ -166,23 +199,30 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
           ))}
         </nav>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-slate-800 shrink-0">
-          <Link to="/" className="flex items-center px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-950/50 transition-colors duration-200 relative group overflow-hidden">
-            <LogOut size={18} className="shrink-0" /> 
-            <div className={`grid transition-[grid-template-columns,opacity] duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${
-              isFull ? 'grid-cols-[1fr] opacity-100 ml-3' : 'grid-cols-[0fr] opacity-0 ml-0'
-            }`}>
-              <span className="whitespace-nowrap overflow-hidden leading-normal">
-                ចាកចេញទៅហាង
-              </span>
+        {/* Footer / Logout */}
+        <div className="p-4 border-t border-slate-800 shrink-0">   
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors duration-200 relative group overflow-hidden"
+            title="ចាកចេញ (Logout)"
+          >
+            <div className="flex items-center min-w-0">
+              <LogOut size={18} className="shrink-0" />
+              <div className={`grid transition-[grid-template-columns,opacity] duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${
+                isFull ? 'grid-cols-[1fr] opacity-100 ml-3' : 'grid-cols-[0fr] opacity-0 ml-0'
+              }`}>
+                <span className="whitespace-nowrap overflow-hidden leading-normal">
+                  ចាកចេញ
+                </span>
+              </div>
             </div>
+
             {!isFull && sidebarState !== 0 && (
               <div className="absolute left-[calc(100%+8px)] px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 z-50 whitespace-nowrap shadow-lg">
-                ចាកចេញទៅហាង
+                ចាកចេញ
               </div>
             )}
-          </Link>
+          </button>
         </div>
       </aside>
     </>

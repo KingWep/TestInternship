@@ -1,26 +1,62 @@
-import { Search, ShoppingBag, UserLock } from "lucide-react";
+import { useState } from "react";
+import { Search, ShoppingBag, UserLock, Store } from "lucide-react";
 import Container from "./Container";
 import { useSearch } from "../../../context/SearchContext";
 import { useCart } from "../../../context/CartContext";
 import { Link } from "react-router-dom";
+import { useSettingsQuery } from "../../../queries/settings/useSettingQueries";
 
 export default function Header() {
   const { searchItem, setSearchItem, priceRange, setPriceRange } = useSearch();
   const { cartCount, setIsCartOpen } = useCart();
+  
+  const { data: settingData, isLoading } = useSettingsQuery();
+  
+  const [imgError, setImgError] = useState(false);
+
+  const shopName = settingData?.shop_name || "Shop";
+  const rawLogo = settingData?.logo;
+
+
+  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
+  const logoUrl = rawLogo 
+    ? (rawLogo.startsWith('http') ? rawLogo : `${baseUrl}${rawLogo.startsWith('/') ? '' : '/'}${rawLogo}`)
+    : "";
 
   return (
     <header className="sticky top-0 z-50 md:shadow-md shadow-lg bg-white md:border-b md:border-slate-100 border-b-2 border-red-800">
       <Container className="w-full py-4">
-        {/* Mobile: 2 rows (flex-col) | Desktop: 1 row (md:flex-row) */}
         <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
           
-          {/* Row 1 on Mobile / Left side on Desktop */}
           <div className="flex items-center justify-between md:justify-start">
-            <span className="font-bold text-lg text-red-900 whitespace-nowrap">
-              ONE CARE SHOP
-            </span>
+            
+            <div className="flex items-center gap-2">
+              {isLoading ? (
+                <div className="flex items-center gap-2 animate-pulse">
+                  <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-200 rounded-full shrink-0" />
+                  <div className="h-6 w-32 bg-slate-200 rounded" />
+                </div>
+              ) : (
+                <>
+                  {logoUrl && !imgError ? (
+                    <img 
+                      src={logoUrl} 
+                      alt={shopName} 
+                      className="h-8 md:h-10 w-auto object-contain"
+                      onError={() => setImgError(true)}
+                    />
+                  ) : (
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-red-100 text-red-800 rounded-full flex items-center justify-center shrink-0">
+                      <Store size={18} />
+                    </div>
+                  )}
+                  <span className="font-bold text-lg text-red-900 whitespace-nowrap">
+                    {shopName}
+                  </span>
+                </>
+              )}
+            </div>
 
-            {/* Mobile Actions */}
             <div className="flex items-center gap-4 md:hidden">
               <button
                 className="relative"
@@ -34,18 +70,9 @@ export default function Header() {
                   </span>
                 )}
               </button>
-
-              <Link
-                to="/admin/login"
-                className="text-sm text-slate-600 hover:text-slate-900"
-                aria-label="Admin Login"
-              >
-                <UserLock size={22} />
-              </Link>
             </div>
           </div>
 
-          {/* Row 2 on Mobile / Center on Desktop */}
           <div className="flex flex-1 items-center gap-2 md:gap-4">
             <div className="flex-1 relative">
               <Search
@@ -74,7 +101,6 @@ export default function Header() {
             </select>
           </div>
 
-          {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-4">
             <button
               className="relative"
@@ -88,14 +114,6 @@ export default function Header() {
                 </span>
               )}
             </button>
-
-            <Link
-              to="/admin/login"
-              className="text-slate-600 hover:text-slate-900 transition-colors"
-              aria-label="Admin Login"
-            >
-              <UserLock size={24} />
-            </Link>
           </div>
 
         </div>

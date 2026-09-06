@@ -16,6 +16,23 @@ export const userService = {
     }
   },
 
+
+  // For user detail info 
+  getUser: async (id) => {
+    try {
+      const response = await axiosClient.get(API_ENDPOINTS.USERS.DETAIL(id));
+      return response.data;
+      console.log('User API Response [getUser]:', response.data);
+    } catch (error) {
+      console.error('User API Error [getUser]:', {
+        status: error.response?.status,
+        data:   error.response?.data,
+        message: error.message,
+      });
+      throw error;
+    }
+  },
+
   updateUser: async (id, userData) => {
     try {
       const response = await axiosClient.put(

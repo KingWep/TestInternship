@@ -4,7 +4,7 @@ import { slideService } from '../../../../services/slideService'
 
 const ITEMS_PER_PAGE = 5
 
-export function useSlides() {
+export function useSlides(settingId = null, shopCode = null) {
   const [slides, setSlides] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -18,7 +18,11 @@ export function useSlides() {
   const fetchSlides = async () => {
     setIsLoading(true)
     try {
-      const response = await slideService.getSlides()
+      const params = settingId ? { setting_id: settingId } : {}
+      if (shopCode) {
+        params.shop_code = shopCode
+      }
+      const response = await slideService.getSlides(params)
       console.log('Fetched slides:', response) 
       // Adapt based on backend response format
       setSlides(response.data || response || [])
@@ -31,7 +35,7 @@ export function useSlides() {
 
   useEffect(() => {
     fetchSlides()
-  }, [])
+  }, [settingId, shopCode])
 
   // ── Filter & Sort 
   const filteredSlides = (slides || [])
@@ -91,6 +95,11 @@ export function useSlides() {
         ctaText: data.ctaText || '',
         backgroundColor: data.backgroundColor || '#FF5733',
         status: data.status || 'Active',
+        shop_code: data.shop_code || '',
+      }
+
+      if (settingId) {
+        payload.setting_id = settingId
       }
 
       if (editingSlide) {

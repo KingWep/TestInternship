@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
         REGISTER: 'api/users',
         GET_ALL: 'api/users',
         UPDATE: (id) => `api/users?id=${id}`,
+        DETAIL: (id) => `api/users?id=${id}`,
     },
     CATEGORIES: {
         GET_ALL: 'api/categories',
@@ -26,5 +27,10 @@ export const API_ENDPOINTS = {
     SLIDES: {
         GET_ALL: 'api/promotions',
         UPDATE: (id) => `api/promotions?id=${id}`,
+    },
+    SETTINGS:{
+        GET_ALL: 'api/settings',
+        CREATE: 'api/settings',
+        UPDATE: (id) => `api/settings?id=${id}`,
     }
 };

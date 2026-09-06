@@ -4,8 +4,11 @@ import Button from "../../../components/common/Button";
 import { useSlides } from "@/admin/features/Slides/hooks/useSlides";
 import PromoBannerSkeleton from "../../../components/common/PromoBannerSkeleton";
  
+import { useParams } from "react-router-dom";
+
 export default function PromoBanner({ onShopClick }) {
-  const { slides, isLoading } = useSlides();
+  const { shop_code } = useParams();
+  const { slides, isLoading } = useSlides(null, shop_code);
 
   if (isLoading) {
     return <PromoBannerSkeleton />;

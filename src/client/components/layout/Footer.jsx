@@ -11,15 +11,19 @@ import {
 } from "lucide-react";
 
 import Container from "./Container";
+import { useSettingsQuery } from "../../../queries/settings/useSettingQueries";
 
 export default function Footer() {
+  const { data: settingData, isLoading } = useSettingsQuery();
+  const shopName = settingData?.shop_name || "Shop";
+
   return (
     <footer className="bg-white text-slate-300 pt-8 pb-4 mt-8 border-t flex-col">
       <Container>
         <div className="flex flex-wrap justify-between gap-x-8 gap-y-10 mb-5">
           <div className="space-y-3 w-full sm:w-[calc(50%-1rem)] lg:w-[260px]">
             <h3 className="font-bold text-lg text-red-900 tracking-wide">
-              ONE CARE SHOP
+              {isLoading ? "..." : shopName}
             </h3>
             <p className="text-sm text-black leading-relaxed">
               យើងខ្ញុំផ្តល់ជូនផលិតផលដែលមានគុណភាពនិងសុវត្ថិភាព 100% សម្រាប់សុខភាពនិងសម្រស់របស់អ្នក។
@@ -122,7 +126,7 @@ export default function Footer() {
 
       <div className="border-t border-slate-200 pt-4 pb-2">
         <Container className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4 text-center sm:text-left">
-          <p>© {new Date().getFullYear()} One Care Shop. រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
+          <p>© {new Date().getFullYear()} {shopName}. រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
           <div className="flex gap-6">
             <a href="#privacy" className="hover:text-black transition-colors">ឯកជនភាព</a>
             <a href="#terms" className="hover:text-black transition-colors">លក្ខខណ្ឌ</a>

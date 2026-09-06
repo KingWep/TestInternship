@@ -8,6 +8,7 @@ export const categorySchema = z.object({
     .string()
     .trim()
     .min(1, { message: "Slug is required." }),
+    image: z.any().optional(),
     description: z
     .string()
     .trim()

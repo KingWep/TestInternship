@@ -58,8 +58,9 @@ export function useCreateOrderMutation() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ items, subtotal, delivery, customerInfo }) => {
+    mutationFn: async ({ shop_code, items, subtotal, delivery, customerInfo }) => {
       const payload = {
+        shop_code: shop_code || "",
         customerPhone: customerInfo.phone || "",
         customerAddress: customerInfo.address || "",
         deliveryFee: Number(delivery) || 0,

@@ -64,14 +64,20 @@ export function useCategories() {
 
   const handleSubmit = async (data) => {
     try {
-      const payload = {
-        name: data.name,
-        slug: data.slug,
-        description: data.description || '',
+      const payload = new FormData()
+      payload.append('name', data.name)
+      payload.append('slug', data.slug)
+      if (data.description) {
+        payload.append('description', data.description)
+      }
+      if (data.image instanceof File) {
+        payload.append('image', data.image)
+      } else if (data.image && typeof data.image === 'string' && data.image.startsWith('http')) {
+        // Option to handle keeping existing image if your backend requires it.
       }
 
       if (editingCategory) {
-        payload.id = editingCategory.id
+        payload.append('id', editingCategory.id)
         await updateMutation.mutateAsync({ id: editingCategory.id, data: payload })
         Swal.fire({
           icon: 'success',

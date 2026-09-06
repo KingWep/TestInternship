@@ -1,7 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 
 export const AdminAuthContext = createContext(null);
+
+export const useAdminAuth = () => useContext(AdminAuthContext);
 
 export const AdminAuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

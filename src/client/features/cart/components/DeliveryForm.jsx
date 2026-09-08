@@ -1,3 +1,6 @@
+import { useDeliveryProvidersQuery } from '../../../../queries/deliveryProviders/useDeliveryProviderQueries'
+import { useParams } from 'react-router-dom'
+
 export function DeliveryForm({
   customerName,
   setCustomerName,
@@ -18,12 +21,13 @@ export function DeliveryForm({
   setQr,
   errors = {}
 }) {
-  const deliveryOptions = [
-    { id: "grab", name: "Grab", fee: 2.0 },
-    { id: "wownow", name: "Wow Now", fee: 1.5 },
-    { id: "jnt", name: "J&T", fee: 1.25 },
-    { id: "vet", name: "VET", fee: 2.5 },
-  ]
+  const { shop_code } = useParams();
+  const { data: providers = [], isLoading } = useDeliveryProvidersQuery({ shop_code });
+  const deliveryOptions = providers.filter(p => p.is_active == 1).map(p => ({
+    id: p.id,
+    name: p.name,
+    fee: parseFloat(p.shipping_fee) || 0
+  }));
 
   const paymentMehtod = [
     {id: "aba", name: "ABA Bank", image: "/images/qrbank.JPG"},

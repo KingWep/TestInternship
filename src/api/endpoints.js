@@ -30,7 +30,12 @@ export const API_ENDPOINTS = {
     },
     SETTINGS:{
         GET_ALL: 'api/settings',
-        CREATE: 'api/settings',
-        UPDATE: (id) => `api/settings?id=${id}`,
+        CREATE: 'api/settings/register',
+        UPDATE: 'api/settings',
+    },
+    DELIVERY_PROVIDERS: {
+        GET_ALL: 'api/delivery-providers',
+        CREATE: 'api/delivery-providers',
+        UPDATE: (id) => `api/delivery-providers?id=${id}`
     }
 };

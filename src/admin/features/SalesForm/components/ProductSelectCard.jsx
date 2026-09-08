@@ -7,30 +7,30 @@ export default function ProductSelectCard({ product, onSelect }) {
   return (
     <div
       onClick={() => !isOutOfStock && onSelect(product)}
-      className={`bg-white border rounded-2xl p-4 shadow-xs flex flex-col justify-between group transition-all duration-200 w-full h-full
+      className={`bg-white border rounded-xl p-3 shadow-2xs flex flex-col justify-between group transition-all duration-200 w-full h-full
         ${
           isOutOfStock
             ? "border-slate-200 opacity-50 cursor-not-allowed"
-            : "border-slate-200 hover:shadow-md hover:border-blue-300 cursor-pointer"
+            : "border-slate-200 hover:shadow-sm hover:border-blue-300 cursor-pointer"
         }`}
     >
       {/* Top Section: Image, Stock Badge, & Name */}
       <div>
-        <div className="h-40 md:h-52 -mx-3 -mt-3 md:mb-3 rounded-xl overflow-hidden flex items-center justify-center text-slate-400 font-bold">
+        <div className="h-32 -mx-3 -mt-3 mb-2.5 rounded-t-xl overflow-hidden flex items-center justify-center bg-white text-slate-400 font-bold">
           {product.image ? (
             <img
               src={product.image}
               alt={product.name}
-              className={`w-full h-full object-cover transition-transform duration-300 ${!isOutOfStock ? "group-hover:scale-105" : ""}`}
+              className={`w-full h-full object-contain transition-transform duration-300 ${!isOutOfStock ? "group-hover:scale-105" : ""}`}
             />
           ) : (
-            <span className="text-2xl">📦</span>
+            <span className="text-xl">📦</span>
           )}
         </div>
 
         {/* Stock badge */}
         <span
-          className={`inline-block text-[10px] sm:text-xs px-2 py-0.5 sm:py-1 rounded font-semibold ${
+          className={`inline-block text-[10px] px-1 py-0 rounded font-semibold ${
             product.stock === 0
               ? "bg-red-500 text-white"
               : product.stock <= 10
@@ -43,7 +43,7 @@ export default function ProductSelectCard({ product, onSelect }) {
 
         {/* Product Name */}
         <h4
-          className="font-semibold text-slate-800 text-md sm:text-sm mt-0 md:mt-1 line-clamp-1"
+          className="font-medium text-slate-800 text-xs sm:text-sm mt-1 line-clamp-1"
           title={product.name}
         >
           {product.name}
@@ -51,26 +51,25 @@ export default function ProductSelectCard({ product, onSelect }) {
       </div>
 
       {/* Middle Section: Price Info */}
-      <div>
-        <div className="flex items-center flex-wrap gap-1.5 sm:gap-2">
+      <div className="my-1.5">
+        <div className="flex items-center flex-wrap gap-1.5">
           <span className="font-bold text-green-600 text-xs sm:text-sm">
             ${(product.salePrice ?? 0).toFixed(2)}
           </span>
           {product.price && (
-            <span className="font-medium text-red-600 text-[11px] sm:text-sm">
+            <span className="font-normal text-slate-400 text-[11px]">
               <del>${product.price.toFixed(2)}</del>
             </span>
           )}
         </div>
 
         {/* Savings badge */}
-        <div className="flex items-center gap-1 min-h-[24px] sm:min-h-[28px]">
+        <div className="flex items-center gap-1 min-h-[20px]">
           {Number(product.discountPrice) > 0 &&
           Number(product.salePrice) < Number(product.price) ? (
             <>
-              <IoGift size={15} className="text-blue-500 flex-shrink-0" />
-
-              <span className="text-[11px] sm:text-sm px-1.5 py-0.5 font-khmer text-blue-600 rounded line-clamp-1">
+              <IoGift size={13} className="text-blue-500 flex-shrink-0" />
+              <span className="text-[10px] font-khmer text-blue-600 rounded line-clamp-1">
                 សន្សំ ${Number(product.discountPrice).toFixed(2)}
               </span>
             </>
@@ -79,13 +78,13 @@ export default function ProductSelectCard({ product, onSelect }) {
       </div>
 
       {/* CTA button */}
-      <div className="mt-1 border-t border-slate-50">
+      <div className="pt-1.5 border-t border-slate-100">
         <span
-          className={`block w-full text-center text-xs px-2.5 py-1.5 rounded-lg font-semibold transition-colors
+          className={`block w-full text-center text-xs py-1 rounded-md font-semibold transition-colors
             ${
               isOutOfStock
                 ? "bg-slate-100 text-slate-400"
-                : "bg-blue-500 text-white hover:bg-blue-600 transition-transform duration-100 ease-linear"
+                : "bg-blue-500 text-white hover:bg-blue-600"
             }`}
         >
           {isOutOfStock ? "មិនមានស្តុក" : "បន្ថែម"}

@@ -3,15 +3,16 @@ import { Search, ShoppingBag, UserLock, Store } from "lucide-react";
 import Container from "./Container";
 import { useSearch } from "../../../context/SearchContext";
 import { useCart } from "../../../context/CartContext";
-import { Link } from "react-router-dom";
-import { useSettingsQuery } from "../../../queries/settings/useSettingQueries";
+import { Link, useParams } from "react-router-dom";
+import { usePublicSettingsQuery } from "../../../queries/settings/useSettingQueries";
 
 export default function Header() {
   const { searchItem, setSearchItem, priceRange, setPriceRange } = useSearch();
   const { cartCount, setIsCartOpen } = useCart();
-  
-  const { data: settingData, isLoading } = useSettingsQuery();
-  
+  const { shop_code } = useParams();
+
+  const { data: settingData, isLoading } = usePublicSettingsQuery(shop_code);
+
   const [imgError, setImgError] = useState(false);
 
   const shopName = settingData?.shop_name || "Shop";
@@ -19,7 +20,7 @@ export default function Header() {
 
 
   const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
-  const logoUrl = rawLogo 
+  const logoUrl = rawLogo
     ? (rawLogo.startsWith('http') ? rawLogo : `${baseUrl}${rawLogo.startsWith('/') ? '' : '/'}${rawLogo}`)
     : "";
 
@@ -27,26 +28,26 @@ export default function Header() {
     <header className="sticky top-0 z-50 md:shadow-md shadow-lg bg-white md:border-b md:border-slate-100 border-b-2 border-red-800">
       <Container className="w-full py-4">
         <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
-          
+
           <div className="flex items-center justify-between md:justify-start">
-            
+
             <div className="flex items-center gap-2">
               {isLoading ? (
                 <div className="flex items-center gap-2 animate-pulse">
                   <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-200 rounded-full shrink-0" />
-                  <div className="h-6 w-32 bg-slate-200 rounded" />
+                  <div className="h-6 w-32 bg-slate-200 rounded " />
                 </div>
               ) : (
                 <>
                   {logoUrl && !imgError ? (
-                    <img 
-                      src={logoUrl} 
-                      alt={shopName} 
-                      className="h-8 md:h-10 w-auto object-contain"
+                    <img
+                      src={logoUrl}
+                      alt={shopName}
+                      className="h-8 w-8 md:h-14 md:w-14 object-cover rounded-md border-[2px] border-red-800"
                       onError={() => setImgError(true)}
                     />
                   ) : (
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-red-100 text-red-800 rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-red-100 text-red-800 rounded-md flex items-center justify-center shrink-0">
                       <Store size={18} />
                     </div>
                   )}

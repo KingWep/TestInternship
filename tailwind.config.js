@@ -26,6 +26,21 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)'
       },
+      // បន្ថែម Keyframes និង Animation សម្រាប់អក្សររត់នៅទីនេះ
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        'marquee-reverse': {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0%)' },
+        },
+      },
+      animation: {
+        marquee: 'marquee 8s linear infinite',
+        'marquee-reverse': 'marquee-reverse 8s linear infinite',
+      },
       colors: {
         brand: {
           navy: '#0B132B',

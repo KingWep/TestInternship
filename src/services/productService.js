@@ -10,7 +10,7 @@ export const productService = {
     } catch (error) {
       console.error('Product API Error [getProducts]:', {
         status: error.response?.status,
-        data:   error.response?.data,
+        data: error.response?.data,
         message: error.message,
       });
       throw error;
@@ -24,7 +24,7 @@ export const productService = {
     } catch (error) {
       console.error('Product API Error [createProduct]:', {
         status: error.response?.status,
-        data:   error.response?.data,
+        data: error.response?.data,
         message: error.message,
       });
       throw error;
@@ -43,7 +43,7 @@ export const productService = {
     } catch (error) {
       console.error('Product API Error [updateProduct]:', {
         status: error.response?.status,
-        data:   JSON.stringify(error.response?.data),
+        data: JSON.stringify(error.response?.data),
         message: error.message,
       });
       throw error;
@@ -57,7 +57,7 @@ export const productService = {
     } catch (error) {
       console.error('Product API Error [deleteProduct]:', {
         status: error.response?.status,
-        data:   error.response?.data,
+        data: error.response?.data,
         message: error.message,
       });
       throw error;

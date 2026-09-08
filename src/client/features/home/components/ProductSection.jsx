@@ -12,7 +12,7 @@ import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQu
 import FilterTabsSkeleton from "../../../components/common/FilterTabsSkeleton";
 import { useParams } from "react-router-dom";
 
-export default function ProductSection({allProductsRef}) {
+export default function ProductSection({ allProductsRef }) {
   const { shop_code } = useParams();
   const { data: products = [], isPending: isProductsPending } = useProductsQuery({ shop_code });
   const { data: categories = [], isPending: isCategoriesPending } = useCategoriesQuery({ shop_code });
@@ -161,8 +161,8 @@ export default function ProductSection({allProductsRef}) {
             isCategoryFiltered
               ? `ទំនិញប្រភេទ: ${activeTab}`
               : isSearching
-              ? `លទ្ធផលស្វែងរក (${filteredProducts.length})`
-              : "ទំនិញពេញទាំងអស់"
+                ? `លទ្ធផលស្វែងរក (${filteredProducts.length})`
+                : "ទំនិញពេញទាំងអស់"
           }
         />
         {isLoading ? <ProductSkeletonGrid count={8} /> : <ProductGrid products={filteredProducts} />}

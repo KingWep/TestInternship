@@ -15,9 +15,12 @@ import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
 import { orderService } from "../../../../services/orderService";
 import { sendOrderToTelegram } from "../../../../services/telegramService";
 import { useSettingsQuery } from "../../../../queries/settings/useSettingQueries";
+import { useAuth } from "@/hooks/useAuth";
 
 function AdminReceiptCard({ order }) {
-  const { data: settingData } = useSettingsQuery();
+  const { user } = useAuth();
+  const shopCode = user?.shop?.code;
+  const { data: settingData } = useSettingsQuery(shopCode);
   const [imgError, setImgError] = useState(false);
   const shopName = settingData?.shop_name || "Shop";
   const rawLogo = settingData?.logo;
@@ -113,7 +116,7 @@ function AdminReceiptCard({ order }) {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {(order?.orderDetails || order?.items) &&
-            (order?.orderDetails || order?.items).length > 0 ? (
+              (order?.orderDetails || order?.items).length > 0 ? (
               (order?.orderDetails || order?.items).map((item, idx) => {
                 const price =
                   Number(item.price) || Number(item.salePrice) || 0;
@@ -287,7 +290,7 @@ export default function AdminReceiptPage() {
         timer: 3000,
         timerProgressBar: true,
       });
-    }  catch (error) {
+    } catch (error) {
       console.error("Telegram error:", error);
 
       Swal.fire({

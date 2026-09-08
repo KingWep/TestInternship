@@ -39,6 +39,7 @@ export default function AdminSaleForm() {
     watch,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     resolver: zodResolver(saleFormSchema),
     defaultValues: INITIAL_CUSTOMER,
@@ -98,7 +99,7 @@ export default function AdminSaleForm() {
               <DataCardSkeletonGrid count={6} />
             </div>
           ) : filterProducts.length > 0 ? (
-            <div className="flex-1 grid grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 lg:overflow-y-auto pr-2 content-start auto-rows-max lg:will-change-scroll lg:overscroll-contain transform-gpu">
+            <div className="flex-1 grid grid-cols-2 xl:grid-cols-4 gap-2 lg:overflow-y-auto pr-2 content-start auto-rows-max lg:will-change-scroll lg:overscroll-contain transform-gpu">
               {filterProducts.map((p) => (
                 <ProductSelectCard key={p.id} product={p} onSelect={handleAddToCart} />
               ))}
@@ -138,6 +139,7 @@ export default function AdminSaleForm() {
           <OrderFormFields
             register={register}
             errors={errors}
+            setValue={setValue}
           />
           
           <OrderSummaryBox

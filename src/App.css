@@ -182,3 +182,34 @@
     border-right-color: var(--border);
   }
 }
+
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marqueeScrollReverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee-custom {
+  animation: marqueeScroll 8s linear infinite;
+}
+
+.animate-marquee-reverse-custom {
+  animation: marqueeScrollReverse 8s linear infinite;
+}
+
+/* Pause the animation when hovering so the user can easily read it */
+.animate-marquee-custom:hover,
+.animate-marquee-reverse-custom:hover {
+  animation-play-state: paused;
+}
+
+
+.custom-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* ជួយឱ្យរអិលស្រួលលើ Mobile និង Mac */
+}

@@ -2,13 +2,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { settingService } from '../../services/settingService';
 import { settingKeys } from './settingKeys';
 
-export function useSettingsQuery() {
+export function useSettingsQuery(shopCode) {
   return useQuery({
-    queryKey: settingKeys.details(),
-    queryFn: settingService.getSettings,
+    queryKey: settingKeys.byShopCode(shopCode),
+    queryFn: () => settingService.getByShopCode(shopCode),
     select: (data) => data?.data || data || {},
+    enabled: !!shopCode,
   });
 }
+
+export const usePublicSettingsQuery = useSettingsQuery;
 
 export function useUpdateSettingMutation() {
   const queryClient = useQueryClient();

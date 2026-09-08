@@ -11,10 +11,12 @@ import {
 } from "lucide-react";
 
 import Container from "./Container";
-import { useSettingsQuery } from "../../../queries/settings/useSettingQueries";
+import { useParams } from "react-router-dom";
+import { usePublicSettingsQuery } from "../../../queries/settings/useSettingQueries";
 
 export default function Footer() {
-  const { data: settingData, isLoading } = useSettingsQuery();
+  const { shop_code } = useParams();
+  const { data: settingData, isLoading } = usePublicSettingsQuery(shop_code);
   const shopName = settingData?.shop_name || "Shop";
 
   return (
@@ -66,11 +68,6 @@ export default function Footer() {
               <li>
                 <a href="#shipping" className="text-black hover:text-red-900 transition-colors duration-150 block">
                   គោលការណ៍ដឹកជញ្ជូន
-                </a>
-              </li>
-              <li>
-                <a href="#contact" className="text-black hover:text-red-900 transition-colors duration-150 block">
-                  ទំនាក់ទំនងយើង
                 </a>
               </li>
             </ul>

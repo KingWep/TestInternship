@@ -22,6 +22,7 @@ import AdminSettings from '../admin/features/Setting/pages/AdminSettings'
 import AdminReceiptPage from '../admin/features/Order/pages/AdminReceiptPage'
 import AdminStickerPage from '../admin/features/Order/pages/AdminStickerPage'
 import AdminQRCode from '../admin/features/QRCode/pages/AdminQRCode'
+import AdminDeliveryProviders from '../admin/features/Delivery_Providers/pages/AdminDeliveryProviders'
 
 export default function AppRouter() {
   return (
@@ -36,7 +37,7 @@ export default function AppRouter() {
       <Route path="/shop/:shop_code/products/:id" element={<ProductDetail />} />
       
       <Route path="/print-receipt/:orderId" element={<Receipt />} />
-      <Route path="/admin/print-receipt/:id" element={<AdminReceiptPage />} />
+      <Route path="/admin/print-receipt/:No" element={<AdminReceiptPage />} />
       <Route path="/admin/print-sticker/:id" element={<AdminStickerPage />} />
       <Route path="/dashboard" element={<Navigate to="/admin" replace />} />
 
@@ -49,6 +50,7 @@ export default function AppRouter() {
           <Route path="users" element={<AdminUsers />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="slides" element={<AdminSlides />} />
+          <Route path="delivery-providers" element={<AdminDeliveryProviders />} />
           <Route path="qr-code" element={<AdminQRCode />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>

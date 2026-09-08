@@ -15,7 +15,7 @@ const mapProduct = (item, categories = []) => {
 
   const mappedImages = Array.isArray(item.images)
     ? item.images.map(formatImageUrl)
-    : item.image 
+    : item.image
       ? [formatImageUrl(item.image)]
       : [];
 
@@ -62,7 +62,7 @@ export function useProductsQuery(params = {}) {
 // Optional selector hook to get low stock products efficiently
 export function useLowStockProductsQuery() {
   const { data: products = [], ...rest } = useProductsQuery();
-  
+
   const totalLowStockProducts = useMemo(() => {
     return products.filter(
       (product) => product.stockQuantity > 0 && product.stockQuantity <= 10

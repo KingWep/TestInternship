@@ -11,9 +11,12 @@ import { toPng } from 'html-to-image'
 import { useOrdersQuery } from '../../../../queries/orders/useOrderQueries'
 import { sendStickerToTelegram } from '../../../../services/telegramService'
 import { useSettingsQuery } from "../../../../queries/settings/useSettingQueries";
+import { useAuth } from "@/hooks/useAuth";
 
 function AdminStickerCard({ order, courier, setCourier }) {
-  const { data: settingData } = useSettingsQuery();
+  const { user } = useAuth();
+  const shopCode = user?.shop?.code;
+  const { data: settingData } = useSettingsQuery(shopCode);
   const [imgError, setImgError] = useState(false);
   const shopName = settingData?.shop_name || "Shop";
   const rawLogo = settingData?.logo;
@@ -40,11 +43,11 @@ function AdminStickerCard({ order, courier, setCourier }) {
     >
       <div className="flex flex-col md:flex-row print:flex-row items-start md:items-center print:items-center justify-between pb-2.5 border-b-2 border-slate-900 gap-3 md:gap-0 print:gap-0">
         <div className="flex items-center gap-2.5">
-          <div className="bg-slate-900 text-white p-2 rounded-lg flex items-center justify-center">
+          <div className="bg-slate-900 text-white rounded-md overflow-hidden flex items-center justify-center">
             {logoUrl && !imgError ? (
-               <img src={logoUrl} alt={shopName} className="w-5 h-5 object-contain" onError={() => setImgError(true)} />
+              <img src={logoUrl} alt={shopName} className="w-10 h-10 object-cover" onError={() => setImgError(true)} />
             ) : (
-               <ShoppingBag size={20} strokeWidth={2.5} />
+              <ShoppingBag size={20} strokeWidth={2.5} />
             )}
           </div>
           <div>

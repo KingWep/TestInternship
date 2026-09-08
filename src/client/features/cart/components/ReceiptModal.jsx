@@ -1,10 +1,10 @@
 import { useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { X, Printer, FileDown, CheckCircle2, ShoppingBag, Calendar, Phone, MapPin, FileText } from "lucide-react"
 import { useReactToPrint } from "react-to-print"
 import html2canvas from "html2canvas"
 import jsPDF from "jspdf"
-import { useSettingsQuery } from "../../../../queries/settings/useSettingQueries"
+import { usePublicSettingsQuery } from "../../../../queries/settings/useSettingQueries"
 
 export default function ReceiptModal({
   order,
@@ -14,8 +14,9 @@ export default function ReceiptModal({
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [imgError, setImgError] = useState(false)
+  const { shop_code } = useParams();
 
-  const { data: settingData } = useSettingsQuery();
+  const { data: settingData } = usePublicSettingsQuery(shop_code || order?.shop_code);
   const shopName = settingData?.shop_name || "Shop";
   const rawLogo = settingData?.logo;
   const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';

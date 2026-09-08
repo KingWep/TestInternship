@@ -99,7 +99,7 @@ export function useProducts({ shopCode } = {}) {
         await createMutation.mutateAsync(formDataToSend)
         Swal.fire({
           icon: 'success',
-          title: 'ជោគជ័យ', 
+          title: 'ជោគជ័យ',
           text: 'Product added successfully!',
           timer: 1500,
           showConfirmButton: false
@@ -111,7 +111,7 @@ export function useProducts({ shopCode } = {}) {
       const backendMsg = data?.message || data?.error || JSON.stringify(data) || error.message
       console.error('Submit error details:', {
         status: error?.response?.status,
-        data:   JSON.stringify(data),
+        data: JSON.stringify(data),
         message: error?.message,
       })
       Swal.fire({

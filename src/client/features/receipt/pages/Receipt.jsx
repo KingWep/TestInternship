@@ -14,11 +14,13 @@ import { toPng } from "html-to-image";
 import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
 import { orderService } from "../../../../services/orderService";
 import { sendOrderToTelegram } from "../../../../services/telegramService";
-import { useSettingsQuery } from "../../../../queries/settings/useSettingQueries";
+import { useSettingsQuery, usePublicSettingsQuery } from "../../../../queries/settings/useSettingQueries";
 import { Store } from "lucide-react";
 
 export function ReceiptCard({ order }) {
-  const { data: settingData } = useSettingsQuery();
+  const { shop_code: paramShopCode } = useParams();
+  const shopCode = order?.shop_code || paramShopCode;
+  const { data: settingData } = usePublicSettingsQuery(shopCode);
   const [imgError, setImgError] = useState(false);
   const shopName = settingData?.shop_name || "Shop";
   const rawLogo = settingData?.logo;
@@ -43,14 +45,14 @@ export function ReceiptCard({ order }) {
   const orderNum = order?.orderNo || order?.orderNumber || order?.id || "N/A";
   const dateFormatted = order?.createdAt
     ? new Date(order.createdAt).toLocaleString("km-KH", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
     : `${order?.date || ""} ${order?.time || ""}`.trim() ||
-      new Date().toLocaleDateString("km-KH");
+    new Date().toLocaleDateString("km-KH");
 
   return (
     <div

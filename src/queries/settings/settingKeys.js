@@ -1,4 +1,4 @@
 export const settingKeys = {
   all: ['settings'],
-  details: () => [...settingKeys.all, 'detail'],
+  byShopCode: (shopCode) => [...settingKeys.all, shopCode],
 };

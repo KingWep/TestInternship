@@ -258,7 +258,7 @@ export default function ProductDetail() {
                     <img
                       src={gallery[activeImage]}
                       alt={name}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                      className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-110"
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 bg-slate-50">

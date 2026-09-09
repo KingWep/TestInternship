@@ -1,14 +1,6 @@
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaTelegramPlane,
-} from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaTelegramPlane } from "react-icons/fa";
 
-import {
-  MapPin,
-  Phone,
-  Clock,
-} from "lucide-react";
+import { MapPin, Phone, Clock } from "lucide-react";
 
 import Container from "./Container";
 import { useParams } from "react-router-dom";
@@ -28,7 +20,8 @@ export default function Footer() {
               {isLoading ? "..." : shopName}
             </h3>
             <p className="text-sm text-black leading-relaxed">
-              យើងខ្ញុំផ្តល់ជូនផលិតផលដែលមានគុណភាពនិងសុវត្ថិភាព 100% សម្រាប់សុខភាពនិងសម្រស់របស់អ្នក។
+              យើងខ្ញុំផ្តល់ជូនផលិតផលដែលមានគុណភាពនិងសុវត្ថិភាព 100%
+              សម្រាប់សុខភាពនិងសម្រស់របស់អ្នក។
             </p>
             <div className="flex items-center gap-3 pt-1">
               <a
@@ -61,12 +54,18 @@ export default function Footer() {
             </h4>
             <ul className="text-sm space-y-2">
               <li>
-                <a href="#how-to-order" className="text-black hover:text-red-900 transition-colors duration-150 block">
+                <a
+                  href="#how-to-order"
+                  className="text-black hover:text-red-900 transition-colors duration-150 block"
+                >
                   របៀបបញ្ជាទិញ
                 </a>
               </li>
               <li>
-                <a href="#shipping" className="text-black hover:text-red-900 transition-colors duration-150 block">
+                <a
+                  href="#shipping"
+                  className="text-black hover:text-red-900 transition-colors duration-150 block"
+                >
                   គោលការណ៍ដឹកជញ្ជូន
                 </a>
               </li>
@@ -79,17 +78,26 @@ export default function Footer() {
             </h4>
             <ul className="text-sm space-y-2">
               <li>
-                <a href="#faq" className="text-black hover:text-red-900 transition-colors duration-150 block">
+                <a
+                  href="#faq"
+                  className="text-black hover:text-red-900 transition-colors duration-150 block"
+                >
                   សំណួរដែលសួរញឹកញាប់
                 </a>
               </li>
               <li>
-                <a href="#privacy" className="text-black hover:text-red-900 transition-colors duration-150 block">
+                <a
+                  href="#privacy"
+                  className="text-black hover:text-red-900 transition-colors duration-150 block"
+                >
                   គោលការណ៍ឯកជនភាព
                 </a>
               </li>
               <li>
-                <a href="#terms" className="text-black hover:text-red-900 transition-colors duration-150 block">
+                <a
+                  href="#terms"
+                  className="text-black hover:text-red-900 transition-colors duration-150 block"
+                >
                   លក្ខខណ្ឌសេវាកម្ម
                 </a>
               </li>
@@ -107,7 +115,10 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone size={18} className="text-red-500 shrink-0" />
-                <a href="tel:+855886677456" className="hover:text-red-900 transition-colors">
+                <a
+                  href="tel:+855886677456"
+                  className="hover:text-red-900 transition-colors"
+                >
                   +855 88 66 77 456
                 </a>
               </li>
@@ -117,16 +128,22 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
         </div>
       </Container>
 
       <div className="border-t border-slate-200 pt-4 pb-2">
         <Container className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4 text-center sm:text-left">
-          <p>© {new Date().getFullYear()} {shopName}. រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
+          <p>
+            © {new Date().getFullYear()} រក្សាសិទ្ធិគ្រប់យ៉ាង។ អភិវឌ្ឍដោយ{" "}
+            <span className="font-medium text-slate-700">CHOMNENH DIGITAL</span>
+          </p>
           <div className="flex gap-6">
-            <a href="#privacy" className="hover:text-black transition-colors">ឯកជនភាព</a>
-            <a href="#terms" className="hover:text-black transition-colors">លក្ខខណ្ឌ</a>
+            <a href="#privacy" className="hover:text-black transition-colors">
+              ឯកជនភាព
+            </a>
+            <a href="#terms" className="hover:text-black transition-colors">
+              លក្ខខណ្ឌ
+            </a>
           </div>
         </Container>
       </div>

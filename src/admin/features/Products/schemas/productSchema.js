@@ -8,13 +8,6 @@ export const productSchema = z.object({
       message: "Product name is required.",
     }),
 
-  sku: z
-    .string()
-    .trim()
-    .min(1, {
-      message: "SKU is required.",
-    }),
-
   categoryId: z
     .string()
     .min(1, {

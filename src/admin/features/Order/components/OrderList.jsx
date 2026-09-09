@@ -1,7 +1,10 @@
 import React from "react";
 import { Phone, MapPin, Receipt, Printer, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useUpdateOrderStatusMutation, useUpdateOrderPaymentStatusMutation } from "../../../../queries/orders/useOrderQueries";
+import {
+  useUpdateOrderStatusMutation,
+  useUpdateOrderPaymentStatusMutation,
+} from "../../../../queries/orders/useOrderQueries";
 import DataTable from "../../../components/common/DataTable";
 import { ReceiptText, SquarePen } from "lucide-react";
 
@@ -104,9 +107,12 @@ export default function OrderList({ orders, onEdit }) {
       accessor: "deliveryFee",
       render: (order) => (
         <div>
-          <div className="font-bold text-slate-400">
-            ${order.deliveryFee || 0}
-          </div>
+          <span className="font-bold text-slate-400 mr-1">
+            {order.deliveryProvider?.name || "Cash"}
+          </span>
+          <span className="text-xs text-slate-500">
+            (${order.deliveryFee || 0})
+          </span>
         </div>
       ),
     },

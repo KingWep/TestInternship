@@ -35,7 +35,6 @@ export default function ProductsForm({ onSubmit, initialData }) {
 
     defaultValues: {
       name: "",
-      sku: "",
       categoryId: "",
       stockQuantity: "",
       price: "",
@@ -56,7 +55,6 @@ export default function ProductsForm({ onSubmit, initialData }) {
     if (!initialData) {
       reset({
         name: "",
-        sku: "",
         categoryId: "",
         stockQuantity: "",
         price: "",
@@ -71,38 +69,28 @@ export default function ProductsForm({ onSubmit, initialData }) {
       return;
     }
 
-reset({
-  name: initialData.name || "",
-  sku: initialData.sku || "",
+    reset({
+      name: initialData.name || "",
 
-  categoryId: String(
-    initialData.categoryId ??
-    initialData.category_id ??
-    ""
-  ),
+      categoryId: String(
+        initialData.categoryId ?? initialData.category_id ?? "",
+      ),
 
-  stockQuantity:
-    initialData.stockQuantity ??
-    initialData.stock_quantity ??
-    0,
+      stockQuantity:
+        initialData.stockQuantity ?? initialData.stock_quantity ?? 0,
 
-  price: initialData.price ?? "",
+      price: initialData.price ?? "",
 
-  discountPrice:
-    initialData.discountPrice ??
-    initialData.discount_price ??
-    0,
+      discountPrice:
+        initialData.discountPrice ?? initialData.discount_price ?? 0,
 
-  salePrice:
-    initialData.salePrice ??
-    initialData.sale_price ??
-    "",
+      salePrice: initialData.salePrice ?? initialData.sale_price ?? "",
 
-  description: initialData.description || "",
-  images: (initialData.images || []).map((img, i) =>
-    typeof img === "string" ? { id: `existing-${i}`, url: img } : img
-  ),
-});
+      description: initialData.description || "",
+      images: (initialData.images || []).map((img, i) =>
+        typeof img === "string" ? { id: `existing-${i}`, url: img } : img,
+      ),
+    });
   }, [initialData, reset]);
 
   useEffect(() => {
@@ -111,10 +99,7 @@ reset({
 
     if (currentPrice > 0 && currentDiscount > 0) {
       setDiscountPercentage(
-        Math.min(
-          Math.round((currentDiscount / currentPrice) * 100),
-          100
-        )
+        Math.min(Math.round((currentDiscount / currentPrice) * 100), 100),
       );
     } else {
       setDiscountPercentage(0);
@@ -240,37 +225,18 @@ reset({
       }
 
       payload.append("name", data.name.trim());
-      payload.append("sku", data.sku.trim());
 
-      payload.append(
-        "category_id",
-        String(data.categoryId || "")
-      );
+      payload.append("category_id", String(data.categoryId || ""));
 
-      payload.append(
-        "stock_quantity",
-        String(data.stockQuantity || 0)
-      );
+      payload.append("stock_quantity", String(data.stockQuantity || 0));
 
-      payload.append(
-        "price",
-        String(data.price || 0)
-      );
+      payload.append("price", String(data.price || 0));
 
-      payload.append(
-        "discount_price",
-        String(data.discountPrice || 0)
-      );
+      payload.append("discount_price", String(data.discountPrice || 0));
 
-      payload.append(
-        "salePrice",
-        String(data.salePrice || 0)
-      );
+      payload.append("salePrice", String(data.salePrice || 0));
 
-      payload.append(
-        "description",
-        data.description || ""
-      );
+      payload.append("description", data.description || "");
 
       const finalImages = data.images || [];
 
@@ -292,10 +258,7 @@ reset({
   const totalImageCount = images?.length || 0;
 
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit)}
-      className="space-y-8"
-    >
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
@@ -310,33 +273,9 @@ reset({
           />
 
           {errors.name && (
-            <p className="text-xs text-red-500 mt-1">
-              {errors.name.message}
-            </p>
+            <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
           )}
         </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            SKU {!isEditing && "*"}
-          </label>
-
-          <input
-            type="text"
-            {...register("sku")}
-            placeholder="SKU code"
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
-          />
-
-          {errors.sku && (
-            <p className="text-xs text-red-500 mt-1">
-              {errors.sku.message}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
             ប្រភេទ {!isEditing && "*"}
@@ -358,7 +297,9 @@ reset({
             </p>
           )}
         </div>
+      </div>
 
+      <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
             ស្តុក
@@ -378,9 +319,6 @@ reset({
             </p>
           )}
         </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
             តម្លៃដើម ($)
@@ -396,12 +334,12 @@ reset({
           />
 
           {errors.price && (
-            <p className="text-xs text-red-500 mt-1">
-              {errors.price.message}
-            </p>
+            <p className="text-xs text-red-500 mt-1">{errors.price.message}</p>
           )}
         </div>
+      </div>
 
+      <div className="grid grid-cols-2 gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <label className="text-xs font-semibold text-gray-600">
@@ -456,9 +394,7 @@ reset({
         />
 
         {errors.description && (
-          <p className="text-xs text-red-500 ">
-            {errors.description.message}
-          </p>
+          <p className="text-xs text-red-500 ">{errors.description.message}</p>
         )}
       </div>
 
@@ -466,11 +402,8 @@ reset({
         <div className="flex items-center justify-between mb-2">
           <label className="block text-xs font-semibold text-gray-600">
             រូបភាពផលិតផល
-
             {totalImageCount > 0 && (
-              <span className="ml-1 text-blue-500">
-                ({totalImageCount})
-              </span>
+              <span className="ml-1 text-blue-500">({totalImageCount})</span>
             )}
           </label>
 
@@ -504,10 +437,7 @@ reset({
         {totalImageCount > 0 ? (
           <div className="flex flex-wrap gap-3 p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
             {images.map((image, index) => (
-              <div
-                key={image.id ?? `new-${index}`}
-                className="relative"
-              >
+              <div key={image.id ?? `new-${index}`} className="relative">
                 <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
                   <img
                     src={image.url}
@@ -567,20 +497,14 @@ reset({
         >
           <Save size={16} />
 
-          {isEditing
-            ? "ធ្វើបច្ចុប្បន្នភាពផលិតផល"
-            : "រក្សាទុកផលិតផល"}
+          {isEditing ? "ធ្វើបច្ចុប្បន្នភាពផលិតផល" : "រក្សាទុកផលិតផល"}
         </button>
       </div>
     </form>
   );
 }
 
-function SearchableCategorySelect({
-  categories,
-  value,
-  onChange,
-}) {
+function SearchableCategorySelect({ categories, value, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -588,67 +512,43 @@ function SearchableCategorySelect({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const selectedCategory = categories.find(
-    (category) =>
-      String(category.id) === String(value)
+    (category) => String(category.id) === String(value),
   );
 
-  const filteredCategories = categories.filter(
-    (category) =>
-      category.name
-        .toLowerCase()
-        .includes(search.toLowerCase())
+  const filteredCategories = categories.filter((category) =>
+    category.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleSelect = (categoryId) => {
-    onChange((String(categoryId)));
+    onChange(String(categoryId));
 
     setIsOpen(false);
     setSearch("");
   };
 
   return (
-    <div
-      className="relative"
-      ref={dropdownRef}
-    >
+    <div className="relative" ref={dropdownRef}>
       <div
         className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg flex justify-between items-center cursor-pointer ${
           isOpen ? "ring-2 ring-gray-200" : ""
         }`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span
-          className={
-            selectedCategory
-              ? "text-gray-900"
-              : "text-gray-500"
-          }
-        >
-          {selectedCategory
-            ? selectedCategory.name
-            : "ជ្រើសរើសប្រភេទ"}
+        <span className={selectedCategory ? "text-gray-900" : "text-gray-500"}>
+          {selectedCategory ? selectedCategory.name : "ជ្រើសរើសប្រភេទ"}
         </span>
 
         <ChevronDown
@@ -672,12 +572,8 @@ function SearchableCategorySelect({
               className="w-full pl-8 pr-3 py-1.5 text-sm bg-gray-50 rounded-md outline-none"
               placeholder="ស្វែងរកប្រភេទ..."
               value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
-              onClick={(e) =>
-                e.stopPropagation()
-              }
+              onChange={(e) => setSearch(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
               autoFocus
             />
           </div>
@@ -695,14 +591,11 @@ function SearchableCategorySelect({
                 <div
                   key={category.id}
                   className={`px-3 py-2 text-sm cursor-pointer hover:bg-blue-50 ${
-                    String(value) ===
-                    String(category.id)
+                    String(value) === String(category.id)
                       ? "bg-blue-50 text-blue-600 font-medium"
                       : "text-gray-700"
                   }`}
-                  onClick={() =>
-                    handleSelect(category.id)
-                  }
+                  onClick={() => handleSelect(category.id)}
                 >
                   {category.name}
                 </div>

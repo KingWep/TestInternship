@@ -64,6 +64,7 @@ export function useCreateOrderMutation() {
         customerPhone: customerInfo.phone || "",
         customerAddress: customerInfo.address || "",
         deliveryFee: Number(delivery) || 0,
+        deliveryProviderId: Number(customerInfo.deliveryProviderId || customerInfo.deliveryMethod) || null,
         items: items.map(item => ({
           productId: Number(item.productId || item.id),
           quantity: Number(item.quantity)

@@ -1,15 +1,12 @@
-import { useDeliveryProvidersQuery } from '../../../../queries/deliveryProviders/useDeliveryProviderQueries'
-import { useParams } from 'react-router-dom'
+import React from "react";
+import { useParams } from "react-router-dom";
+import { useDeliveryProvidersQuery } from "../../../../queries/deliveryProviders/useDeliveryProviderQueries";
 
 export function DeliveryForm({
-  customerName,
-  setCustomerName,
   phone,
   setPhone,
   address,
   setAddress,
-  note,
-  setNote,
   deliveryMethod,
   setDeliveryMethod,
   deliveryFee,
@@ -19,47 +16,53 @@ export function DeliveryForm({
   paymentImage,
   setPaymentImage,
   setQr,
-  errors = {}
+  errors = {},
 }) {
   const { shop_code } = useParams();
-  const { data: providers = [], isLoading } = useDeliveryProvidersQuery({ shop_code });
-  const deliveryOptions = providers.filter(p => p.is_active == 1).map(p => ({
-    id: p.id,
-    name: p.name,
-    fee: parseFloat(p.shipping_fee) || 0
-  }));
+  const { data: providers = [], isLoading } = useDeliveryProvidersQuery({
+    shop_code,
+  });
 
-  const paymentMehtod = [
-    {id: "aba", name: "ABA Bank", image: "/images/qrbank.JPG"},
-    {id: "wing", name: "Wing", image: "/images/qrbank.JPG"},
-    {id: "acleda", name: "ACLEDA", image: "/images/qrbank.JPG"},
-    {id: "cash", name: "សាច់ប្រាក់", image: "null"}
-  ]
+  const deliveryOptions = providers
+    .filter((p) => p.is_active == 1)
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      fee: parseFloat(p.shipping_fee) || 0,
+      logo: p.logo,
+    }));
+
+  const paymentMethods = [
+    { id: "aba", name: "ABA Bank", image: "/images/qrbank.JPG" },
+    { id: "wing", name: "Wing", image: "/images/qrbank.JPG" },
+    { id: "acleda", name: "ACLEDA", image: "/images/qrbank.JPG" },
+    { id: "cash", name: "សាច់ប្រាក់", image: "null" },
+  ];
+
   const handleDeliveryChange = (option) => {
-    setDeliveryMethod(option.id)
+    setDeliveryMethod(option.id);
     if (setDeliveryFee) {
-      setDeliveryFee(option.fee)
+      setDeliveryFee(option.fee);
     }
-  }
+  };
 
-  const handlePaymentChange = (paymentMethod) =>{
-    setPaymentMethod(paymentMethod.id)
-    setPaymentImage(paymentMethod.image) 
-  }
+  const handlePaymentChange = (pay) => {
+    setPaymentMethod(pay.id);
+    setPaymentImage(pay.image);
+  };
 
   return (
     <div className="space-y-4 pt-4 border-t border-slate-100">
-      <h3 className="font-semibold text-slate-900">
-        ព័ត៌មានដឹកជញ្ជូន
-      </h3>
+      <h3 className="font-semibold text-slate-900">ព័ត៌មានដឹកជញ្ជូន</h3>
 
+      {/* Phone Input */}
       <div>
         <label className="block text-xs font-medium text-slate-600 mb-1">
           លេខទូរស័ព្ទ
         </label>
-        <div 
+        <div
           className={`flex items-center w-full bg-slate-50 border rounded-lg overflow-hidden focus-within:bg-white focus-within:ring-2 focus-within:ring-red-100 focus-within:border-red-400 transition ${
-            errors.phone ? 'border-red-500' : 'border-slate-200'
+            errors.phone ? "border-red-500" : "border-slate-200"
           }`}
         >
           <div className="pl-3 pr-2 py-2 text-slate-600 text-sm font-semibold select-none flex items-center bg-slate-100 border-r border-slate-200 h-full">
@@ -70,7 +73,7 @@ export function DeliveryForm({
             name="phone"
             value={phone}
             onChange={(e) => {
-              const digitsOnly = e.target.value.replace(/\D/g, '');
+              const digitsOnly = e.target.value.replace(/\D/g, "");
               setPhone(digitsOnly);
             }}
             placeholder="12 345 678"
@@ -82,6 +85,7 @@ export function DeliveryForm({
         )}
       </div>
 
+      {/* Address Input */}
       <div>
         <label className="block text-xs font-medium text-slate-600 mb-1">
           អាស័យដ្ឋាន
@@ -93,7 +97,7 @@ export function DeliveryForm({
           placeholder="បញ្ចូលអាសយដ្ឋានដឹកជញ្ជូន"
           rows={2}
           className={`w-full bg-slate-50 border rounded-lg px-3 py-2 text-sm outline-none resize-none focus:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-400 transition ${
-            errors.address ? 'border-red-500' : 'border-slate-200'
+            errors.address ? "border-red-500" : "border-slate-200"
           }`}
         />
         {errors.address && (
@@ -101,67 +105,86 @@ export function DeliveryForm({
         )}
       </div>
 
-      {/* Compact & Clean Delivery Option Selector */}
+      {/* Delivery Options Selector */}
       <div>
         <div className="flex justify-between items-center mb-1.5">
           <label className="block text-xs font-medium text-slate-600">
             សេវាដឹកជញ្ជូន
           </label>
           {errors.deliveryMethod && (
-            <span className="text-red-500 text-[10px]">{errors.deliveryMethod}</span>
+            <span className="text-red-500 text-[10px]">
+              {errors.deliveryMethod}
+            </span>
+          )}
+        </div>
+
+        {/* Changed grid-cols-4 to grid-cols-5 to fit your items layout */}
+        <div className="grid grid-cols-5 gap-2">
+          {deliveryOptions.map((option) => {
+            const isSelected = deliveryMethod === option.id;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => handleDeliveryChange(option)}
+                className={`flex flex-col items-center justify-center p-2 rounded-2xl border text-xs transition-all duration-200 ${
+                  isSelected
+                    ? "border-red-600 bg-red-50/80 text-red-950 font-semibold shadow-sm"
+                    : errors.deliveryMethod
+                      ? "border-red-300 bg-red-50/30 text-slate-600 hover:border-red-400"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                }`}
+              >
+                {option.logo && (
+                  <img
+                    src={option.logo}
+                    alt={option.name}
+                    className="h-12 w-12 object-cover rounded-md mb-1"
+                  />
+                )}
+                <span className="truncate w-full text-center text-xs font-medium">
+                  {option.name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Payment Options Selector */}
+      <div>
+        <div className="flex justify-between items-center mb-1.5 mt-2">
+          <label className="block text-xs font-medium text-slate-600">
+            សេវាបង់ប្រាក់
+          </label>
+          {errors.paymentMethod && (
+            <span className="text-red-500 text-[10px]">
+              {errors.paymentMethod}
+            </span>
           )}
         </div>
         <div className="grid grid-cols-4 gap-1.5">
-          {deliveryOptions.map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => handleDeliveryChange(option)}
-              className={`flex flex-col items-center justify-center p-2 rounded-lg border text-xs transition ${
-                deliveryMethod === option.id
-                  ? "border-red-700 bg-red-50 text-red-900 font-medium shadow-sm"
-                  : errors.deliveryMethod
-                  ? "border-red-300 bg-red-50/30 text-slate-600 hover:border-red-400"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
-              }`}
-            >
-              <span className="truncate w-full text-center">{option.name}</span>
-              <span className="text-[11px] text-slate-500 mt-0.5 font-semibold">
-                {option.fee === 0 ? "$$" : `$${option.fee.toFixed(2)}`}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        <div>
-          <div className="flex justify-between items-center mb-1.5 mt-2">
-            <label className="block text-xs font-medium text-slate-600">
-              សេវាបង់ប្រាក់
-            </label>
-            {errors.paymentMethod && (
-              <span className="text-red-500 text-[10px]">{errors.paymentMethod}</span>
-            )}
-          </div>
-          <div className="grid grid-cols-4 gap-1.5">
-            {paymentMehtod.map((pay)=>(
+          {paymentMethods.map((pay) => {
+            const isSelected = paymentMethod === pay.id;
+            return (
               <button
                 key={pay.id}
                 type="button"
                 onClick={() => handlePaymentChange(pay)}
-                className={`flex flex-col items-center justify-center p-2 rounded-lg border text-xs transition ${
-                  paymentMethod === pay.id
-                    ? "border-red-700 bg-red-50 text-red-900 font-medium shadow-sm"
+                className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-xs transition-all duration-200 ${
+                  isSelected
+                    ? "border-red-600 bg-red-50/80 text-red-950 font-semibold shadow-sm"
                     : errors.paymentMethod
-                    ? "border-red-300 bg-red-50/30 text-slate-600 hover:border-red-400"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+                      ? "border-red-300 bg-red-50/30 text-slate-600 hover:border-red-400"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
                 }`}
               >
                 <span className="truncate w-full text-center">{pay.name}</span>
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
     </div>
-  )
+  );
 }

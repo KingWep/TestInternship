@@ -199,14 +199,14 @@ export default function CartDrawer() {
           <button
             type="button"
             onClick={handleOrder}
-            disabled={!hasItems}
+            disabled={!hasItems || createOrderMutation.isPending}
             className={`w-full py-2 rounded-full font-semibold transition ${
-              hasItems
+              hasItems && !createOrderMutation.isPending
                 ? "bg-red-900 text-white hover:bg-red-800"
                 : "bg-slate-300 text-slate-500 cursor-not-allowed"
             }`}
           >
-            បន្តទៅការបញ្ជាទិញ
+            {createOrderMutation.isPending ? "កំពុងដំណើរការ..." : "បន្តទៅការបញ្ជាទិញ"}
           </button>
         </div>
       </div>

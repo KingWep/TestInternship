@@ -44,7 +44,7 @@ export default function ProductShareBar() {
           ) : (
             <>
               <Share size={18} />
-              Share {selectedCount} Images
+              Send {selectedCount} Images
             </>
           )}
         </button>

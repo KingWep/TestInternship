@@ -26,7 +26,7 @@ export function useGeneralSetting() {
   const { user } = useAuth();
   const shopCode = user?.shop?.code;
   const { data: settingData, isLoading } = useSettingsQuery(shopCode);
-  const updateMutation = useUpdateSettingMutation();
+  const updateMutation = useUpdateSettingMutation(shopCode);
 
   const [logoPreview, setLogoPreview] = useState("");
   const [supportFileName, setSupportFileName] = useState("");
@@ -138,30 +138,63 @@ export function useGeneralSetting() {
       });
       return;
     }
-
     const formData = new FormData();
-    formData.append("id", settingData.id);
 
     Object.entries(data).forEach(([key, value]) => {
+      // Social media
       if (key === "social_media") {
         formData.append("social_media", JSON.stringify(value || []));
         return;
       }
-      if (key === "logo" || key === "support") {
+
+      // Logo
+      if (key === "logo") {
         if (value instanceof File) {
-          formData.append(key, value);
-        } else if (value === "") {
-          // Send empty string to clear the field if applicable
-          formData.append(key, "");
+          formData.append("logo", value);
         }
         return;
       }
+
+      // Support
+      if (key === "support") {
+        formData.append("support", value);
+        return;
+      }
+
+      // Other fields
       if (value !== null && value !== undefined) {
         formData.append(key, String(value));
       }
+
+      console.log("LOGO:", data.logo);
+      console.log("LOGO IS FILE:", data.logo instanceof File);
+
+      console.log("SUPPORT:", data.support);
+      console.log("SUPPORT IS FILE:", data.support instanceof File);
     });
 
-    updateMutation.mutate({ id: settingData.id, data: formData });
+    updateMutation.mutate(
+      { id: settingData.id, data: formData },
+      {
+        onSuccess: () => {
+          Swal.fire({
+            icon: "success",
+            title: "ជោគជ័យ",
+            text: "ការកំណត់ត្រូវបានរក្សាទុកដោយជោគជ័យ។",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        },
+        onError: (error) => {
+          Swal.fire({
+            icon: "error",
+            title: "បរាជ័យ",
+            text:
+              error.response?.data?.message || "មិនអាចរក្សាទុកការកំណត់បានទេ។",
+          });
+        },
+      },
+    );
   };
 
   // Cancel — restore form to last saved state

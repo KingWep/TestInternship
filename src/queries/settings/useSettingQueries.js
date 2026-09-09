@@ -13,22 +13,37 @@ export function useSettingsQuery(shopCode) {
 
 export const usePublicSettingsQuery = useSettingsQuery;
 
-export function useUpdateSettingMutation() {
+export function useUpdateSettingMutation(shopCode) {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: ({ id, data }) => settingService.updateSetting(id, data),
+    mutationFn: ({ id, data }) =>
+      settingService.updateSetting(id, data),
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: settingKeys.all });
+      // Refresh this specific shop
+      queryClient.invalidateQueries({
+        queryKey: settingKeys.byShopCode(shopCode),
+      });
+
+      // Optional: refresh all settings queries
+      queryClient.invalidateQueries({
+        queryKey: settingKeys.all,
+      });
     },
   });
 }
 
 export function useCreateSettingMutation() {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: settingService.createSetting,
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: settingKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: settingKeys.all,
+      });
     },
   });
 }

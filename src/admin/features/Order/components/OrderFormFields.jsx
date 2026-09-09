@@ -5,16 +5,7 @@ export default function OrderFormFields({ register, errors, setValue }) {
   const { data: providers = [] } = useDeliveryProvidersQuery()
   const activeProviders = providers.filter(p => p.is_active == 1)
 
-  const handleProviderChange = (e) => {
-    const providerId = e.target.value
-    const provider = activeProviders.find(p => p.id.toString() === providerId)
-    if(!provider) {
-      setValue('deliveryFee', 0)
-    }
-    if (provider && setValue) {
-      setValue('deliveryFee', provider.shipping_fee)
-    }
-  }
+
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
       <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider">ព័ត៌មានអតិថិជន</h3>
@@ -67,8 +58,15 @@ export default function OrderFormFields({ register, errors, setValue }) {
       <div>
         <label className="block text-xs font-semibold text-slate-600 mb-1">អ្នកដឹកជញ្ជូន</label>
         <select 
-          {...register('deliveryProviderId')}
-          onChange={handleProviderChange}
+          {...register('deliveryProviderId', {
+            onChange: (e) => {
+              const providerId = e.target.value;
+              const provider = activeProviders.find(
+                (p) => p.id.toString() === providerId
+              );
+              setValue('deliveryFee', provider ? Number(provider.shipping_fee) : 0);
+            }
+          })}
           className={`w-full px-3.5 py-2 bg-slate-50 border rounded-xl text-sm text-slate-800 focus:outline-hidden focus:border-blue-500 transition-colors border-slate-200`}
         >
           <option value="">ជ្រើសរើសអ្នកដឹកជញ្ជូន</option>

@@ -47,7 +47,7 @@ export default function Header() {
                       onError={() => setImgError(true)}
                     />
                   ) : (
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-red-100 text-red-800 rounded-md flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 md:w-14 md:h-14 bg-red-100 text-red-800 rounded-md flex items-center justify-center shrink-0">
                       <Store size={18} />
                     </div>
                   )}

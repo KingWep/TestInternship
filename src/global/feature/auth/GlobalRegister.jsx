@@ -1,82 +1,31 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Eye, EyeOff, ArrowRight, ShieldCheck, UserPlus } from "lucide-react";
-import axiosClient from "@/api/axiosClient";
-import { API_ENDPOINTS } from "@/api/endpoints";
-import Swal from "sweetalert2";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema } from "@/validations/auth.schema";
+import React from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight, ArrowLeft, ShieldCheck, Store } from "lucide-react";
 import { ParticleBackground } from "./components/ParticleBackground";
 import { Swirling } from "@/components/swirling";
+import { useShopRegisterForm } from "./hooks/useShopRegisterForm";
+import { AccountSetupStep } from "./components/AccountSetupStep";
+import { ShopIdentityStep } from "./components/ShopIdentityStep";
+import { ContactSupportStep } from "./components/ContactSupportStep";
 
 const GlobalRegister = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
+  const { form, currentStep, steps, nextStep, prevStep, onSubmit, isLoading } =
+    useShopRegisterForm();
 
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
+    watch,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
+  } = form;
 
-  const onSubmit = async (data) => {
-    setLoading(true);
-
-    try {
-      await axiosClient.post(API_ENDPOINTS.USERS.REGISTER, {
-        name: data.fullName,
-        email: data.email,
-        password: data.password,
-      });
-
-      Toast.fire({
-        icon: "success",
-        title: "ជោគជ័យ",
-        text: "គណនីត្រូវបានបង្កើតដោយជោគជ័យ",
-        timer: 1500,
-        showConfirmButton: false,
-      }).then(() => {
-        navigate("/login");
-      });
-    } catch (error) {
-      console.error("Register API Error:", error);
-
-      let errorMessage = "ការបង្កើតគណនីបរាជ័យ (Registration Failed)";
-
-      if (!error.response) {
-        errorMessage = "មិនអាចភ្ជាប់ទៅកាន់ម៉ាស៊ីនមេបានទេ (Network Error/CORS)";
-      } else {
-        errorMessage =
-          error.response.data?.error ||
-          error.response.data?.message ||
-          errorMessage;
-      }
-
-      Swal.fire({
-        icon: "error",
-        title: "បរាជ័យ",
-        text: errorMessage,
-        confirmButtonColor: "#2563eb",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Calculate progress percentage
+  const progressPercentage = (currentStep / steps.length) * 100;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-900 relative overflow-hidden py-4">
+    <div className="min-h-screen flex items-center justify-center bg-blue-900 relative overflow-hidden py-8">
       <ParticleBackground />
 
       <div className="w-full max-w-md px-4 relative z-10 animate-in fade-in zoom-in-95 duration-500">
@@ -86,139 +35,112 @@ const GlobalRegister = () => {
             <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
 
             <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-xl mx-auto flex items-center justify-center border border-white/30 shadow-inner mb-2 overflow-hidden">
-              <img src="images/chomnenh.png" alt="" className="object-cover w-full h-full" />
+              <Store className="text-white" size={32} />
             </div>
 
             <h2 className="text-xl font-bold text-white mb-0.5">CHOMNENH</h2>
             <p className="text-blue-100 text-xs font-medium">
-              បង្កើតគណនីថ្មី (Create New Account)
+              បង្កើតហាងថ្មី (Create New Shop)
             </p>
           </div>
 
+          {/* Progress Bar */}
+          <div className="bg-gray-50 px-6 py-2 border-b border-gray-100">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-semibold text-blue-600">
+                ជំហាន {currentStep} នៃ {steps.length}
+              </span>
+              <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wider">
+                {steps[currentStep - 1].name}
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+              <div
+                className="bg-blue-600 h-1.5 rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${progressPercentage}%` }}
+              ></div>
+            </div>
+          </div>
+
           {/* Form */}
-          <div className="p-6">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  ឈ្មោះពេញ (Full Name)
-                </label>
-                <input
-                  {...register("fullName")}
-                  placeholder="John Doe"
-                  className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm"
-                />
-                {errors.fullName && (
-                  <span className="text-[11px] text-red-600 mt-0.5 block">
-                    {errors.fullName.message}
-                  </span>
+          <div className="p-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="">
+                {currentStep === 1 && (
+                  <AccountSetupStep register={register} errors={errors} />
                 )}
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  អ៊ីមែល (Email)
-                </label>
-                <input
-                  {...register("email")}
-                  placeholder="admin@chomnenh.com"
-                  className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm"
-                />
-                {errors.email && (
-                  <span className="text-[11px] text-red-600 mt-0.5 block">
-                    {errors.email.message}
-                  </span>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  ពាក្យសម្ងាត់ (Password)
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    {...register("password")}
-                    placeholder="strong password"
-                    className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                {currentStep === 2 && (
+                  <ShopIdentityStep
+                    register={register}
+                    errors={errors}
+                    setValue={setValue}
+                    watch={watch}
                   />
+                )}
+                {currentStep === 3 && (
+                  <ContactSupportStep
+                    register={register}
+                    errors={errors}
+                    control={control}
+                    setValue={setValue}
+                    watch={watch}
+                  />
+                )}
+              </div>
+
+              <div className="flex items-center gap-3">
+                {currentStep > 1 && (
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    onClick={prevStep}
+                    disabled={isLoading}
+                    className="flex-1 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50"
                   >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    <ArrowLeft size={16} /> ត្រឡប់ (Back)
                   </button>
-                </div>
-                {errors.password && (
-                  <span className="text-[11px] text-red-600 mt-0.5 block">
-                    {errors.password.message}
-                  </span>
                 )}
-              </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  បញ្ជាក់ពាក្យសម្ងាត់ (Confirm Password)
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    {...register("confirmPassword")}
-                    placeholder="comfirm password"
-                    className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff size={16} />
-                    ) : (
-                      <Eye size={16} />
-                    )}
-                  </button>
-                </div>
-                {errors.confirmPassword && (
-                  <span className="text-[11px] text-red-600 mt-0.5 block">
-                    {errors.confirmPassword.message}
-                  </span>
-                )}
+                <button
+                  type={currentStep === steps.length ? "submit" : "button"}
+                  onClick={currentStep === steps.length ? undefined : nextStep}
+                  disabled={isLoading}
+                  className="flex-1 py-2.5 px-4 bg-gradient-to-br from-blue-500 to-indigo-700 hover:bg-blue-900 text-white font-semibold rounded-lg shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed text-sm"
+                >
+                  {isLoading ? (
+                    <span className="flex items-center gap-2">
+                      <Swirling className="size-5" />
+                      កំពុងដំណើរការ...
+                    </span>
+                  ) : currentStep === steps.length ? (
+                    <>
+                      បង្កើតហាង
+                      <ShieldCheck size={16} className="text-white/80" />
+                    </>
+                  ) : (
+                    <>
+                      បន្តទៅមុខ (Next)
+                      <ArrowRight
+                        size={16}
+                        className="group-hover:translate-x-1 transition-transform"
+                      />
+                    </>
+                  )}
+                </button>
               </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full mt-2 bg-gradient-to-br from-blue-500 to-indigo-700 hover:bg-blue-900 text-white font-semibold py-2.5 rounded-lg shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed text-sm"
-              >
-                {loading ? (
-                  <span className="flex items-center gap-2">
-                    <Swirling className="size-6" />
-                  </span>
-                ) : (
-                  <>
-                    ចុះឈ្មោះ (Sign Up)
-                    <ArrowRight
-                      size={16}
-                      className="group-hover:translate-x-1 transition-transform"
-                    />
-                  </>
-                )}
-              </button>
             </form>
 
             {/* Link to login */}
-            <div className="mt-3 text-center">
-              <span className="text-xs text-gray-600">មានគណនីរួចហើយ? </span>
+            <div className="text-center m-1">
+              <span className="text-xs text-gray-600">មានហាងរួចហើយ? </span>
               <Link
-                to="/login"
+                to="/admin"
                 className="text-xs font-semibold text-blue-600 hover:text-blue-700"
               >
                 ចូលគណនី (Sign In)
               </Link>
             </div>
 
-            <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-center gap-1.5 text-[11px] font-medium text-gray-400">
+            <div className=" pt-2 border-t border-gray-100 flex items-center justify-center gap-1.5 text-[11px] font-medium text-gray-400">
               <ShieldCheck size={13} />
               <span>Secure Encrypted Connection</span>
             </div>

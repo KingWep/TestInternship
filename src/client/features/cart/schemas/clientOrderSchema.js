@@ -12,8 +12,9 @@ export const clientOrderSchema = z.object({
     .trim()
     .min(2, "សូមបញ្ចូលអាសយដ្ឋាន"),
   deliveryMethod: z
-    .string()
-    .min(1, "សូមជ្រើសរើសសេវាដឹកជញ្ជូន"),
+    .union([z.string().min(1), z.number()], {
+      errorMap: () => ({ message: "សូមជ្រើសរើសសេវាដឹកជញ្ជូន" })
+    }),
   paymentMethod: z
     .string()
     .min(1, "សូមជ្រើសរើសវិធីបង់ប្រាក់"),

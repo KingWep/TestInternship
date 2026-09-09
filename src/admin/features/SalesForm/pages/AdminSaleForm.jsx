@@ -37,7 +37,7 @@ export default function AdminSaleForm() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
     setValue,
   } = useForm({
@@ -145,7 +145,7 @@ export default function AdminSaleForm() {
           <OrderSummaryBox
             subtotal={subtotal}
             delivery={deliveryFee}
-            disabled={cart.length === 0}
+            disabled={cart.length === 0 || isSubmitting}
           />
         </form>
 

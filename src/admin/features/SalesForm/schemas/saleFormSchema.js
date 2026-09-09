@@ -19,4 +19,7 @@ export const saleFormSchema = z.object({
     .number()
     .min(0, "សេវាដឹកជញ្ជូនមិនអាចអវិជ្ជមានបានទេ")
     .optional(),
+  deliveryProviderId: z
+    .union([z.string(), z.number()])
+    .optional(),
 });

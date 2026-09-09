@@ -3,7 +3,7 @@ import { z } from "zod";
 const socialMediaSchema = z.object({
   title: z.string().min(1, "សូមបញ្ចូលចំណងជើង"),
   url: z.string().url("សូមបញ្ចូលតំណរភ្ជាប់អោយបានត្រឹមត្រូវ"),
-  icon: z.string().min(1, "សូមបញ្ចូលរូបតំណាង")
+  icon: z.string().min(1, "សូមបញ្ចូលរូបតំណាង"),
 });
 
 export const settingSchema = z.object({
@@ -12,5 +12,18 @@ export const settingSchema = z.object({
   phone: z.string().min(1, "សូមបញ្ចូលលេខទូរស័ព្ទ"),
   address: z.string().min(1, "សូមបញ្ចូលអាសយដ្ឋាន"),
   chat_id: z.string().optional(),
+  logo: z
+    .union([
+      z.instanceof(File),
+      z.string(),
+    ])
+    .optional(),
+  support: z
+    .union([
+      z.instanceof(File),
+      z.string(),
+    ])
+    .optional(),
+
   social_media: z.array(socialMediaSchema).optional(),
 });

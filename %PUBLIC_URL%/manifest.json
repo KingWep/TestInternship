@@ -3,12 +3,12 @@
   "name": "DigitalShop Mobile Application",
   "icons": [
     {
-      "src": "images/digitalshop.png",
+      "src": "/images/digitalshop.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "images/digitalshop.png",
+      "src": "/images/digitalshop.png",
       "sizes": "512x512",
       "type": "image/png"
     }

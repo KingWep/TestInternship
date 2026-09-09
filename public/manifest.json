@@ -1,9 +1,9 @@
 {
-  "short_name": "MyTestApp",
-  "name": "My Test Application",
+  "short_name": "DigitalShop",
+  "name": "DigitalShop Web",
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/images/digitalshop.png",
       "sizes": "192x192 512x512",
       "type": "image/png"
     }

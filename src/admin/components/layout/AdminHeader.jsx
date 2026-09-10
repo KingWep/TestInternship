@@ -17,36 +17,28 @@ export default function AdminHeader({ sidebarState, setSidebarState }) {
   return (
     <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 shadow-xl shrink-0">
       {/* Left — hamburger (mobile) */}
-      <button
-        type="button"
-        onClick={handleMenuToggle}
-        className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
-        aria-label="Toggle sidebar"
-      >
-        <Menu size={20} />
-      </button>
-
-      {/* Right — actions */}
+        {/* Home */}
       <div className="flex items-center gap-2 text-slate-600 text-xl">
         <Link
+          to="/"
+          className="text-slate-600 px-2 py-1.5 border-[2px] hover:bg-blue-200 rounded-md hover:text-blue-600 transition-colors"
+        >
+          <FaHome size={18} />
+        </Link>
+        <Link
           to="qr-code"
-          className="px-2 py-1 border-[2px] hover:bg-blue-200 rounded-md hover:text-blue-600 transition-colors"
+          className="px-2 py-1.5 border-[2px] hover:bg-blue-200 rounded-md hover:text-blue-600 transition-colors"
         >
           <QrCode size={18} className="text-slate-600 hover:text-blue-600" />
         </Link>
 
-        {/* Home */}
-        <Link
-          to="/"
-          className="text-slate-600 px-2 py-1 border-[2px] hover:bg-blue-200 rounded-md hover:text-blue-600 transition-colors"
-        >
-          <FaHome size={18} />
-        </Link>
+      </div>
+      {/* Right — actions */}
+      <div className="flex items-center gap-2 text-slate-600 text-xl">
+        {/* Notifications Dropdown Component */}
+        <NotificationDropdown size={20} className="text-slate-600 hover:text-blue-600" />
 
         <LanguageSwitcher />
-
-        {/* Notifications Dropdown Component */}
-        <NotificationDropdown size={18} className="text-slate-600 hover:text-blue-600" />
       </div>
     </header>
   )

@@ -22,7 +22,7 @@ export default function NotificationDropdown() {
       {/* Bell Trigger Button using IoNotifications */}
       <button
         onClick={toggleDropdown}
-        className="relative p-2 text-slate-600 px-2 py-1 border-[2px] hover:bg-blue-200 rounded-md transition-colors flex items-center justify-center"
+        className="relative p-2 text-slate-600 px-2 py-1.5 border-[2px] hover:bg-blue-200 rounded-md transition-colors flex items-center justify-center"
         aria-label="Notifications"
       >
         <IoNotifications size={18} />

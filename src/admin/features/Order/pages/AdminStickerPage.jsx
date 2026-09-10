@@ -189,6 +189,18 @@ export default function AdminStickerPage() {
   const [loading, setLoading] = useState(null)
   const [courier, setCourier] = useState(t('order.courier1'))
 
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: `Sticker-${order?.orderNo || order?.orderNumber || order?.id || 'sticker'}`,
+    pageStyle: `
+      @page { size: 150mm 100mm landscape; margin: 0; }
+      @media print {
+        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        #admin-sticker-card { margin: auto !important; }
+      }
+    `,
+  })
+
   useEffect(() => {
     if (order) {
       const deliveryName = order?.deliveryProvider?.name || order?.deliveryMethod;
@@ -213,18 +225,6 @@ export default function AdminStickerPage() {
       </div>
     )
   }
-
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: `Sticker-${order.orderNo || order.orderNumber || order.id}`,
-    pageStyle: `
-      @page { size: 150mm 100mm landscape; margin: 0; }
-      @media print {
-        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        #admin-sticker-card { margin: auto !important; }
-      }
-    `,
-  })
 
   const handleSaveImage = async () => {
     if (!printRef.current) return

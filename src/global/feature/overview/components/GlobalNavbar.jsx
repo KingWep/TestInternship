@@ -1,102 +1,163 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
+import logoImg from '../../../assets/logo.jpg';
 
-const GlobalNavbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+const GlobalNavbar = ({ lang, onToggleLang, t }) => {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const navLinks = [
-    { name: 'អំពីយើង', href: '#about' },
-    { name: 'ប្រព័ន្ធការងារ', href: '#ecosystem' },
-    { name: 'ដំណោះស្រាយ', href: '#solutions' },
-    { name: 'អត្ថប្រយោជន៍', href: '#impact' },
+    { name: t.nav_why_us, href: '#why-us' },
+    { name: t.nav_businesses, href: '#businesses' },
+    { name: t.nav_features, href: '#features' },
+    { name: t.nav_customers, href: '#customers' },
+    { name: t.nav_mobile_app, href: '#mobile-app' },
+    { name: t.nav_contact, href: '#contact' },
   ];
 
+  const handleLinkClick = (e, href) => {
+    e.preventDefault();
+    setIsMobileOpen(false);
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-3 text-gray-800' : 'bg-transparent py-5 text-white'}`}>
+    <nav className="sticky top-0 z-50 bg-white shadow-sm transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-2 logo-wrapper">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8b2f67] to-[#5a1941] shadow-lg flex items-center justify-center transition-transform hover:scale-105">
-              <span className="text-white font-bold text-xl">C</span>
-            </div>
-            <div className="flex flex-col line-height-[1.2]">
-              <span className={`font-bold text-xl tracking-tight ${isScrolled ? 'text-[#0e088b]' : 'text-white'}`}>
-                CHOM<span className="text-transparent bg-clip-text bg-gradient-to-br from-[#b8860b] to-[#d4af37]">NENH</span>
+        <div className="flex justify-between items-center h-16 sm:h-20">
+          {/* Logo Brand */}
+          <a href="#" className="logo-wrapper">
+            <img
+              src={logoImg}
+              onError={(e) => {
+                e.target.src = 'https://digital.muchtrading.com/logo.jpg';
+              }}
+              alt="Logo"
+              className="site-logo"
+            />
+            <div className="logo-brand">
+              <span className="brand-name">
+                {t.brand_name} <span className="highlight">{t.brand_highlight}</span>
               </span>
-              <span className={`text-[10px] font-semibold tracking-[2px] uppercase -mt-1 ${isScrolled ? 'text-[#35547c]' : 'text-blue-200'}`}>
-                Digital Menu
-              </span>
+              <span className="brand-tagline">{t.brand_tagline}</span>
             </div>
           </a>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop Navigation Links */}
+          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             {navLinks.map((link) => (
-              <a 
-                key={link.name} 
+              <a
+                key={link.href}
                 href={link.href}
-                className="text-white hover:text-[#D4AF37] font-medium transition-colors font-kantumruy"
+                onClick={(e) => handleLinkClick(e, link.href)}
+                className="text-gray-700 hover:text-[#8b2f67] font-medium text-[15px] transition-colors duration-200 py-1"
               >
                 {link.name}
               </a>
             ))}
           </div>
 
-          {/* Auth/Action Buttons */}
-          <div className="hidden md:flex items-center gap-4">
-            <Link to="/login" className={`border hover:bg-[#8b2f67] hover:text-white px-5 py-2 rounded-full font-medium transition-all flex items-center gap-2 font-kantumruy ${isScrolled ? 'border-[#ffc107] text-[#212529]' : 'border-white/30 text-white hover:border-[#8b2f67]'}`}>
-              ចូលគណនី
+          {/* Action Buttons & Language Switcher */}
+          <div className="hidden lg:flex items-center space-x-3">
+            <Link
+              to="/login"
+              className="btn-outline-primary px-4 py-1.5 rounded-full font-medium text-sm transition-all inline-block text-center"
+            >
+              {t.nav_signin}
             </Link>
-            <Link to="/register" className="bg-[#8b2f67] text-white hover:bg-[#5a1941] px-5 py-2 rounded-full font-medium transition-all shadow-md shadow-[#8b2f67]/25 flex items-center gap-2 font-kantumruy">
-              បង្កើតគណនី
+            <Link
+              to="/register"
+              className="btn-primary px-4 py-1.5 rounded-full font-medium text-sm shadow-sm transition-all inline-block text-center"
+            >
+              {t.nav_signup}
             </Link>
+
+            {/* Language Switcher */}
+            <button
+              onClick={onToggleLang}
+              className="lang-btn flex items-center px-2 py-1 rounded-md hover:bg-gray-100 transition-colors ml-2"
+              title="ប្តូរភាសា / Switch Language"
+            >
+              <img
+                src={
+                  lang === 'km'
+                    ? 'https://flagicons.lipis.dev/flags/4x3/kh.svg'
+                    : 'https://flagicons.lipis.dev/flags/4x3/gb.svg'
+                }
+                alt={lang === 'km' ? 'Khmer' : 'English'}
+                className="flag-icon"
+              />
+              <span className="font-semibold text-sm text-gray-700">
+                {lang === 'km' ? 'ខ្មែរ' : 'EN'}
+              </span>
+            </button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`hover:text-[#8b2f67] focus:outline-none ${isScrolled ? 'text-gray-800' : 'text-white'}`}
+          {/* Mobile menu button */}
+          <div className="flex items-center space-x-2 lg:hidden">
+            <button
+              onClick={onToggleLang}
+              className="lang-btn flex items-center px-2 py-1"
+              title="ប្តូរភាសា / Switch Language"
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              <img
+                src={
+                  lang === 'km'
+                    ? 'https://flagicons.lipis.dev/flags/4x3/kh.svg'
+                    : 'https://flagicons.lipis.dev/flags/4x3/gb.svg'
+                }
+                alt="Language"
+                className="flag-icon !w-5 !h-5"
+              />
+              <span className="font-semibold text-xs text-gray-700">
+                {lang === 'km' ? 'ខ្មែរ' : 'EN'}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+              className="p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none"
+              aria-label="Toggle navigation"
+            >
+              {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl border-t border-gray-100">
-          <div className="px-4 py-6 flex flex-col gap-4">
+      {/* Mobile Drawer Menu */}
+      {isMobileOpen && (
+        <div className="lg:hidden bg-white border-t border-gray-200 px-4 pt-3 pb-6 space-y-3 shadow-lg">
+          <div className="flex flex-col space-y-2">
             {navLinks.map((link) => (
-              <a 
-                key={link.name} 
+              <a
+                key={link.href}
                 href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-gray-800 font-medium text-lg hover:text-[#8b2f67] py-2 border-b border-gray-100 font-kantumruy"
+                onClick={(e) => handleLinkClick(e, link.href)}
+                className="text-gray-700 hover:text-[#8b2f67] font-medium py-2 px-2 text-base rounded-md hover:bg-gray-50"
               >
                 {link.name}
               </a>
             ))}
-            <div className="pt-4 flex flex-col gap-3">
-              <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 bg-white text-gray-800 font-medium border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-kantumruy">
-                ចូលគណនី
-              </Link>
-              <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 bg-[#8b2f67] text-white font-medium rounded-xl hover:bg-[#5a1941] transition-colors shadow-md shadow-[#8b2f67]/25 font-kantumruy">
-                បង្កើតគណនី
-              </Link>
-            </div>
+          </div>
+          <div className="pt-3 border-t border-gray-100 flex flex-col sm:flex-row gap-2">
+            <Link
+              to="/login"
+              onClick={() => setIsMobileOpen(false)}
+              className="btn-outline-primary w-full py-2 rounded-full font-medium text-sm text-center block"
+            >
+              {t.nav_signin}
+            </Link>
+            <Link
+              to="/register"
+              onClick={() => setIsMobileOpen(false)}
+              className="btn-primary w-full py-2 rounded-full font-medium text-sm text-center block"
+            >
+              {t.nav_signup}
+            </Link>
           </div>
         </div>
       )}

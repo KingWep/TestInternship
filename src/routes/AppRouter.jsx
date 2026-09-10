@@ -30,7 +30,9 @@ export default function AppRouter() {
       {/* Global Entry Point */}
       <Route path="/" element={<GlobalPage />} />
       <Route path="/login" element={<GlobalLogin />} />
+      <Route path="/signin" element={<Navigate to="/login" replace />} />
       <Route path="/register" element={<GlobalRegister />} />
+      <Route path="/signup" element={<Navigate to="/register" replace />} />
 
       {/* Existing Digital E-Commerce (Moved to /shop) */}
       <Route path="/shop/:shop_code" element={<Home />} />

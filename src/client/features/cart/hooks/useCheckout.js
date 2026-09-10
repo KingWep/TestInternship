@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Swal from "sweetalert2"
 
 export default function useCheckout({
@@ -14,36 +14,7 @@ export default function useCheckout({
   const [qrCompleted, setQrCompleted] = useState(false)
   const [currentOrderId, setCurrentOrderId] = useState(null)
 
-  useEffect(() => {
-    if (!showQr || !hasItems) {
-      return
-    }
-
-    const interval = setInterval(() => {
-      setQrSeconds((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval)
-
-          setShowQr(false)
-          setQrCompleted(true)
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [showQr, hasItems])
-
-  useEffect(() => {
-    if (!qrCompleted) {
-      return
-    }
-
-    handlePaymentSuccess()
-  }, [qrCompleted])
-
-  const handlePaymentSuccess = async () => {
+  const handlePaymentSuccess = useCallback(async () => {
     setQrCompleted(false)
     
     if (resetCheckoutForm) {
@@ -77,7 +48,36 @@ export default function useCheckout({
         navigate(`/print-receipt/${currentOrderId}`)
       }
     }
-  }
+  }, [currentOrderId, grandTotal, navigate, resetCheckoutForm, setIsCartOpen, t])
+
+  useEffect(() => {
+    if (!showQr || !hasItems) {
+      return
+    }
+
+    const interval = setInterval(() => {
+      setQrSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval)
+
+          setShowQr(false)
+          setQrCompleted(true)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [showQr, hasItems])
+
+  useEffect(() => {
+    if (!qrCompleted) {
+      return
+    }
+
+    handlePaymentSuccess()
+  }, [qrCompleted, handlePaymentSuccess])
 
   const startQrPayment = (orderId) => {
     setCurrentOrderId(orderId)

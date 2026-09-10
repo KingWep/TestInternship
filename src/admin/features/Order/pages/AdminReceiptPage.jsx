@@ -123,36 +123,38 @@ function AdminReceiptCard({ order }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {(order?.orderDetails || order?.items) &&
-              (order?.orderDetails || order?.items).length > 0 ? (
-              (order?.orderDetails || order?.items).map((item, idx) => {
-                const price =
-                  Number(item.price) || Number(item.salePrice) || 0;
-                const qty = Number(item.quantity) || 0;
-                return (
-                  <tr key={item.id ?? idx} className="text-slate-800">
-                    <td className="py-1.5 pr-1 font-medium break-words text-left align-top leading-snug">
-                      {item.product_name || item.name}
-                    </td>
-                    <td className="py-1.5 text-center tabular-nums text-slate-600 font-semibold align-top">
-                      {qty}
-                    </td>
-                    <td className="py-1.5 text-right tabular-nums text-slate-600 align-top">
-                      ${price.toFixed(2)}
-                    </td>
-                    <td className="py-1.5 text-right tabular-nums font-bold text-slate-900 align-top">
-                      ${(price * qty).toFixed(2)}
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan={4} className="py-3 text-center text-slate-400">
-                  {t('order.noItems')}
-                </td>
-              </tr>
-            )}
+            {(() => {
+              const orderItems = order?.orderDetails || order?.items || [];
+              return orderItems.length > 0 ? (
+                orderItems.map((item, idx) => {
+                  const price =
+                    Number(item.price) || Number(item.salePrice) || 0;
+                  const qty = Number(item.quantity) || 0;
+                  return (
+                    <tr key={item.id ?? idx} className="text-slate-800">
+                      <td className="py-1.5 pr-1 font-medium break-words text-left align-top leading-snug">
+                        {item.product_name || item.name}
+                      </td>
+                      <td className="py-1.5 text-center tabular-nums text-slate-600 font-semibold align-top">
+                        {qty}
+                      </td>
+                      <td className="py-1.5 text-right tabular-nums text-slate-600 align-top">
+                        ${price.toFixed(2)}
+                      </td>
+                      <td className="py-1.5 text-right tabular-nums font-bold text-slate-900 align-top">
+                        ${(price * qty).toFixed(2)}
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={4} className="py-3 text-center text-slate-400">
+                    {t('order.noItems')}
+                  </td>
+                </tr>
+              );
+            })()}
           </tbody>
         </table>
       </div>
@@ -205,30 +207,9 @@ export default function AdminReceiptPage() {
   const printRef = useRef(null);
   const [loading, setLoading] = useState(null);
 
-  if (!order) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
-          <Package size={28} />
-        </div>
-        <p className="text-base font-semibold text-slate-700 mb-1">
-          {t('order.receiptNotFound')}
-        </p>
-        <p className="text-xs text-slate-400 mb-4">{t('order.receiptId')} #{paramNo}</p>
-        <Link
-          to="/admin/orders"
-          className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white px-3 py-1 rounded-xl shadow-xs border border-slate-200 text-sm font-medium transition-colors"
-        >
-          <ArrowLeft size={16} />
-          <span>{t('order.goBack')}</span>
-        </Link>
-      </div>
-    );
-  }
-
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `Receipt-${order.orderNo || order.orderNumber || order.id}`,
+    documentTitle: `Receipt-${order?.orderNo || order?.orderNumber || order?.id || 'order'}`,
     pageStyle: `
       @page { 
         size: auto; 
@@ -254,6 +235,27 @@ export default function AdminReceiptPage() {
       }
     `,
   });
+
+  if (!order) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+          <Package size={28} />
+        </div>
+        <p className="text-base font-semibold text-slate-700 mb-1">
+          {t('order.receiptNotFound')}
+        </p>
+        <p className="text-xs text-slate-400 mb-4">{t('order.receiptId')} #{paramNo}</p>
+        <Link
+          to="/admin/orders"
+          className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white px-3 py-1 rounded-xl shadow-xs border border-slate-200 text-sm font-medium transition-colors"
+        >
+          <ArrowLeft size={16} />
+          <span>{t('order.goBack')}</span>
+        </Link>
+      </div>
+    );
+  }
 
   const handleSaveImage = async () => {
     if (!printRef.current) return;

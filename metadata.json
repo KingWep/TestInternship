@@ -1,0 +1,6 @@
+{
+  "name": "Chomnenh Store & Admin",
+  "description": "Full-featured e-commerce storefront and store management admin dashboard with product catalog, cart, QR payment, order tracking, and receipt generation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

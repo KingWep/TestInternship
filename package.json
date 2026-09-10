@@ -1,10 +1,10 @@
 {
-  "name": "mytest",
+  "name": "chomnenh-store-admin",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0 --port 3000",
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview"

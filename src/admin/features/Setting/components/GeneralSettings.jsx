@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import {
   Store,
   MapPin,
@@ -12,11 +12,85 @@ import {
   RefreshCw,
   FileText,
   X,
+  Send,
+  Users,
+  Video,
+  Camera,
+  AtSign,
+  Play,
+  Briefcase,
 } from "lucide-react";
+import Select from "react-select";
+import { Controller } from "react-hook-form";
 
 import Button from "../../../components/common/Button";
 import { useGeneralSetting } from "../hooks/useGeneralSetting";
+import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
+// =========================================================
+// Social Media icon options for the react-select picker
+// =========================================================
+const socialIconOptions = [
+  { value: "fa-telegram",  label: "Telegram",        title: "Telegram",  icon: <Send      size={16} className="text-blue-500"  /> },
+  { value: "fa-facebook",  label: "Facebook",        title: "Facebook",  icon: <Users     size={16} className="text-blue-600"  /> },
+  { value: "fa-tiktok",    label: "TikTok",          title: "TikTok",    icon: <Video     size={16} className="text-slate-900" /> },
+  { value: "fa-instagram", label: "Instagram",       title: "Instagram", icon: <Camera    size={16} className="text-pink-500"  /> },
+  { value: "fa-twitter",   label: "Twitter / X",     title: "Twitter",   icon: <AtSign    size={16} className="text-sky-400"   /> },
+  { value: "fa-youtube",   label: "YouTube",         title: "YouTube",   icon: <Play      size={16} className="text-red-500"   /> },
+  { value: "fa-linkedin",  label: "LinkedIn",        title: "LinkedIn",  icon: <Briefcase size={16} className="text-blue-700"  /> },
+  { value: "fa-globe",     label: "Website / Other", title: "Website",   icon: <Globe     size={16} className="text-slate-500" /> },
+];
+
+// Custom option renderer: shows icon + label side by side
+const formatOptionLabel = ({ label, icon }) => (
+  <div className="flex items-center gap-2">
+    {icon}
+    <span className="text-xs font-medium text-slate-800">{label}</span>
+  </div>
+);
+
+// react-select style overrides matching the existing smallInputClass aesthetic
+const selectStyles = {
+  control: (base, state) => ({
+    ...base,
+    minHeight: "36px",
+    borderRadius: "0.75rem",
+    borderColor: state.isFocused ? "#3b82f6" : "#e2e8f0",
+    backgroundColor: "#ffffff",
+    boxShadow: state.isFocused ? "0 0 0 2px rgba(59,130,246,0.2)" : "none",
+    fontSize: "0.75rem",
+    cursor: "pointer",
+    "&:hover": { borderColor: "#3b82f6" },
+    transition: "all 0.15s ease",
+  }),
+  valueContainer: (base) => ({ ...base, padding: "2px 8px" }),
+  indicatorSeparator: () => ({ display: "none" }),
+  dropdownIndicator: (base) => ({ ...base, padding: "4px" }),
+  menu: (base) => ({
+    ...base,
+    borderRadius: "0.75rem",
+    border: "1px solid #e2e8f0",
+    boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+    overflow: "hidden",
+    zIndex: 50,
+  }),
+  menuList: (base) => ({ ...base, padding: "4px" }),
+  option: (base, state) => ({
+    ...base,
+    borderRadius: "0.5rem",
+    padding: "6px 10px",
+    backgroundColor: state.isSelected ? "#eff6ff" : state.isFocused ? "#f8fafc" : "transparent",
+    color: "#1e293b",
+    cursor: "pointer",
+  }),
+  singleValue: (base) => ({ ...base, color: "#1e293b" }),
+  placeholder: (base) => ({ ...base, color: "#94a3b8", fontSize: "0.75rem" }),
+};
+
+// =========================================================
+// Helper: truncate long file names
+// =========================================================
 function truncateFileName(name, maxLength = 25) {
   if (!name) return "";
   if (name.length <= maxLength) return name;
@@ -32,11 +106,20 @@ function truncateFileName(name, maxLength = 25) {
 
   return `${baseName.substring(0, charsToShow)}...${extension}`;
 }
+
+// =========================================================
+// Main Component
+// =========================================================
 export default function GeneralSettings() {
+  const { user } = useAuth();
+  const shopCode = user?.shop?.code;
+  const { t } = useTranslation();
   const {
     isLoading,
     isSaving,
     register,
+    control,
+    setValue,
     handleSubmit,
     errors,
     fields,
@@ -72,40 +155,27 @@ export default function GeneralSettings() {
             <Store size={24} />
           </div>
 
-          <div>
-            <h1 className="text-xl font-extrabold text-slate-900">
-              ការកំណត់ហាងទូទៅ
-            </h1>
-
-            <p className="text-sm text-slate-500 mt-0.5">
-              គ្រប់គ្រងព័ត៌មានអត្តសញ្ញាណ ទំនាក់ទំនង និងបណ្តាញសង្គមរបស់ហាង។
+          <div className="mb-6 pb-6 border-b border-slate-100">
+            <h3 className="text-lg font-bold text-slate-800">{t('settings.generalSettings')}</h3>
+            <p className="text-sm text-slate-500 mt-1">
+              {t('settings.generalDesc')}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="px-4 rounded-xl border-slate-200"
-            onClick={handleCancel}
-          >
-            បោះបង់
+          <Button variant="outline" type="button" onClick={handleCancel}>
+            {t('common.cancel')}
           </Button>
 
-          <Button
-            type="submit"
-            variant="primary"
-            className="px-6 rounded-xl shadow-md shadow-blue-500/20"
-            disabled={isSaving}
-          >
+          <Button variant="primary" type="submit" disabled={isSaving}>
             {isSaving ? (
-              <span className="flex items-center gap-2">
-                <RefreshCw size={16} className="animate-spin" />
-                កំពុងរក្សាទុក...
-              </span>
+              <>
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                {t('common.saving')}
+              </>
             ) : (
-              "រក្សាទុកការផ្លាស់ប្តូរ"
+              t('settings.saveChanges')
             )}
           </Button>
         </div>
@@ -117,8 +187,8 @@ export default function GeneralSettings() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center pb-8 border-b border-slate-100">
           {/* Logo Upload */}
           <div className="md:col-span-4 flex flex-col items-center justify-center">
-            <label className="block text-xs font-bold text-slate-700 mb-2">
-              រូបភាព Logo ហាង
+            <label className="text-sm font-semibold text-slate-700 block">
+              {t('settings.shopLogo')}
             </label>
 
             <label
@@ -138,8 +208,8 @@ export default function GeneralSettings() {
                       <Upload size={14} />
                     </div>
 
-                    <span className="text-white text-[9px] font-semibold">
-                      ផ្លាស់ប្តូរ
+                    <span className="text-xs font-medium text-slate-700 group-hover:text-blue-600 transition-colors">
+                      {t('settings.change')}
                     </span>
                   </div>
                 </>
@@ -172,20 +242,20 @@ export default function GeneralSettings() {
           {/* Shop name + phone */}
           <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
-              label="ឈ្មោះហាង"
+              label={t('settings.shopName')}
               required
               error={errors.shop_name?.message}
             >
               <input
                 type="text"
-                placeholder="បញ្ចូលឈ្មោះហាង"
-                className={inputClass(!!errors.shop_name)}
+                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                placeholder={t('settings.shopNamePlaceholder')}
                 {...register("shop_name")}
               />
             </FormField>
 
             <FormField
-              label="លេខទូរស័ព្ទជំនួយ"
+              label={t('settings.supportPhone')}
               required
               error={errors.phone?.message}
             >
@@ -196,8 +266,8 @@ export default function GeneralSettings() {
 
                 <input
                   type="tel"
-                  placeholder="12 345 678"
-                  className="w-full px-3.5 py-2.5 bg-transparent text-sm focus:outline-none text-slate-800"
+                  className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                  placeholder={t('settings.phonePlaceholder')}
                   {...register("phone")}
                 />
               </div>
@@ -211,7 +281,7 @@ export default function GeneralSettings() {
         {/* Telegram + Support */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           <FormField
-            label="លេខសម្គាល់ Chat Telegram"
+            label={t('settings.telegramChatId')}
             error={errors.chat_id?.message}
           >
             <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50">
@@ -229,7 +299,7 @@ export default function GeneralSettings() {
           </FormField>
 
           {/* Support file */}
-          <FormField label="ឯកសារ ឬ QR Support" error={errors.support?.message}>
+          <FormField label={t('settings.supportDocument')} error={errors.support?.message}>
             <div className="flex items-center gap-3">
               <label
                 htmlFor="support-file"
@@ -252,12 +322,12 @@ export default function GeneralSettings() {
                   >
                     {supportFileName
                       ? truncateFileName(supportFileName, 22)
-                      : "ជ្រើសរើសឯកសារ Support..."}
+                      : t('settings.selectSupportDocument')}
                   </span>
                 </div>
 
                 <span className="text-[10px] bg-slate-200/70 text-slate-700 px-2.5 py-1 rounded-md font-bold shrink-0">
-                  {supportFileName ? "ប្តូរ" : "Browse"}
+                  {supportFileName ? t('settings.change') : t('common.browse')}
                 </span>
               </label>
 
@@ -273,7 +343,7 @@ export default function GeneralSettings() {
                   type="button"
                   onClick={handleClearSupport}
                   className="p-2.5 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-colors shrink-0"
-                  title="លុបឯកសារ"
+                  title={t('common.deleteFile')}
                 >
                   <X size={16} />
                 </button>
@@ -285,7 +355,7 @@ export default function GeneralSettings() {
         {/* Address */}
         <div>
           <FormField
-            label="អាសយដ្ឋានហាង"
+            label={t('settings.address')}
             required
             error={errors.address?.message}
           >
@@ -296,7 +366,7 @@ export default function GeneralSettings() {
 
               <textarea
                 rows={3}
-                placeholder="បញ្ចូលអាសយដ្ឋានលម្អិតរបស់ហាង..."
+                placeholder={t('settings.addressDetailedPlaceholder')}
                 className="w-full px-3.5 py-2.5 bg-transparent text-sm focus:outline-none resize-none text-slate-800"
                 {...register("address")}
               />
@@ -306,19 +376,17 @@ export default function GeneralSettings() {
 
         {/* Social Media */}
         <div className="space-y-4 pt-4 border-t border-slate-100">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
-              <Globe size={18} className="text-blue-500" />
-              បណ្តាញសង្គម (Social Media)
-            </h3>
-
+          <div className="bg-slate-50 rounded-xl p-5 border border-slate-100">
+            <h4 className="font-semibold text-slate-700 mb-4 flex items-center gap-2">
+              <Store size={18} className="text-blue-500" /> {t('settings.shopIdentity')}
+            </h4>
             <button
               type="button"
               onClick={() => append({ title: "", url: "", icon: "" })}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-bold transition-colors"
             >
               <Plus size={15} />
-              បន្ថែមបណ្តាញសង្គម
+              {t('settings.addSocialMedia')}
             </button>
           </div>
 
@@ -331,13 +399,13 @@ export default function GeneralSettings() {
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
                   {/* Title */}
                   <div className="sm:col-span-3">
-                    <label className="block text-[11px] font-bold text-slate-500 mb-1">
-                      ចំណងជើង
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      {t('settings.phone')}
                     </label>
 
                     <input
                       type="text"
-                      placeholder="ឧ. Telegram"
+                      placeholder={t('settings.socialMediaPlaceholder')}
                       className={smallInputClass(
                         !!errors?.social_media?.[index]?.title,
                       )}
@@ -348,7 +416,7 @@ export default function GeneralSettings() {
                   {/* URL */}
                   <div className="sm:col-span-5">
                     <label className="block text-[11px] font-bold text-slate-500 mb-1">
-                      URL ដំណរភ្ជាប់
+                      {t('settings.socialMediaUrl')}
                     </label>
 
                     <input
@@ -361,17 +429,48 @@ export default function GeneralSettings() {
                     />
                   </div>
 
-                  {/* Icon */}
+                  {/* Icon — react-select picker */}
                   <div className="sm:col-span-3">
-                    <label className="block text-[11px] font-bold text-slate-500 mb-1">
-                      Icon
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      {t('settings.shopDescription')}
                     </label>
 
-                    <input
-                      type="text"
-                      placeholder="fa-telegram"
-                      className={smallInputClass(false)}
-                      {...register(`social_media.${index}.icon`)}
+                    <Controller
+                      name={`social_media.${index}.icon`}
+                      control={control}
+                      render={({ field: controllerField }) => {
+                        // Resolve the stored value string back to a full option object
+                        const selectedOption =
+                          socialIconOptions.find(
+                            (opt) => opt.value === controllerField.value,
+                          ) ?? null;
+
+                        return (
+                          <Select
+                            inputId={`social_media_${index}_icon`}
+                            options={socialIconOptions}
+                            value={selectedOption}
+                            onChange={(option) => {
+                              // Persist the icon value string (e.g. "fa-telegram")
+                              controllerField.onChange(option?.value ?? "");
+                              // Auto-fill title with the option title; remains editable
+                              if (option?.title) {
+                                setValue(
+                                  `social_media.${index}.title`,
+                                  option.title,
+                                  { shouldDirty: true },
+                                );
+                              }
+                            }}
+                            onBlur={controllerField.onBlur}
+                            formatOptionLabel={formatOptionLabel}
+                            styles={selectStyles}
+                            placeholder={t('settings.selectIcon')}
+                            isClearable
+                            menuPosition="fixed"
+                          />
+                        );
+                      }}
                     />
                   </div>
 
@@ -381,7 +480,7 @@ export default function GeneralSettings() {
                       type="button"
                       onClick={() => remove(index)}
                       className="w-full sm:w-auto h-10 px-3 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
-                      title="លុប"
+                      title={t('common.delete')}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -397,7 +496,7 @@ export default function GeneralSettings() {
                 </div>
 
                 <p className="text-xs font-semibold text-slate-600">
-                  មិនទាន់មានបណ្តាញសង្គម
+                  {t('settings.noSocialMedia')}
                 </p>
               </div>
             )}
@@ -421,7 +520,7 @@ function FormField({
 }) {
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <label className="block text-xs font-bold text-slate-700">
+      <label className="block text-sm font-medium text-slate-700 mb-1.5">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
 

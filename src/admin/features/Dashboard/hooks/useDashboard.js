@@ -1,8 +1,10 @@
 import { useLowStockProductsQuery } from '../../../../queries/products/useProductQueries'
 import { useOrdersQuery, useOrderStats } from '../../../../queries/orders/useOrderQueries'
-import { AlertTriangle, ClipboardList, Trophy, DollarSign } from 'lucide-react'
+import { PackageX, TrendingUp, Package, ClipboardList } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export default function useDashboard() {
+    const { t } = useTranslation()
     const { totalLowStockProducts, isPending: isLowStockPending } = useLowStockProductsQuery()
     const { data: orders = [], isPending: isOrdersPending } = useOrdersQuery()
     const { totalRevenue, topSellingProducts, isPending: isStatsPending } = useOrderStats()
@@ -10,28 +12,30 @@ export default function useDashboard() {
     const isLoading = isLowStockPending || isOrdersPending || isStatsPending
 
     const statsData = [
-        {   title: "ចំណូលសរុប", 
+        {   title: t('dashboard.totalRevenue'), 
             value: `$${Number(totalRevenue || 0).toFixed(2)}`, 
-            icon: DollarSign, 
-            trend: "12", 
-            color: "green" ,
+            icon: TrendingUp, 
+            trend: "+12.5", 
+            color: "emerald" ,
             link: "/admin"},
-        { title: "ការបញ្ជាទិញសរុប", value: orders.length.toString(), icon: ClipboardList, trend: "8", color: "blue", link: "/admin/orders" },
+        { title: t('dashboard.totalOrders'), value: orders.length.toString(), icon: ClipboardList, trend: "8", color: "blue", link: "/admin/orders" },
         {
-            title: "ផលិតផលស្តុកតិច",
+            title: t('dashboard.lowStockProducts'),
             value: totalLowStockProducts?.toString() || "0",
-            icon: AlertTriangle,
+            icon: PackageX,
             color: "amber",
+            trend: "-2.4",
             warning: totalLowStockProducts > 0,
-            note: "ត្រូវការបន្ថែមស្តុក",
+            note: t('dashboard.needsRestock'),
             link: "/admin/products",
         },
         {
-            title: "ផលិតផលលក់ដាច់បំផុត",
+            title: t('dashboard.topSellingProducts'),
             value: topSellingProducts.length.toString(),
-            icon: Trophy,
+            icon: Package,
             color: "purple",
-            note: topSellingProducts.length === 0 ? "មិនទាន់មានទិន្នន័យលក់ទេ" : undefined,
+            trend: "+5.2",
+            note: topSellingProducts.length === 0 ? t('dashboard.noSalesData') : undefined,
             link: "/admin/products",
         },
     ]

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Plus, Edit, Trash2, SlidersHorizontal, Ban, CheckCircle2, XCircle } from 'lucide-react'
+import { Plus, Edit, Trash2, SlidersHorizontal, Ban, CheckCircle2, XCircle, Search } from 'lucide-react'
 import { useDeliveryProviders } from '../hooks/useDeliveryProviders'
 import DeliveryProviderForm from '../components/DeliveryProviderForm'
 import DataTable from '../../../components/common/DataTable'
@@ -11,9 +11,12 @@ import PageHeader from '../../../components/common/PageHeader'
 import FilterBar from '../../../components/common/FilterBar'
 import DeleteButton from '../../../components/common/DeleteButton'
 import Pagination from '../../../components/common/Pagination'
+import { useTranslation } from 'react-i18next'
 
 export default function AdminDeliveryProviders() {
+  const { t } = useTranslation()
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   const {
     search,
@@ -34,12 +37,16 @@ export default function AdminDeliveryProviders() {
     handleDelete,
     openAddModal,
     closeModal,
+    setEditingProvider,
+    setIsModalOpen,
+    updateFilter,
   } = useDeliveryProviders()
 
   const providerFilters = [
     {
       key: 'is_active',
-      options: ['ទាំងអស់', 'Active', 'Inactive'],
+      options: [t('common.all'), 'Active', 'Inactive'],
+      defaultValue: t('common.all')
     },
   ]
 
@@ -63,17 +70,17 @@ export default function AdminDeliveryProviders() {
       ),
     },
     {
-      header: 'ឈ្មោះអ្នកដឹកជញ្ជូន',
+      header: t('delivery.providerName'),
       accessor: 'name',
     },
     {
-      header: 'លេខទូរស័ព្ទ',
+      header: t('delivery.phone'),
       render: (row) => (
         <span className="text-slate-600">{row.phone}</span>
       ),
     },
     {
-      header: 'តម្លៃសេវាដឹក',
+      header: t('delivery.shippingFee'),
       render: (row) => (
         <span className="font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
           ${parseFloat(row.shipping_fee || 0).toFixed(2)}
@@ -81,7 +88,7 @@ export default function AdminDeliveryProviders() {
       ),
     },
     {
-      header: 'ស្ថានភាព',
+      header: t('common.status'),
       render: (row) => (
         <div className="flex items-center">
           {row.is_active == 1 ? (
@@ -97,14 +104,14 @@ export default function AdminDeliveryProviders() {
       ),
     },
     {
-      header: 'សកម្មភាព',
+      header: t('common.actions'),
       align: 'right',
       render: (row) => (
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
-            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
-            title="កែប្រែ"
+            className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-600 transition-colors"
+            title={t('common.edit')}
           >
             <Edit size={18} />
           </button>
@@ -124,7 +131,7 @@ export default function AdminDeliveryProviders() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingProvider ? 'កែប្រែអ្នកដឹកជញ្ជូន' : 'បន្ថែមអ្នកដឹកជញ្ជូនថ្មី'}
+        title={editingProvider ? t('delivery.editProvider') : t('delivery.addProviderTitle')}
       >
         <DeliveryProviderForm
           initialData={editingProvider}
@@ -134,8 +141,8 @@ export default function AdminDeliveryProviders() {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <PageHeader
-          title="អ្នកដឹកជញ្ជូន"
-          description="គ្រប់គ្រងអ្នកដឹកជញ្ជូន និងតម្លៃសេវាដឹកជញ្ជូន។"
+          title={t('delivery.title')}
+          description={t('delivery.description')}
         />
       </div>
 
@@ -148,7 +155,7 @@ export default function AdminDeliveryProviders() {
               onChange={handleFilterChange}
             />
             <FilterBar
-              filters={[{ key: 'sort', options: ['ថ្មីបំផុតមុន', 'A → Z', 'Z → A'] }]}
+              filters={[{ key: 'sort', options: [t('common.sortNewest'), t('common.sortAZ'), t('common.sortZA')] }]}
               values={{ sort: sortOrder }}
               onChange={(key, value) => handleSortChange({ target: { value } })}
             />
@@ -158,30 +165,27 @@ export default function AdminDeliveryProviders() {
             <SearchBar
               value={search}
               onChange={handleSearchChange}
-              placeholder="ស្វែងរកអ្នកដឹកជញ្ជូន..."
+              placeholder={t('delivery.searchPlaceholder')}
               className="w-full max-w-sm"
             />
 
-            <Button
-              variant="primary"
-              onClick={() => openAddModal()}
-              className="shrink-0 whitespace-nowrap h-[42px] px-5"
+            <button
+              onClick={() => {
+                setEditingProvider(null)
+                setIsModalOpen(true)
+              }}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm whitespace-nowrap"
             >
-              <Plus size={16} className="mr-2" />
-              <span className="hidden md:inline">បន្ថែមអ្នកដឹកជញ្ជូន</span>
-              <span className="md:hidden">បន្ថែម</span>
-            </Button>
+              <Plus size={18} />
+              <span className="hidden md:inline">{t('delivery.addProvider')}</span>
+              <span className="md:hidden">{t('common.addBtn')}</span>
+            </button>
 
             <button
-              type="button"
-              onClick={() => setShowAdvancedFilters(prev => !prev)}
-              className={`md:hidden shrink-0 w-10 py-2.5 flex items-center justify-center rounded-xl border transition-colors ${
-                showAdvancedFilters
-                  ? 'bg-slate-100 border-slate-300 text-slate-700'
-                  : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700'
-              }`}
-              title="បង្ហាញតម្រង"
-              aria-label="បង្ហាញតម្រង"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="flex items-center justify-center p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors"
+              title={t('common.showFilters')}
+              aria-label={t('common.showFilters')}
             >
               <SlidersHorizontal size={18} />
             </button>
@@ -190,18 +194,30 @@ export default function AdminDeliveryProviders() {
 
         <div
           className={`grid transition-all duration-300 ease-in-out md:hidden ${
-            showAdvancedFilters ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 !mt-0'
+            isFilterOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 !mt-0'
           }`}
         >
           <div className="overflow-hidden">
-            <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div className="flex flex-col gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <div className="flex-1 min-w-[200px]">
+                <div className="relative">
+                  <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder={t('delivery.searchPlaceholder')}
+                    value={filters.search || ''}
+                    onChange={(e) => updateFilter('search', e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
               <FilterBar
                 filters={providerFilters}
                 values={filters}
                 onChange={handleFilterChange}
               />
               <FilterBar
-                filters={[{ key: 'sort', options: ['ថ្មីបំផុតមុន', 'A → Z', 'Z → A'] }]}
+                filters={[{ key: 'sort', options: [t('common.sortNewest'), t('common.sortAZ'), t('common.sortZA')] }]}
                 values={{ sort: sortOrder }}
                 onChange={(key, value) => handleSortChange({ target: { value } })}
               />

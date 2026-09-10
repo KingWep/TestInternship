@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import Swal from 'sweetalert2'
+import { useTranslation } from 'react-i18next'
 import { useOrdersQuery, useUpdateOrderMutation } from '../../../../queries/orders/useOrderQueries'
 
 export function useOrders(viewMode) {
+  const { t } = useTranslation()
   const { data: orders = [], isPending: isLoading } = useOrdersQuery()
   const updateOrderMutation = useUpdateOrderMutation()
 
@@ -40,8 +42,8 @@ export function useOrders(viewMode) {
       
       Swal.fire({
         icon: 'success',
-        title: 'ជោគជ័យ',
-        text: 'Order updated successfully!',
+        title: t('common.success'),
+        text: t('order.updatedSuccess'),
         timer: 1500,
         showConfirmButton: false
       })
@@ -52,7 +54,7 @@ export function useOrders(viewMode) {
       const errorMsg = error?.response?.data?.message || error.message || 'Error updating order'
       Swal.fire({
         icon: 'error',
-        title: 'បរាជ័យ!',
+        title: t('common.failed'),
         text: errorMsg,
       })
     }
@@ -93,9 +95,9 @@ export function useOrders(viewMode) {
       (order.customerName && String(order.customerName).toLowerCase().includes(searchLower)) ||
       (order.id && String(order.id).includes(searchLower))
     const matchesStatus =
-      statusFilter === '' || statusFilter === 'ទាំងអស់ (All)' || order.status === statusFilter
+      statusFilter === '' || statusFilter === 'All' || order.status === statusFilter
     const matchesPayment =
-      paymentFilter === '' || paymentFilter === 'ទាំងអស់ (All)' || order.paymentStatus === paymentFilter
+      paymentFilter === '' || paymentFilter === 'All' || order.paymentStatus === paymentFilter
 
     let matchesDate = true
     if (fromDate || toDate) {

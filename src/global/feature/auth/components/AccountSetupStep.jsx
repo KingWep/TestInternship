@@ -1,14 +1,16 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
 
 export const AccountSetupStep = ({ register, errors }) => {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="space-y-1.5 animate-in fade-in slide-in-from-right-4 duration-500">
+    <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
       <div>
-        <label className="block text-[11px] font-semibold text-gray-700 mb-0.5">
-          ឈ្មោះពេញ (Full Name) <span className="text-red-500">*</span>
+        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+          {t('auth.fullName')} <span className="text-red-500">*</span>
         </label>
         <input
           {...register("name")}
@@ -16,15 +18,15 @@ export const AccountSetupStep = ({ register, errors }) => {
           className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none transition-all text-sm"
         />
         {errors.name && (
-          <span className="text-[10px] text-red-600 mt-0.5 block">
-            {errors.name.message}
+          <span className="text-[11px] text-red-600 mt-1 block">
+            {t(errors.name.message)}
           </span>
         )}
       </div>
 
       <div>
-        <label className="block text-[11px] font-semibold text-gray-700 mb-0.5">
-          អ៊ីមែល (Email) <span className="text-red-500">*</span>
+        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+          {t('auth.email')} <span className="text-red-500">*</span>
         </label>
         <input
           {...register("email")}
@@ -32,15 +34,15 @@ export const AccountSetupStep = ({ register, errors }) => {
           className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none transition-all text-sm"
         />
         {errors.email && (
-          <span className="text-[10px] text-red-600 mt-0.5 block">
-            {errors.email.message}
+          <span className="text-[11px] text-red-600 mt-1 block">
+            {t(errors.email.message)}
           </span>
         )}
       </div>
 
       <div>
-        <label className="block text-[11px] font-semibold text-gray-700 mb-0.5">
-          លេខទូរស័ព្ទ (Phone Number) <span className="text-red-500">*</span>
+        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+          {t('auth.phone')} <span className="text-red-500">*</span>
         </label>
         <input
           {...register("phone")}
@@ -48,15 +50,15 @@ export const AccountSetupStep = ({ register, errors }) => {
           className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none transition-all text-sm"
         />
         {errors.phone && (
-          <span className="text-[10px] text-red-600 mt-0.5 block">
-            {errors.phone.message}
+          <span className="text-[11px] text-red-600 mt-1 block">
+            {t(errors.phone.message)}
           </span>
         )}
       </div>
 
       <div>
-        <label className="block text-[11px] font-semibold text-gray-700 mb-0.5">
-          ពាក្យសម្ងាត់ (Password) <span className="text-red-500">*</span>
+        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+          {t('auth.password')} <span className="text-red-500">*</span>
         </label>
         <div className="relative">
           <input
@@ -74,8 +76,8 @@ export const AccountSetupStep = ({ register, errors }) => {
           </button>
         </div>
         {errors.password && (
-          <span className="text-[10px] text-red-600 mt-0 block">
-            {errors.password.message}
+          <span className="text-[11px] text-red-600 mt-1 block">
+            {t(errors.password.message)}
           </span>
         )}
       </div>

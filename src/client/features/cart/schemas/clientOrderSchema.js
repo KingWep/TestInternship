@@ -6,16 +6,17 @@ export const clientOrderSchema = z.object({
     .trim()
     .transform((val) => val.replace(/\s+/g, '')) // Remove spaces
     .transform((val) => val.startsWith('0') ? val.slice(1) : val) // Remove leading 0
-    .refine((val) => /^\d{8,9}$/.test(val), "សូមបញ្ចូលលេខទូរស័ព្ទត្រឹមត្រូវ (8-9 ខ្ទង់)"),
+    .refine((val) => /^\d{8,9}$/.test(val), "សូមបញ្ចូលលេខទូរស័ព្ទត្រឹមត្រូវ (8-9 ខ្ទង់)")
+    .transform((val) => "+855" + val),
   address: z
     .string()
     .trim()
-    .min(2, "សូមបញ្ចូលអាសយដ្ឋាន"),
+    .min(2, "validation.requiredAddress"),
   deliveryMethod: z
     .union([z.string().min(1), z.number()], {
-      errorMap: () => ({ message: "សូមជ្រើសរើសសេវាដឹកជញ្ជូន" })
+      errorMap: () => ({ message: "validation.requiredDelivery" })
     }),
   paymentMethod: z
     .string()
-    .min(1, "សូមជ្រើសរើសវិធីបង់ប្រាក់"),
+    .min(1, "validation.requiredPayment"),
 });

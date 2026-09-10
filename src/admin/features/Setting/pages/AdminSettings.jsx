@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import PageHeader from '../../../components/common/PageHeader';
 import GeneralSettings from '../components/GeneralSettings';
 import ProfileSettings from '../components/ProfileSettings';
@@ -6,19 +7,20 @@ import ProfileSettings from '../components/ProfileSettings';
 import { Store, User, ShieldCheck, Settings2 } from 'lucide-react';
 
 export default function AdminSettings() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('general');
 
   const tabs = [
-    { id: 'general', label: 'ទូទៅ', icon: Store },
-    { id: 'profile', label: 'ប្រវត្តិរូបគណនី', icon: User },
-    // { id: 'permissions', label: 'ការអនុញ្ញាតទំព័រ', icon: Settings2 },
+    { id: 'general', label: t('settings.general'), icon: Store },
+    { id: 'profile', label: t('settings.profile'), icon: User },
+    // { id: 'permissions', label: t('settings.permissions'), icon: Settings2 },
   ];
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       <PageHeader
-        title="ការកំណត់អ្នកគ្រប់គ្រង"
-        description="គ្រប់គ្រងចំណូលចិត្តហាង សុវត្ថិភាពគណនី និងការអនុញ្ញាតក្រុម។"
+        title={t('settings.title')}
+        description={t('settings.description')}
       />
 
       <div className="flex flex-col md:flex-row gap-8 items-start">

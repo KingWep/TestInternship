@@ -16,8 +16,10 @@ import { orderService } from "../../../../services/orderService";
 import { sendOrderToTelegram } from "../../../../services/telegramService";
 import { useSettingsQuery } from "../../../../queries/settings/useSettingQueries";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from 'react-i18next';
 
 function AdminReceiptCard({ order }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const shopCode = user?.shop?.code;
   const { data: settingData } = useSettingsQuery(shopCode);
@@ -47,27 +49,27 @@ function AdminReceiptCard({ order }) {
       {/* Header */}
       <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
         {logoUrl && !imgError ? (
-          <img src={logoUrl} alt={shopName} className="h-10 mx-auto mb-2 object-contain" onError={() => setImgError(true)} />
+          <img src={logoUrl} alt={shopName} className="h-10 mx-auto mb-2 object-contain rounded-md" onError={() => setImgError(true)} />
         ) : null}
         <h2 className="font-black text-base tracking-wider uppercase text-slate-900 leading-tight">
           {shopName}
         </h2>
         <p className="text-[11px] text-slate-900 mt-1">
-          ទូរស័ព្ទ: 088 66 77 456
+          {t('order.phone')} 088 66 77 456
         </p>
-        <p className="text-[11px] text-slate-900">ភ្នំពេញ, កម្ពុជា</p>
+        <p className="text-[11px] text-slate-900">{t('order.phnomPenhCambodia')}</p>
       </div>
 
       {/* Meta Info */}
       <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">
         <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">លេខវិក្កយបត្រ:</span>
+          <span className="font-medium text-slate-900">{t('order.receiptNo')}</span>
           <span className="font-mono font-bold text-slate-900">
             {order?.orderNo || order?.orderNumber || `ORD-${order?.id}`}
           </span>
         </div>
         <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">កាលបរិច្ឆេទ:</span>
+          <span className="font-medium text-slate-900">{t('order.date')}</span>
           <span className="font-mono text-slate-800">
             {order?.createdAt
               ? new Date(order.createdAt).toLocaleDateString()
@@ -79,22 +81,28 @@ function AdminReceiptCard({ order }) {
         </div>
         {order?.customerName && (
           <div className="flex justify-between items-center w-full">
-            <span className="font-medium text-slate-900">អតិថិជន:</span>
+            <span className="font-medium text-slate-900">{t('order.customer')}</span>
             <span className="font-bold text-slate-900 truncate max-w-[180px]">
-              {order.customerName || "អតិថិជនទូទៅ"}
+              {order.customerName || t('order.generalCustomer')}
             </span>
           </div>
         )}
         <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">លេខទូរស័ព្ទ:</span>
+          <span className="font-medium text-slate-900">{t('order.phone')}</span>
           <span className="font-mono text-slate-900 font-semibold">
             {order?.customerPhone || order?.phone || "—"}
+          </span>
+        </div>
+        <div className="flex justify-between items-center w-full">
+          <span className="font-medium text-slate-900">{t('order.deliveryService')}</span>
+          <span className="font-bold text-slate-900">
+            {order?.deliveryProvider?.name || order?.deliveryMethod || t('order.none')}
           </span>
         </div>
         {(order?.customerAddress || order?.address) && (
           <div className="flex justify-between items-start w-full">
             <span className="font-medium text-slate-900 shrink-0">
-              អាសយដ្ឋាន:
+              {t('order.addressLabel')}
             </span>
             <span className="text-slate-800 text-right truncate max-w-[190px]">
               {order.customerAddress || order.address}
@@ -108,10 +116,10 @@ function AdminReceiptCard({ order }) {
         <table className="w-full text-[11px] table-fixed border-collapse">
           <thead>
             <tr className="border-b border-slate-800 text-slate-900 font-bold">
-              <th className="text-left pb-1.5 font-bold w-[45%]">ទំនិញ</th>
-              <th className="text-center pb-1.5 font-bold w-[15%]">ចំនួន</th>
-              <th className="text-right pb-1.5 font-bold w-[20%]">តម្លៃ</th>
-              <th className="text-right pb-1.5 font-bold w-[20%]">សរុប</th>
+              <th className="text-left pb-1.5 font-bold w-[45%]">{t('order.itemCol')}</th>
+              <th className="text-center pb-1.5 font-bold w-[15%]">{t('order.qtyCol')}</th>
+              <th className="text-right pb-1.5 font-bold w-[20%]">{t('order.priceCol')}</th>
+              <th className="text-right pb-1.5 font-bold w-[20%]">{t('order.totalCol')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -141,7 +149,7 @@ function AdminReceiptCard({ order }) {
             ) : (
               <tr>
                 <td colSpan={4} className="py-3 text-center text-slate-400">
-                  គ្មានទំនិញ
+                  {t('order.noItems')}
                 </td>
               </tr>
             )}
@@ -152,19 +160,19 @@ function AdminReceiptCard({ order }) {
       {/* Pricing Summary */}
       <div className="space-y-1.5 pb-3 mb-3 border-b border-dashed border-slate-800 text-[11px] text-slate-700 w-full">
         <div className="flex justify-between items-center">
-          <span className="text-slate-900">តម្លៃទំនិញសរុប (Subtotal):</span>
+          <span className="text-slate-900">{t('order.subtotalLabel')}</span>
           <span className="tabular-nums font-medium text-slate-800">
             ${subtotal.toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-slate-900">សេវាដឹកជញ្ជូន (Delivery):</span>
+          <span className="text-slate-900">{t('order.deliveryFeeLabel')}</span>
           <span className="tabular-nums font-medium text-slate-800">
             ${delivery.toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between items-center pt-1.5 border-t border-slate-800 text-sm font-bold text-slate-900">
-          <span>ទឹកប្រាក់សរុប (Total):</span>
+          <span>{t('order.totalLabel')}</span>
           <span className="tabular-nums font-black text-slate-950">
             ${total.toFixed(2)}
           </span>
@@ -174,10 +182,10 @@ function AdminReceiptCard({ order }) {
       {/* Footer message */}
       <div className="text-center space-y-0.5 pt-0.5 w-full">
         <p className="text-[11px] font-bold text-slate-900">
-          អរគុណសម្រាប់ការគាំទ្រ! 🙏
+          {t('order.thankYouReceipt')}
         </p>
         <p className="text-[10px] text-slate-900 font-medium tracking-wide uppercase">
-          សូមអញ្ជើញមកម្តងទៀត
+          {t('order.comeAgain')}
         </p>
       </div>
     </div>
@@ -185,13 +193,13 @@ function AdminReceiptCard({ order }) {
 }
 
 export default function AdminReceiptPage() {
-  const { id } = useParams();
+  const { t } = useTranslation();
+  const { No: paramNo } = useParams();
   const { data: orders = [] } = useOrdersQuery();
   const order = orders?.find(
     (o) =>
-      String(o.id) === String(id) ||
-      o.orderNo === id ||
-      o.orderNumber === id
+      String(o.orderNo) === String(paramNo) ||
+      String(o.orderNumber) === String(paramNo)
   );
 
   const printRef = useRef(null);
@@ -204,15 +212,15 @@ export default function AdminReceiptPage() {
           <Package size={28} />
         </div>
         <p className="text-base font-semibold text-slate-700 mb-1">
-          រកមិនឃើញវិក្កយបត្រនេះទេ
+          {t('order.receiptNotFound')}
         </p>
-        <p className="text-xs text-slate-400 mb-4">លេខសម្គាល់: #{id}</p>
+        <p className="text-xs text-slate-400 mb-4">{t('order.receiptId')} #{paramNo}</p>
         <Link
           to="/admin/orders"
           className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white px-3 py-1 rounded-xl shadow-xs border border-slate-200 text-sm font-medium transition-colors"
         >
           <ArrowLeft size={16} />
-          <span>ត្រលប់ក្រោយ</span>
+          <span>{t('order.goBack')}</span>
         </Link>
       </div>
     );
@@ -267,8 +275,8 @@ export default function AdminReceiptPage() {
       console.error("Image export failed:", err);
       Swal.fire({
         icon: "error",
-        title: "បរាជ័យ!",
-        text: "មានបញ្ហាក្នុងការទាញយករូបភាព!",
+        title: t('common.failed'),
+        text: t('order.downloadImgError'),
         confirmButtonColor: "#0f172a",
       });
     } finally {
@@ -284,8 +292,8 @@ export default function AdminReceiptPage() {
 
       Swal.fire({
         icon: "success",
-        title: "ជោគជ័យ! ✅",
-        text: "បានផ្ញើវិក្កយបត្រទៅ Telegram រួចរាល់ហើយ!",
+        title: t('common.success'),
+        text: t('order.receiptSentToTelegram'),
         confirmButtonColor: "#0284c7",
         timer: 3000,
         timerProgressBar: true,
@@ -295,8 +303,8 @@ export default function AdminReceiptPage() {
 
       Swal.fire({
         icon: "error",
-        title: "បរាជ័យ!",
-        text: error.message || "មិនអាចផ្ញើទៅ Telegram បានទេ",
+        title: t('common.failed'),
+        text: error.message || t('order.telegramSendError'),
         confirmButtonColor: "#0f172a",
       });
     } finally {
@@ -312,10 +320,10 @@ export default function AdminReceiptPage() {
           className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3 py-1 rounded-lg shadow-xs border border-slate-200 text-sm font-medium transition-colors"
         >
           <ArrowLeft size={16} />
-          <span>ត្រលប់ក្រោយ</span>
+          <span>{t('order.goBack')}</span>
         </Link>
         <span className="text-xs font-bold text-slate-900 bg-slate-200/70 px-2.5 py-1 rounded">
-          ទម្រង់វិក្កយបត្រ (Receipt)
+          {t('order.receiptSize')} (Receipt)
         </span>
       </div>
 
@@ -336,7 +344,7 @@ export default function AdminReceiptPage() {
             size={14}
             className="transition-transform group-hover:-translate-y-0.5"
           />
-          <span>បោះពុម្ព</span>
+          <span>{t('order.printReceipt')}</span>
         </button>
 
         {/* Download PNG Button */}
@@ -353,7 +361,7 @@ export default function AdminReceiptPage() {
               className="transition-transform group-hover:translate-y-0.5 text-slate-500 group-hover:text-slate-900"
             />
           )}
-          <span>{loading === "img" ? "កំពុងទាញយក..." : "ទាញយក PNG"}</span>
+          <span>{loading === "img" ? t('order.saving') : t('order.downloadReceipt')}</span>
         </button>
 
         {/* Telegram Button */}
@@ -370,7 +378,7 @@ export default function AdminReceiptPage() {
               className="transition-transform group-hover:translate-x-0.5"
             />
           )}
-          <span>{loading === "telegram" ? "កំពុងផ្ញើ..." : "តេឡេក្រាម"}</span>
+          <span>{loading === "telegram" ? t('order.sending') : t('order.sendToTelegram')}</span>
         </button>
       </div>
     </div>

@@ -4,13 +4,13 @@ import { useParams, Link } from "react-router-dom";
 import {
   Printer,
   FileDown,
-  Send,
+  Share2,
   ArrowLeft,
   Loader2,
   Package,
 } from "lucide-react";
 import { useReactToPrint } from "react-to-print";
-import { toPng } from "html-to-image";
+import { toPng, toBlob } from "html-to-image";
 import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
 import { orderService } from "../../../../services/orderService";
 import { sendOrderToTelegram } from "../../../../services/telegramService";
@@ -19,8 +19,9 @@ import { Store } from "lucide-react";
 
 export function ReceiptCard({ order }) {
   const { shop_code: paramShopCode } = useParams();
-  const shopCode = order?.shop_code || paramShopCode;
+  const shopCode = order?.shop_code || order?.shop?.code || paramShopCode;
   const { data: settingData } = usePublicSettingsQuery(shopCode);
+  console.log("SettingData", settingData);
   const [imgError, setImgError] = useState(false);
   const shopName = settingData?.shop_name || "Shop";
   const rawLogo = settingData?.logo;
@@ -113,6 +114,12 @@ export function ReceiptCard({ order }) {
           <span className="font-medium text-slate-900">លេខទូរស័ព្ទ:</span>
           <span className="font-mono text-slate-900 font-semibold">
             {order?.customerPhone || order?.phone || "—"}
+          </span>
+        </div>
+        <div className="flex justify-between items-center w-full">
+          <span className="font-medium text-slate-900">សេវាដឹក:</span>
+          <span className="font-bold text-slate-900">
+            {order?.deliveryProvider?.name || order?.deliveryMethod || "មិនមាន"}
           </span>
         </div>
         {(order?.customerAddress || order?.address) && (
@@ -208,7 +215,7 @@ export function ReceiptCard({ order }) {
 }
 
 export default function Receipt() {
-  const { orderId } = useParams();
+  const { orderId: paramNo } = useParams();
   const { data: orders = [] } = useOrdersQuery();
   const [fetchedOrder, setFetchedOrder] = useState(null);
   const [fetching, setFetching] = useState(false);
@@ -216,27 +223,38 @@ export default function Receipt() {
   const printRef = useRef(null);
   const [actionLoading, setActionLoading] = useState(null);
 
-  // Find order from global context by ID / orderNo / orderNumber
+  // Find order from global context by orderNo / orderNumber strictly
   const contextOrder = orders?.find(
     (o) =>
-      String(o.id) === String(orderId) ||
-      String(o.orderNo) === String(orderId) ||
-      String(o.orderNumber) === String(orderId),
+      String(o.orderNo) === String(paramNo) ||
+      String(o.orderNumber) === String(paramNo)
   );
 
   const order = contextOrder || fetchedOrder;
 
   // Fallback: Fetch order directly from API if page was refreshed
   useEffect(() => {
-    if (!contextOrder && orderId) {
+    if (!contextOrder && paramNo) {
       let isMounted = true;
       setFetching(true);
       orderService
-        .getOrder(orderId)
+        .getOrder(paramNo)
         .then((res) => {
           if (isMounted) {
             const data = res?.data || res;
-            if (data) setFetchedOrder(data);
+            if (data) {
+              // Strictly verify that the URL param is actually the orderNo
+              if (
+                String(data.orderNo) === String(paramNo) ||
+                String(data.orderNumber) === String(paramNo)
+              ) {
+                setFetchedOrder(data);
+              } else {
+                // Reject if they tried to use the database ID
+                setFetchedOrder(null);
+                console.warn("Access by ID is not allowed. Please use orderNo.");
+              }
+            }
           }
         })
         .catch((err) => {
@@ -250,7 +268,7 @@ export default function Receipt() {
         isMounted = false;
       };
     }
-  }, [orderId, contextOrder]);
+  }, [paramNo, contextOrder]);
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
@@ -310,29 +328,59 @@ export default function Receipt() {
     }
   };
 
-  const handleSendTelegram = async () => {
-    setActionLoading("telegram");
-
-    try {
-      await sendOrderToTelegram(order);
-
+  const handleShare = async () => {
+    if (!navigator.share) {
       Swal.fire({
-        icon: "success",
-        title: "ជោគជ័យ! ✅",
-        text: "បានផ្ញើវិក្កយបត្រទៅ Telegram រួចរាល់ហើយ!",
-        confirmButtonColor: "#0284c7",
-        timer: 3000,
-        timerProgressBar: true,
-      });
-    } catch (error) {
-      console.error("Telegram error:", error);
-
-      Swal.fire({
-        icon: "error",
-        title: "បរាជ័យ!",
-        text: error.message || "មិនអាចផ្ញើទៅ Telegram បានទេ",
+        icon: "warning",
+        title: "មិនគាំទ្រការចែករំលែក",
+        text: "កម្មវិធីរុករករបស់អ្នកមិនគាំទ្រមុខងារនេះទេ។ សូមថតចម្លងតំណដោយខ្លួនឯង។",
         confirmButtonColor: "#0f172a",
       });
+      return;
+    }
+
+    setActionLoading("share");
+    try {
+      await document.fonts.ready;
+      
+      let shareData = {
+        title: `វិក្កយបត្របញ្ជាទិញ #${order?.orderNo || order?.orderNumber || order?.id || ""}`,
+        text: `សូមពិនិត្យមើលវិក្កយបត្ររបស់អ្នក។ សរុប: $${Number(order?.totalAmount ?? order?.total ?? 0).toFixed(2)}`,
+      };
+
+      if (navigator.canShare && printRef.current) {
+        const blob = await toBlob(printRef.current, {
+          cacheBust: true,
+          pixelRatio: 4,
+          backgroundColor: "#ffffff",
+        });
+
+        if (blob) {
+          const file = new File([blob], `Receipt-ORD-${order?.orderNo || order?.orderNumber || order?.id || "N/A"}.png`, { type: "image/png" });
+          
+          if (navigator.canShare({ files: [file] })) {
+            shareData.files = [file];
+          } else {
+            shareData.url = window.location.href; // Fallback to link
+          }
+        } else {
+          shareData.url = window.location.href;
+        }
+      } else {
+        shareData.url = window.location.href;
+      }
+
+      await navigator.share(shareData);
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Error sharing:", error);
+        Swal.fire({
+          icon: "error",
+          title: "បរាជ័យ!",
+          text: "មានបញ្ហាក្នុងការចែករំលែកវិក្កយបត្រ។",
+          confirmButtonColor: "#0f172a",
+        });
+      }
     } finally {
       setActionLoading(null);
     }
@@ -358,7 +406,7 @@ export default function Receipt() {
         <p className="text-base font-semibold text-slate-700 mb-1">
           រកមិនឃើញវិក្កយបត្រនេះទេ
         </p>
-        <p className="text-xs text-slate-400 mb-4">លេខសម្គាល់: #{orderId}</p>
+        <p className="text-xs text-slate-400 mb-4">លេខសម្គាល់: #{paramNo}</p>
         <Link
           to="/"
           className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white px-3 py-1 rounded-xl shadow-xs border border-slate-200 text-sm font-medium transition-colors"
@@ -422,22 +470,22 @@ export default function Receipt() {
           <span>{actionLoading === "img" ? "កំពុងទាញយក..." : "ទាញយក PNG"}</span>
         </button>
 
-        {/* Telegram Button */}
+        {/* Share Button */}
         <button
-          onClick={handleSendTelegram}
-          disabled={actionLoading === "telegram"}
+          onClick={handleShare}
+          disabled={actionLoading === "share"}
           className="flex-1 flex items-center justify-center gap-1.5 bg-sky-600 text-white px-0 py-0.5 rounded-lg hover:bg-sky-500 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer group"
         >
-          {actionLoading === "telegram" ? (
+          {actionLoading === "share" ? (
             <Loader2 size={14} className="animate-spin" />
           ) : (
-            <Send
+            <Share2
               size={14}
-              className="transition-transform group-hover:translate-x-0.5"
+              className="transition-transform group-hover:scale-110"
             />
           )}
           <span>
-            {actionLoading === "telegram" ? "កំពុងផ្ញើ..." : "តេឡេក្រាម"}
+            {actionLoading === "share" ? "កំពុងរៀបចំ..." : "ចែករំលែក"}
           </span>
         </button>
       </div>

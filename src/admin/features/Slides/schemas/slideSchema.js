@@ -3,41 +3,41 @@ import { z } from "zod";
 export const slideSchema = z.object({
   tag: z
     .string()
-    .max(50, "Tag មិនអាចលើស 50 តួអក្សរ")
+    .max(50, "validation.tagMaxLength")
     .optional(),
 
   title: z
     .string()
-    .min(1, "សូមបញ្ចូលចំណងជើង")
-    .max(100, "ចំណងជើងមិនអាចលើស 100 តួអក្សរ"),
+    .min(1, "validation.requiredTitle")
+    .max(100, "validation.titleMaxLength"),
 
   description: z
     .string()
-    .max(300, "ការពិពណ៌នាមិនអាចលើស 300 តួអក្សរ")
+    .max(300, "validation.descriptionMaxLength")
     .optional(),
 
   discountPercentage: z
     .coerce
     .number()
-    .min(0, "ភាគរយមិនអាចតិចជាង 0")
-    .max(100, "ភាគរយមិនអាចលើស 100")
+    .min(0, "validation.percentMin")
+    .max(100, "validation.percentMax")
     .optional(),
 
   ctaText: z
     .string()
-    .max(30, "អត្ថបទប៊ូតុងមិនអាចលើស 30 តួអក្សរ")
+    .max(30, "validation.buttonTextMaxLength")
     .optional(),
 
   backgroundColor: z
     .string()
     .regex(
       /^#[0-9A-Fa-f]{6}$/,
-      "សូមបញ្ចូលពណ៌ HEX ត្រឹមត្រូវ"
+      "validation.invalidHex"
     ),
 
   shop_code: z
     .string()
-    .max(50, "Shop Code មិនអាចលើស 50 តួអក្សរ")
+    .max(50, "validation.shopCodeMaxLength")
     .optional(),
 
   status: z.enum(["Active", "Inactive"]),

@@ -8,42 +8,44 @@ import DataTableSkeleton from "@/admin/components/common/DataTableSkeleton";
 import StatsCardSkeletonGrid from "@/admin/components/common/StatsCardSkeleton";
 import { Eye } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const { statsData, recentOrders, isLoading } = useDashboard();
 
   const statusConfig = {
     Pending: {
       styles: "bg-amber-100 text-amber-700",
-      label: "រង់ចាំ",
+      label: t('dashboard.statusPending'),
     },
     Pickup: {
       styles: "bg-blue-100 text-blue-700",
-      label: "បានយកទំនិញ",
+      label: t('dashboard.statusPickedUp'),
     },
     Delivering: {
       styles: "bg-purple-100 text-purple-700",
-      label: "កំពុងដឹក",
+      label: t('dashboard.statusDelivering'),
     },
     Completed: {
       styles: "bg-green-100 text-green-700",
-      label: "បានបញ្ចប់",
+      label: t('dashboard.statusCompleted'),
     },
     Cancelled: {
       styles: "bg-red-100 text-red-700",
-      label: "បានបោះបង់",
+      label: t('dashboard.statusCancelled'),
     },
   };
   const columns = [
-    { header: "លេខបញ្ជាទិញ", accessor: "orderNo" },
-    { header: "សរុប", render: (row) => `$${row.totalAmount || 0}` },
+    { header: t('common.orderNo'), accessor: "orderNo" },
+    { header: t('common.total'), render: (row) => `$${row.totalAmount || 0}` },
     {
-      header: "ស្ថានភាពទូទាត់",
+      header: t('common.paymentStatus'),
       render: (row) => {
         const Status =
           row.paymentStatus === "Paid"
-            ? "បានទូទាត់"
+            ? t('common.paid')
             : row.paymentStatus === "Pending"
-              ? "រង់ចាំ"
+              ? t('common.pending')
               : row.paymentStatus;
         return (
           <span
@@ -55,7 +57,7 @@ export default function AdminDashboard() {
       },
     },
     {
-      header: "ស្ថានភាព",
+      header: t('common.status'),
       render: (row) => {
         // Apply the statusConfig dictionary here instead of nested ternaries
         const config = statusConfig[row.status] || {
@@ -72,7 +74,7 @@ export default function AdminDashboard() {
       },
     },
     {
-      header: "កាលបរិច្ឆេទបង្កើត",
+      header: t('common.createdAt'),
       render: (row) => (
         <span className="text-sm text-slate-600">
           {row.createdAt
@@ -88,7 +90,7 @@ export default function AdminDashboard() {
       ),
     },
     {
-      header: "សកម្មភាព",
+      header: t('common.actions'),
       align: "right",
       render: (row) => (
         <div className="flex justify-end space-x-2">
@@ -106,8 +108,8 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="ទិដ្ឋភាពទូទៅ"
-        description="សូមស្វាគមន៍មកវិញ! នេះជាអ្វីដែលកំពុងកើតឡើងនៅក្នុងហាងរបស់អ្នកថ្ងៃនេះ។"
+        title={t('dashboard.overviewTitle')}
+        description={t('dashboard.overviewSubtitle')}
       />
 
       {isLoading ? (
@@ -134,7 +136,7 @@ export default function AdminDashboard() {
 
       <div className="mt-8">
         <h2 className="text-lg font-semibold text-slate-800 mb-4">
-          ការបញ្ជាទិញចុងក្រោយ
+          {t('dashboard.latestOrders')}
         </h2>
         {isLoading ? (
           <DataTableSkeleton columns={columns.length} rows={5} />

@@ -1,7 +1,9 @@
 import React from 'react'
 import { FaBoxOpen } from "react-icons/fa";
+import { useTranslation } from 'react-i18next';
 
-export default function DataTable({ columns, data, keyField = 'id' }) {
+export default function DataTable({ columns, data, keyField = 'id', onRowClick, emptyMessage }) {
+  const { t } = useTranslation();
   // Helper to handle column alignment (defaults to left)
   const getAlignmentClass = (align) => {
     if (align === 'right') return 'text-right';
@@ -51,7 +53,7 @@ export default function DataTable({ columns, data, keyField = 'id' }) {
                   <div className="flex flex-col items-center justify-center">
                     <FaBoxOpen className="w-20 h-20 text-slate-400 mb-3" />
                     <span className="text-sm">
-                      គ្មានទិន្នន័យ
+                      {emptyMessage || t('common.noData')}
                     </span>
                   </div>
                 </td>

@@ -5,14 +5,17 @@ import {
   Receipt,
   Printer,
   Clock,
-  Edit3,
   ChevronDown,
-  Package
+  Package,
+  FileText,
+  FileEdit
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useUpdateOrderStatusMutation, useUpdateOrderPaymentStatusMutation } from '../../../../queries/orders/useOrderQueries'
 
 export default function OrderCard({ order, onEdit }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const updateOrderStatusMutation = useUpdateOrderStatusMutation()
   const updatePaymentStatusMutation = useUpdateOrderPaymentStatusMutation()
@@ -25,7 +28,6 @@ export default function OrderCard({ order, onEdit }) {
     updatePaymentStatusMutation.mutate({ orderId, newPaymentStatus })
   }
 
-  // Updated to match OrderList statusConfig styles (adjusted for card aesthetics)
   const getStatusStyle = (status) => {
     switch (status) {
       case 'Pending':
@@ -43,28 +45,26 @@ export default function OrderCard({ order, onEdit }) {
     }
   }
 
-  // Updated to match OrderList labels
   const getStatusText = (status) => {
     switch (status) {
       case 'Pending':
-        return 'រង់ចាំ'
+        return t('dashboard.statusPending')
       case 'Pickup':
-        return 'បានយកទំនិញ'
+        return t('dashboard.statusPickedUp')
       case 'Delivering':
-        return 'កំពុងដឹក'
+        return t('dashboard.statusDelivering')
       case 'Completed':
-        return 'បានបញ្ចប់'
+        return t('dashboard.statusCompleted')
       case 'Cancelled':
-        return 'បានបោះបង់'
+        return t('dashboard.statusCancelled')
       default:
-        return status || 'មិនដឹង'
+        return status || t('order.unknownStatus')
     }
   }
 
   const formatCurrency = (amount) =>
     typeof amount === 'number' ? amount.toFixed(2) : '0.00'
 
-  // Calculations synced with OrderList logic
   const totalAmount = Number(order?.totalAmount || order?.total || 0)
   const deliveryFee = Number(order?.deliveryFee || 0)
   const subtotal = totalAmount - deliveryFee
@@ -121,11 +121,11 @@ export default function OrderCard({ order, onEdit }) {
               onChange={(e) => updateOrderStatus(order.id, e.target.value)}
               className={`appearance-none rounded-full border pl-2 pr-5 py-0.5 text-[8px] font-bold shadow-sm outline-none transition-all sm:pl-2.5 sm:pr-6 sm:py-1 sm:text-[9px] cursor-pointer ${getStatusStyle(order?.status)}`}
             >
-              <option value="Pending">រង់ចាំ</option>
-              <option value="Pickup">បានយកទំនិញ</option>
-              <option value="Delivering">កំពុងដឹក</option>
-              <option value="Completed">បានបញ្ចប់</option>
-              <option value="Cancelled">បានបោះបង់</option>
+              <option value="Pending">{t('dashboard.statusPending')}</option>
+              <option value="Pickup">{t('dashboard.statusPickedUp')}</option>
+              <option value="Delivering">{t('dashboard.statusDelivering')}</option>
+              <option value="Completed">{t('dashboard.statusCompleted')}</option>
+              <option value="Cancelled">{t('dashboard.statusCancelled')}</option>
             </select>
             <ChevronDown className="pointer-events-none absolute right-1.5 top-1/2 h-2.5 w-2.5 -translate-y-1/2 opacity-70" />
           </div>
@@ -142,12 +142,12 @@ export default function OrderCard({ order, onEdit }) {
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="text-[8px] font-medium text-slate-400 sm:text-[9px]">
-                លេខទូរស័ព្ទ
-              </p>
+              <span className="text-xs text-slate-500 font-medium">
+                {t('order.phone')}
+              </span>
 
               <p className="truncate text-[10px] font-semibold text-slate-700 sm:text-[11px]">
-                {order?.customerPhone || order?.phone || 'គ្មានលេខទូរស័ព្ទ'}
+                {order?.customerPhone || order?.phone || t('order.noPhone')}
               </p>
             </div>
           </div>
@@ -158,12 +158,12 @@ export default function OrderCard({ order, onEdit }) {
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="text-[8px] font-medium text-slate-400 sm:text-[9px]">
-                អាសយដ្ឋាន
-              </p>
+              <span className="text-xs text-slate-500 font-medium">
+                {t('order.addressLabel')}
+              </span>
 
               <p className="line-clamp-2 break-words text-[10px] font-medium leading-3.5 text-slate-600 sm:text-[11px] sm:leading-4">
-                {order?.customerAddress || order?.address || 'មិនមានអាសយដ្ឋាន'}
+                {order?.customerAddress || order?.address || t('order.noAddress')}
               </p>
             </div>
           </div>
@@ -173,26 +173,24 @@ export default function OrderCard({ order, onEdit }) {
 
       {/* Pricing */}
       <div className="border-y border-slate-100 bg-slate-50/60 px-2.5 py-2 sm:px-3">
-        <div className="flex items-center justify-between gap-2 text-[9px] sm:text-[10px]">
-          <span className="text-slate-500">តម្លៃទំនិញ</span>
-
-          <span className="shrink-0 font-semibold text-slate-700">
+        <div className="flex justify-between items-center text-sm font-medium mb-2">
+          <span className="text-slate-500">{t('order.itemPrice')}</span>
+          <span className="font-semibold text-slate-700">
             ${formatCurrency(subtotal)}
           </span>
         </div>
 
-        <div className="mt-1 flex items-center justify-between gap-2 text-[9px] sm:text-[10px]">
-          <span className="text-slate-500">សេវាដឹក</span>
-
-          <span className="shrink-0 font-semibold text-slate-700">
+        <div className="flex justify-between items-center text-sm font-medium mb-3">
+          <span className="text-slate-500">{t('order.deliveryService')}</span>
+          <span className="font-semibold text-slate-700">
             ${formatCurrency(deliveryFee)}
           </span>
         </div>
 
         <div className="mt-1.5 flex items-center justify-between gap-2 border-t border-slate-200 pt-1.5">
-          <span className="text-[10px] font-bold text-slate-700 sm:text-[11px]">
-            សរុប
-          </span>
+          <div className="flex items-center gap-1.5 text-slate-900 font-bold">
+            {t('order.total')}
+          </div>
 
           <span className="shrink-0 text-xs font-black text-blue-600 sm:text-sm">
             ${formatCurrency(totalAmount)}
@@ -215,8 +213,8 @@ export default function OrderCard({ order, onEdit }) {
                 : 'border-rose-200 bg-rose-50 text-rose-700 focus:ring-2 focus:ring-rose-100'
             }`}
           >
-            <option value="Unpaid">មិនទាន់ទូទាត់</option>
-            <option value="Paid">បានទូទាត់</option>
+            <option value="Unpaid">{t('order.unpaid')}</option>
+            <option value="Paid">{t('common.paid')}</option>
           </select>
 
           <ChevronDown
@@ -235,7 +233,7 @@ export default function OrderCard({ order, onEdit }) {
               : 'bg-rose-50 text-rose-600'
           }`}
         >
-          {order?.paymentStatus === 'Paid' ? 'Paid' : 'Unpaid'}
+          {order?.paymentStatus === 'Paid' ? t('common.paid') : t('order.unpaid')}
         </span>
       </div>
 
@@ -246,24 +244,24 @@ export default function OrderCard({ order, onEdit }) {
           onClick={onEdit}
           className="flex min-w-0 items-center justify-center gap-0.5 bg-white px-1 py-1.5 text-[8px] font-semibold text-slate-600 transition-all hover:bg-blue-50 hover:text-blue-600 sm:gap-1 sm:py-1.5 sm:text-[9px]"
         >
-          <Edit3 className="h-2.5 w-2.5 shrink-0 sm:h-3 sm:w-3" />
-          <span className="truncate">កែប្រែ</span>
+          <FileEdit size={16} className="shrink-0" />
+          <span className="truncate">{t('order.edit')}</span>
         </button>
 
         <button
-          onClick={() => navigate(`/admin/print-receipt/${order.id}`)}
+          onClick={() => navigate(`/admin/print-receipt/${order?.orderNo}`)}
           className="flex min-w-0 items-center justify-center gap-0.5 border-x border-slate-200 bg-white px-1 py-1.5 text-[8px] font-semibold text-slate-600 transition-all hover:bg-rose-50 hover:text-rose-600 sm:gap-1 sm:py-1.5 sm:text-[9px]"
         >
-          <Receipt className="h-2.5 w-2.5 shrink-0 sm:h-3 sm:w-3" />
-          <span className="truncate">វិក្កយបត្រ</span>
+          <FileText size={16} className="shrink-0" />
+          <span className="truncate">{t('order.receipt')}</span>
         </button>
 
         <button
-          onClick={() => navigate(`/admin/print-sticker/${order.id}`)}
+          onClick={() => navigate(`/admin/print-sticker/${order?.orderNo}`)}
           className="flex min-w-0 items-center justify-center gap-0.5 bg-white px-1 py-1.5 text-[8px] font-semibold text-slate-600 transition-all hover:bg-violet-50 hover:text-violet-600 sm:gap-1 sm:py-1.5 sm:text-[9px]"
         >
-          <Printer className="h-2.5 w-2.5 shrink-0 sm:h-3 sm:w-3" />
-          <span className="truncate">ស្ទីឃ័រ</span>
+          <Printer size={16} className="shrink-0" />
+          <span className="truncate">{t('order.sticker')}</span>
         </button>
 
       </div>

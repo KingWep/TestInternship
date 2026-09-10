@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { useDeliveryProvidersQuery } from "../../../../queries/deliveryProviders/useDeliveryProviderQueries";
 
@@ -40,6 +41,7 @@ export function DeliveryForm({
   ];
 
   const handleDeliveryChange = (option) => {
+  const { t } = useTranslation();
     setDeliveryMethod(option.id);
     if (setDeliveryFee) {
       setDeliveryFee(option.fee);
@@ -74,14 +76,17 @@ export function DeliveryForm({
             value={phone}
             onChange={(e) => {
               const digitsOnly = e.target.value.replace(/\D/g, "");
-              setPhone(digitsOnly);
+              if (digitsOnly.length <= 10) {
+                setPhone(digitsOnly);
+              }
             }}
             placeholder="12 345 678"
+            maxLength={10}
             className="flex-1 px-3 py-2 bg-transparent text-sm outline-none"
           />
         </div>
         {errors.phone && (
-          <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+          <p className="text-red-500 text-xs mt-1">{errors.phone ? t(errors.phone) : ""}</p>
         )}
       </div>
 
@@ -101,7 +106,7 @@ export function DeliveryForm({
           }`}
         />
         {errors.address && (
-          <p className="text-red-500 text-xs mt-1">{errors.address}</p>
+          <p className="text-red-500 text-xs mt-1">{errors.address ? t(errors.address) : ""}</p>
         )}
       </div>
 
@@ -113,7 +118,7 @@ export function DeliveryForm({
           </label>
           {errors.deliveryMethod && (
             <span className="text-red-500 text-[10px]">
-              {errors.deliveryMethod}
+              {errors.deliveryMethod ? t(errors.deliveryMethod) : ""}
             </span>
           )}
         </div>
@@ -159,7 +164,7 @@ export function DeliveryForm({
           </label>
           {errors.paymentMethod && (
             <span className="text-red-500 text-[10px]">
-              {errors.paymentMethod}
+              {errors.paymentMethod ? t(errors.paymentMethod) : ""}
             </span>
           )}
         </div>

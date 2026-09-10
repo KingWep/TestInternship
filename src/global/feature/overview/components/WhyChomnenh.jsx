@@ -1,14 +1,16 @@
 import React from 'react';
 import { Link2, Zap, BarChart, Maximize, Clock, Cpu } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const WhyChomnenh = () => {
+  const { t } = useTranslation();
   const advantages = [
-    { icon: <Link2 className="text-[#D4AF37]" />, title: 'ប្រព័ន្ធតភ្ជាប់គ្នាតែមួយ', text: 'លែងចាំបាច់ប្រើប្រាស់កម្មវិធីច្រើនផ្សេងគ្នា។ អ្វីៗទាំងអស់ដំណើរការលើមូលដ្ឋានទិន្នន័យតែមួយ។' },
-    { icon: <Zap className="text-yellow-500" />, title: 'ងាយស្រួលប្រើប្រាស់', text: 'កម្មវិធីខ្នាតធំ ដែលត្រូវបានរចនាឡើងយ៉ាងសាមញ្ញ ស្រស់ស្អាត និងងាយស្រួលប្រើបំផុត។' },
-    { icon: <BarChart className="text-emerald-500" />, title: 'សម្រេចចិត្តតាមទិន្នន័យ', text: 'ធ្វើការសម្រេចចិត្តដោយផ្អែកលើតួលេខជាក់ស្តែង មិនមែនត្រឹមតែការស្មាននោះទេ។' },
-    { icon: <Maximize className="text-purple-500" />, title: 'ងាយស្រួលពង្រីកសាខា', text: 'ទោះជាអ្នកមានការបញ្ជាទិញ ១០ ឬ ១០,០០០ ក្នុងមួយថ្ងៃ Chomnenh អាចដំណើរការបានយ៉ាងរលូន។' },
-    { icon: <Clock className="text-orange-500" />, title: 'ប្រសិទ្ធភាពអតិបរមា', text: 'ធ្វើស្វ័យប្រវត្តិកម្មលើការងារដដែលៗ ដើម្បីផ្តល់ពេលវេលាឱ្យបុគ្គលិករបស់អ្នកបង្កើតគំនិតថ្មីៗ។' },
-    { icon: <Cpu className="text-indigo-500" />, title: 'បច្ចេកវិទ្យាទំនើបចុងក្រោយ', text: 'បង្កើតឡើងដោយហេដ្ឋារចនាសម្ព័ន្ធ Cloud ដែលធានាបាននូវសុវត្ថិភាពនិងដំណើរការ ៩៩.៩%។' },
+    { icon: <Link2 className="text-[#D4AF37]" />, title: t('overview.adv1Title'), text: t('overview.adv1Desc') },
+    { icon: <Zap className="text-yellow-500" />, title: t('overview.adv2Title'), text: t('overview.adv2Desc') },
+    { icon: <BarChart className="text-emerald-500" />, title: t('overview.adv3Title'), text: t('overview.adv3Desc') },
+    { icon: <Maximize className="text-purple-500" />, title: t('overview.adv4Title'), text: t('overview.adv4Desc') },
+    { icon: <Clock className="text-orange-500" />, title: t('overview.adv5Title'), text: t('overview.adv5Desc') },
+    { icon: <Cpu className="text-indigo-500" />, title: t('overview.adv6Title'), text: t('overview.adv6Desc') },
   ];
 
   return (
@@ -22,13 +24,13 @@ const WhyChomnenh = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16 font-kantumruy">
           <h2 className="text-sm font-bold tracking-widest text-blue-400 uppercase mb-3">
-            ហេតុអ្វីត្រូវជ្រើសរើសយើង
+            {t('overview.whyChooseUs')}
           </h2>
           <h3 className="text-3xl md:text-4xl font-bold mb-6">
-            អត្ថប្រយោជន៍របស់ Chomnenh
+            {t('overview.advantagesTitle')}
           </h3>
           <p className="text-lg text-slate-400">
-            យើងមិនត្រឹមតែផ្តល់នូវកម្មវិធីប៉ុណ្ណោះទេ យើងផ្តល់នូវការកែប្រែជាមូលដ្ឋានទៅលើរបៀបដែលអាជីវកម្មរបស់អ្នកដំណើរការ។
+            {t('overview.advantagesSubtitle')}
           </p>
         </div>
 

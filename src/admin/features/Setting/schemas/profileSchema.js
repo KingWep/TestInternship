@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const profileSchema = z.object({
-  name: z.string().min(1, "សូមបញ្ចូលឈ្មោះ"),
-  email: z.string().email("សូមបញ្ចូលអ៊ីមែលអោយបានត្រឹមត្រូវ"),
+  name: z.string().min(1, "validation.requiredName"),
+  email: z.string().email("validation.invalidEmail"),
   password: z.string().optional().or(z.literal('')),
   confirmPassword: z.string().optional().or(z.literal('')),
 }).refine((data) => {
@@ -11,6 +11,6 @@ export const profileSchema = z.object({
   }
   return true;
 }, {
-  message: "លេខសម្ងាត់មិនផ្ទៀងផ្ទាត់ទេ",
+  message: "validation.invalidPassword",
   path: ["confirmPassword"],
 });

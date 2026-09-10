@@ -7,8 +7,10 @@ import { useShopRegisterForm } from "./hooks/useShopRegisterForm";
 import { AccountSetupStep } from "./components/AccountSetupStep";
 import { ShopIdentityStep } from "./components/ShopIdentityStep";
 import { ContactSupportStep } from "./components/ContactSupportStep";
+import { useTranslation } from "react-i18next";
 
 const GlobalRegister = () => {
+  const { t } = useTranslation();
   const { form, currentStep, steps, nextStep, prevStep, onSubmit, isLoading } =
     useShopRegisterForm();
 
@@ -40,7 +42,7 @@ const GlobalRegister = () => {
 
             <h2 className="text-xl font-bold text-white mb-0.5">CHOMNENH</h2>
             <p className="text-blue-100 text-xs font-medium">
-              បង្កើតហាងថ្មី (Create New Shop)
+              {t('auth.createNewShop')}
             </p>
           </div>
 
@@ -48,7 +50,7 @@ const GlobalRegister = () => {
           <div className="bg-gray-50 px-6 py-2 border-b border-gray-100">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-blue-600">
-                ជំហាន {currentStep} នៃ {steps.length}
+                {t('auth.step')} {currentStep} {t('auth.of')} {steps.length}
               </span>
               <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wider">
                 {steps[currentStep - 1].name}
@@ -96,7 +98,7 @@ const GlobalRegister = () => {
                     disabled={isLoading}
                     className="flex-1 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50"
                   >
-                    <ArrowLeft size={16} /> ត្រឡប់ (Back)
+                    <ArrowLeft size={16} /> {t('auth.back')}
                   </button>
                 )}
 
@@ -109,16 +111,16 @@ const GlobalRegister = () => {
                   {isLoading ? (
                     <span className="flex items-center gap-2">
                       <Swirling className="size-5" />
-                      កំពុងដំណើរការ...
+                      {t('auth.processing')}
                     </span>
                   ) : currentStep === steps.length ? (
                     <>
-                      បង្កើតហាង
+                      {t('auth.createShop')}
                       <ShieldCheck size={16} className="text-white/80" />
                     </>
                   ) : (
                     <>
-                      បន្តទៅមុខ (Next)
+                      {t('auth.next')}
                       <ArrowRight
                         size={16}
                         className="group-hover:translate-x-1 transition-transform"
@@ -131,12 +133,12 @@ const GlobalRegister = () => {
 
             {/* Link to login */}
             <div className="text-center m-1">
-              <span className="text-xs text-gray-600">មានហាងរួចហើយ? </span>
+              <span className="text-xs text-gray-600">{t('auth.alreadyHaveShop')}</span>
               <Link
                 to="/admin"
                 className="text-xs font-semibold text-blue-600 hover:text-blue-700"
               >
-                ចូលគណនី (Sign In)
+                {t('auth.signIn')}
               </Link>
             </div>
 

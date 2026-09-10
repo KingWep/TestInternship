@@ -1,7 +1,9 @@
 import { IoGift } from "react-icons/io5";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ProductSelectCard({ product, onSelect }) {
+  const { t } = useTranslation();
   const isOutOfStock = product.stock === 0;
 
   return (
@@ -38,7 +40,7 @@ export default function ProductSelectCard({ product, onSelect }) {
                 : "bg-green-600 text-white"
           }`}
         >
-          {isOutOfStock ? "អស់ពីស្តុក" : `ស្តុក: ${product.stock}`}
+          {isOutOfStock ? t('sales.outOfStock') : `${t('sales.stock')}: ${product.stock}`}
         </span>
 
         {/* Product Name */}
@@ -70,7 +72,7 @@ export default function ProductSelectCard({ product, onSelect }) {
             <>
               <IoGift size={13} className="text-blue-500 flex-shrink-0" />
               <span className="text-[10px] font-khmer text-blue-600 rounded line-clamp-1">
-                សន្សំ ${Number(product.discountPrice).toFixed(2)}
+                {t('sales.save')} ${Number(product.discountPrice).toFixed(2)}
               </span>
             </>
           ) : null}
@@ -87,7 +89,7 @@ export default function ProductSelectCard({ product, onSelect }) {
                 : "bg-blue-500 text-white hover:bg-blue-600"
             }`}
         >
-          {isOutOfStock ? "មិនមានស្តុក" : "បន្ថែម"}
+          {isOutOfStock ? t('sales.outOfStock') : t('common.addBtn')}
         </span>
       </div>
     </div>

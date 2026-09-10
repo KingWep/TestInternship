@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import Swal from 'sweetalert2'
 import { slideService } from '../../../../services/slideService'
+import { useTranslation } from 'react-i18next'
 
 const ITEMS_PER_PAGE = 5
 
 export function useSlides(settingId = null, shopCode = null) {
+  const { t } = useTranslation()
   const [slides, setSlides] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -49,8 +51,8 @@ export function useSlides(settingId = null, shopCode = null) {
         (slide.ctaText || '').toLowerCase().includes(keyword)
 
       const matchStatus =
-        filters.status === '' ||
-        filters.status === 'ទាំងអស់' ||
+        !filters.status ||
+        filters.status === t('common.all') ||
         slide.status === filters.status
 
       return matchSearch && matchStatus
@@ -107,8 +109,8 @@ export function useSlides(settingId = null, shopCode = null) {
         await slideService.updateSlide(editingSlide.id, payload)
         Swal.fire({
           icon: 'success',
-          title: 'ជោគជ័យ',
-          text: 'Slide updated successfully!',
+          title: t('common.success'),
+          text: t('slides.updated_successfully'),
           timer: 1500,
           showConfirmButton: false
         })

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "./index.css";
+import "./i18n";
 
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";

@@ -1,8 +1,10 @@
 import React, { memo, useCallback } from 'react'
 import { Trash2, Plus, Minus, Image as ImageIcon, ShoppingCart } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 // 1. Extracted component to prevent the entire cart from re-rendering on a single click
 const CartItem = memo(({ item, onUpdateQuantity, onRemoveItem }) => {
+  const { t } = useTranslation();
   const handleIncrement = useCallback(() => onUpdateQuantity(item.id, item.quantity + 1), [item.id, item.quantity, onUpdateQuantity])
   const handleDecrement = useCallback(() => onUpdateQuantity(item.id, item.quantity - 1), [item.id, item.quantity, onUpdateQuantity])
   const handleRemove = useCallback(() => onRemoveItem(item.id), [item.id, onRemoveItem])
@@ -49,7 +51,7 @@ const CartItem = memo(({ item, onUpdateQuantity, onRemoveItem }) => {
         <button
           onClick={handleRemove}
           className="text-slate-300 hover:text-red-500 transition-colors"
-          title="លុបទំនិញ"
+          title={t('order.deleteItem')}
         >
           <Trash2 size={16} className=' text-red-600'/>
         </button>
@@ -60,13 +62,14 @@ const CartItem = memo(({ item, onUpdateQuantity, onRemoveItem }) => {
 
 // Main Cart Component
 export default function OrderCartTable({ cart, onUpdateQuantity, onRemoveItem }) {
+  const { t } = useTranslation()
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
   return (
     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
       {/* Upgraded Header with dynamic totals */}
       <div className="p-4 border-b border-slate-200 bg-white flex justify-between items-center z-10 shadow-xs">
         <h3 className="font-bold text-slate-800 flex items-center gap-2">
-          ការបញ្ជាទិញបច្ចុប្បន្ន
+          {t('order.currentOrder')}
           {totalItems > 0 && (
             <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-bold">
               {totalItems}
@@ -92,8 +95,8 @@ export default function OrderCartTable({ cart, onUpdateQuantity, onRemoveItem })
             <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-3">
               <ShoppingCart size={24} className="text-slate-300" />
             </div>
-            <p className="text-sm font-medium text-slate-500">កន្ត្រកទទេ</p>
-            <p className="text-xs mt-1">ជ្រើសរើសផលិតផលដើម្បីចាប់ផ្តើម</p>
+            <p className="text-sm font-medium text-slate-500">{t('order.emptyCart')}</p>
+            <p className="text-xs mt-1">{t('order.selectProductToStart')}</p>
           </div>
         )}
       </div>

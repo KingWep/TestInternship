@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const colorStyles = {
   green: {
@@ -34,6 +35,7 @@ export default function StatsCard({
   note,
   link
 }) {
+  const { t } = useTranslation();
   const style = colorStyles[color] || colorStyles.blue;
   const cardContent = (
     <>
@@ -62,7 +64,7 @@ export default function StatsCard({
             {Number(trend) >= 0 ? "+" : ""}
             {trend}%
           </span>
-          <span className="text-slate-400 font-normal">ធៀបនឹងខែមុន</span>
+          <span className="text-slate-400 font-normal">{t('dashboard.comparedToLastMonth')}</span>
         </p>
       ) : note ? (
         <p

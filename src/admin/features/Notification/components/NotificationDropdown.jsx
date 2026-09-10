@@ -1,9 +1,11 @@
 import React from 'react';
 import { IoNotifications } from "react-icons/io5";
-import { Filter } from 'lucide-react';
+import { Filter, BellOff } from 'lucide-react';
 import { useNotifications } from '../hooks/useNotification';
+import { useTranslation } from "react-i18next";
 
 export default function NotificationDropdown() {
+  const { t } = useTranslation();
   const {
     isOpen,
     dropdownRef,
@@ -35,12 +37,12 @@ export default function NotificationDropdown() {
           
           {/* Header */}
           <div className="flex items-center justify-between px-5 pt-5 pb-3">
-            <h3 className="text-lg font-bold text-slate-900">Notification</h3>
+            <h3 className="text-lg font-bold text-slate-900">{t('notifications.title')}</h3>
             <button
               onClick={markAllAsRead}
               className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
             >
-              Mark all as read
+              {t('notifications.markAllAsRead')}
             </button>
           </div>
 
@@ -109,7 +111,7 @@ export default function NotificationDropdown() {
               ))
             ) : (
               <div className="py-12 text-center text-slate-400 text-sm">
-                គ្មានទិន្នន័យ (No notifications)
+                {t('common.noNotifications')}
               </div>
             )}
           </div>

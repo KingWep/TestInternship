@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 
 import { settingSchema } from "../schemas/settingSchema";
@@ -85,8 +86,8 @@ export function useGeneralSetting() {
     if (!file.type.startsWith("image/")) {
       Swal.fire({
         icon: "error",
-        title: "ឯកសារមិនត្រឹមត្រូវ",
-        text: "សូមជ្រើសរើសឯកសាររូបភាព។",
+        title: t('settings.invalidFile'),
+        text: t('settings.selectImageFile'),
       });
       return;
     }
@@ -94,8 +95,8 @@ export function useGeneralSetting() {
     if (file.size > 1 * 1024 * 1024) {
       Swal.fire({
         icon: "error",
-        title: "ទំហំរូបភាពធំពេក",
-        text: "សូមជ្រើសរើសរូបភាពដែលមានទំហំតិចជាង 1MB។",
+        title: t('settings.imageTooLarge'),
+        text: t('settings.imageSizeLimit'),
       });
       return;
     }
@@ -112,8 +113,8 @@ export function useGeneralSetting() {
     if (file.size > 1 * 1024 * 1024) {
       Swal.fire({
         icon: "error",
-        title: "ទំហំឯកសារធំពេក",
-        text: "សូមជ្រើសរើសឯកសារដែលមានទំហំតិចជាង 1MB។",
+        title: t('settings.fileTooLarge'),
+        text: t('settings.fileSizeLimit'),
       });
       return;
     }
@@ -133,8 +134,8 @@ export function useGeneralSetting() {
     if (!settingData?.id) {
       Swal.fire({
         icon: "error",
-        title: "រកមិនឃើញ Setting ID",
-        text: "មិនអាចធ្វើការកែប្រែ Setting បានទេ។",
+        title: t('settings.settingIdNotFound'),
+        text: t('settings.cannotEditSetting'),
       });
       return;
     }
@@ -179,8 +180,8 @@ export function useGeneralSetting() {
         onSuccess: () => {
           Swal.fire({
             icon: "success",
-            title: "ជោគជ័យ",
-            text: "ការកំណត់ត្រូវបានរក្សាទុកដោយជោគជ័យ។",
+            title: t('common.success'),
+            text: t('settings.saveSuccess'),
             timer: 1500,
             showConfirmButton: false,
           });
@@ -188,9 +189,9 @@ export function useGeneralSetting() {
         onError: (error) => {
           Swal.fire({
             icon: "error",
-            title: "បរាជ័យ",
+            title: t('common.failed'),
             text:
-              error.response?.data?.message || "មិនអាចរក្សាទុកការកំណត់បានទេ។",
+              error.response?.data?.message || t('settings.saveFailed'),
           });
         },
       },
@@ -222,6 +223,8 @@ export function useGeneralSetting() {
     isLoading,
     isSaving: updateMutation.isPending,
     register,
+    control,
+    setValue,
     handleSubmit,
     errors,
     fields,

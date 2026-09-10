@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Save } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { slideSchema } from "../schemas/slideSchema";
 
 export default function SlideForm({ onSubmit, initialData }) {
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -54,39 +56,39 @@ export default function SlideForm({ onSubmit, initialData }) {
     >
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ស្លាក
+          <label className="block text-xs font-semibold text-slate-600 mb-1">
+            {t('slides.badge')}
           </label>
 
           <input
             type="text"
             {...register("tag")}
-            placeholder="ឧទាហរណ៍: ទំនិញថ្មី"
+            placeholder={t('slides.badgePlaceholder')}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
 
           {errors.tag && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.tag.message}
+              {errors.tag?.message ? t(errors.tag.message) : ""}
             </p>
           )}
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ចំណងជើង <span className="text-red-500">*</span>
+          <label className="block text-xs font-semibold text-slate-600 mb-1">
+            {t('slides.titleLabel')} <span className="text-red-500">*</span>
           </label>
 
           <input
             type="text"
             {...register("title")}
-            placeholder="ឧទាហរណ៍: ការប្រមូលរដូវក្តៅ"
+            placeholder={t('slides.titlePlaceholder')}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
 
           {errors.title && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.title.message}
+              {errors.title?.message ? t(errors.title.message) : ""}
             </p>
           )}
         </div>
@@ -94,8 +96,8 @@ export default function SlideForm({ onSubmit, initialData }) {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ភាគរយបញ្ចុះតម្លៃ (%)
+          <label className="block text-xs font-semibold text-slate-600 mb-1">
+            {t('slides.discount')}
           </label>
 
           <input
@@ -106,33 +108,33 @@ export default function SlideForm({ onSubmit, initialData }) {
               setValueAs: (value) =>
                 value === "" ? undefined : Number(value),
             })}
-            placeholder="ឧទាហរណ៍: 25"
+            placeholder={t('slides.discountPlaceholder')}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
 
           {errors.discountPercentage && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.discountPercentage.message}
+              {errors.discountPercentage?.message ? t(errors.discountPercentage.message) : ""}
             </p>
           )}
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ស្ថានភាព
+          <label className="block text-xs font-semibold text-slate-600 mb-1">
+            {t('slides.status')}
           </label>
 
           <select
             {...register("status")}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           >
-            <option value="Active">សកម្ម</option>
-            <option value="Inactive">អសកម្ម</option>
+            <option value="Active">{t('slides.active')}</option>
+            <option value="Inactive">{t('slides.inactive')}</option>
           </select>
 
           {errors.status && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.status.message}
+              {errors.status?.message ? t(errors.status.message) : ""}
             </p>
           )}
         </div>
@@ -140,27 +142,27 @@ export default function SlideForm({ onSubmit, initialData }) {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            អត្ថបទប៊ូតុង CTA
+          <label className="block text-xs font-semibold text-slate-600 mb-1">
+            {t('slides.ctaLabel')}
           </label>
 
           <input
             type="text"
             {...register("ctaText")}
-            placeholder="ឧទាហរណ៍: ទិញឥឡូវនេះ"
+            placeholder={t('slides.ctaPlaceholder')}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
 
           {errors.ctaText && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.ctaText.message}
+              {errors.ctaText?.message ? t(errors.ctaText.message) : ""}
             </p>
           )}
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ពណ៌ផ្ទៃខាងក្រោយ
+          <label className="block text-xs font-semibold text-slate-600 mb-1">
+            {t('slides.bgColorLabel')}
           </label>
 
           <div className="flex items-center gap-2">
@@ -186,46 +188,46 @@ export default function SlideForm({ onSubmit, initialData }) {
 
           {errors.backgroundColor && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.backgroundColor.message}
+              {errors.backgroundColor?.message ? t(errors.backgroundColor.message) : ""}
             </p>
           )}
         </div>
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1">
-          Shop Code (សម្រាប់គ្រប់គ្រងការផ្សព្វផ្សាយ)
+        <label className="block text-xs font-semibold text-slate-600 mb-1">
+          {t('slides.shopCodeLabel')}
         </label>
 
         <input
           type="text"
           {...register("shop_code")}
-          placeholder="ឧទាហរណ៍: MKS, ALL"
+          placeholder={t('slides.shopCodePlaceholder')}
           className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
         />
 
         {errors.shop_code && (
           <p className="text-xs text-red-500 mt-1">
-            {errors.shop_code.message}
+            {errors.shop_code?.message ? t(errors.shop_code.message) : ""}
           </p>
         )}
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1">
-          ការពិពណ៌នា
+        <label className="block text-xs font-semibold text-slate-600 mb-1">
+          {t('slides.descriptionLabel')}
         </label>
 
         <textarea
           {...register("description")}
           rows={3}
-          placeholder="ការពិពណ៌នាស្លាយ..."
+          placeholder={t('slides.descPlaceholder')}
           className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none resize-none focus:ring-2 focus:ring-gray-200"
         />
 
         {errors.description && (
           <p className="text-xs text-red-500 mt-1">
-            {errors.description.message}
+            {errors.description?.message ? t(errors.description.message) : ""}
           </p>
         )}
       </div>
@@ -237,8 +239,8 @@ export default function SlideForm({ onSubmit, initialData }) {
         >
           <Save size={16} />
           {isEditing
-            ? "ធ្វើបច្ចុប្បន្នភាពស្លាយ"
-            : "រក្សាទុកស្លាយ"}
+            ? t('slides.updateBtn')
+            : t('slides.saveBtn')}
         </button>
       </div>
     </form>

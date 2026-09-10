@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Edit } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useSlides } from "../hooks/useSlides";
 import SlideForm from "../components/SlideForm";
 import PageHeader from "../../../components/common/PageHeader";
@@ -9,6 +10,7 @@ import Modal from "../../../components/common/Modal";
 import Pagination from "../../../components/common/Pagination";
 
 export default function AdminSlides() {
+  const { t } = useTranslation();
   const {
     currentPage,
     isModalOpen,
@@ -24,7 +26,7 @@ export default function AdminSlides() {
 
   const columns = [
     {
-      header: "ពណ៌ (Background)",
+      header: t('slides.bgColor'),
       render: (row) => (
         <div
           className="h-10 w-20 min-w-[2.5rem] rounded-lg border border-slate-200 shadow-sm"
@@ -34,26 +36,26 @@ export default function AdminSlides() {
       ),
     },
     {
-      header: "ស្លាក",
+      header: t('slides.badge'),
       render: (row) => (
         <span className="inline-block whitespace-nowrap font-bold bg-slate-100 text-black/70 py-1 px-2 rounded border-2 border-slate-400">
           {row.tag}
         </span>
       ),
     },
-    { header: "ចំណងជើង", accessor: "title" },
-    { header: "ការពិពណ៌នា", accessor: "description" },
+    { header: t('slides.titleLabel'), accessor: "title" },
+    { header: t('slides.descriptionLabel'), accessor: "description" },
     {
-      header: "បញ្ចុះតម្លៃ (%)",
+      header: t('slides.discount'),
       render: (row) => (
         <span className="inline-block whitespace-nowrap font-bold bg-pink-600 text-white py-1 px-2 rounded border-2 border-slate-400">
           {row.discountPercentage || 0}%
         </span>
       ),
     },
-    { header: "អត្ថបទប៊ូតុង", accessor: "ctaText" },
+    { header: t('slides.ctaText'), accessor: "ctaText" },
     {
-      header: "ស្ថានភាព",
+      header: t('slides.status'),
       render: (row) => (
         <span
           className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
@@ -62,12 +64,12 @@ export default function AdminSlides() {
               : "bg-red-100 text-red-700"
           }`}
         >
-          {row.status === "Active" ? "សកម្ម" : "អសកម្ម"}
+          {row.status === "Active" ? t('slides.active') : t('slides.inactive')}
         </span>
       ),
     },
     {
-      header: "កាលបរិច្ឆេទបង្កើត",
+      header: t('slides.createdAt'),
       render: (row) => (
         <span className="text-sm text-slate-600">
           {row.createdAt
@@ -83,14 +85,14 @@ export default function AdminSlides() {
       ),
     },
     {
-      header: "សកម្មភាព",
+      header: t('common.actions'),
       align: "right",
       render: (row) => (
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
-            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
-            title="កែប្រែស្លាយ"
+            className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-600 transition-colors"
+            title={t('slides.editSlide')}
           >
             <Edit size={18} />
           </button>
@@ -105,7 +107,7 @@ export default function AdminSlides() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingSlide ? "កែប្រែស្លាយ" : "បន្ថែមស្លាយថ្មី"}
+        title={editingSlide ? t('slides.editSlide') : t('slides.addSlideTitle')}
       >
         <SlideForm initialData={editingSlide} onSubmit={handleSubmit} />
       </Modal>
@@ -113,8 +115,8 @@ export default function AdminSlides() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <PageHeader
-          title="បដាស្លាយ"
-          description="គ្រប់គ្រងស្លាយ និងក្រាហ្វិកផ្សព្វផ្សាយ។"
+          title={t('slides.pageTitle')}
+          description={t('slides.pageDescription')}
         />
       </div>
       <div className="overflow-x-auto bg-white border border-slate-200 rounded-2xl">

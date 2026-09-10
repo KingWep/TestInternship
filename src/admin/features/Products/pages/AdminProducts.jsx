@@ -12,8 +12,10 @@ import FilterBar from "../../../components/common/FilterBar";
 import DeleteButton from "../../../components/common/DeleteButton";
 import Pagination from "../../../components/common/Pagination";
 import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
+import { useTranslation } from "react-i18next";
 
 export default function AdminProducts() {
+  const { t } = useTranslation();
   const { data: categories = [], isPending: isCategoriesPending } = useCategoriesQuery();
 
   const {
@@ -43,7 +45,7 @@ export default function AdminProducts() {
 
   const columns = [
     {
-      header: "រូបភាព",
+      header: t('products.image'),
       render: (row) =>
         row.image ? (
           <img
@@ -53,13 +55,13 @@ export default function AdminProducts() {
           />
         ) : (
           <div className="h-16 w-16 min-w-[4rem] bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
-            គ្មានរូបភាព
+            {t('products.noImage')}
           </div>
         ),
     },
 
     {
-      header: "ឈ្មោះផលិតផល",
+      header: t('products.productName'),
       accessor: "name",
     },
 
@@ -69,12 +71,12 @@ export default function AdminProducts() {
     },
 
     {
-      header: "ប្រភេទ",
+      header: t('products.category'),
       accessor: "categoryName",
     },
 
     {
-      header: "តម្លៃដើម",
+      header: t('products.originalPrice'),
       render: (row) => (
         <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-slate-100 text-slate-600">
           ${Number(row.price).toFixed(2)}
@@ -82,7 +84,7 @@ export default function AdminProducts() {
       ),
     },
     {
-      header: "បញ្ចុះតម្លៃ",
+      header: t('products.discount'),
       render: (row) =>
         Number(row.discountPrice) > 0 ? (
           <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-700">
@@ -94,7 +96,7 @@ export default function AdminProducts() {
     },
 
     {
-      header: "តម្លៃលក់",
+      header: t('products.salePrice'),
       render: (row) => (
         <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700">
           ${Number(row.salePrice).toFixed(2)}
@@ -103,12 +105,12 @@ export default function AdminProducts() {
     },
 
     {
-      header: "ស្តុក",
+      header: t('products.stock'),
       accessor: "stockQuantity",
     },
 
     {
-      header: "ស្ថានភាព",
+      header: t('products.status'),
       render: (row) => {
         const status = getStockStatus(row.stockQuantity);
 
@@ -120,11 +122,11 @@ export default function AdminProducts() {
 
         const statusKhmer =
           status === "In Stock"
-            ? "មានក្នុងស្តុក"
+            ? t('products.inStock')
             : status === "Low Stock"
-              ? "ស្តុកតិច"
+              ? t('products.lowStock')
               : status === "Out of Stock"
-                ? "អស់ពីស្តុក"
+                ? t('products.outOfStock')
                 : status;
 
         return (
@@ -137,7 +139,7 @@ export default function AdminProducts() {
       },
     },
     {
-      header: "កាលបរិច្ឆេទបង្កើត",
+      header: t('products.createdAt'),
       render: (row) => (
         <span className="text-sm text-slate-600">
           {row.createdAt
@@ -154,14 +156,14 @@ export default function AdminProducts() {
     },
 
     {
-      header: "សកម្មភាព",
+      header: t('products.actions'),
       align: "right",
       render: (row) => (
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
             className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
-            title="កែប្រែផលិតផល"
+            title={t('products.editProduct')}
           >
             <Edit size={18} />
           </button>
@@ -180,7 +182,7 @@ export default function AdminProducts() {
   const productFilters = [
     {
       key: "category",
-      options: ["ទាំងអស់", ...categories.map((c) => c.name)],
+      options: [t('common.all'), ...categories.map((c) => c.name)],
       searchable: true,
     },
   ];
@@ -188,7 +190,7 @@ export default function AdminProducts() {
   const categoryFilters = [
     {
       key: "status",
-      options: ["ទាំងអស់", "In Stock", "Low Stock", "Out of Stock"],
+      options: [t('common.all'), "In Stock", "Low Stock", "Out of Stock"],
     },
   ];
 
@@ -197,15 +199,15 @@ export default function AdminProducts() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingProduct ? "កែប្រែផលិតផល" : "បន្ថែមផលិតផលថ្មី"}
+        title={editingProduct ? t('products.editProduct') : t('products.addProductTitle')}
       >
         <ProductsForm initialData={editingProduct} onSubmit={handleSubmit} />
       </Modal>
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <PageHeader
-          title="ផលិតផល"
-          description="គ្រប់គ្រងកាតាឡុកផលិតផល តម្លៃ និងស្តុក។"
+          title={t('products.pageTitle')}
+          description={t('products.pageDescription')}
         />
       </div>
 
@@ -229,7 +231,7 @@ export default function AdminProducts() {
               filters={[
                 {
                   key: "sort",
-                  options: ["ថ្មីបំផុតមុន", "A → Z", "Z → A"],
+                  options: [t('common.sortNewest'), t('common.sortAZ'), t('common.sortZA')],
                 },
               ]}
               values={{ sort: sortOrder }}
@@ -245,7 +247,7 @@ export default function AdminProducts() {
             <SearchBar
               value={search}
               onChange={handleSearchChange}
-              placeholder="ស្វែងរកផលិតផល..."
+              placeholder={t('products.searchPlaceholder')}
               className="w-full max-w-sm"
             />
 
@@ -256,9 +258,9 @@ export default function AdminProducts() {
             >
               <Plus size={16} className="mr-2" />
 
-              <span className="hidden md:inline">បន្ថែមផលិតផល</span>
+              <span className="hidden md:inline">{t('products.addProduct')}</span>
 
-              <span className="md:hidden">បន្ថែម</span>
+              <span className="md:hidden">{t('common.addBtn')}</span>
             </Button>
 
             <button
@@ -269,8 +271,8 @@ export default function AdminProducts() {
                   ? "bg-slate-100 border-slate-300 text-slate-700"
                   : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
               }`}
-              title="បង្ហាញតម្រង"
-              aria-label="បង្ហាញតម្រង"
+              title={t('common.showFilters')}
+              aria-label={t('common.showFilters')}
             >
               <SlidersHorizontal size={18} />
             </button>
@@ -303,7 +305,7 @@ export default function AdminProducts() {
                 filters={[
                   {
                     key: "sort",
-                    options: ["ថ្មីបំផុតមុន", "A → Z", "Z → A"],
+                    options: [t('common.sortNewest'), t('common.sortAZ'), t('common.sortZA')],
                   },
                 ]}
                 values={{ sort: sortOrder }}

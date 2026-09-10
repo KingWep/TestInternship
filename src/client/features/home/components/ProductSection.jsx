@@ -29,7 +29,10 @@ export default function ProductSection({ allProductsRef }) {
   const shouldHideHighlights = isSearching || isCategoryFiltered;
 
   const tabs = useMemo(() => {
-    return ["ទាំងអស់", ...categories.map((c) => c.name)];
+    return [
+      { name: "ទាំងអស់", image: null },
+      ...categories.map((c) => ({ name: c.name, image: c.image || null }))
+    ];
   }, [categories]);
 
   const matchPriceRange = (price) => {

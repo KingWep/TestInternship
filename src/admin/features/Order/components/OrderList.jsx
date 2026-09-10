@@ -1,6 +1,7 @@
 import React from "react";
-import { Phone, MapPin, Receipt, Printer, Clock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Phone, MapPin, Receipt, Printer, Clock, AlertCircle, Package } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   useUpdateOrderStatusMutation,
   useUpdateOrderPaymentStatusMutation,
@@ -10,6 +11,7 @@ import { ReceiptText, SquarePen } from "lucide-react";
 
 export default function OrderList({ orders, onEdit }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const updateOrderStatusMutation = useUpdateOrderStatusMutation();
   const updatePaymentStatusMutation = useUpdateOrderPaymentStatusMutation();
 
@@ -23,29 +25,32 @@ export default function OrderList({ orders, onEdit }) {
 
   const statusConfig = {
     Pending: {
-      styles: "bg-amber-100 text-amber-700",
-      label: "រង់ចាំ",
+      styles: "bg-amber-100 text-amber-800",
+      label: t('dashboard.statusPending'),
+      icon: <AlertCircle className="w-4 h-4 mr-1" />
     },
     Pickup: {
       styles: "bg-blue-100 text-blue-700",
-      label: "បានយកទំនិញ",
+      label: t('order.statusPickup'),
     },
     Delivering: {
-      styles: "bg-purple-100 text-purple-700",
-      label: "កំពុងដឹក",
+      styles: "bg-purple-100 text-purple-800",
+      label: t('dashboard.statusDelivering'),
+      icon: <Package className="w-4 h-4 mr-1" />
     },
     Completed: {
       styles: "bg-green-100 text-green-700",
-      label: "បានបញ្ចប់",
+      label: t('order.statusCompleted'),
     },
     Cancelled: {
-      styles: "bg-red-100 text-red-700",
-      label: "បានបោះបង់",
+      styles: "bg-rose-100 text-rose-800",
+      label: t('dashboard.statusCancelled'),
+      icon: <Package className="w-4 h-4 mr-1" />
     },
   };
   const columns = [
     {
-      header: "លេខសម្គាល់",
+      header: t('order.noLabel'),
       accessor: "id",
       render: (order) => (
         <div>
@@ -57,7 +62,7 @@ export default function OrderList({ orders, onEdit }) {
       ),
     },
     {
-      header: "អតិថិជន",
+      header: t('order.customer'),
       accessor: "customer",
       render: (order) => (
         <div>
@@ -75,7 +80,7 @@ export default function OrderList({ orders, onEdit }) {
       ),
     },
     {
-      header: "សរុប",
+      header: t('order.totalCol'),
       accessor: "totalAmount",
       render: (order) => {
         const total = Number(order.totalAmount || order.total || 0);
@@ -89,7 +94,7 @@ export default function OrderList({ orders, onEdit }) {
       },
     },
     {
-      header: "តម្លៃទំនិញ",
+      header: t('order.subtotal'),
       accessor: "subtotal",
       render: (order) => {
         const total = Number(order.totalAmount || 0);
@@ -103,7 +108,7 @@ export default function OrderList({ orders, onEdit }) {
       },
     },
     {
-      header: "សេវាដឹក",
+      header: t('order.deliveryFee'),
       accessor: "deliveryFee",
       render: (order) => (
         <div>
@@ -117,12 +122,12 @@ export default function OrderList({ orders, onEdit }) {
       ),
     },
     {
-      header: "ស្ថានភាព",
+      header: t('order.deliveryStatus'),
       accessor: "status",
       render: (order) => {
         const config = statusConfig[order.status] || {
           styles: "bg-gray-100 text-gray-700",
-          label: order.status || "មិនស្គាល់",
+          label: order.status || t('order.unknownStatus'),
         };
 
         return (
@@ -131,17 +136,17 @@ export default function OrderList({ orders, onEdit }) {
             onChange={(e) => updateOrderStatus(order.id, e.target.value)}
             className={`text-xs px-2.5 py-1.5 rounded-md font-bold outline-none cursor-pointer border-none ${config.styles}`}
           >
-            <option value="Pending">រង់ចាំ</option>
-            <option value="Pickup">បានយកទំនិញ</option>
-            <option value="Delivering">កំពុងដឹក</option>
-            <option value="Completed">បានបញ្ចប់</option>
-            <option value="Cancelled">បានបោះបង់</option>
+            {Object.entries(statusConfig).map(([key, config]) => (
+              <option key={key} value={key}>
+                {config.label}
+              </option>
+            ))}
           </select>
         );
       },
     },
     {
-      header: "ការទូទាត់",
+      header: t('common.paymentStatus'),
       accessor: "paymentStatus",
       render: (order) => (
         <select
@@ -150,13 +155,13 @@ export default function OrderList({ orders, onEdit }) {
           value={order.paymentStatus}
           onChange={(e) => updatePaymentStatus(order.id, e.target.value)}
         >
-          <option value="Unpaid">មិនទាន់ទូទាត់</option>
-          <option value="Paid">បានទូទាត់</option>
+          <option value="Unpaid">{t('order.unpaid')}</option>
+          <option value="Paid">{t('common.paid')}</option>
         </select>
       ),
     },
     {
-      header: "កាលបរិច្ឆេទបង្កើត",
+      header: t('order.date'),
       render: (row) => (
         <span className="text-sm text-slate-600">
           {row.createdAt
@@ -172,32 +177,32 @@ export default function OrderList({ orders, onEdit }) {
       ),
     },
     {
-      header: "សកម្មភាព",
+      header: t('common.actions'),
       accessor: "actions",
       align: "right",
       render: (order) => (
         <div className="flex justify-end gap-2">
           <button
             onClick={() => onEdit(order)}
-            className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-600 transition-colors"
-            title="កែប្រែ"
+            className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            title={t('order.edit')}
           >
             <SquarePen size={16} className="text-yellow-600" />
           </button>
-          <button
-            onClick={() => navigate(`/admin/print-receipt/${order.id}`)}
-            className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-colors"
-            title="វិក្កយបត្រ"
+          <Link
+            to={`/admin/print-receipt/${order?.orderNo}`}
+            className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+            title={t('order.receipt')}
           >
             <ReceiptText size={16} className="text-red-500" />
-          </button>
-          <button
-            onClick={() => navigate(`/admin/print-sticker/${order.id}`)}
-            className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-violet-50 hover:border-violet-300 hover:text-violet-600 transition-colors"
-            title="ស្ទីឃ័រ"
+          </Link>
+          <Link
+            to={`/admin/print-sticker/${order?.orderNo}`}
+            className="p-1.5 text-slate-500 hover:text-violet-600 hover:bg-violet-50 rounded transition-colors"
+            title={t('order.sticker')}
           >
             <Printer size={16} className="text-violet-500" />
-          </button>
+          </Link>
         </div>
       ),
     },

@@ -6,18 +6,18 @@ export const saleFormSchema = z.object({
     .trim()
     .transform((val) => val.replace(/\s+/g, '')) // Remove spaces just in case
     .transform((val) => val.startsWith('0') ? val.slice(1) : val) // Remove leading 0 if any
-    .refine((val) => /^\d{8,9}$/.test(val), "សូមបញ្ចូលលេខទូរស័ព្ទត្រឹមត្រូវ (8-9 ខ្ទង់)")
+    .refine((val) => /^\d{8,9}$/.test(val), "common.invalidPhoneLength")
     .transform((val) => `+855${val}`), // Transform to E.164 format
 
   address: z
     .string()
     .trim()
-    .min(2, "សូមបញ្ចូលអាសយដ្ឋាន"),
+    .min(2, "validation.requiredAddress"),
 
   deliveryFee: z
     .coerce
     .number()
-    .min(0, "សេវាដឹកជញ្ជូនមិនអាចអវិជ្ជមានបានទេ")
+    .min(0, "validation.shippingFeeNegative")
     .optional(),
   deliveryProviderId: z
     .union([z.string(), z.number()])

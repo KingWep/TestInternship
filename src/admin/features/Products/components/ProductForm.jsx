@@ -10,11 +10,13 @@ import {
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import { productSchema } from "../schemas/productSchema";
 import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
 
 export default function ProductsForm({ onSubmit, initialData }) {
+  const { t } = useTranslation();
   const { data: categories = [] } = useCategoriesQuery();
 
   const [discountPercentage, setDiscountPercentage] = useState(0);
@@ -262,13 +264,13 @@ export default function ProductsForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ឈ្មោះផលិតផល {!isEditing && "*"}
+            {t('products.productNameLabel')} {!isEditing && "*"}
           </label>
 
           <input
             type="text"
             {...register("name")}
-            placeholder="ឈ្មោះផលិតផល"
+            placeholder={t('products.productNamePlaceholder')}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
 
@@ -278,7 +280,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
         </div>
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ប្រភេទ {!isEditing && "*"}
+            {t('products.categoryLabel')} {!isEditing && "*"}
           </label>
 
           <SearchableCategorySelect
@@ -302,7 +304,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ស្តុក
+            {t('products.stockLabel')}
           </label>
 
           <input
@@ -321,7 +323,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
         </div>
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            តម្លៃដើម ($)
+            {t('products.originalPriceLabel')}
           </label>
 
           <input
@@ -343,7 +345,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <label className="text-xs font-semibold text-gray-600">
-              បញ្ចុះតម្លៃ ($)
+              {t('products.discountLabel')}
             </label>
 
             <span className="text-xs text-red-600">
@@ -369,7 +371,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            តម្លៃលក់ ($)
+            {t('products.salePriceLabel')}
           </label>
 
           <input
@@ -383,13 +385,13 @@ export default function ProductsForm({ onSubmit, initialData }) {
 
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1">
-          ការពិពណ៌នា
+          {t('products.descriptionLabel')}
         </label>
 
         <textarea
           {...register("description")}
           rows="3"
-          placeholder="ការពិពណ៌នាផលិតផល..."
+          placeholder={t('products.descriptionPlaceholder')}
           className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none resize-none focus:ring-2 focus:ring-gray-200"
         />
 
@@ -401,7 +403,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
       <div>
         <div className="flex items-center justify-between mb-2">
           <label className="block text-xs font-semibold text-gray-600">
-            រូបភាពផលិតផល
+            {t('products.productImagesLabel')}
             {totalImageCount > 0 && (
               <span className="ml-1 text-blue-500">({totalImageCount})</span>
             )}
@@ -430,7 +432,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 cursor-pointer transition-colors"
           >
             <ImagePlus size={14} />
-            បន្ថែមរូបភាព
+            {t('products.addImage')}
           </label>
         </div>
 
@@ -450,7 +452,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
                   type="button"
                   onClick={() => removeImage(index)}
                   className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md hover:bg-red-600 z-10"
-                  title="លុបរូបភាព"
+                  title={t('common.deleteImage')}
                 >
                   <X size={11} strokeWidth={3} />
                 </button>
@@ -459,14 +461,14 @@ export default function ProductsForm({ onSubmit, initialData }) {
                   type="button"
                   onClick={() => handleImageReplaceClick(index)}
                   className="absolute -top-2 -left-0 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-md hover:bg-blue-600 z-10"
-                  title="ផ្លាស់ប្តូររូបភាព"
+                  title={t('common.changeImage')}
                 >
                   <RefreshCw size={11} strokeWidth={3} />
                 </button>
 
                 {image.isNew && (
                   <span className="absolute bottom-1 right-1 text-[9px] bg-green-500 text-white px-1 rounded">
-                    ថ្មី
+                    {t('common.new')}
                   </span>
                 )}
               </div>
@@ -479,13 +481,11 @@ export default function ProductsForm({ onSubmit, initialData }) {
           >
             <ImagePlus size={24} />
 
-            <span className="text-xs font-medium">
-              ចុចដើម្បីបន្ថែមរូបភាពផលិតផល
-            </span>
+            <p className="font-medium">{t('products.clickToAddImage')}</p>
 
-            <span className="text-[10px]">
-              គាំទ្រ JPG, PNG, WEBP — Max 5MB/image
-            </span>
+            <p className="mt-1 text-[10px]">
+              {t('products.supportedImageFormats')}
+            </p>
           </label>
         )}
       </div>
@@ -497,7 +497,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
         >
           <Save size={16} />
 
-          {isEditing ? "ធ្វើបច្ចុប្បន្នភាពផលិតផល" : "រក្សាទុកផលិតផល"}
+          {isEditing ? t('products.updateProductBtn') : t('products.saveProductBtn')}
         </button>
       </div>
     </form>
@@ -548,7 +548,7 @@ function SearchableCategorySelect({ categories, value, onChange }) {
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className={selectedCategory ? "text-gray-900" : "text-gray-500"}>
-          {selectedCategory ? selectedCategory.name : "ជ្រើសរើសប្រភេទ"}
+          {selectedCategory ? selectedCategory.name : t('products.selectCategory')}
         </span>
 
         <ChevronDown
@@ -570,7 +570,7 @@ function SearchableCategorySelect({ categories, value, onChange }) {
             <input
               type="text"
               className="w-full pl-8 pr-3 py-1.5 text-sm bg-gray-50 rounded-md outline-none"
-              placeholder="ស្វែងរកប្រភេទ..."
+              placeholder={t('products.searchCategoryPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onClick={(e) => e.stopPropagation()}
@@ -583,7 +583,7 @@ function SearchableCategorySelect({ categories, value, onChange }) {
               className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50"
               onClick={() => handleSelect("")}
             >
-              ជ្រើសរើសប្រភេទ
+              {t('products.selectCategory')}
             </div>
 
             {filteredCategories.length > 0 ? (
@@ -602,7 +602,7 @@ function SearchableCategorySelect({ categories, value, onChange }) {
               ))
             ) : (
               <div className="px-3 py-4 text-sm text-gray-500 text-center">
-                គ្មានលទ្ធផលសម្រាប់ "{search}"
+                {t('common.noResultsFor')} "{search}"
               </div>
             )}
           </div>

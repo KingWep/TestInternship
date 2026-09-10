@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useCategoriesQuery, useCreateCategoryMutation, useUpdateCategoryMutation, useDeleteCategoryMutation } from '../../../../queries/categories/useCategoryQueries'
 import Swal from 'sweetalert2'
+import { useTranslation } from 'react-i18next'
 
 const ITEMS_PER_PAGE = 5
 
 export function useCategories() {
+  const { t } = useTranslation()
   const { data: categories = [], isLoading: isCategoriesLoading } = useCategoriesQuery()
   const createMutation = useCreateCategoryMutation()
   const updateMutation = useUpdateCategoryMutation()
@@ -28,7 +30,7 @@ export function useCategories() {
 
       const matchStatus =
         filters.status === '' ||
-        filters.status === 'ទាំងអស់' ||
+        filters.status === 'All' ||
         (category.status && category.status === filters.status)
 
       return matchSearch && matchStatus
@@ -81,8 +83,8 @@ export function useCategories() {
         await updateMutation.mutateAsync({ id: editingCategory.id, data: payload })
         Swal.fire({
           icon: 'success',
-          title: 'ជោគជ័យ',
-          text: 'Category updated successfully!',
+          title: t('common.success'),
+          text: t('category.updateSuccess'),
           timer: 1500,
           showConfirmButton: false
         })
@@ -90,8 +92,8 @@ export function useCategories() {
         await createMutation.mutateAsync(payload)
         Swal.fire({
           icon: 'success',
-          title: 'ជោគជ័យ',
-          text: 'Category added successfully!',
+          title: t('common.success'),
+          text: t('category.addSuccess'),
           timer: 1500,
           showConfirmButton: false
         })
@@ -103,7 +105,7 @@ export function useCategories() {
       console.error('Error saving category:', error)
       Swal.fire({
         icon: 'error',
-        title: `Error ${error?.response?.status || ''}`,
+        title: `${t('common.error')} ${error?.response?.status || ''}`,
         text: backendMsg,
       })
     }
@@ -116,22 +118,22 @@ export function useCategories() {
 
   const handleDelete = (id) => {
     Swal.fire({
-      title: 'តើអ្នកប្រាកដទេ?',
-      text: "អ្នកនឹងមិនអាចទាញទិន្នន័យនេះមកវិញបានទេ!",
+      title: t('common.areYouSure'),
+      text: t('common.cannotRevert'),
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'បាទ/ចាស លុបវា',
-      cancelButtonText: 'បោះបង់'
+      confirmButtonText: t('common.yesDeleteIt'),
+      cancelButtonText: t('common.cancel')
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await deleteMutation.mutateAsync(id)
-          Swal.fire('លុបបានជោគជ័យ!', 'ទិន្នន័យត្រូវបានលុប.', 'success')
+          Swal.fire(t('common.deletedSuccess'), t('common.dataDeleted'), 'success')
         } catch (error) {
           console.error('Error deleting category:', error)
-          Swal.fire('បរាជ័យ!', 'មានបញ្ហាក្នុងការលុបទិន្នន័យ.', 'error')
+          Swal.fire(t('common.failed'), t('common.deleteError'), 'error')
         }
       }
     })

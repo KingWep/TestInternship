@@ -12,8 +12,11 @@ import SearchBar from '../../../components/common/SearchBar'
 import FilterBar from '../../../components/common/FilterBar'
 import DataCardSkeletonGrid from '../../../components/common/DataCardSkeleton'
 import useSalesForm from '../hooks/useSalesForm'
+import { Search, ShoppingBag, ArrowRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export default function AdminSaleForm() {
+  const { t } = useTranslation()
   const {
     search,
     setSearch,
@@ -68,16 +71,16 @@ export default function AdminSaleForm() {
     <div className="flex flex-col lg:h-[calc(100vh-8rem)] gap-4 h-auto">
 
       <div className="flex flex-col lg:flex-row lg:items-center justify-between flex-shrink-0 gap-4">
-        <PageHeader
-          title="ទម្រង់លក់ទំនិញ"
-          description="កត់ត្រា និងគ្រប់គ្រងប្រតិបត្តិការលក់ប្រកបដោយប្រសិទ្ធភាព។"
+        <PageHeader 
+          title={t('sales.title')}
+          description={t('sales.description')}
         />
         <div className="w-full lg:w-[70%] flex flex-row items-center gap-2 lg:gap-3 lg:justify-end bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex-1 min-w-0">
             <SearchBar
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="ស្វែងរកទំនិញ..."
+              placeholder={t('sales.searchProduct')}
               className="w-full"
             />
           </div>
@@ -107,8 +110,8 @@ export default function AdminSaleForm() {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-white rounded-xl border border-slate-200 border-dashed h-full min-h-[300px] py-8">
               <PackageOpen size={64} className="mb-4 text-slate-300" strokeWidth={1.5} />
-              <h3 className="text-lg font-medium text-slate-600 mb-1">រកមិនឃើញទំនិញ</h3>
-              <p className="text-sm">សូមព្យាយាមផ្លាស់ប្តូរការស្វែងរក ឬការដាក់កម្រិតរបស់អ្នក។</p>
+              <h3 className="text-lg font-medium text-slate-600 mb-1">{t('sales.noProductFound')}</h3>
+              <p className="text-sm">{t('sales.changeSearchOrFilter')}</p>
             </div>
           )}
         </div>
@@ -121,7 +124,7 @@ export default function AdminSaleForm() {
           <div className="lg:hidden flex items-center justify-between mb-4 bg-white p-3 rounded-xl border border-slate-200 shadow-sm sticky top-0 z-10 flex-shrink-0">
             <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
               <ShoppingCart size={20} className="text-blue-600" /> 
-              ពិនិត្យមើលការបញ្ជាទិញ
+              {t('sales.reviewOrder')}
             </h2>
             <button onClick={() => setIsCartOpen(false)} className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors">
               <X size={20} />
@@ -157,9 +160,9 @@ export default function AdminSaleForm() {
           className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-3xl py-3 px-4 font-bold flex items-center justify-between transition-colors shadow-md"
         >
             <span className="bg-white/25 text-white px-2.5 py-0.5 rounded-lg text-sm">
-              {cart.length} មុខទំនិញ
+              {cart.length} {t('sales.items')}
             </span>
-            <span className="text-lg font-semibold">ពិនិត្យការបញ្ជាទិញ</span>
+            <span className="text-lg font-semibold">{t('sales.reviewOrder')}</span>
             <span className="text-lg">${subtotal.toFixed(2)}</span>
         </button>
       </div>

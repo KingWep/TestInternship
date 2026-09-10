@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -20,6 +21,7 @@ import Swal from "sweetalert2";
 import { useSettingsQuery } from "../../../queries/settings/useSettingQueries";
 
 export default function AdminSidebar({ sidebarState, setSidebarState }) {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const shopCode = user?.shop?.code;
   const { data: settingData = {}, isLoading } = useSettingsQuery(shopCode);
@@ -37,13 +39,14 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
 
   const handleLogout = () => {
     Swal.fire({
-      title: "តើអ្នកពិតជាចង់ចាកចេញមែនទេ?",
+      title: t('common.logoutConfirmationTitle'),
+      text: t('common.logoutConfirmationText'),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "ចាកចេញ",
-      cancelButtonText: "បោះបង់",
+      confirmButtonText: t('common.logout'),
+      cancelButtonText: t('common.cancel'),
     }).then((result) => {
       if (result.isConfirmed) {
         logout();
@@ -87,32 +90,32 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
   const isHidden = sidebarState === 0;
   const menuSections = [
     {
-      title: "ចម្បង",
+      title: t('navigation.main'),
       items: [
-        { label: "ផ្ទាំងគ្រប់គ្រង", path: "/admin", icon: LayoutDashboard },
-        { label: "ការបញ្ជាទិញ", path: "/admin/orders", icon: ClipboardList },
-        { label: "ទម្រង់លក់", path: "/admin/sale-form", icon: PlusCircle },
+        { label: t('navigation.dashboard'), path: "/admin", icon: LayoutDashboard },
+        { label: t('navigation.orders'), path: "/admin/orders", icon: ClipboardList },
+        { label: t('navigation.saleForm'), path: "/admin/sale-form", icon: PlusCircle },
       ],
     },
     {
-      title: "កាតាឡុក",
+      title: t('navigation.catalog'),
       items: [
-        { label: "ផលិតផល", path: "/admin/products", icon: ShoppingBag },
-        { label: "ប្រភេទ", path: "/admin/categories", icon: Layers },
-        { label: "ស្លាយ", path: "/admin/slides", icon: Image },
+        { label: t('navigation.products'), path: "/admin/products", icon: ShoppingBag },
+        { label: t('navigation.categories'), path: "/admin/categories", icon: Layers },
+        { label: t('navigation.slides'), path: "/admin/slides", icon: Image },
       ],
     },
     {
-      title: "ប្រព័ន្ធ",
+      title: t('navigation.system'),
       items: [
-        { label: "អ្នកប្រើប្រាស់", path: "/admin/users", icon: Users },
+        { label: t('navigation.users'), path: "/admin/users", icon: Users },
         {
-          label: "អ្នកដឹកជញ្ជូន",
+          label: t('navigation.deliveryProviders'),
           path: "/admin/delivery-providers",
           icon: Truck,
         },
-        { label: "QR Code", path: "/admin/qr-code", icon: QrCode },
-        { label: "ការកំណត់", path: "/admin/settings", icon: Settings },
+        { label: t('navigation.qrCode'), path: "/admin/qr-code", icon: QrCode },
+        { label: t('navigation.settings'), path: "/admin/settings", icon: Settings },
       ],
     },
   ];
@@ -267,7 +270,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
           <button
             onClick={handleLogout}
             className="w-full flex items-center px-4 py-3 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors duration-200 relative group overflow-hidden"
-            title="ចាកចេញ (Logout)"
+            title={t('common.logout')}
           >
             <div className="flex items-center min-w-0">
               <LogOut size={18} className="shrink-0" />
@@ -279,14 +282,14 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
                 }`}
               >
                 <span className="whitespace-nowrap overflow-hidden leading-normal">
-                  ចាកចេញ
+                  {t('common.logout')}
                 </span>
               </div>
             </div>
 
             {!isFull && sidebarState !== 0 && (
               <div className="absolute left-[calc(100%+8px)] px-2.5 py-1.5 bg-blue-900 text-white text-xs rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 z-50 whitespace-nowrap shadow-xl border border-blue-800">
-                <div>ចាកចេញ</div>
+                <div>{t('common.logout')}</div>
               </div>
             )}
           </button>

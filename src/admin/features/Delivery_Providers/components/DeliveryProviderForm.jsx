@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Save, Image as ImageIcon, Upload } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { deliveryProviderSchema } from "../schemas/delivery_providerSchema";
 
 export default function DeliveryProviderForm({ onSubmit, initialData }) {
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -67,8 +69,9 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ឈ្មោះអ្នកដឹកជញ្ជូន *
+          <label className="text-sm font-semibold text-slate-700 flex items-center justify-between">
+            {t('delivery.providerName')} *
+            {errors.name && <span className="text-rose-500 text-xs font-medium">{t(errors.name.message)}</span>}
           </label>
           <input
             type="text"
@@ -76,14 +79,12 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
             placeholder="J&T, Vireak Buntham..."
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
-          {errors.name && (
-            <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
-          )}
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            លេខទូរស័ព្ទ *
+          <label className="text-sm font-semibold text-slate-700 flex items-center justify-between">
+            {t('delivery.phone')} *
+            {errors.phone && <span className="text-rose-500 text-xs font-medium">{t(errors.phone.message)}</span>}
           </label>
           <input
             type="text"
@@ -91,16 +92,14 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
             placeholder="012345678"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
-          {errors.phone && (
-            <p className="text-xs text-red-500 mt-1">{errors.phone.message}</p>
-          )}
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            តម្លៃសេវាដឹក (Shipping Fee) *
+          <label className="text-sm font-semibold text-slate-700 flex items-center justify-between">
+            {t('delivery.shippingFee')} *
+            {errors.shipping_fee && <span className="text-rose-500 text-xs font-medium">{t(errors.shipping_fee.message)}</span>}
           </label>
           <input
             type="number"
@@ -109,16 +108,11 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
             placeholder="2.50"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
-          {errors.shipping_fee && (
-            <p className="text-xs text-red-500 mt-1">
-              {errors.shipping_fee.message}
-            </p>
-          )}
         </div>
 
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ស្ថានភាព
+        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+          <label className="text-sm font-semibold text-slate-700">
+            {t('common.status')}
           </label>
           <div className="flex items-center h-full pt-1">
             <label className="relative inline-flex items-center cursor-pointer">
@@ -129,23 +123,23 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
                 onChange={(e) => setValue("is_active", e.target.checked ? 1 : 0)}
               />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              <span className="ml-3 text-sm font-medium text-gray-700">
-                {watch("is_active") ? "ដំណើរការ (Active)" : "ផ្អាក (Inactive)"}
+              <span className={`ml-3 text-sm font-medium ${watch("is_active") ? 'text-blue-600' : 'text-slate-500'}`}>
+                {watch("is_active") ? t('common.statusActive') : t('common.statusInactive')}
               </span>
             </label>
           </div>
         </div>
       </div>
 
-      <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1">
-          រូបភាព Logo
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-slate-700 flex items-center justify-between">
+          {t('delivery.logo')}
         </label>
         <div className="flex items-center gap-3">
           <label className="flex-1 flex items-center gap-2 px-3 py-2 text-sm bg-gray-50 rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition">
             <Upload size={16} className="text-gray-500" />
-            <span className="text-gray-500 truncate">
-              {watch("logo")?.name ? watch("logo").name : "ជ្រើសរើសរូបភាព..."}
+            <span className="flex-1 truncate text-left text-slate-600 font-medium group-hover:text-slate-800 transition-colors">
+              {watch("logo")?.name ? watch("logo").name : t('common.selectImage')}
             </span>
             <input
               type="file"
@@ -169,7 +163,7 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
         </div>
         {errors.logo && (
           <p className="text-xs text-red-500 mt-1">
-            {errors.logo.message}
+            {errors.logo?.message ? t(errors.logo.message) : ""}
           </p>
         )}
       </div>
@@ -177,10 +171,9 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
       <div className="flex justify-end pt-2">
         <button
           type="submit"
-          className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+          className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200"
         >
-          <Save size={16} />
-          {isEditing ? "ធ្វើបច្ចុប្បន្នភាព" : "រក្សាទុក"}
+          {isEditing ? t('common.updateBtn') : t('common.saveBtn')}
         </button>
       </div>
     </form>

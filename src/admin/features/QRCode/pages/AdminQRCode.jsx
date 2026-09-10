@@ -9,8 +9,10 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 
 export default function AdminQRCode() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [copied, setCopied] = useState(false);
   const qrRef = useRef(null);
@@ -25,14 +27,7 @@ export default function AdminQRCode() {
       await navigator.clipboard.writeText(shopUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "success",
-        title: "បានចម្លងតំណភ្ជាប់ (Copied)",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: t('qrcode.copiedLink'), showConfirmButton: false, timer: 1500 });
     } catch (err) {
       console.error("Failed to copy", err);
     }
@@ -77,10 +72,10 @@ export default function AdminQRCode() {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="bg-amber-50 border border-amber-200 text-amber-800 p-6 rounded-2xl flex flex-col items-center justify-center text-center">
           <QrCodeIcon size={48} className="text-amber-400 mb-4" />
-          <h2 className="text-xl font-bold mb-2">មិនទាន់មានលេខកូដហាងទេ</h2>
-          <p>
-            សូមចូលទៅកាន់ការកំណត់ (Settings) ដើម្បីបញ្ចូលលេខកូដហាង មុនពេលបង្កើត
-            QR Code។
+          <h2 className="text-xl font-bold mb-2">{t('qrcode.noStoreCode')}</h2>
+          <p className="text-slate-500 max-w-sm text-center">
+            {t('qrcode.pleaseSetStoreCode1')}{" "}
+            {t('qrcode.pleaseSetStoreCode2')}
           </p>
         </div>
       </div>
@@ -96,11 +91,11 @@ export default function AdminQRCode() {
             <QrCodeIcon className="w-10 h-10 md:w-16 md:h-16" />
           </div>
           <div>
-            <h1 className="text-base sm:text-lg font-extrabold text-slate-900">
-              QR Code ហាង (Store QR Code)
-            </h1>
-            <p className="text-base md:text-lg text-nowrap text-slate-500 md:mt-0.5">
-              សម្រាប់អតិថិជនស្កេនដើម្បីចូលទៅកាន់ហាងរបស់អ្នក
+            <h3 className="text-lg font-bold text-slate-800 mb-1">
+              {t('qrcode.storeQRCode')}
+            </h3>
+            <p className="text-sm text-slate-500 mb-6">
+              {t('qrcode.scanToVisitStore')}
             </p>
           </div>
         </div>
@@ -129,7 +124,7 @@ export default function AdminQRCode() {
               className="flex items-center gap-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md shadow-blue-500/30 transition-all active:scale-95"
             >
               <Download size={18} />
-              ទាញយកជាទម្រង់រូបភាព
+              {t('qrcode.downloadAsImage')}
             </button>
           </div>
         </div>
@@ -138,11 +133,11 @@ export default function AdminQRCode() {
         <div className="bg-white border border-slate-200/80 rounded-2xl sm:rounded-xl p-4 sm:p-6 md:p-8 shadow-sm space-y-4 sm:space-y-6 flex flex-col justify-between">
           {/* Header Section */}
           <div>
-            <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-1 sm:mb-2">
-              តំណភ្ជាប់ហាង (Store Link)
+            <h3 className="text-lg font-bold text-slate-800 mb-1">
+              {t('qrcode.storeLink')}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-              អ្នកអាចថតចម្លងតំណភ្ជាប់ខាងក្រោម ដើម្បីផ្ញើទៅកាន់អតិថិជនរបស់អ្នក។
+            <p className="text-sm text-slate-500 mb-6">
+              {t('qrcode.copyLinkToSend')}
             </p>
           </div>
 
@@ -175,19 +170,13 @@ export default function AdminQRCode() {
             }`}
           >
             {copied ? (
-              <>
-                <CheckCircle2
-                  size={16}
-                  className="sm:w-[18px] sm:h-[18px] shrink-0"
-                />
-                <span>បានចម្លងរួចរាល់</span>
-              </>
-            ) : (
-              <>
-                <Copy size={16} className="sm:w-[18px] sm:h-[18px] shrink-0" />
-                <span className="truncate">ថតចម្លងតំណភ្ជាប់ (Copy Link)</span>
-              </>
-            )}
+                <span>{t('qrcode.copied')}</span>
+              ) : (
+                <>
+                  <Copy size={16} className="shrink-0" />
+                  <span className="truncate">{t('qrcode.copyLink')}</span>
+                </>
+              )}
           </button>
         </div>
       </div>

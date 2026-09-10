@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 
 import { useCart } from "../../../../context/CartContext"
 import { useCreateOrderMutation } from "../../../../queries/orders/useOrderQueries"
+import { sendOrderToTelegram } from "../../../../services/telegramService"
 
 import CartHeader from "./CartHeader"
 import CartItemList from "./CartItemList"
@@ -94,7 +95,14 @@ export default function CartDrawer() {
 
     try {
       const newOrder = await handleCreateOrder(formattedPhone)
-      startQrPayment(newOrder.id)
+      
+      try {
+        await sendOrderToTelegram(newOrder)
+      } catch (err) {
+        console.error('Failed to send order to Telegram:', err)
+      }
+
+      startQrPayment(newOrder.orderNo)
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -110,6 +118,12 @@ export default function CartDrawer() {
       const newOrder = await handleCreateOrder(formattedPhone)
       resetCheckoutForm()
       
+      try {
+        await sendOrderToTelegram(newOrder)
+      } catch (err) {
+        console.error('Failed to send order to Telegram:', err)
+      }
+
       await Swal.fire({
         icon: "success",
         title: "បញ្ជាទិញជោគជ័យ 🎉",
@@ -131,7 +145,7 @@ export default function CartDrawer() {
       })
 
       if (result.isConfirmed) {
-        navigate(`/print-receipt/${newOrder.id}`)
+        navigate(`/print-receipt/${newOrder.orderNo}`)
       } else {
         setIsCartOpen(false)
       }

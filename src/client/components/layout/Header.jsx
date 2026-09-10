@@ -5,13 +5,17 @@ import { useSearch } from "../../../context/SearchContext";
 import { useCart } from "../../../context/CartContext";
 import { Link, useParams } from "react-router-dom";
 import { usePublicSettingsQuery } from "../../../queries/settings/useSettingQueries";
+import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 export default function Header() {
+  const { t } = useTranslation();
   const { searchItem, setSearchItem, priceRange, setPriceRange } = useSearch();
   const { cartCount, setIsCartOpen } = useCart();
   const { shop_code } = useParams();
 
   const { data: settingData, isLoading } = usePublicSettingsQuery(shop_code);
+  console.log("SETTING DATA:", settingData);
 
   const [imgError, setImgError] = useState(false);
 
@@ -58,7 +62,8 @@ export default function Header() {
               )}
             </div>
 
-            <div className="flex items-center gap-4 md:hidden">
+            <div className="flex items-center gap-2 md:hidden">
+              <LanguageSwitcher/>
               <button
                 className="relative"
                 onClick={() => setIsCartOpen(true)}
@@ -83,22 +88,23 @@ export default function Header() {
                 type="text"
                 value={searchItem}
                 onChange={(e) => setSearchItem(e.target.value)}
-                placeholder="ស្វែងរក..."
+                placeholder={t('common.search')}
                 className="w-full bg-slate-100 rounded-md md:rounded-full pl-9 md:pl-11 pr-3 py-0 md:py-2 text-base leading-khmer outline-none focus:ring-2 focus:ring-red-400 placeholder:text-slate-400 transition-all"
               />
             </div>
 
+            <LanguageSwitcher className="hidden md:block" />
             <select
               value={priceRange}
               onChange={(e) => setPriceRange(e.target.value)}
               className="text-sm border border-slate-200 rounded-md md:rounded-lg px-2 py-2 md:px-3 outline-none focus:ring-2 focus:ring-red-400 bg-white"
               aria-label="Filter by price"
             >
-              <option value="all">តម្លៃទាំងអស់</option>
-              <option value="under-20">ក្រោម $20</option>
-              <option value="20-50">$20 - $50</option>
-              <option value="50-100">$50 - $100</option>
-              <option value="over-100">លើស $100</option>
+              <option value="all">{t('common.allPrices')}</option>
+              <option value="under-20">{t('common.under20')}</option>
+              <option value="20-50">{t('common.20to50')}</option>
+              <option value="50-100">{t('common.50to100')}</option>
+              <option value="over-100">{t('common.over100')}</option>
             </select>
           </div>
 

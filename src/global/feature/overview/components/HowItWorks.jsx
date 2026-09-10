@@ -1,31 +1,33 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const HowItWorks = () => {
+  const { t } = useTranslation();
   const steps = [
     {
-      num: "០១",
-      title: "ការស្វែងរករបស់អតិថិជន",
-      description: "អតិថិជនរុករកទំនិញនៅលើហាងអនឡាញរបស់អ្នក ជាមួយនឹងបទពិសោធន៍ដ៏ទាក់ទាញ។",
+      num: t('overview.step1Num'),
+      title: t('overview.step1Title'),
+      description: t('overview.step1Desc'),
     },
     {
-      num: "០២",
-      title: "ការបញ្ជាទិញប្រកបដោយសុវត្ថិភាព",
-      description: "ប្រតិបត្តិការទូទាត់រលូន ជាមួយនឹងការបញ្ជាក់ការបញ្ជាទិញភ្លាមៗ។",
+      num: t('overview.step2Num'),
+      title: t('overview.step2Title'),
+      description: t('overview.step2Desc'),
     },
     {
-      num: "០៣",
-      title: "ធ្វើសមកាលកម្មទិន្នន័យ",
-      description: "Chomnenh បញ្ជូនទិន្នន័យការបញ្ជាទិញទៅប្រព័ន្ធកណ្តាល និងកាត់ស្តុកដោយស្វ័យប្រវត្តិ។",
+      num: t('overview.step3Num'),
+      title: t('overview.step3Title'),
+      description: t('overview.step3Desc'),
     },
     {
-      num: "០៤",
-      title: "ជូនដំណឹងលើ Dashboard",
-      description: "ក្រុមការងាររបស់អ្នកទទួលបានសារជូនដំណឹងភ្លាមៗនៅលើផ្ទាំងគ្រប់គ្រងដើម្បីចាប់ផ្តើមរៀបចំអីវ៉ាន់។",
+      num: t('overview.step4Num'),
+      title: t('overview.step4Title'),
+      description: t('overview.step4Desc'),
     },
     {
-      num: "០៥",
-      title: "ការវិភាគ & កំណើន",
-      description: "ទិន្នន័យពីការលក់នឹងត្រូវបញ្ចូលទៅក្នុងរបាយការណ៍ ជួយអ្នកក្នុងការសម្រេចចិត្តប្រកបដោយប្រសិទ្ធភាព។",
+      num: t('overview.step5Num'),
+      title: t('overview.step5Title'),
+      description: t('overview.step5Desc'),
     }
   ];
 
@@ -34,13 +36,13 @@ const HowItWorks = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-20 font-kantumruy">
           <h2 className="text-sm font-bold tracking-widest text-indigo-600 uppercase mb-3">
-            លំហូរការងារ
+            {t('overview.workflow')}
           </h2>
           <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            របៀបដែល Chomnenh ដំណើរការ
+            {t('overview.howItWorksTitle')}
           </h3>
           <p className="text-lg text-[#94A3B8]">
-            ទិដ្ឋភាពមួយជំហានម្តងៗ អំពីរបៀបដែលទិន្នន័យផ្លាស់ទីដោយសុវត្ថិភាព ពីការចុចទិញរបស់អតិថិជន រហូតដល់របាយការណ៍ប្រាក់ចំណេញរបស់អ្នក។
+            {t('overview.howItWorksSubtitle')}
           </p>
         </div>
 

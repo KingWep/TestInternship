@@ -5,12 +5,14 @@ import { sendOrderToTelegram } from '../../../../services/telegramService'
 
 import { useProductsQuery } from '../../../../queries/products/useProductQueries'
 import { useCategoriesQuery } from '../../../../queries/categories/useCategoryQueries'
+import { useTranslation } from 'react-i18next'
 
 // ─── Initial state helpers ─────
 const INITIAL_CUSTOMER = { name: '', phone: '', address: '', deliveryFee: '' }
 
 // ─── Hook ──
 export default function useSalesForm() {
+  const { t } = useTranslation()
   const { data: products = [], isPending: isProductsLoading } = useProductsQuery()
   const { data: categories = [], isPending: isCategoriesLoading } = useCategoriesQuery()
   const createOrderMutation = useCreateOrderMutation()
@@ -22,9 +24,9 @@ export default function useSalesForm() {
 
   // ── Dynamic category filter 
   const filterOptions = useMemo(() => {
-    const uniqueCategories = ['ទាំងអស់', ...categories.map(c => c.name)]
+    const uniqueCategories = [t('common.all'), ...categories.map(c => c.name)]
     return [{ key: 'category', options: uniqueCategories, searchable: true }]
-  }, [categories])
+  }, [categories, t])
 
   // ── Filter change handler ──
   const handleFilterChange = (key, value) => {
@@ -71,10 +73,10 @@ export default function useSalesForm() {
     if (cart.length === 0) {
       Swal.fire({
         icon: 'warning',
-        title: 'Cart is Empty!',
-        text: 'Please add at least one product before placing an order.',
+        title: t('common.cartEmpty'),
+        text: t('common.addProductsFirst'),
         confirmButtonColor: '#3b82f6',
-        confirmButtonText: 'Got it',
+        confirmButtonText: t('common.gotIt'),
       })
       return null
     }
@@ -91,8 +93,8 @@ export default function useSalesForm() {
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'បរាជ័យ (Failed)',
-        text: 'មានបញ្ហាក្នុងការបង្កើតការបញ្ជាទិញ។',
+        title: t('common.failed'),
+        text: t('sales.createOrderError'),
         confirmButtonColor: '#3b82f6',
       })
       return null
@@ -113,9 +115,9 @@ export default function useSalesForm() {
     // ── Success alert ──────
     Swal.fire({
       icon: 'success',
-      title: 'Order Placed Successfully!🎉',
+      title: t('sales.orderSuccess'),
       confirmButtonColor: '#3b82f6',
-      confirmButtonText: 'Great!',
+      confirmButtonText: t('common.great'),
       showClass: {
         popup: 'animate__animated animate__fadeInDown',
       },
@@ -136,8 +138,7 @@ export default function useSalesForm() {
       .includes(search.toLowerCase())
     const matchFilter =
       !filters.category ||
-      filters.category === 'All' ||
-      filters.category === 'ទាំងអស់' ||
+      filters.category === t('common.all') ||
       product.categoryName === filters.category
     return matchSearch && matchFilter
   })

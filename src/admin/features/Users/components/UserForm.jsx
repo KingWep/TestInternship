@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Save } from "lucide-react";
 
 import { useForm } from "react-hook-form";
@@ -6,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "../schemas/userSchema";
 
 export default function UserForm({ onSubmit, initialData }) {
+  const { t } = useTranslation();
   const isEditing = !!initialData;
 
   const {
@@ -27,7 +29,7 @@ export default function UserForm({ onSubmit, initialData }) {
   useEffect(() => {
     reset({
       name: initialData?.name || "",
-      email: initialData?.email ,
+      email: initialData?.email,
       role: initialData?.role || "User",
       password: "",
       confirmPassword: "",
@@ -45,13 +47,13 @@ export default function UserForm({ onSubmit, initialData }) {
     >
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1">
-          ឈ្មោះ <span className="text-red-500">*</span>
+          {t('users.name')} <span className="text-red-500">*</span>
         </label>
 
         <input
           type="text"
           {...register("name")}
-          placeholder="ឧទាហរណ៍: សុខ សាន្ត"
+          placeholder={t('users.namePlaceholder')}
           className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 ${
             errors.name
               ? "ring-2 ring-red-400 focus:ring-red-500"
@@ -61,7 +63,7 @@ export default function UserForm({ onSubmit, initialData }) {
 
         {errors.name && (
           <p className="mt-1 text-xs text-red-500">
-            {errors.name.message}
+            {errors.name?.message ? t(errors.name.message) : ""}
           </p>
         )}
       </div>
@@ -69,13 +71,13 @@ export default function UserForm({ onSubmit, initialData }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            អ៊ីមែល <span className="text-red-500">*</span>
+            {t('users.email')} <span className="text-red-500">*</span>
           </label>
 
           <input
             type="email"
             {...register("email")}
-            placeholder="ឧទាហរណ៍: user@gmail.com"
+            placeholder={t('users.emailPlaceholder')}
             className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 ${
               errors.email
                 ? "ring-2 ring-red-400 focus:ring-red-500"
@@ -85,14 +87,14 @@ export default function UserForm({ onSubmit, initialData }) {
 
           {errors.email && (
             <p className="mt-1 text-xs text-red-500">
-              {errors.email.message}
+              {errors.email?.message ? t(errors.email.message) : ""}
             </p>
           )}
         </div>
 
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">
-            តួនាទី <span className="text-red-500">*</span>
+            {t('users.role')} <span className="text-red-500">*</span>
           </label>
 
           <select
@@ -103,13 +105,13 @@ export default function UserForm({ onSubmit, initialData }) {
                 : "focus:ring-gray-200"
             }`}
           >
-            <option value="Admin">អ្នកគ្រប់គ្រង (Admin)</option>
-            <option value="User">អ្នកប្រើប្រាស់ (User)</option>
+            <option value="Admin">{t('users.adminRoleLabel')}</option>
+            <option value="User">{t('users.userRoleLabel')}</option>
           </select>
 
           {errors.role && (
             <p className="mt-1 text-xs text-red-500">
-              {errors.role.message}
+              {errors.role?.message ? t(errors.role.message) : ""}
             </p>
           )}
         </div>
@@ -119,13 +121,13 @@ export default function UserForm({ onSubmit, initialData }) {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">
-              ពាក្យសម្ងាត់ <span className="text-red-500">*</span>
+              {t('users.password')} <span className="text-red-500">*</span>
             </label>
 
             <input
               type="password"
               {...register("password")}
-              placeholder="យ៉ាងហោចណាស់ 6 តួអក្សរ"
+              placeholder={t('users.passwordPlaceholder')}
               className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 ${
                 errors.password
                   ? "ring-2 ring-red-400 focus:ring-red-500"
@@ -135,21 +137,21 @@ export default function UserForm({ onSubmit, initialData }) {
 
             {errors.password && (
               <p className="mt-1 text-xs text-red-500">
-                {errors.password.message}
+                {errors.password?.message ? t(errors.password.message) : ""}
               </p>
             )}
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">
-              បញ្ជាក់ពាក្យសម្ងាត់{" "}
+              {t('users.confirmPassword')}{" "}
               <span className="text-red-500">*</span>
             </label>
 
             <input
               type="password"
               {...register("confirmPassword")}
-              placeholder="បញ្ចូលពាក្យសម្ងាត់ម្ដងទៀត"
+              placeholder={t('users.confirmPasswordPlaceholder')}
               className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 ${
                 errors.confirmPassword
                   ? "ring-2 ring-red-400 focus:ring-red-500"
@@ -159,7 +161,7 @@ export default function UserForm({ onSubmit, initialData }) {
 
             {errors.confirmPassword && (
               <p className="mt-1 text-xs text-red-500">
-                {errors.confirmPassword.message}
+                {errors.confirmPassword?.message ? t(errors.confirmPassword.message) : ""}
               </p>
             )}
           </div>
@@ -175,10 +177,10 @@ export default function UserForm({ onSubmit, initialData }) {
           <Save size={16} />
 
           {isSubmitting
-            ? "កំពុងរក្សាទុក..."
+            ? t('common.saving')
             : isEditing
-              ? "ធ្វើបច្ចុប្បន្នភាពអ្នកប្រើប្រាស់"
-              : "រក្សាទុកអ្នកប្រើប្រាស់"}
+              ? t('users.updateUserBtn')
+              : t('users.saveUserBtn')}
         </button>
       </div>
     </form>

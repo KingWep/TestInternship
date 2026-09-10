@@ -3,6 +3,7 @@ import { orderService } from '../../services/orderService';
 import { orderKeys } from './orderKeys';
 import Swal from 'sweetalert2';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export function useOrdersQuery(params = {}) {
   return useQuery({
@@ -96,6 +97,7 @@ export function useUpdateOrderMutation() {
 
 export function useUpdateOrderStatusMutation() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: async ({ orderId, newStatus }) => {
@@ -126,15 +128,15 @@ export function useUpdateOrderStatusMutation() {
       }
       Swal.fire({
         icon: "error",
-        title: "បរាជ័យ!",
-        text: "មានបញ្ហាក្នុងការធ្វើបច្ចុប្បន្នភាពស្ថានភាព",
+        title: t('common.failed'),
+        text: t('orders.updateStatusError'),
       });
     },
     onSuccess: (data, { newStatus }) => {
       Swal.fire({
         icon: "success",
-        title: "បានធ្វើបច្ចុប្បន្នភាព",
-        text: `ស្ថានភាពត្រូវបានប្តូរទៅជា ${newStatus}`,
+        title: t('orders.updated'),
+        text: `${t('orders.statusChangedTo')} ${newStatus}`,
         timer: 1500,
         showConfirmButton: false,
       });
@@ -147,6 +149,7 @@ export function useUpdateOrderStatusMutation() {
 
 export function useUpdateOrderPaymentStatusMutation() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: async ({ orderId, newPaymentStatus }) => {
@@ -175,13 +178,12 @@ export function useUpdateOrderPaymentStatusMutation() {
       if (context?.previousOrders) {
         queryClient.setQueryData(orderKeys.list({}), context.previousOrders);
       }
-      Swal.fire({ icon: "error", title: "បរាជ័យ!", text: "Error updating payment status" });
+      Swal.fire({ icon: "error", title: t('common.failed'), text: t('orders.updatePaymentStatusError') });
     },
     onSuccess: (data, { newPaymentStatus }) => {
       if (newPaymentStatus === "Paid") {
         Swal.fire({
           icon: "success",
-          title: "Payment Updated",
           text: "Payment status is now Paid.",
           timer: 1500,
           showConfirmButton: false,
@@ -189,8 +191,8 @@ export function useUpdateOrderPaymentStatusMutation() {
       } else {
         Swal.fire({
           icon: "success",
-          title: "បានធ្វើបច្ចុប្បន្នភាព",
-          text: "ការទូទាត់ត្រូវបានប្តូរទៅជា មិនទាន់ទូទាត់ (Unpaid)",
+          title: t('orders.updated'),
+          text: t('orders.paymentChangedToUnpaid'),
           timer: 1500,
           showConfirmButton: false,
         });

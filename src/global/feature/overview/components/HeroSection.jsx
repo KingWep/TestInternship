@@ -1,7 +1,9 @@
 import React from 'react';
-import { ArrowRight, Sparkles, Code, Globe, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Play, Globe, ShieldCheck, Code, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const HeroSection = () => {
+  const { t } = useTranslation();
   return (
     <div className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-blue-600">
       {/* Background Decorative Elements */}
@@ -11,33 +13,34 @@ const HeroSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-400 border border-[#D4AF37]/20 text-[#D4AF37] font-medium text-sm mb-8 animate-fade-in-up font-kantumruy">
-            <Sparkles size={16} />
-            <span>ប្រព័ន្ធឌីជីថលជំនាន់ថ្មី</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-900/50 border border-blue-800/50 backdrop-blur-sm mb-8 text-blue-200">
+            <span className="flex h-2 w-2 rounded-full bg-blue-400"></span>
+            <span>{t('overview.heroTag')}</span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.2] mb-6 font-kantumruy">
-            ផ្តល់ថាមពលដល់អាជីវកម្មតាមរយៈ <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-yellow-200">
-              ដំណោះស្រាយឌីជីថល
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 tracking-tight font-kantumruy leading-tight">
+            {t('overview.heroTitle1')} <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-yellow-400 to-[#D4AF37]">
+              {t('overview.heroTitle2')}
             </span>
           </h1>
 
           {/* Subtext */}
-          <p className="text-xl md:text-2xl text-[#94A3B8] mb-10 max-w-3xl mx-auto leading-relaxed font-kantumruy">
-            Chomnenh ភ្ជាប់ប្រតិបត្តិការទាំងមូលរបស់អ្នក។ ពីហាងអនឡាញដ៏ទាក់ទាញសម្រាប់អតិថិជន រហូតដល់ផ្ទាំងគ្រប់គ្រងដ៏មានអានុភាពសម្រាប់ក្រុមការងាររបស់អ្នក។
+          <p className="text-lg md:text-xl text-blue-100 mb-12 max-w-2xl mx-auto font-kantumruy leading-relaxed">
+            {t('overview.heroDesc')}
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <a href="#ecosystem" className="w-full sm:w-auto px-8 py-4 rounded-full bg-amber-400 text-blue-950 hover:bg-amber-500 font-semibold text-lg transition-all shadow-lg shadow-amber-400/20 flex items-center justify-center gap-2 group font-kantumruy">
-              ស្វែងយល់ពីប្រព័ន្ធរបស់យើង
-              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </a>
-            <a href="#solutions" className="w-full sm:w-auto px-8 py-4 rounded-full bg-blue-950 border border-white/10 hover:bg-blue-900 text-white font-semibold text-lg transition-all flex items-center justify-center gap-2 font-kantumruy">
-              មើលដំណោះស្រាយ
-            </a>
+            <button className="flex items-center justify-center gap-2 px-8 py-4 bg-[#D4AF37] hover:bg-yellow-500 text-[#0B132B] rounded-xl font-bold transition-all hover:scale-105">
+              {t('overview.heroBtn1')}
+              <ArrowRight size={20} />
+            </button>
+            <button className="flex items-center justify-center gap-2 px-8 py-4 bg-blue-900/40 hover:bg-blue-800/60 border border-blue-700/50 text-white rounded-xl font-bold backdrop-blur-sm transition-all hover:scale-105 group">
+              <Play size={20} className="group-hover:text-[#D4AF37] transition-colors" />
+              {t('overview.heroBtn2')}
+            </button>
           </div>
 
           {/* Visual Mockup Preview */}
@@ -67,7 +70,6 @@ const HeroSection = () => {
                  </div>
                  <div className="h-48 bg-blue-900/50 rounded-xl shadow-sm border border-white/10"></div>
               </div>
-              
               {/* Connecting element */}
               <div className="absolute left-1/3 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-blue-900/50 rounded-full shadow-lg flex items-center justify-center border border-white/10 z-20 hidden md:flex">
                 <div className="w-8 h-8 bg-[#D4AF37] text-[#0B132B] rounded-full flex items-center justify-center ">
@@ -78,10 +80,10 @@ const HeroSection = () => {
           </div>
           
           {/* Trust indicators */}
-          <div className="mt-12 flex flex-wrap justify-center gap-8 text-[#94A3B8] font-medium font-kantumruy">
-            <div className="flex items-center gap-2"><Globe size={18} /> ប្រព័ន្ធ Cloud</div>
-            <div className="flex items-center gap-2"><ShieldCheck size={18} /> សុវត្ថិភាពខ្ពស់</div>
-            <div className="flex items-center gap-2"><Code size={18} /> បច្ចេកវិទ្យាទំនើប</div>
+          <div className="mt-12 flex flex-wrap justify-center gap-8 text-blue-200/60 text-sm font-medium font-kantumruy">
+            <div className="flex items-center gap-2"><Globe size={18} /> {t('overview.heroFeature1')}</div>
+            <div className="flex items-center gap-2"><ShieldCheck size={18} /> {t('overview.heroFeature2')}</div>
+            <div className="flex items-center gap-2"><Code size={18} /> {t('overview.heroFeature3')}</div>
           </div>
         </div>
       </div>

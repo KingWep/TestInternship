@@ -6,10 +6,12 @@ import {
   useDeleteDeliveryProviderMutation
 } from '../../../../queries/deliveryProviders/useDeliveryProviderQueries'
 import Swal from 'sweetalert2'
+import { useTranslation } from 'react-i18next'
 
 const ITEMS_PER_PAGE = 5
 
 export function useDeliveryProviders() {
+  const { t } = useTranslation()
   const { data: providers = [], isLoading: isProvidersLoading } = useDeliveryProvidersQuery()
   const createMutation = useCreateDeliveryProviderMutation()
   const updateMutation = useUpdateDeliveryProviderMutation()
@@ -32,7 +34,7 @@ export function useDeliveryProviders() {
 
       const matchStatus =
         filters.is_active === '' ||
-        filters.is_active === 'ទាំងអស់' ||
+        filters.is_active === 'All' ||
         (filters.is_active === 'Active' && provider.is_active == 1) ||
         (filters.is_active === 'Inactive' && provider.is_active == 0)
 
@@ -82,8 +84,8 @@ export function useDeliveryProviders() {
         await updateMutation.mutateAsync({ id: editingProvider.id, data: payload })
         Swal.fire({
           icon: 'success',
-          title: 'ជោគជ័យ',
-          text: 'ធ្វើបច្ចុប្បន្នភាពបានជោគជ័យ!',
+          title: t('common.success'),
+          text: t('delivery.updateSuccess'),
           timer: 1500,
           showConfirmButton: false
         })
@@ -91,8 +93,8 @@ export function useDeliveryProviders() {
         await createMutation.mutateAsync(payload)
         Swal.fire({
           icon: 'success',
-          title: 'ជោគជ័យ',
-          text: 'បន្ថែមបានជោគជ័យ!',
+          title: t('common.success'),
+          text: t('delivery.addSuccess'),
           timer: 1500,
           showConfirmButton: false
         })
@@ -104,7 +106,7 @@ export function useDeliveryProviders() {
       console.error('Error saving provider:', error)
       Swal.fire({
         icon: 'error',
-        title: `បរាជ័យ ${error?.response?.status || ''}`,
+        title: `${t('common.failed')} ${error?.response?.status || ''}`,
         text: backendMsg,
       })
     }
@@ -117,22 +119,22 @@ export function useDeliveryProviders() {
 
   const handleDelete = (id) => {
     Swal.fire({
-      title: 'តើអ្នកប្រាកដទេ?',
-      text: "អ្នកនឹងមិនអាចទាញទិន្នន័យនេះមកវិញបានទេ!",
+      title: t('common.areYouSure'),
+      text: t('common.cannotRevert'),
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'បាទ/ចាស លុបវា',
-      cancelButtonText: 'បោះបង់'
+      confirmButtonText: t('common.yesDeleteIt'),
+      cancelButtonText: t('common.cancel')
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await deleteMutation.mutateAsync(id)
-          Swal.fire('លុបបានជោគជ័យ!', 'ទិន្នន័យត្រូវបានលុប.', 'success')
+          Swal.fire(t('common.deletedSuccess'), t('common.dataDeleted'), 'success')
         } catch (error) {
           console.error('Error deleting provider:', error)
-          Swal.fire('បរាជ័យ!', 'មានបញ្ហាក្នុងការលុបទិន្នន័យ.', 'error')
+          Swal.fire(t('common.failed'), t('common.deleteError'), 'error')
         }
       }
     })

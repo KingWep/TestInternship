@@ -10,8 +10,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/validations/auth.schema";
 import { ParticleBackground } from './components/ParticleBackground';
 import { Swirling } from '@/components/swirling';
+import { useTranslation } from 'react-i18next';
 
 const GlobalLogin = () => {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   
@@ -51,8 +53,8 @@ const GlobalLogin = () => {
         
         Swal.fire({
           icon: "success",
-          title: "ជោគជ័យ",
-          text: "អ្នកបានចូលគណនីដោយជោគជ័យ",
+          title: t('common.success'),
+          text: t('auth.loginSuccess'),
           timer: 1500,
           showConfirmButton: false,
         }).then(() => {
@@ -62,10 +64,10 @@ const GlobalLogin = () => {
     } catch (error) {
       console.error("Login API Error:", error);
 
-      let errorMessage = "ការចូលគណនីបរាជ័យ (Login Failed)";
+      let errorMessage = t('auth.loginFailed');
 
       if (!error.response) {
-        errorMessage = "មិនអាចភ្ជាប់ទៅកាន់ម៉ាស៊ីនមេបានទេ (Network Error/CORS)";
+        errorMessage = t('auth.networkError');
       } else {
         errorMessage =
           error.response.data?.error ||
@@ -75,7 +77,7 @@ const GlobalLogin = () => {
       
       Swal.fire({
         icon: "error",
-        title: "បរាជ័យ",
+        title: t('common.error'),
         text: errorMessage,
         confirmButtonColor: '#2563eb'
       });
@@ -101,7 +103,7 @@ const GlobalLogin = () => {
             
             <h2 className="text-xl font-bold text-white mb-0.5">CHOMNENH</h2>
             <p className="text-blue-100 text-xs font-medium">
-              ចូលគណនីផ្ទាំងគ្រប់គ្រងរបស់អ្នក
+              {t('auth.loginDashboard')}
             </p>
           </div>
 
@@ -110,7 +112,7 @@ const GlobalLogin = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  Username ឬ អ៊ីមែល (Email)
+                  {t('auth.usernameOrEmail')}
                 </label>
                 <input
                   {...register("email")}
@@ -119,14 +121,14 @@ const GlobalLogin = () => {
                 />
                 {errors.email && (
                   <span className="text-[11px] text-red-600 mt-0.5 block">
-                    {errors.email.message}
+                    {t(errors.email.message)}
                   </span>
                 )}
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  ពាក្យសម្ងាត់ (Password)
+                  {t('auth.password')}
                 </label>
                 <div className="relative">
                   <input
@@ -145,14 +147,14 @@ const GlobalLogin = () => {
                 </div>
                 {errors.password && (
                   <span className="text-[11px] text-red-600 mt-0.5 block">
-                    {errors.password.message}
+                    {t(errors.password.message)}
                   </span>
                 )}
               </div>
 
               <div className="flex items-center justify-between text-xs">
                 <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-700">
-                  បង្កើតគណនី (Sign Up)
+                  {t('auth.signUp')}
                 </Link>
               </div>
 
@@ -167,7 +169,7 @@ const GlobalLogin = () => {
                   </span>
                 ) : (
                   <>
-                    ចូលគណនី (Sign In)
+                    {t('auth.signIn')}
                     <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
@@ -182,7 +184,7 @@ const GlobalLogin = () => {
             
             <div className="text-center mt-3 pt-3 border-t border-gray-100">
               <Link to="/" className="text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors">
-                ត្រឡប់ទៅទំព័រដើម (Back to Home)
+                {t('auth.backToHome')}
               </Link>
             </div>
           </div>

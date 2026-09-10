@@ -1,6 +1,13 @@
-import { FaFacebookF, FaInstagram, FaTelegramPlane } from "react-icons/fa";
-
-import { MapPin, Phone, Clock } from "lucide-react";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaTelegramPlane,
+  FaTiktok,
+  FaYoutube,
+  FaLinkedinIn,
+  FaTwitter,
+} from "react-icons/fa";
+import { MapPin, Phone, Clock, Globe } from "lucide-react";
 
 import Container from "./Container";
 import { useParams } from "react-router-dom";
@@ -10,6 +17,23 @@ export default function Footer() {
   const { shop_code } = useParams();
   const { data: settingData, isLoading } = usePublicSettingsQuery(shop_code);
   const shopName = settingData?.shop_name || "Shop";
+  // const supportFile = settingData?.support || "support.pdf";
+  // console.log("SupportFile", supportFile);
+
+  const socialMediaLinks = settingData?.social_media || [];
+  console.log("SocialMediaLinks", socialMediaLinks);
+
+  // Maps icon value strings (saved from GeneralSettings) to React icon components
+  const socialIconMap = {
+    "fa-telegram": <FaTelegramPlane size={16} className="text-white" />,
+    "fa-facebook": <FaFacebookF size={16} className="text-white" />,
+    "fa-tiktok": <FaTiktok size={16} className="text-white" />,
+    "fa-instagram": <FaInstagram size={16} className="text-white" />,
+    "fa-twitter": <FaTwitter size={16} className="text-white" />,
+    "fa-youtube": <FaYoutube size={16} className="text-white" />,
+    "fa-linkedin": <FaLinkedinIn size={16} className="text-white" />,
+    "fa-globe": <Globe size={16} className="text-white" />,
+  };
 
   return (
     <footer className="bg-white text-slate-300 pt-8 pb-4 mt-8 border-t flex-col">
@@ -24,27 +48,24 @@ export default function Footer() {
               សម្រាប់សុខភាពនិងសម្រស់របស់អ្នក។
             </p>
             <div className="flex items-center gap-3 pt-1">
-              <a
-                href="https://www.facebook.com/share/1EzGQtkvGq/?mibextid=wwXIfr"
-                aria-label="Facebook"
-                className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white hover:bg-blue-600 transition-all duration-200"
-              >
-                <FaFacebookF size={16} />
-              </a>
-              <a
-                href="https://www.instagram.com/valverdexteam?igsh=NHB6NGo0bGNzNWU5&igsi=NHB6NGo0bGNzNWU5"
-                aria-label="Instagram"
-                className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white hover:bg-blue-600 transition-all duration-200"
-              >
-                <FaInstagram size={16} />
-              </a>
-              <a
-                href="https://t.me/thadev168"
-                aria-label="Telegram"
-                className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white hover:bg-sky-500 transition-all duration-200"
-              >
-                <FaTelegramPlane size={16} />
-              </a>
+              {socialMediaLinks.map((social, index) => {
+                console.log("SocialMedia", social);
+                return (
+                  <a
+                    key={index}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.title}
+                    title={social.title}
+                    className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white transition-all duration-200"
+                  >
+                    {socialIconMap[social.icon] ?? (
+                      <Globe size={16} className="text-white" />
+                    )}
+                  </a>
+                );
+              })}
             </div>
           </div>
 
@@ -55,7 +76,10 @@ export default function Footer() {
             <ul className="text-sm space-y-2">
               <li>
                 <a
-                  href="#how-to-order"
+                  href={settingData?.support || "#"}
+                  target="_blank" // បើកនៅ Tab ថ្មី
+                  rel="noopener noreferrer" // ការពាររឿង Security (Best Practice ពេលប្រើ target="_blank")
+                  download={false} // ទុកជា False បើចង់ឱ្យវាបង្ហាញមើល (Preview) ក្នុង Browser ផ្ទាល់
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
                   របៀបបញ្ជាទិញ
@@ -63,7 +87,10 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#shipping"
+                  href={settingData?.support || "#"}
+                  target="_blank" // បើកនៅ Tab ថ្មី
+                  rel="noopener noreferrer" // ការពាររឿង Security (Best Practice ពេលប្រើ target="_blank")
+                  download={false} // ទុកជា False បើចង់ឱ្យវាបង្ហាញមើល (Preview) ក្នុង Browser ផ្ទាល់
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
                   គោលការណ៍ដឹកជញ្ជូន
@@ -79,23 +106,21 @@ export default function Footer() {
             <ul className="text-sm space-y-2">
               <li>
                 <a
-                  href="#faq"
-                  className="text-black hover:text-red-900 transition-colors duration-150 block"
-                >
-                  សំណួរដែលសួរញឹកញាប់
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#privacy"
+                  href={settingData?.support || "#"}
+                  target="_blank" // បើកនៅ Tab ថ្មី
+                  rel="noopener noreferrer" // ការពាររឿង Security (Best Practice ពេលប្រើ target="_blank")
+                  download={false} // ទុកជា False បើចង់ឱ្យវាបង្ហាញមើល (Preview) ក្នុង Browser ផ្ទាល់
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
                   គោលការណ៍ឯកជនភាព
                 </a>
               </li>
               <li>
-                <a
-                  href="#terms"
+                 <a
+                  href={settingData?.support || "#"}
+                  target="_blank" // បើកនៅ Tab ថ្មី
+                  rel="noopener noreferrer" // ការពាររឿង Security (Best Practice ពេលប្រើ target="_blank")
+                  download={false} // ទុកជា False បើចង់ឱ្យវាបង្ហាញមើល (Preview) ក្នុង Browser ផ្ទាល់
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
                   លក្ខខណ្ឌសេវាកម្ម
@@ -111,7 +136,7 @@ export default function Footer() {
             <ul className="text-sm space-y-2 text-black">
               <li className="flex items-start gap-2.5">
                 <MapPin size={18} className="text-red-500 shrink-0 mt-0.5" />
-                <span>ភ្នំពេញ, កម្ពុជា</span>
+                <span>{settingData?.address || "ភ្នំពេញ, កម្ពុជា"}</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone size={18} className="text-red-500 shrink-0" />
@@ -119,12 +144,8 @@ export default function Footer() {
                   href="tel:+855886677456"
                   className="hover:text-red-900 transition-colors"
                 >
-                  +855 88 66 77 456
+                  {settingData?.phone || "+855 88 667 7456"}
                 </a>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <Clock size={18} className="text-red-500 shrink-0" />
-                <span>8:00 AM - 8:00 PM</span>
               </li>
             </ul>
           </div>
@@ -138,10 +159,10 @@ export default function Footer() {
             <span className="font-medium text-slate-700">CHOMNENH DIGITAL</span>
           </p>
           <div className="flex gap-6">
-            <a href="#privacy" className="hover:text-black transition-colors">
+            <a href="https://www.facebook.com/share/1CcNFUiYWy/?mibextid=wwXIfr" className="hover:text-black transition-colors">
               ឯកជនភាព
             </a>
-            <a href="#terms" className="hover:text-black transition-colors">
+            <a href="https://www.facebook.com/share/1CcNFUiYWy/?mibextid=wwXIfr" className="hover:text-black transition-colors">
               លក្ខខណ្ឌ
             </a>
           </div>

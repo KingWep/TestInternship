@@ -1,26 +1,52 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FaHome } from "react-icons/fa";
-import { QrCode } from 'lucide-react'
+import { QrCode, Menu } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import NotificationDropdown from '@/admin/features/Notification/components/NotificationDropdown';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
-export default function AdminHeader() {
+export default function AdminHeader({ sidebarState, setSidebarState }) {
+  const handleMenuToggle = () => {
+    if (window.innerWidth < 768) {
+      setSidebarState(sidebarState === 0 ? 2 : 0);
+    } else {
+      setSidebarState(sidebarState === 2 ? 1 : 2);
+    }
+  };
+
   return (
-    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-end px-6 shadow-xl">
-      <div className="flex items-center gap-2 text-slate-600 text-xl">
+    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 shadow-xl shrink-0">
+      {/* Left — hamburger (mobile) */}
+      <button
+        type="button"
+        onClick={handleMenuToggle}
+        className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+        aria-label="Toggle sidebar"
+      >
+        <Menu size={20} />
+      </button>
 
-        <Link to="qr-code" className="px-2 py-1 border-[2px] hover:bg-blue-200 rounded-md hover:text-blue-600 transition-colors">
-          <QrCode size={18} className=" hover:bg-blue-200 text-slate-600 hover:text-blue-600" />
+      {/* Right — actions */}
+      <div className="flex items-center gap-2 text-slate-600 text-xl">
+        <Link
+          to="qr-code"
+          className="px-2 py-1 border-[2px] hover:bg-blue-200 rounded-md hover:text-blue-600 transition-colors"
+        >
+          <QrCode size={18} className="text-slate-600 hover:text-blue-600" />
         </Link>
 
         {/* Home */}
-        <Link to="/" className="text-slate-600 px-2 py-1 border-[2px] hover:bg-blue-200 rounded-md hover:text-blue-600 transition-colors">
+        <Link
+          to="/"
+          className="text-slate-600 px-2 py-1 border-[2px] hover:bg-blue-200 rounded-md hover:text-blue-600 transition-colors"
+        >
           <FaHome size={18} />
         </Link>
 
+        <LanguageSwitcher />
+
         {/* Notifications Dropdown Component */}
         <NotificationDropdown size={18} className="text-slate-600 hover:text-blue-600" />
-
       </div>
     </header>
   )

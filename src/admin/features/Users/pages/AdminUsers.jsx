@@ -11,6 +11,7 @@ import PageHeader from '../../../components/common/PageHeader'
 import FilterBar from '../../../components/common/FilterBar'
 import DeleteButton from '../../../components/common/DeleteButton'
 import Pagination from '../../../components/common/Pagination'
+import { useTranslation } from 'react-i18next'
 
 const ROLE_COLORS = {
   Admin: 'bg-purple-100 text-purple-700',
@@ -18,6 +19,7 @@ const ROLE_COLORS = {
 }
 
 export default function AdminUsers() {
+  const { t } = useTranslation()
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
   const {
@@ -45,9 +47,9 @@ export default function AdminUsers() {
     {
       key: 'role',
       options: [
-        { label: 'ទាំងអស់', value: '' },
-        { label: 'អ្នកគ្រប់គ្រង', value: 'Admin' },
-        { label: 'អ្នកប្រើប្រាស់', value: 'User' },
+        { label: t('common.all'), value: '' },
+        { label: t('users.admin'), value: 'Admin' },
+        { label: t('users.user'), value: 'User' },
       ],
     },
   ]
@@ -58,7 +60,8 @@ export default function AdminUsers() {
 
   const columns = [
     {
-      header: 'រូបតំណាង',
+      header: t('users.avatar'),
+      accessor: 'avatar',
       render: (row) => (
         <div className=" h-10 w-10 min-w-[2.5rem] bg-blue-100 border border-blue-200 rounded-full flex items-center justify-center text-blue-600 text-sm font-bold">
           {row.name?.charAt(0)?.toUpperCase()}
@@ -66,7 +69,8 @@ export default function AdminUsers() {
       ),
     },
     {
-      header: 'លេខសម្គាល់',
+      header: t('users.id'),
+      accessor: 'id',
       render: (row) => (
         <span className="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">
           {row.id}
@@ -74,19 +78,20 @@ export default function AdminUsers() {
       ),
     },
     {
-      header: 'ឈ្មោះ',
+      header: t('users.name'),
       accessor: 'name',
     },
     {
-      header: 'អ៊ីមែល',
+      header: t('users.email'),
+      accessor: 'email',
       render: (row) => (
         <span className="text-slate-500">{row.email || '—'}</span>
       ),
     },
     {
-      header: 'តួនាទី',
+      header: t('users.role'),
       render: (row) => {
-        const roleKhmer = row.role === 'Admin' ? 'អ្នកគ្រប់គ្រង' : row.role === 'User' ? 'អ្នកប្រើប្រាស់' : row.role;
+        const roleKhmer = row.role === 'Admin' ? t('users.admin') : row.role === 'User' ? t('users.user') : row.role;
         return (
         <span
           className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${ROLE_COLORS[row.role] || 'bg-gray-100 text-gray-600'
@@ -98,7 +103,8 @@ export default function AdminUsers() {
       },
     },
     {
-      header: 'ថ្ងៃចូលរួម',
+      header: t('users.joinedDate'),
+      accessor: 'created_at',
       render: (row) => (
         <span className="text-slate-500 text-sm">
           {row.createdAt
@@ -114,14 +120,15 @@ export default function AdminUsers() {
       ),
     },
     {
-      header: 'សកម្មភាព',
+      header: t('common.actions'),
+      accessor: 'actions',
       align: 'right',
       render: (row) => (
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
             className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
-            title="កែប្រែអ្នកប្រើប្រាស់"
+            title={t('users.editUser')}
           >
             <Edit size={18} />
           </button>
@@ -141,7 +148,7 @@ export default function AdminUsers() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingUser ? 'កែប្រែអ្នកប្រើប្រាស់' : 'បន្ថែមអ្នកប្រើប្រាស់ថ្មី'}
+        title={editingUser ? t('users.editUser') : t('users.addUserTitle')}
       >
         <UserForm
           initialData={editingUser}
@@ -152,8 +159,8 @@ export default function AdminUsers() {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <PageHeader
-          title="គណនីអ្នកប្រើប្រាស់"
-          description="គ្រប់គ្រងគណនីអ្នកគ្រប់គ្រង និងបុគ្គលិក។"
+          title={t('users.pageTitle')}
+          description={t('users.pageDescription')}
         />
       </div>
 
@@ -166,7 +173,7 @@ export default function AdminUsers() {
               onChange={handleFilterChange}
             />
             <FilterBar
-              filters={[{ key: 'sort', options: ['ថ្មីបំផុតមុន', 'ចាស់បំផុតមុន', 'A → Z', 'Z → A'] }]}
+              filters={[{ key: 'sort', options: [t('common.sortNewest'), t('common.sortOldest'), t('common.sortAZ'), t('common.sortZA')] }]}
               values={{ sort: sortOrder }}
               onChange={(key, value) => handleSortChange({ target: { value } })}
             />
@@ -176,7 +183,7 @@ export default function AdminUsers() {
             <SearchBar
               value={search}
               onChange={handleSearchChange}
-              placeholder="ស្វែងរកអ្នកប្រើប្រាស់..."
+              placeholder={t('users.searchPlaceholder')}
               className="w-full max-w-sm"
             />
             <Button
@@ -185,8 +192,8 @@ export default function AdminUsers() {
               className="shrink-0 whitespace-nowrap h-[42px] px-5"
             >
               <Plus size={16} className="mr-2" />
-              <span className="hidden md:inline">បន្ថែមអ្នកប្រើប្រាស់</span>
-              <span className="md:hidden">បន្ថែម</span>
+              <span className="hidden md:inline">{t('users.addUser')}</span>
+              <span className="md:hidden">{t('common.addBtn')}</span>
             </Button>
             <button
               type="button"
@@ -196,8 +203,8 @@ export default function AdminUsers() {
                   ? 'bg-slate-100 border-slate-300 text-slate-700'
                   : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700'
               }`}
-              title="បង្ហាញតម្រង"
-              aria-label="បង្ហាញតម្រង"
+              title={t('common.showFilters')}
+              aria-label={t('common.showFilters')}
             >
               <SlidersHorizontal size={18} />
             </button>
@@ -218,7 +225,7 @@ export default function AdminUsers() {
                 onChange={handleFilterChange}
               />
               <FilterBar
-                filters={[{ key: 'sort', options: ['ថ្មីបំផុតមុន', 'ចាស់បំផុតមុន', 'A → Z', 'Z → A'] }]}
+                filters={[{ key: 'sort', options: [t('common.sortNewest'), t('common.sortOldest'), t('common.sortAZ'), t('common.sortZA')] }]}
                 values={{ sort: sortOrder }}
                 onChange={(key, value) => handleSortChange({ target: { value } })}
               />

@@ -1,18 +1,20 @@
 import React from 'react'
 import { useDeliveryProvidersQuery } from '../../../../queries/deliveryProviders/useDeliveryProviderQueries'
+import { useTranslation } from 'react-i18next'
 
 export default function OrderFormFields({ register, errors, setValue }) {
+  const { t } = useTranslation()
   const { data: providers = [] } = useDeliveryProvidersQuery()
   const activeProviders = providers.filter(p => p.is_active == 1)
 
 
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
-      <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider">ព័ត៌មានអតិថិជន</h3>
+      <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider">{t('order.customerInfo')}</h3>
 
       {/* Phone Number */}
       <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1">លេខទូរស័ព្ទ</label>
+        <label className="block text-xs font-semibold text-slate-600 mb-1">{t('order.phone')}</label>
         <div 
           className={`flex items-center w-full bg-slate-50 border rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-colors ${
             errors.phone ? 'border-red-500' : 'border-slate-200'
@@ -40,10 +42,10 @@ export default function OrderFormFields({ register, errors, setValue }) {
 
       {/* Address */}
       <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1">អាសយដ្ឋាន</label>
+        <label className="block text-xs font-semibold text-slate-600 mb-1">{t('order.addressLabel')}</label>
         <textarea
           {...register('address')}
-          placeholder="បញ្ចូលអាសយដ្ឋាន"
+          placeholder={t('order.enterAddress')}
           rows={3}
           className={`w-full px-3.5 py-2 bg-slate-50 border rounded-xl text-sm text-slate-800 focus:outline-hidden focus:border-blue-500 transition-colors resize-y ${
             errors.address ? 'border-red-500' : 'border-slate-200'
@@ -56,7 +58,7 @@ export default function OrderFormFields({ register, errors, setValue }) {
 
       {/* Delivery Provider */}
       <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1">អ្នកដឹកជញ្ជូន</label>
+        <label className="block text-xs font-semibold text-slate-600 mb-1">{t('order.deliveryProviderLabel')}</label>
         <select 
           {...register('deliveryProviderId', {
             onChange: (e) => {
@@ -69,7 +71,7 @@ export default function OrderFormFields({ register, errors, setValue }) {
           })}
           className={`w-full px-3.5 py-2 bg-slate-50 border rounded-xl text-sm text-slate-800 focus:outline-hidden focus:border-blue-500 transition-colors border-slate-200`}
         >
-          <option value="">ជ្រើសរើសអ្នកដឹកជញ្ជូន</option>
+          <option value="">{t('order.selectDeliveryProvider')}</option>
           {activeProviders.map(p => (
             <option 
             key={p.id} value={p.id}>{p.name} - ${parseFloat(p.shipping_fee).toFixed(2)}

@@ -1,19 +1,21 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import { HiTrash } from 'react-icons/hi2';
+import { useTranslation } from 'react-i18next';
 
 export default function DeleteButton({ onConfirm, className = "" }) {
+    const { t } = useTranslation();
 
     const handleTriggerDelete = async () => {
         Swal.fire({
-            title: 'តើអ្នកប្រាកដទេ?',
-            text: 'ទិន្នន័យនេះនឹងត្រូវបានលុបជាអចិន្ត្រៃយ៍!',
+            title: t('common.areYouSure'),
+            text: t('common.deletePermanently'),
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'បាទ/ចាស លុបវា!',
-            cancelButtonText: 'បោះបង់',
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: t('common.yesDelete'),
+            cancelButtonText: t('common.cancel'),
             reverseButtons: true
         }).then(async (result) => {
             if (!result.isConfirmed) return;
@@ -22,8 +24,8 @@ export default function DeleteButton({ onConfirm, className = "" }) {
                 await onConfirm?.();
             } catch (error) {
                 Swal.fire({
-                    title: 'ការលុបបរាជ័យ',
-                    text: error?.message || 'មិនអាចលុបទិន្នន័យបានទេ។',
+                    title: t('common.deleteFailed'),
+                    text: error?.message || t('common.deleteErrorDesc'),
                     icon: 'error'
                 });
             }
@@ -34,7 +36,7 @@ export default function DeleteButton({ onConfirm, className = "" }) {
         <button
             onClick={handleTriggerDelete}
             className={`text-red-600 hover:text-red-900 transition-colors ${className}`}
-            title="លុបធាតុ"
+            title={t('common.deleteItem')}
         >
             <HiTrash className="h-4 w-4" />
         </button>

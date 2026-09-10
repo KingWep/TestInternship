@@ -1,6 +1,7 @@
 import React from "react";
 import { UploadCloud, Plus, Trash2, FileText } from "lucide-react";
 import { useFieldArray } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 export const ContactSupportStep = ({
   register,
@@ -9,6 +10,7 @@ export const ContactSupportStep = ({
   setValue,
   watch,
 }) => {
+  const { t } = useTranslation();
   const support = watch("support");
 
   const { fields, append, remove } = useFieldArray({
@@ -40,7 +42,7 @@ export const ContactSupportStep = ({
       {/* Address Section */}
       <div>
         <label className="block text-xs font-semibold text-gray-700 mb-1">
-          អាសយដ្ឋាន (Address)
+          {t('auth.address')}
           <span className="text-gray-400 font-normal"> (Optional)</span>
         </label>
 
@@ -53,7 +55,7 @@ export const ContactSupportStep = ({
 
         {errors.address && (
           <span className="text-[11px] text-red-600 mt-0.5 block">
-            {errors.address.message}
+            {t(errors.address.message)}
           </span>
         )}
       </div>
@@ -61,7 +63,7 @@ export const ContactSupportStep = ({
       {/* Support Document Section */}
       <div>
         <label className="block text-xs font-semibold text-gray-700 mb-1">
-          ឯកសារគាំទ្រ (Support Document)
+          {t('auth.supportDocument')}
           <span className="text-gray-400 font-normal"> (Optional)</span>
         </label>
 
@@ -88,7 +90,7 @@ export const ContactSupportStep = ({
             ) : (
               <>
                 <UploadCloud size={18} />
-                <span>បញ្ចូលឯកសារ (Upload PDF/Image)</span>
+                <span>{t('auth.uploadPdf')}</span>
               </>
             )}
           </label>
@@ -96,7 +98,7 @@ export const ContactSupportStep = ({
 
         {errors.support && (
           <span className="text-[11px] text-red-600 mt-0.5 block">
-            {errors.support.message}
+            {t(errors.support.message)}
           </span>
         )}
       </div>
@@ -105,7 +107,7 @@ export const ContactSupportStep = ({
       <div className="pt-2">
         <div className="flex items-center justify-between mb-2">
           <label className="block text-xs font-semibold text-gray-700">
-            បណ្តាញសង្គម (Social Media)
+            {t('auth.socialMedia')}
             <span className="text-gray-400 font-normal"> (Optional)</span>
           </label>
 
@@ -115,7 +117,7 @@ export const ContactSupportStep = ({
             className="text-[11px] font-medium text-blue-600 flex items-center gap-1 hover:text-blue-800 transition-colors"
           >
             <Plus size={12} />
-            បន្ថែម (Add)
+            {t('auth.add')}
           </button>
         </div>
 
@@ -137,7 +139,7 @@ export const ContactSupportStep = ({
 
                   {errors.social_media?.[index]?.platform && (
                     <span className="text-[10px] text-red-600 block">
-                      {errors.social_media[index].platform.message}
+                      {t(errors.social_media[index].platform.message)}
                     </span>
                   )}
 
@@ -150,7 +152,7 @@ export const ContactSupportStep = ({
 
                   {errors.social_media?.[index]?.url && (
                     <span className="text-[10px] text-red-600 block">
-                      {errors.social_media[index].url.message}
+                      {t(errors.social_media[index].url.message)}
                     </span>
                   )}
                 </div>

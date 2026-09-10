@@ -10,18 +10,20 @@ import {
   Settings2,
   Store
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const SolutionsGrid = () => {
+  const { t } = useTranslation();
   const modules = [
-    { icon: <ShoppingCart />, title: 'ហាងទិញទំនិញអនឡាញ', desc: 'ហាងឌីជីថលដ៏ស្រស់ស្អាតនិងមានអត្រាលក់ចេញខ្ពស់។' },
-    { icon: <Package />, title: 'ការគ្រប់គ្រងស្តុក', desc: 'តាមដានស្តុកទំនិញជាក់ស្តែងនៅគ្រប់ទីតាំងទាំងអស់។' },
-    { icon: <Store />, title: 'ប្រព័ន្ធគិតលុយ (POS)', desc: 'ភ្ជាប់ប្រព័ន្ធលក់រាយនៅហាងផ្ទាល់យ៉ាងរលូន។' },
-    { icon: <Settings2 />, title: 'គ្រប់គ្រងការបញ្ជាទិញ', desc: 'ស្វ័យប្រវត្តិកម្មលំហូរការងារនិងការរៀបចំអីវ៉ាន់។' },
-    { icon: <Users />, title: 'គ្រប់គ្រងអតិថិជន (CRM)', desc: 'ឧបករណ៍កសាងទំនាក់ទំនងយូរអង្វែងជាមួយអតិថិជន។' },
-    { icon: <CreditCard />, title: 'ដំណើរការទូទាត់', desc: 'ការគ្រប់គ្រងការទូទាត់ដែលមានសុវត្ថិភាពខ្ពស់។' },
-    { icon: <Truck />, title: 'ការដឹកជញ្ជូន', desc: 'ប្រព័ន្ធគ្រប់គ្រងអ្នកដឹកជញ្ជូននិងតាមដានការដឹក។' },
-    { icon: <BarChart3 />, title: 'របាយការណ៍ស៊ីជម្រៅ', desc: 'ទិន្នន័យលម្អិតអំពីការលក់និងប្រតិបត្តិការអាជីវកម្ម។' },
-    { icon: <UserCircle />, title: 'ការគ្រប់គ្រងបុគ្គលិក', desc: 'សិទ្ធិប្រើប្រាស់និងការតាមដានការងាររបស់បុគ្គលិក។' },
+    { icon: <ShoppingCart />, title: t('overview.mod1Title'), desc: t('overview.mod1Desc') },
+    { icon: <Package />, title: t('overview.mod2Title'), desc: t('overview.mod2Desc') },
+    { icon: <Store />, title: t('overview.mod3Title'), desc: t('overview.mod3Desc') },
+    { icon: <Settings2 />, title: t('overview.mod4Title'), desc: t('overview.mod4Desc') },
+    { icon: <Users />, title: t('overview.mod5Title'), desc: t('overview.mod5Desc') },
+    { icon: <CreditCard />, title: t('overview.mod6Title'), desc: t('overview.mod6Desc') },
+    { icon: <Truck />, title: t('overview.mod7Title'), desc: t('overview.mod7Desc') },
+    { icon: <BarChart3 />, title: t('overview.mod8Title'), desc: t('overview.mod8Desc') },
+    { icon: <UserCircle />, title: t('overview.mod9Title'), desc: t('overview.mod9Desc') },
   ];
 
   return (
@@ -29,10 +31,10 @@ const SolutionsGrid = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16 font-kantumruy">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            ប្រព័ន្ធឌីជីថលគ្រប់ជ្រុងជ្រោយ
+            {t('overview.solutionsTitle')}
           </h2>
           <p className="text-lg text-[#94A3B8]">
-            Chomnenh ផ្តល់នូវប្រព័ន្ធពេញលេញមួយ។ ប្រើប្រាស់អ្វីដែលអ្នកត្រូវការនៅថ្ងៃនេះ ហើយពង្រីកបន្ថែមមុខងារនៅថ្ងៃស្អែក។
+            {t('overview.solutionsSubtitle')}
           </p>
         </div>
 

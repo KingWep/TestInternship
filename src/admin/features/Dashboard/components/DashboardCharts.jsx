@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import {
   Bar,
@@ -30,6 +31,7 @@ import { useOrdersQuery } from '../../../../queries/orders/useOrderQueries'
 import { useProductsQuery } from '../../../../queries/products/useProductQueries'
 
 export default function DashboardCharts() {
+  const { t } = useTranslation()
   const { data: orders = [] } = useOrdersQuery()
   const { data: products = [] } = useProductsQuery()
 
@@ -65,7 +67,7 @@ export default function DashboardCharts() {
 
   const barChartConfig = {
     total: {
-      label: 'ការលក់សរុប',
+      label: t('dashboard.totalSales'),
       color: 'hsl(var(--primary))',
     },
   }
@@ -103,7 +105,7 @@ export default function DashboardCharts() {
 
   const pieChartConfig = {
     value: {
-      label: 'ស្តុក',
+      label: t('dashboard.stock'),
     },
   }
 
@@ -111,9 +113,9 @@ export default function DashboardCharts() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
       <Card>
         <CardHeader>
-          <CardTitle>ការលក់សរុបប្រចាំខែ</CardTitle>
+          <CardTitle>{t('dashboard.monthlySalesTitle')}</CardTitle>
           <CardDescription>
-            ទិដ្ឋភាពទូទៅនៃចំណូលប្រចាំខែ
+            {t('dashboard.monthlySalesSubtitle')}
           </CardDescription>
         </CardHeader>
 
@@ -156,9 +158,9 @@ export default function DashboardCharts() {
 
       <Card>
         <CardHeader>
-          <CardTitle>ស្តុកផលិតផលតាមប្រភេទ</CardTitle>
+          <CardTitle>{t('dashboard.stockByCategoryTitle')}</CardTitle>
           <CardDescription>
-            ការចែកចាយស្តុកបច្ចុប្បន្ន
+            {t('dashboard.stockByCategorySubtitle')}
           </CardDescription>
         </CardHeader>
 

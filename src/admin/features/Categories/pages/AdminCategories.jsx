@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Plus, Edit, Trash2, SlidersHorizontal, Ban } from 'lucide-react'
+import { Plus, Edit, Trash2, SlidersHorizontal, Ban, Search } from 'lucide-react'
 import { useCategories } from '../hooks/useCategories'
 import CategoryForm from '../components/CategoryForm'
 import DataTable from '../../../components/common/DataTable'
@@ -12,14 +12,15 @@ import FilterBar from '../../../components/common/FilterBar'
 import DeleteButton from '../../../components/common/DeleteButton'
 import Pagination from '../../../components/common/Pagination'
 import { useProducts } from '../../Products/hooks/useProducts'
+import { useTranslation } from 'react-i18next'
 
 export default function AdminCategories() {
-
-  const {products} = useProducts()
+  const { t } = useTranslation()
+  const { products } = useProducts()
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   const {
-    search,
     filters,
     sortOrder,
     currentPage,
@@ -30,19 +31,22 @@ export default function AdminCategories() {
     isCategoriesLoading,
     setCurrentPage,
     handleFilterChange,
-    handleSearchChange,
     handleSortChange,
     handleSubmit,
     handleEdit,
     handleDelete,
     openAddModal,
     closeModal,
+    setEditingCategory,
+    setIsModalOpen,
+    updateFilter
   } = useCategories()
 
   const categoryFilters = [
     {
       key: 'status',
-      options: ['ទាំងអស់', 'Active', 'Inactive'],
+      options: [t('common.all'), 'Active', 'Inactive'],
+      defaultValue: t('common.all')
     },
   ]
 
@@ -66,7 +70,7 @@ export default function AdminCategories() {
       ),
     },
     {
-      header: 'ឈ្មោះប្រភេទ',
+      header: t('category.nameLabel'),
       accessor: 'name',
     },
     {
@@ -78,7 +82,7 @@ export default function AdminCategories() {
       ),
     },
     {
-      header: 'ផលិតផល',
+      header: t('category.productsLabel'),
       render: (row) => {
         const count = products.filter(
           (product) => String(product.categoryId) === String(row.id)
@@ -95,7 +99,7 @@ export default function AdminCategories() {
       accessor: 'description',
     },
     {
-        header: 'កាលបរិច្ឆេទបង្កើត',
+        header: t('common.createdAt'),
         render: (row) => (
         <span className="text-sm text-slate-600">
           {row.createdAt
@@ -111,14 +115,14 @@ export default function AdminCategories() {
       ),
     },
     {
-      header: 'សកម្មភាព',
+      header: t('common.actions'),
       align: 'right',
       render: (row) => (
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
-            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
-            title="កែប្រែប្រភេទ"
+            className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-600 transition-colors"
+            title={t('category.editTitle')}
           >
             <Edit size={18} />
           </button>
@@ -138,7 +142,7 @@ export default function AdminCategories() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingCategory ? 'កែប្រែប្រភេទ' : 'បន្ថែមប្រភេទថ្មី'}
+        title={editingCategory ? t('category.editTitle') : t('category.addTitle')}
       >
         <CategoryForm
           initialData={editingCategory}
@@ -148,81 +152,68 @@ export default function AdminCategories() {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <PageHeader
-          title="ប្រភេទ"
-          description="គ្រប់គ្រងប្រភេទផលិតផលរបស់អ្នក។"
+          title={t('category.title')}
+          description={t('category.description')}
         />
       </div>
 
       <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <div className="hidden md:flex flex-wrap items-center gap-4">
-            <FilterBar
-              filters={categoryFilters}
-              values={filters}
-              onChange={handleFilterChange}
-            />
-            <FilterBar
-              filters={[{ key: 'sort', options: ['ថ្មីបំផុតមុន', 'A → Z', 'Z → A'] }]}
-              values={{ sort: sortOrder }}
-              onChange={(key, value) => handleSortChange({ target: { value } })}
-            />
+          <div className="flex-1 min-w-[200px]">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder={t('category.searchPlaceholder')}
+                value={filters.search || ''}
+                onChange={(e) => updateFilter('search', e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <SearchBar
-              value={search}
-              onChange={handleSearchChange}
-              placeholder="ស្វែងរកប្រភេទ..."
-              className="w-full max-w-sm"
-            />
-
-            <Button
-              variant="primary"
-              onClick={() => openAddModal()}
-              className="shrink-0 whitespace-nowrap h-[42px] px-5"
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setEditingCategory(null)
+                setIsModalOpen(true)
+              }}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm whitespace-nowrap"
             >
-              <Plus size={16} className="mr-2" />
-              <span className="hidden md:inline">បន្ថែមប្រភេទ</span>
-              <span className="md:hidden">បន្ថែម</span>
-            </Button>
+              <Plus size={18} />
+              <span className="hidden md:inline">{t('category.addCategoryBtn')}</span>
+              <span className="md:hidden">{t('common.addBtn')}</span>
+            </button>
 
             <button
-              type="button"
-              onClick={() => setShowAdvancedFilters(prev => !prev)}
-              className={`md:hidden shrink-0 w-10 py-2.5 flex items-center justify-center rounded-xl border transition-colors ${
-                showAdvancedFilters
-                  ? 'bg-slate-100 border-slate-300 text-slate-700'
-                  : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700'
-              }`}
-              title="បង្ហាញតម្រង"
-              aria-label="បង្ហាញតម្រង"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="flex items-center justify-center p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors"
+              title={t('common.showFilters')}
+              aria-label={t('common.showFilters')}
             >
               <SlidersHorizontal size={18} />
             </button>
           </div>
         </div>
 
-        <div
-          className={`grid transition-all duration-300 ease-in-out md:hidden ${
-            showAdvancedFilters ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 !mt-0'
-          }`}
-        >
-          <div className="overflow-hidden">
-            <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+        {isFilterOpen && (
+          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+             <div className="flex flex-wrap gap-4">
               <FilterBar
                 filters={categoryFilters}
                 values={filters}
                 onChange={handleFilterChange}
               />
               <FilterBar
-                filters={[{ key: 'sort', options: ['ថ្មីបំផុតមុន', 'A → Z', 'Z → A'] }]}
+                filters={[{ key: 'sort', options: [t('common.sortNewest'), t('common.sortAZ'), t('common.sortZA')] }]}
                 values={{ sort: sortOrder }}
                 onChange={(key, value) => handleSortChange({ target: { value } })}
               />
             </div>
           </div>
-        </div>
+        )}
       </div>
+
       <div className="overflow-x-auto bg-white border border-slate-200 rounded-2xl">
         {isCategoriesLoading ? (
           <DataTableSkeleton columns={columns.length} rows={5} />

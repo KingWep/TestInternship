@@ -6,15 +6,15 @@ export const loginSchema = z.object({
   email: emailRule,
   password: z.string().
             trim().
-            min(1, { message: "Password is required." }),
+            min(1, { message: "validation.passwordRequired" }),
 });
 
 export const registerSchema = z.object({
-  fullName: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  fullName: z.string().min(2, { message: "validation.nameMinLength" }),
   email: emailRule,
   password: passwordRule,
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match.",
+  message: "validation.passwordMismatch",
   path: ["confirmPassword"],
 });

@@ -3,8 +3,10 @@ import { Save, Image as ImageIcon, Upload } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { categorySchema } from "../schemas/categorySchema";
+import { useTranslation } from "react-i18next";
 
 export default function CategoryForm({ onSubmit, initialData }) {
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -17,7 +19,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
     defaultValues: {
       name: "",
       slug: "",
-      image: "", // Can be a URL string or File object depending on your backend
+      image: "",
       description: "",
     },
   });
@@ -33,7 +35,6 @@ export default function CategoryForm({ onSubmit, initialData }) {
         image: initialData.image || "",
         description: initialData.description || "",
       });
-      // If initialData has an existing image URL/path, show it in preview
       if (initialData.image) {
         setPreviewImage(initialData.image);
       }
@@ -48,7 +49,6 @@ export default function CategoryForm({ onSubmit, initialData }) {
     }
   }, [initialData, reset]);
 
-  // Auto-generate slug from name
   const name = watch("name");
   useEffect(() => {
     if (!isEditing && name) {
@@ -64,12 +64,10 @@ export default function CategoryForm({ onSubmit, initialData }) {
     }
   }, [name, isEditing, setValue]);
 
-  // Handle file selection change
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       setValue("image", file, { shouldValidate: true });
-      // Create local temporary URL for instant preview
       const objectUrl = URL.createObjectURL(file);
       setPreviewImage(objectUrl);
     }
@@ -81,16 +79,15 @@ export default function CategoryForm({ onSubmit, initialData }) {
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-      {/* Name & Slug */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
-            ឈ្មោះប្រភេទ {!isEditing && "*"}
+          <label className="text-sm font-semibold text-slate-700 flex items-center justify-between mb-1">
+            {t('category.nameLabel')} {!isEditing && "*"}
           </label>
           <input
             type="text"
             {...register("name")}
-            placeholder="Category Name"
+            placeholder={t('category.namePlaceholder')}
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
           {errors.name && (
@@ -99,13 +96,13 @@ export default function CategoryForm({ onSubmit, initialData }) {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">
+          <label className="text-sm font-semibold text-slate-700 flex items-center justify-between mb-1">
             Slug {!isEditing && "*"}
           </label>
           <input
             type="text"
             {...register("slug")}
-            placeholder="ឧទាហរណ៍: skincare"
+            placeholder="slug"
             className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
           {errors.slug && (
@@ -114,16 +111,15 @@ export default function CategoryForm({ onSubmit, initialData }) {
         </div>
       </div>
 
-      {/* Description */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1">
-          ការពិពណ៌នា
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-slate-700 block">
+          {t('category.descLabel')}
         </label>
         <textarea
           {...register("description")}
-          rows="3"
-          placeholder="ការពិពណ៌នាប្រភេទ..."
-          className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none resize-none focus:ring-2 focus:ring-gray-200"
+          rows={3}
+          placeholder={t('category.descPlaceholder')}
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-none bg-slate-50/50 hover:bg-white focus:bg-white text-slate-700"
         />
         {errors.description && (
           <p className="text-xs text-red-500 mt-1">
@@ -132,16 +128,15 @@ export default function CategoryForm({ onSubmit, initialData }) {
         )}
       </div>
 
-      {/* File Input & Preview */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1">
-          រូបភាព (ICON / Image File)
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-slate-700 flex items-center justify-between">
+          {t('category.imageLabel')}
         </label>
         <div className="flex items-center gap-3">
           <label className="flex-1 flex items-center gap-2 px-3 py-2 text-sm bg-gray-50 rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition">
             <Upload size={16} className="text-gray-500" />
-            <span className="text-gray-500 truncate">
-              {watch("image")?.name ? watch("image").name : "ជ្រើសរើសរូបភាព..."}
+            <span className="flex-1 truncate text-left text-slate-600 font-medium group-hover:text-slate-800 transition-colors">
+              {watch("image")?.name ? watch("image").name : t('category.selectImage')}
             </span>
             <input
               type="file"
@@ -151,7 +146,6 @@ export default function CategoryForm({ onSubmit, initialData }) {
             />
           </label>
 
-          {/* Live Preview Box */}
           <div className="w-12 h-12 rounded-lg border border-gray-200 bg-gray-100 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
             {previewImage ? (
               <img
@@ -171,14 +165,12 @@ export default function CategoryForm({ onSubmit, initialData }) {
         )}
       </div>
 
-      {/* Submit Button */}
       <div className="flex justify-end pt-2">
         <button
           type="submit"
-          className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+          className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200"
         >
-          <Save size={16} />
-          {isEditing ? "ធ្វើបច្ចុប្បន្នភាពប្រភេទ" : "រក្សាទុកប្រភេទ"}
+          {isEditing ? t('category.updateBtn') : t('category.saveBtn')}
         </button>
       </div>
     </form>

@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useProductsQuery, useCreateProductMutation, useUpdateProductMutation, useDeleteProductMutation } from '../../../../queries/products/useProductQueries'
 import Swal from 'sweetalert2'
+import { useTranslation } from 'react-i18next'
 
 const ITEMS_PER_PAGE = 5
 
@@ -11,6 +12,7 @@ export function getStockStatus(stock) {
 }
 
 export function useProducts({ shopCode } = {}) {
+  const { t } = useTranslation()
   const { data: products = [], isPending: isLoading } = useProductsQuery(
     { shop_code: shopCode }
   )
@@ -33,14 +35,14 @@ export function useProducts({ shopCode } = {}) {
         const matchSearch = product.name.toLowerCase().includes(search.toLowerCase())
 
         const matchCategory =
-          filters.category === '' ||
-          filters.category === 'ទាំងអស់' ||
+          !filters.category ||
+          filters.category === t('common.all') ||
           product.categoryName === filters.category
 
         // Using stockQuantity as mapped in ProductContext
         const matchStatus =
-          filters.status === '' ||
-          filters.status === 'ទាំងអស់' ||
+          !filters.status ||
+          filters.status === t('common.all') ||
           getStockStatus(product.stockQuantity) === filters.status
 
         return matchSearch && matchCategory && matchStatus
@@ -50,7 +52,7 @@ export function useProducts({ shopCode } = {}) {
         if (sortOrder === 'A → Z' || sortOrder === 'asc') return a.name.localeCompare(b.name)
         return b.name.localeCompare(a.name)
       })
-  }, [products, search, filters, sortOrder])
+  }, [products, search, filters, sortOrder, t])
 
   // ── Pagination (Memoized) ──────────────────────────────────────────────────
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE)
@@ -90,7 +92,7 @@ export function useProducts({ shopCode } = {}) {
         await updateMutation.mutateAsync({ id, data: formDataToSend })
         Swal.fire({
           icon: 'success',
-          title: 'ជោគជ័យ',
+          title: t('common.success'),
           text: 'Product updated successfully!',
           timer: 1500,
           showConfirmButton: false
@@ -99,7 +101,7 @@ export function useProducts({ shopCode } = {}) {
         await createMutation.mutateAsync(formDataToSend)
         Swal.fire({
           icon: 'success',
-          title: 'ជោគជ័យ',
+          title: t('common.success'),
           text: 'Product added successfully!',
           timer: 1500,
           showConfirmButton: false
@@ -129,22 +131,24 @@ export function useProducts({ shopCode } = {}) {
 
   const handleDelete = (id) => {
     Swal.fire({
-      title: 'តើអ្នកប្រាកដទេ?', // Are you sure?
-      text: "អ្នកនឹងមិនអាចទាញទិន្នន័យនេះមកវិញបានទេ!", // You won't be able to revert this!
+      title: t('common.areYouSure'), // Are you sure?
+      text: t('common.cannotRevert'), // You won't be able to revert this!
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'បាទ/ចាស លុបវា', // Yes, delete it
-      cancelButtonText: 'បោះបង់' // Cancel
+      confirmButtonText: t('common.yesDelete'), // Yes, delete it
+      cancelButtonText: t('common.cancel') // Cancel
     }).then(async (result) => {
       if (result.isConfirmed) {
-        try {
-          await deleteMutation.mutateAsync(id)
-          Swal.fire('លុបបានជោគជ័យ!', 'ទិន្នន័យត្រូវបានលុប.', 'success')
-        } catch (error) {
-          Swal.fire('បរាជ័យ!', 'មានបញ្ហាក្នុងការលុបទិន្នន័យ.', 'error')
-        }
+        deleteMutation.mutate(id, {
+          onSuccess: () => {
+            Swal.fire(t('common.deletedSuccess'), t('users.deletedLocally'), 'success')
+          },
+          onError: () => {
+            Swal.fire(t('common.failed'), t('common.deleteError'), 'error')
+          }
+        })
       }
     })
   }

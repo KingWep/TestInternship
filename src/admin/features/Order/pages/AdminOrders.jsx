@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import PageHeader from '../../../components/common/PageHeader'
 import OrderFilterBar from '../components/OrderFilterBar'
 import OrderCard from '../components/OrderCard'
@@ -8,11 +9,12 @@ import Modal from '../../../components/common/Modal'
 import Pagination from '../../../components/common/Pagination'
 import DataTableSkeleton from '../../../components/common/DataTableSkeleton'
 import DataCardSkeletonGrid from '../../../components/common/DataCardSkeleton'
-import { PackageOpen, LayoutGrid, List } from 'lucide-react'
+import { PackageOpen, LayoutGrid, List, PackageX } from 'lucide-react'
 
 import { useOrders } from '../hooks/useOrders'
 
 export default function AdminOrders() {
+  const { t } = useTranslation()
   const [viewMode, setViewMode] = useState('list')
   const {
     orders,
@@ -44,7 +46,7 @@ export default function AdminOrders() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingOrder ? `#${editingOrder.orderNo}` : 'កែប្រែការបញ្ជាទិញ'}
+        title={editingOrder ? `#${editingOrder.orderNo}` : t('order.editOrderTitle')}
       >
         <OrderUpdateForm
           initialData={editingOrder}
@@ -55,10 +57,12 @@ export default function AdminOrders() {
       </Modal>
 
       <div className="flex flex-row items-center justify-between gap-2 sm:gap-4">
-        <PageHeader
-          title="ការបញ្ជាទិញ"
-          description="គ្រប់គ្រង និងតាមដានរាល់ការបញ្ជាទិញរបស់អតិថិជននៅទីនេះ。"
-        />
+        <div className="flex-1 min-w-0">
+          <PageHeader
+            title={t('order.ordersTitle')}
+            description={t('order.ordersSubtitle')}
+          />
+        </div>
         {/* View Toggle */}
         <div className="flex items-center bg-slate-100 p-1 rounded-xl w-fit">
           <button
@@ -70,7 +74,7 @@ export default function AdminOrders() {
             }`}
           >
             <List size={16} />
-            <span className="hidden sm:inline">បញ្ជី</span>
+            <span className="hidden sm:inline">{t('order.viewList')}</span>
           </button>
           <button
             onClick={() => setViewMode('card')}
@@ -81,7 +85,7 @@ export default function AdminOrders() {
             }`}
           >
             <LayoutGrid size={16} />
-            <span className="hidden sm:inline">កាត</span>
+            <span className="hidden sm:inline">{t('order.viewCard')}</span>
           </button>
         </div>
       </div>
@@ -129,9 +133,9 @@ export default function AdminOrders() {
         </div>
       ) : (
         <div className=" flex flex-col items-center justify-center py-16 text-slate-400">
-          <PackageOpen size={64} className="mb-4 mt-20 text-slate-300" strokeWidth={1.5} />
-          <h3 className="text-lg font-medium text-slate-600 mb-1">រកមិនឃើញការបញ្ជាទិញទេ</h3>
-          <p className="text-sm">សូមសាកល្បងផ្លាស់ប្តូរការស្វែងរក ឬតម្រងរបស់អ្នក។</p>
+          <PackageX size={64} className="mb-4 mt-20 text-slate-300" strokeWidth={1.5} />
+          <h3 className="text-lg font-medium text-slate-600 mb-1">{t('order.ordersNotFound')}</h3>
+          <p className="text-sm">{t('order.searchOrFilterHint')}</p>
         </div>
       )}
     </div>

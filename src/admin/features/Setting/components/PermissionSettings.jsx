@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Settings, LayoutDashboard, ShoppingBag, Users } from 'lucide-react';
 import Button from '../../../components/common/Button';
+import { useTranslation } from 'react-i18next';
 
 export default function PermissionSettings() {
+  const { t } = useTranslation();
   const [permissions, setPermissions] = useState({
     maintenanceMode: false,
     staffDashboard: true,
@@ -16,16 +18,16 @@ export default function PermissionSettings() {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div>
-        <h3 className="text-lg font-bold text-slate-800">ការអនុញ្ញាតទំព័រ</h3>
-        <p className="text-sm text-slate-500">ត្រួតពិនិត្យការចូលប្រើផ្នែកផ្សេងៗនៃផ្ទាំងគ្រប់គ្រងដោយផ្អែកលើតួនាទី។</p>
+      <div className="mb-6 pb-6 border-b border-slate-100">
+        <h3 className="text-lg font-bold text-slate-800">{t('settings.permissions')}</h3>
+        <p className="text-sm text-slate-500 mt-1">{t('settings.permissionsDesc')}</p>
       </div>
 
       {/* Global Maintenance Mode */}
       <div className="bg-red-50 border border-red-100 rounded-2xl p-6 flex items-center justify-between gap-4">
         <div>
-          <h4 className="font-semibold text-red-900">របៀបថែទាំ</h4>
-          <p className="text-xs text-red-700 mt-0.5 max-w-md">បិទហាង និងផ្ទាំងគ្រប់គ្រងទាំងមូលសម្រាប់អ្នកប្រើប្រាស់ដែលមិនមែនជាអ្នកគ្រប់គ្រង។ ប្រើតែក្នុងអំឡុងពេលធ្វើបច្ចុប្បន្នភាពធំៗប៉ុណ្ណោះ។</p>
+          <h4 className="font-semibold text-red-900">{t('settings.maintenanceMode')}</h4>
+          <p className="text-xs text-red-700 mt-0.5 max-w-md">{t('settings.maintenanceDesc')}</p>
         </div>
         <button 
           onClick={() => togglePermission('maintenanceMode')}
@@ -38,8 +40,8 @@ export default function PermissionSettings() {
 
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
         <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-          <h4 className="font-semibold text-slate-700 text-sm">ការកំណត់រចនាសម្ព័ន្ធការចូលប្រើតាមតួនាទី</h4>
-          <Button variant="primary" size="sm" className="rounded-lg text-xs py-1.5">រក្សាទុកការផ្លាស់ប្តូរ</Button>
+          <h4 className="font-semibold text-slate-700 text-sm">{t('settings.roleAccessConfig')}</h4>
+          <Button variant="primary" size="sm" className="rounded-lg text-xs py-1.5">{t('settings.saveChanges')}</Button>
         </div>
         
         <div className="divide-y divide-slate-100">
@@ -50,8 +52,8 @@ export default function PermissionSettings() {
                 <LayoutDashboard size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-800">ការចូលប្រើផ្ទាំងគ្រប់គ្រងបុគ្គលិក</p>
-                <p className="text-xs text-slate-500 mt-0.5">អនុញ្ញាតឱ្យតួនាទី 'បុគ្គលិក' មើលវិភាគផ្ទាំងគ្រប់គ្រងសំខាន់។</p>
+                <p className="text-sm font-semibold text-slate-800">{t('settings.staffDashboardAccess')}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{t('settings.staffDashboardDesc')}</p>
               </div>
             </div>
             <button 
@@ -69,8 +71,8 @@ export default function PermissionSettings() {
                 <ShoppingBag size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-800">ការគ្រប់គ្រងផលិតផលបុគ្គលិក</p>
-                <p className="text-xs text-slate-500 mt-0.5">អនុញ្ញាតឱ្យតួនាទី 'បុគ្គលិក' បន្ថែម កែប្រែ ឬលុបផលិតផល។</p>
+                <p className="text-sm font-semibold text-slate-800">{t('settings.staffProductManage')}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{t('settings.staffProductDesc')}</p>
               </div>
             </div>
             <button 
@@ -88,8 +90,8 @@ export default function PermissionSettings() {
                 <Settings size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-800">ការចូលប្រើការកំណត់អ្នកចាត់ការ</p>
-                <p className="text-xs text-slate-500 mt-0.5">អនុញ្ញាតឱ្យតួនាទី 'អ្នកចាត់ការ' ចូលប្រើទំព័រការកំណត់នេះ។</p>
+                <p className="text-sm font-semibold text-slate-800">{t('settings.managerSettingAccess')}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{t('settings.managerSettingDesc')}</p>
               </div>
             </div>
             <button 

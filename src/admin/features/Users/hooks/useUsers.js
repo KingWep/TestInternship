@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 import { userService } from "../../../../services/userService";
 
 const ITEMS_PER_PAGE = 5;
 
 export function useUsers() {
+  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -39,8 +41,8 @@ export function useUsers() {
         (user.email || "").toLowerCase().includes(search.toLowerCase());
 
       const matchRole =
-        filters.role === "" ||
-        filters.role === "ទាំងអស់" ||
+        !filters.role ||
+        filters.role === t('common.all') ||
         user.role === filters.role;
 
       return matchSearch && matchRole;
@@ -83,7 +85,7 @@ export function useUsers() {
     setIsSubmitting(true);
 
     Swal.fire({
-      title: "កំពុងដំណើរការ...",
+      title: t('common.processing'),
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -107,8 +109,8 @@ export function useUsers() {
 
         Swal.fire({
           icon: "success",
-          title: "ជោគជ័យ",
-          text: res.message || "បានធ្វើបច្ចុប្បន្នភាពអ្នកប្រើប្រាស់ជោគជ័យ!",
+          title: t('common.success'),
+          text: res.message || t('users.updatedSuccess'),
           timer: 1500,
           showConfirmButton: false,
         });
@@ -122,8 +124,8 @@ export function useUsers() {
 
         Swal.fire({
           icon: "success",
-          title: "ជោគជ័យ",
-          text: res.message || "បានបង្កើតអ្នកប្រើប្រាស់ជោគជ័យ!",
+          title: t('common.success'),
+          text: res.message || t('users.createdSuccess'),
           timer: 1500,
           showConfirmButton: false,
         });
@@ -139,7 +141,7 @@ export function useUsers() {
         errorData?.message ||
         errorData?.error ||
         error?.message ||
-        "មានបញ្ហាក្នុងការដំណើរការ";
+        t('users.processingError');
 
       Swal.fire({
         icon: "error",
@@ -158,19 +160,19 @@ export function useUsers() {
 
   const handleDelete = (id) => {
     Swal.fire({
-      title: "តើអ្នកប្រាកដទេ?",
-      text: "អ្នកនឹងមិនអាចទាញទិន្នន័យនេះមកវិញបានទេ!",
+      title: t('common.areYouSure'),
+      text: t('common.cannotRevert'),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "បាទ/ចាស លុបវា",
-      cancelButtonText: "បោះបង់",
+      confirmButtonText: t('common.yesDelete'),
+      cancelButtonText: t('common.cancel'),
     }).then((result) => {
       if (result.isConfirmed) {
         // Fallback for delete since backend only supports get, update, register
         setUsers((prev) => prev.filter((s) => s.id !== id));
-        Swal.fire("លុបបានជោគជ័យ!", "ទិន្នន័យត្រូវបានលុប (Locally).", "success");
+        Swal.fire(t('common.deletedSuccess'), t('users.deletedLocally'), "success");
       }
     });
   };

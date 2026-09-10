@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { UploadCloud, Image as ImageIcon, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export const ShopIdentityStep = ({
   register,
@@ -7,6 +8,7 @@ export const ShopIdentityStep = ({
   setValue,
   watch,
 }) => {
+  const { t } = useTranslation();
   const logo = watch("logo");
   const [logoPreview, setLogoPreview] = useState(null);
 
@@ -61,7 +63,7 @@ export const ShopIdentityStep = ({
       {/* Shop Name */}
       <div>
         <label className="block text-xs font-semibold text-gray-700 mb-1">
-          ឈ្មោះហាង (Shop Name)
+          {t('auth.shopName')}
           <span className="text-red-500">*</span>
         </label>
 
@@ -73,7 +75,7 @@ export const ShopIdentityStep = ({
 
         {errors.shop_name && (
           <span className="text-[11px] text-red-600 mt-0.5 block">
-            {errors.shop_name.message}
+            {t(errors.shop_name.message)}
           </span>
         )}
       </div>
@@ -81,7 +83,7 @@ export const ShopIdentityStep = ({
       {/* Logo */}
       <div>
         <label className="block text-xs font-semibold text-gray-700 mb-1">
-          រូបសញ្ញា (Logo)<span className="text-red-500">*</span>
+          {t('auth.logo')}<span className="text-red-500">*</span>
           <span className="text-gray-400 font-normal"> (Optional)</span>
         </label>
 
@@ -130,7 +132,7 @@ export const ShopIdentityStep = ({
               className="flex items-center justify-center gap-2 w-full px-4 py-2 border border-dashed border-blue-300 bg-blue-50/50 text-blue-600 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors text-sm font-medium"
             >
               <UploadCloud size={18} />
-              ជ្រើសរើសរូបភាព (Choose Image)
+              {t('auth.chooseImage')}
             </label>
 
             <p className="text-[10px] text-gray-500 mt-1">
@@ -141,7 +143,7 @@ export const ShopIdentityStep = ({
 
         {errors.logo && (
           <span className="text-[11px] text-red-600 mt-0.5 block">
-            {errors.logo.message}
+            {t(errors.logo.message)}
           </span>
         )}
       </div>
@@ -149,7 +151,7 @@ export const ShopIdentityStep = ({
       {/* Telegram */}
       <div>
         <label className="block text-xs font-semibold text-gray-700 mb-1">
-          តេឡេក្រាម ID (Telegram Chat ID)
+          {t('auth.telegramId')}
           <span className="text-gray-400 font-normal"> (Optional)</span>
         </label>
 
@@ -161,7 +163,7 @@ export const ShopIdentityStep = ({
 
         {errors.chat_id && (
           <span className="text-[11px] text-red-600 mt-0.5 block">
-            {errors.chat_id.message}
+            {t(errors.chat_id.message)}
           </span>
         )}
       </div>

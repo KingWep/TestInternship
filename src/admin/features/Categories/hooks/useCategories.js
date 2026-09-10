@@ -177,6 +177,8 @@ export function useCategories() {
     handleDelete,
     openAddModal,
     closeModal,
+    setEditingCategory,
+    setIsModalOpen
   }
 }
 

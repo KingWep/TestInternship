@@ -174,5 +174,7 @@ export function useDeliveryProviders() {
     handleDelete,
     openAddModal,
     closeModal,
+    setEditingProvider,
+    setIsModalOpen,
   }
 }

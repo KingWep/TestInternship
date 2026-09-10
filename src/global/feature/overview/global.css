@@ -1,6 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --primary-purple: #8b2f67;
+    --bg-purple: #742555;
+    --bg-purple-dark: #5a1941;
+    --gradient-start: #1a1550;
+    --gradient-end: #30517d;
+  }
+}
 
 @layer utilities {
   .animate-fade-in-up {
@@ -9,8 +21,39 @@
     transform: translateY(20px);
   }
 
-  .delay-200 {
-    animation-delay: 200ms;
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.7s ease-out forwards;
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.5s ease-out forwards;
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+
+  .business-badge {
+    @apply bg-white border border-gray-200 rounded-full px-5 py-2 font-medium text-sm transition-all duration-200 cursor-pointer;
+  }
+
+  .business-badge:hover {
+    background: linear-gradient(135deg, var(--bg-purple), var(--bg-purple-dark));
+    color: #fff;
+    border-color: var(--primary-purple);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(139, 47, 103, 0.3);
   }
 }
 
@@ -22,6 +65,33 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 

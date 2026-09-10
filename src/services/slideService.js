@@ -31,5 +31,22 @@ export const slideService = {
       });
       throw error;
     }
+  },
+
+  createSlide: async (slideData) => {
+    try {
+      const response = await axiosClient.post(
+        API_ENDPOINTS.SLIDES.CREATE,
+        slideData
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Slide API Error [createSlide]:', {
+        status: error.response?.status,
+        data:   JSON.stringify(error.response?.data),
+        message: error.message,
+      });
+      throw error;
+    }
   }
 };

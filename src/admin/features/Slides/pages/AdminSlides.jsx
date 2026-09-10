@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Edit } from "lucide-react";
+import { Edit, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSlides } from "../hooks/useSlides";
 import SlideForm from "../components/SlideForm";
@@ -21,6 +21,7 @@ export default function AdminSlides() {
     setCurrentPage,
     handleSubmit,
     handleEdit,
+    openAddModal,
     closeModal,
   } = useSlides();
 
@@ -118,6 +119,13 @@ export default function AdminSlides() {
           title={t('slides.pageTitle')}
           description={t('slides.pageDescription')}
         />
+        <button
+          onClick={openAddModal}
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm"
+        >
+          <Plus size={16} />
+          {t('slides.addSlideTitle')}
+        </button>
       </div>
       <div className="overflow-x-auto bg-white border border-slate-200 rounded-2xl">
         {isLoading ? (

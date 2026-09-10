@@ -534,7 +534,8 @@
     "descPlaceholder": "ការពិពណ៌នាស្លាយ...",
     "updateBtn": "ធ្វើបច្ចុប្បន្នភាពស្លាយ",
     "saveBtn": "រក្សាទុកស្លាយ",
-    "updated_successfully": "បានធ្វើបច្ចុប្បន្នភាពស្លាយដោយជោគជ័យ!"
+    "updated_successfully": "បានធ្វើបច្ចុប្បន្នភាពស្លាយដោយជោគជ័យ!",
+    "added_successfully": "បានបន្ថែមស្លាយដោយជោគជ័យ!"
   },
   "users": {
     "passwordsDoNotMatch": "ពាក្យសម្ងាត់មិនត្រូវគ្នាទេ",
@@ -624,5 +625,39 @@
     "statusChangedTo": "ស្ថានភាពត្រូវបានប្តូរទៅជា",
     "paymentChangedToUnpaid": "ការទូទាត់ត្រូវបានប្តូរទៅជា មិនទាន់ទូទាត់ (Unpaid)",
     "updatePaymentStatusError": "Error updating payment status"
+  },
+  "cart": {
+    "emptyCartTitle": "កន្ត្រករបស់អ្នកទទេ",
+    "emptyCartDesc": "សូមជ្រើសរើសទំនិញដើម្បីបន្ត",
+    "paymentCash": "សាច់ប្រាក់",
+    "deliveryInfoTitle": "ព័ត៌មានដឹកជញ្ជូន",
+    "phoneLabel": "លេខទូរស័ព្ទ",
+    "addressLabel": "អាស័យដ្ឋាន",
+    "addressPlaceholder": "បញ្ចូលអាសយដ្ឋានដឹកជញ្ជូន",
+    "deliveryMethod": "សេវាដឹកជញ្ជូន",
+    "paymentMethod": "សេវាបង់ប្រាក់",
+    "subtotal": "តម្លៃទំនិញ",
+    "deliveryFee": "សេវាដឹកជញ្ជូន",
+    "grandTotal": "សរុបរួម",
+    "total": "សរុប",
+    "checkout": "បញ្ជាទិញ",
+    "processing": "កំពុងដំណើរការ...",
+    "cartTitle": "កន្ត្រកទំនិញ",
+    "shareNotSupportedTitle": "ការចែករំលែកមិនត្រូវបានគាំទ្រទេ",
+    "shareNotSupportedText": "កម្មវិធីរុករករបស់អ្នកមិនគាំទ្រ Web Share API ទេ។",
+    "downloadedTitle": "បានទាញយក!",
+    "copiedTitle": "បានចម្លងរូបភាព!",
+    "copyFailedTitle": "បរាជ័យក្នុងការចម្លង",
+    "copyFailedText": "កម្មវិធីរុករករបស់អ្នកប្រហែលជាមិនគាំទ្រការចម្លងរូបភាពដោយផ្ទាល់ទេ។",
+    "share": "ចែករំលែក",
+    "save": "រក្សាទុក",
+    "copyImage": "ចម្លងរូបភាព",
+    "cancel": "បោះបង់",
+    "expiresIn": "ផុតកំណត់",
+    "orderSuccessTitle": "បញ្ជាទិញជោគជ័យ 🎉",
+    "orderSuccessText": "ការបញ្ជាទិញរបស់អ្នកត្រូវបានបញ្ជូន។ ចំនួនសរុប",
+    "printReceiptPrompt": "តើអ្នកចង់បោះពុម្ពវិក្កយបត្រដែរឬទេ?",
+    "skip": "រំលង",
+    "invalidPhone": "សូមបញ្ចូលលេខទូរស័ព្ទត្រឹមត្រូវ (8-9 ខ្ទង់)"
   }
 }

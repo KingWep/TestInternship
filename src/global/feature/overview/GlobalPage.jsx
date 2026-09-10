@@ -15,7 +15,7 @@ import GlobalFooter from './components/GlobalFooter';
 
 const GlobalPage = () => {
   return (
-    <div className="min-h-screen font-sans text-white bg-blue-600">
+    <div className="min-h-screen text-[#333] bg-[#e8e8e8]" style={{ fontFamily: "'Kantumruy Pro', sans-serif" }}>
       <GlobalNavbar />
       <main>
         <HeroSection />

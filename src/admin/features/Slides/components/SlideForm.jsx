@@ -25,7 +25,6 @@ export default function SlideForm({ onSubmit, initialData }) {
       ctaText: "",
       backgroundColor: "#FF5733",
       status: "Active",
-      shop_code: "",
     },
   });
 
@@ -41,7 +40,6 @@ export default function SlideForm({ onSubmit, initialData }) {
       ctaText: initialData?.ctaText || "",
       backgroundColor: initialData?.backgroundColor || "#FF5733",
       status: initialData?.status || "Active",
-      shop_code: initialData?.shop_code || "",
     });
   }, [initialData, reset]);
 
@@ -192,25 +190,6 @@ export default function SlideForm({ onSubmit, initialData }) {
             </p>
           )}
         </div>
-      </div>
-
-      <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1">
-          {t('slides.shopCodeLabel')}
-        </label>
-
-        <input
-          type="text"
-          {...register("shop_code")}
-          placeholder={t('slides.shopCodePlaceholder')}
-          className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
-        />
-
-        {errors.shop_code && (
-          <p className="text-xs text-red-500 mt-1">
-            {errors.shop_code?.message ? t(errors.shop_code.message) : ""}
-          </p>
-        )}
       </div>
 
       <div>

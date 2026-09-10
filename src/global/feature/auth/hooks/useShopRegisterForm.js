@@ -107,13 +107,15 @@ export const useShopRegisterForm = () => {
 
     try {
       await createSettingMutation.mutateAsync(formData);
-
       Swal.fire({
+        toast: true,
+        position: "top-end",
         icon: "success",
         title: "ជោគជ័យ",
         text: "គណនីត្រូវបានបង្កើតដោយជោគជ័យ",
-        timer: 1500,
         showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
       }).then(() => {
         navigate("/login");
       });

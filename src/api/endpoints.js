@@ -26,6 +26,7 @@ export const API_ENDPOINTS = {
     },
     SLIDES: {
         GET_ALL: 'api/promotions',
+        CREATE: 'api/promotions',
         UPDATE: (id) => `api/promotions?id=${id}`,
     },
     SETTINGS:{

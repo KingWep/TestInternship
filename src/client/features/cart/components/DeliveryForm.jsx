@@ -1,6 +1,7 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import { Truck, MapPin, Phone } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useDeliveryProvidersQuery } from "../../../../queries/deliveryProviders/useDeliveryProviderQueries";
 
 export function DeliveryForm({
@@ -12,14 +13,10 @@ export function DeliveryForm({
   setDeliveryMethod,
   deliveryFee,
   setDeliveryFee,
-  paymentMethod,
-  setPaymentMethod,
-  paymentImage,
-  setPaymentImage,
-  setQr,
   errors = {},
 }) {
   const { shop_code } = useParams();
+  const { t } = useTranslation();
   const { data: providers = [], isLoading } = useDeliveryProvidersQuery({
     shop_code,
   });
@@ -37,11 +34,10 @@ export function DeliveryForm({
     { id: "aba", name: "ABA Bank", image: "/images/qrbank.JPG" },
     { id: "wing", name: "Wing", image: "/images/qrbank.JPG" },
     { id: "acleda", name: "ACLEDA", image: "/images/qrbank.JPG" },
-    { id: "cash", name: "សាច់ប្រាក់", image: "null" },
+    { id: "cash", name: t('cart.paymentCash'), image: "null" },
   ];
 
   const handleDeliveryChange = (option) => {
-  const { t } = useTranslation();
     setDeliveryMethod(option.id);
     if (setDeliveryFee) {
       setDeliveryFee(option.fee);
@@ -55,12 +51,12 @@ export function DeliveryForm({
 
   return (
     <div className="space-y-4 pt-4 border-t border-slate-100">
-      <h3 className="font-semibold text-slate-900">ព័ត៌មានដឹកជញ្ជូន</h3>
+      <h3 className="font-semibold text-slate-900">{t('cart.deliveryInfoTitle')}</h3>
 
       {/* Phone Input */}
       <div>
         <label className="block text-xs font-medium text-slate-600 mb-1">
-          លេខទូរស័ព្ទ
+          {t('cart.phoneLabel')}
         </label>
         <div
           className={`flex items-center w-full bg-slate-50 border rounded-lg overflow-hidden focus-within:bg-white focus-within:ring-2 focus-within:ring-red-100 focus-within:border-red-400 transition ${
@@ -93,13 +89,13 @@ export function DeliveryForm({
       {/* Address Input */}
       <div>
         <label className="block text-xs font-medium text-slate-600 mb-1">
-          អាស័យដ្ឋាន
+          {t('cart.addressLabel')}
         </label>
         <textarea
           name="address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          placeholder="បញ្ចូលអាសយដ្ឋានដឹកជញ្ជូន"
+          placeholder={t('cart.addressPlaceholder')}
           rows={2}
           className={`w-full bg-slate-50 border rounded-lg px-3 py-2 text-sm outline-none resize-none focus:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-400 transition ${
             errors.address ? "border-red-500" : "border-slate-200"
@@ -114,7 +110,7 @@ export function DeliveryForm({
       <div>
         <div className="flex justify-between items-center mb-1.5">
           <label className="block text-xs font-medium text-slate-600">
-            សេវាដឹកជញ្ជូន
+            {t('cart.deliveryMethod')}
           </label>
           {errors.deliveryMethod && (
             <span className="text-red-500 text-[10px]">
@@ -150,41 +146,6 @@ export function DeliveryForm({
                 <span className="truncate w-full text-center text-xs font-medium">
                   {option.name}
                 </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Payment Options Selector */}
-      <div>
-        <div className="flex justify-between items-center mb-1.5 mt-2">
-          <label className="block text-xs font-medium text-slate-600">
-            សេវាបង់ប្រាក់
-          </label>
-          {errors.paymentMethod && (
-            <span className="text-red-500 text-[10px]">
-              {errors.paymentMethod ? t(errors.paymentMethod) : ""}
-            </span>
-          )}
-        </div>
-        <div className="grid grid-cols-4 gap-1.5">
-          {paymentMethods.map((pay) => {
-            const isSelected = paymentMethod === pay.id;
-            return (
-              <button
-                key={pay.id}
-                type="button"
-                onClick={() => handlePaymentChange(pay)}
-                className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-xs transition-all duration-200 ${
-                  isSelected
-                    ? "border-red-600 bg-red-50/80 text-red-950 font-semibold shadow-sm"
-                    : errors.paymentMethod
-                      ? "border-red-300 bg-red-50/30 text-slate-600 hover:border-red-400"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                }`}
-              >
-                <span className="truncate w-full text-center">{pay.name}</span>
               </button>
             );
           })}

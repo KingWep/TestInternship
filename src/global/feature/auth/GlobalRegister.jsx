@@ -27,13 +27,13 @@ const GlobalRegister = () => {
   const progressPercentage = (currentStep / steps.length) * 100;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-900 relative overflow-hidden py-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1a1550] to-[#30517d] relative overflow-hidden py-8">
       <ParticleBackground />
 
       <div className="w-full max-w-md px-4 relative z-10 animate-in fade-in zoom-in-95 duration-500">
         <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-800 p-5 text-center relative overflow-hidden">
+          <div className="bg-gradient-to-br from-[#8b2f67] to-[#5a1941] p-5 text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
 
             <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-xl mx-auto flex items-center justify-center border border-white/30 shadow-inner mb-2 overflow-hidden">
@@ -41,7 +41,7 @@ const GlobalRegister = () => {
             </div>
 
             <h2 className="text-xl font-bold text-white mb-0.5">CHOMNENH</h2>
-            <p className="text-blue-100 text-xs font-medium">
+            <p className="text-purple-100 text-xs font-medium">
               {t('auth.createNewShop')}
             </p>
           </div>

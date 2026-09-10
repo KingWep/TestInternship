@@ -97,7 +97,6 @@ export function useSlides(settingId = null, shopCode = null) {
         ctaText: data.ctaText || '',
         backgroundColor: data.backgroundColor || '#FF5733',
         status: data.status || 'Active',
-        shop_code: data.shop_code || '',
       }
 
       if (settingId) {
@@ -114,9 +113,18 @@ export function useSlides(settingId = null, shopCode = null) {
           timer: 1500,
           showConfirmButton: false
         })
-        await fetchSlides()
+      } else {
+        await slideService.createSlide(payload)
+        Swal.fire({
+          icon: 'success',
+          title: t('common.success'),
+          text: t('slides.added_successfully'),
+          timer: 1500,
+          showConfirmButton: false
+        })
       }
 
+      await fetchSlides()
       closeModal()
     } catch (error) {
       const errorData = error?.response?.data
@@ -136,6 +144,10 @@ export function useSlides(settingId = null, shopCode = null) {
     setIsModalOpen(true)
   }
 
+  const openAddModal = () => {
+    setEditingSlide(null)
+    setIsModalOpen(true)
+  }
 
   const closeModal = () => {
     setIsModalOpen(false)
@@ -164,6 +176,7 @@ export function useSlides(settingId = null, shopCode = null) {
     handleSortChange,
     handleSubmit,
     handleEdit,
+    openAddModal,
     closeModal,
   }
 }

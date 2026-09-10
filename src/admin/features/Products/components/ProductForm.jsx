@@ -508,6 +508,7 @@ function SearchableCategorySelect({ categories, value, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
 
+  const { t } = useTranslation();
   const dropdownRef = useRef(null);
 
   useEffect(() => {

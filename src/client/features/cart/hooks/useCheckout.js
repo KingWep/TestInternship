@@ -7,6 +7,7 @@ export default function useCheckout({
   setIsCartOpen,
   resetCheckoutForm,
   navigate,
+  t,
 }) {
   const [showQr, setShowQr] = useState(false)
   const [qrSeconds, setQrSeconds] = useState(0)
@@ -51,23 +52,22 @@ export default function useCheckout({
     setIsCartOpen(false)
     await Swal.fire({
       icon: "success",
-      title: "បញ្ជាទិញជោគជ័យ 🎉",
-      text: `ការបញ្ជាទិញរបស់អ្នកត្រូវបានបញ្ជូន។ ចំនួនសរុប $${grandTotal.toFixed(
-        2
-      )}`,
-      confirmButtonText: "យល់ព្រម",
-      confirmButtonColor: "#7f1d1d",
+      title: t('cart.orderSuccessTitle'),
+      text: `${t('cart.orderSuccessText')} $${grandTotal.toFixed(2)}`,
+      confirmButtonText: t('common.ok'),
+      confirmButtonColor: "#16a34a",
       allowOutsideClick: false,
+      timer: 3000,
+      timerProgressBar: true,
     })
 
     const result = await Swal.fire({
       icon: "question",
-      title: "Print Receipt?",
-      text: "តើអ្នកចង់បោះពុម្ពវិក្កយបត្រដែរឬទេ?",
+      title: t('cart.printReceiptPrompt'),
       showCancelButton: true,
-      confirmButtonText: "🖨️ Print Receipt",
-      cancelButtonText: "រំលង",
-      confirmButtonColor: "#7f1d1d",
+      confirmButtonText: t('cart.printReceipt'),
+      cancelButtonText: t('cart.skip'),
+      confirmButtonColor: "#2563eb",
       cancelButtonColor: "#64748b",
       allowOutsideClick: false,
     })

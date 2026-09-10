@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react';
-import axiosClient from '@/api/axiosClient';
-import { API_ENDPOINTS } from '@/api/endpoints';
-import { useAuth } from '@/hooks/useAuth'; 
-import Swal from 'sweetalert2';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
+import axiosClient from "@/api/axiosClient";
+import { API_ENDPOINTS } from "@/api/endpoints";
+import { useAuth } from "@/hooks/useAuth";
+import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/validations/auth.schema";
-import { ParticleBackground } from './components/ParticleBackground';
-import { Swirling } from '@/components/swirling';
-import { useTranslation } from 'react-i18next';
+import { ParticleBackground } from "./components/ParticleBackground";
+import { Swirling } from "@/components/swirling";
+import { useTranslation } from "react-i18next";
 
 const GlobalLogin = () => {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   const navigate = useNavigate();
-  const { login } = useAuth(); 
+  const { login } = useAuth();
 
   const {
     register,
@@ -42,44 +42,47 @@ const GlobalLogin = () => {
       });
 
       const token = response.data?.token || response.data?.access_token;
-      
+
       if (token) {
         login(
           token,
-          response.data?.data || response.data?.user || {
-            email: data.email,
-          },
+          response.data?.data ||
+            response.data?.user || {
+              email: data.email,
+            },
         );
-        
         Swal.fire({
+          toast: true,
+          position: "top-end",
           icon: "success",
-          title: t('common.success'),
-          text: t('auth.loginSuccess'),
-          timer: 1500,
+          title: t("common.success"),
+          text: t("auth.loginSuccess"),
           showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
         }).then(() => {
-          navigate('/admin'); 
+          navigate("/admin");
         });
       }
     } catch (error) {
       console.error("Login API Error:", error);
 
-      let errorMessage = t('auth.loginFailed');
+      let errorMessage = t("auth.loginFailed");
 
       if (!error.response) {
-        errorMessage = t('auth.networkError');
+        errorMessage = t("auth.networkError");
       } else {
         errorMessage =
           error.response.data?.error ||
           error.response.data?.message ||
           errorMessage;
       }
-      
+
       Swal.fire({
         icon: "error",
-        title: t('common.error'),
+        title: t("common.error"),
         text: errorMessage,
-        confirmButtonColor: '#2563eb'
+        confirmButtonColor: "#2563eb",
       });
     } finally {
       setLoading(false);
@@ -87,23 +90,27 @@ const GlobalLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-900 relative overflow-hidden py-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1a1550] to-[#30517d] relative overflow-hidden py-4">
       {/* Particle Animation Background */}
       <ParticleBackground />
 
       <div className="w-full max-w-md px-4 relative z-10 animate-in fade-in zoom-in-95 duration-500">
         <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-800 p-5 text-center relative overflow-hidden">
+          <div className="bg-gradient-to-br from-[#8b2f67] to-[#5a1941] p-5 text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-            
+
             <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-xl mx-auto flex items-center justify-center border border-white/30 shadow-inner mb-2 overflow-hidden">
-              <img src="images/chomnenh.png" alt="" className="object-cover w-full h-full" />
+              <img
+                src="images/chomnenh.png"
+                alt=""
+                className="object-cover w-full h-full"
+              />
             </div>
-            
+
             <h2 className="text-xl font-bold text-white mb-0.5">CHOMNENH</h2>
-            <p className="text-blue-100 text-xs font-medium">
-              {t('auth.loginDashboard')}
+            <p className="text-purple-100 text-xs font-medium">
+              {t("auth.loginDashboard")}
             </p>
           </div>
 
@@ -112,7 +119,7 @@ const GlobalLogin = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  {t('auth.usernameOrEmail')}
+                  {t("auth.usernameOrEmail")}
                 </label>
                 <input
                   {...register("email")}
@@ -128,7 +135,7 @@ const GlobalLogin = () => {
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  {t('auth.password')}
+                  {t("auth.password")}
                 </label>
                 <div className="relative">
                   <input
@@ -153,15 +160,18 @@ const GlobalLogin = () => {
               </div>
 
               <div className="flex items-center justify-between text-xs">
-                <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-700">
-                  {t('auth.signUp')}
+                <Link
+                  to="/register"
+                  className="font-semibold text-blue-600 hover:text-blue-700"
+                >
+                  {t("auth.signUp")}
                 </Link>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-2 bg-gradient-to-br from-blue-500 to-indigo-700 hover:bg-blue-900 text-white font-semibold py-2.5 rounded-lg shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed text-sm"
+                className="w-full mt-2 bg-gradient-to-br from-[#8b2f67] to-[#5a1941] hover:from-[#742555] hover:to-[#3d1129] text-white font-semibold py-2.5 rounded-lg shadow-lg shadow-[#8b2f67]/30 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed text-sm"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
@@ -169,8 +179,11 @@ const GlobalLogin = () => {
                   </span>
                 ) : (
                   <>
-                    {t('auth.signIn')}
-                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    {t("auth.signIn")}
+                    <ArrowRight
+                      size={16}
+                      className="group-hover:translate-x-1 transition-transform"
+                    />
                   </>
                 )}
               </button>
@@ -181,10 +194,13 @@ const GlobalLogin = () => {
               <ShieldCheck size={13} />
               <span>Secure Encrypted Connection</span>
             </div>
-            
+
             <div className="text-center mt-3 pt-3 border-t border-gray-100">
-              <Link to="/" className="text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors">
-                {t('auth.backToHome')}
+              <Link
+                to="/"
+                className="text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                {t("auth.backToHome")}
               </Link>
             </div>
           </div>

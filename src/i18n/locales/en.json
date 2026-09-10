@@ -534,7 +534,8 @@
     "descPlaceholder": "Slide description...",
     "updateBtn": "Update Slide",
     "saveBtn": "Save Slide",
-    "updated_successfully": "Slide updated successfully!"
+    "updated_successfully": "Slide updated successfully!",
+    "added_successfully": "Slide added successfully!"
   },
   "users": {
     "passwordsDoNotMatch": "Passwords do not match",
@@ -624,5 +625,39 @@
     "statusChangedTo": "Status has been changed to",
     "paymentChangedToUnpaid": "Payment has been changed to Unpaid",
     "updatePaymentStatusError": "Error updating payment status"
+  },
+  "cart": {
+    "emptyCartTitle": "Your cart is empty",
+    "emptyCartDesc": "Please select items to continue",
+    "paymentCash": "Cash",
+    "deliveryInfoTitle": "Delivery Information",
+    "phoneLabel": "Phone Number",
+    "addressLabel": "Address",
+    "addressPlaceholder": "Enter delivery address",
+    "deliveryMethod": "Delivery Method",
+    "paymentMethod": "Payment Method",
+    "subtotal": "Subtotal",
+    "deliveryFee": "Delivery Fee",
+    "grandTotal": "Grand Total",
+    "total": "Total",
+    "checkout": "Checkout",
+    "processing": "Processing...",
+    "cartTitle": "Shopping Cart",
+    "shareNotSupportedTitle": "Sharing Not Supported",
+    "shareNotSupportedText": "Your browser doesn't support the Web Share API.",
+    "downloadedTitle": "Downloaded!",
+    "copiedTitle": "Image Copied!",
+    "copyFailedTitle": "Copy Failed",
+    "copyFailedText": "Your browser might not support direct image copying.",
+    "share": "Share",
+    "save": "Save",
+    "copyImage": "Copy Image",
+    "cancel": "Cancel",
+    "expiresIn": "Expires in",
+    "orderSuccessTitle": "Order Successful 🎉",
+    "orderSuccessText": "Your order has been placed. Total",
+    "printReceiptPrompt": "Do you want to print the receipt?",
+    "skip": "Skip",
+    "invalidPhone": "Please enter a valid phone number (8-9 digits)"
   }
 }

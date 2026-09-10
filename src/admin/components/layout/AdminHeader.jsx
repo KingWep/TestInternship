@@ -36,9 +36,9 @@ export default function AdminHeader({ sidebarState, setSidebarState }) {
       {/* Right — actions */}
       <div className="flex items-center gap-2 text-slate-600 text-xl">
         {/* Notifications Dropdown Component */}
-        <NotificationDropdown size={20} className="text-slate-600 hover:text-blue-600" />
 
         <LanguageSwitcher />
+        <NotificationDropdown size={20} className="text-slate-600 hover:text-blue-600" />
       </div>
     </header>
   )

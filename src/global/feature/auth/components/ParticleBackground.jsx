@@ -44,8 +44,8 @@ export const ParticleBackground = () => {
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        // Changed to dark blue/indigo color to match the new Global Chomnenh theme
-        ctx.fillStyle = "rgba(79, 70, 229, 0.4)"; 
+        // Updated to purple color to match Chomnenh theme
+        ctx.fillStyle = "rgba(139, 47, 103, 0.5)"; 
         ctx.fill();
       }
     }
@@ -74,7 +74,7 @@ export const ParticleBackground = () => {
           if (distance < 150) {
             ctx.beginPath();
             const opacity = 1 - distance / 150;
-            ctx.strokeStyle = `rgba(79, 70, 229, ${opacity * 0.3})`;
+            ctx.strokeStyle = `rgba(255, 193, 7, ${opacity * 0.25})`;
             ctx.lineWidth = 0.5;
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);

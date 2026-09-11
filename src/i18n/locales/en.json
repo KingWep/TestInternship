@@ -79,7 +79,7 @@
     "orders": "Orders",
     "saleForm": "Sale Form",
     "categories": "Categories",
-    "slides": "Slides",
+    "promotions": "Promotions",
     "users": "Users",
     "deliveryProviders": "Delivery Providers",
     "qrCode": "QR Code",
@@ -508,7 +508,7 @@
     "selectIcon": "Select Icon...",
     "noSocialMedia": "No social media added yet"
   },
-  "slides": {
+  "promotions": {
     "bgColor": "Background Color",
     "badge": "Badge",
     "titleLabel": "Title",
@@ -519,10 +519,10 @@
     "active": "Active",
     "inactive": "Inactive",
     "createdAt": "Created At",
-    "editSlide": "Edit Slide",
-    "addSlideTitle": "Add New Slide",
-    "pageTitle": "Slide Banners",
-    "pageDescription": "Manage slides and promotional graphics.",
+    "editPromotion": "Edit Promotion",
+    "addPromotionTitle": "Add New Promotion",
+    "pageTitle": "Promotions",
+    "pageDescription": "Manage promotional banners and offers.",
     "badgePlaceholder": "e.g., New Arrival",
     "titlePlaceholder": "e.g., Summer Collection",
     "discountPlaceholder": "e.g., 25",
@@ -531,11 +531,11 @@
     "bgColorLabel": "Background Color",
     "shopCodeLabel": "Shop Code (for promotions)",
     "shopCodePlaceholder": "e.g., MKS, ALL",
-    "descPlaceholder": "Slide description...",
-    "updateBtn": "Update Slide",
-    "saveBtn": "Save Slide",
-    "updated_successfully": "Slide updated successfully!",
-    "added_successfully": "Slide added successfully!"
+    "descPlaceholder": "Promotion description...",
+    "updateBtn": "Update Promotion",
+    "saveBtn": "Save Promotion",
+    "updated_successfully": "Promotion updated successfully!",
+    "added_successfully": "Promotion added successfully!"
   },
   "users": {
     "passwordsDoNotMatch": "Passwords do not match",

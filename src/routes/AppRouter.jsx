@@ -51,7 +51,7 @@ export default function AppRouter() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="categories" element={<AdminCategories />} />
-          <Route path="slides" element={<AdminSlides />} />
+          <Route path="promotions" element={<AdminSlides />} />
           <Route path="delivery-providers" element={<AdminDeliveryProviders />} />
           <Route path="qr-code" element={<AdminQRCode />} />
           <Route path="settings" element={<AdminSettings />} />

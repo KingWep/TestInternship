@@ -102,7 +102,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
       items: [
         { label: t('navigation.products'), path: "/admin/products", icon: ShoppingBag },
         { label: t('navigation.categories'), path: "/admin/categories", icon: Layers },
-        { label: t('navigation.slides'), path: "/admin/slides", icon: Image },
+        { label: t('navigation.promotions'), path: "/admin/promotions", icon: Image },
       ],
     },
     {

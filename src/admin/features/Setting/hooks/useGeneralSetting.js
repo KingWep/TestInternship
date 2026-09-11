@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
-
 import { settingSchema } from "../schemas/settingSchema";
 import {
   useSettingsQuery,
@@ -24,6 +23,7 @@ const getSupportFileName = (support) => {
 };
 
 export function useGeneralSetting() {
+  const { t } = useTranslation()
   const { user } = useAuth();
   const shopCode = user?.shop?.code;
   const { data: settingData, isLoading } = useSettingsQuery(shopCode);

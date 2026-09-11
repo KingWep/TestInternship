@@ -95,7 +95,7 @@ export function useSlides(settingId = null, shopCode = null) {
         description: data.description || '',
         discountPercentage: data.discountPercentage === '' ? 0 : Number(data.discountPercentage),
         ctaText: data.ctaText || '',
-        backgroundColor: data.backgroundColor || '#FF5733',
+        backgroundColor: data.backgroundColor || 'radial-gradient(circle, #FF5733 0%, #FFC300 100%)',
         status: data.status || 'Active',
       }
 
@@ -109,7 +109,7 @@ export function useSlides(settingId = null, shopCode = null) {
         Swal.fire({
           icon: 'success',
           title: t('common.success'),
-          text: t('slides.updated_successfully'),
+          text: t('promotions.updated_successfully'),
           timer: 1500,
           showConfirmButton: false
         })
@@ -118,7 +118,7 @@ export function useSlides(settingId = null, shopCode = null) {
         Swal.fire({
           icon: 'success',
           title: t('common.success'),
-          text: t('slides.added_successfully'),
+          text: t('promotions.added_successfully'),
           timer: 1500,
           showConfirmButton: false
         })

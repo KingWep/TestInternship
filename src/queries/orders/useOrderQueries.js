@@ -57,27 +57,72 @@ export function useOrderStats() {
 
 export function useCreateOrderMutation() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: async ({ shop_code, items, subtotal, delivery, customerInfo }) => {
+    mutationFn: async ({
+      shop_code,
+      setting_id,
+      delivery_provider_id,
+      items,
+      subtotal,
+      delivery,
+      customerInfo,
+    }) => {
       const payload = {
         shop_code: shop_code || "",
-        customerPhone: customerInfo.phone || "",
-        customerAddress: customerInfo.address || "",
-        deliveryFee: Number(delivery) || 0,
-        deliveryProviderId: Number(customerInfo.deliveryProviderId || customerInfo.deliveryMethod) || null,
-        items: items.map(item => ({
-          productId: Number(item.productId || item.id),
-          quantity: Number(item.quantity)
-        }))
+
+        settingId:
+          Number(setting_id) || null,
+
+        customerPhone:
+          customerInfo?.phone || "",
+
+        customerAddress:
+          customerInfo?.address || "",
+
+        deliveryFee:
+          Number(delivery) || 0,
+
+        deliveryProviderId:
+          Number(delivery_provider_id) ||
+          Number(
+            customerInfo?.deliveryProviderId
+          ) ||
+          Number(
+            customerInfo?.deliveryMethod
+          ) ||
+          null,
+
+        items: (items || []).map(
+          (item) => ({
+            productId: Number(
+              item.productId || item.id
+            ),
+            quantity: Number(
+              item.quantity
+            ),
+          })
+        ),
       };
-      
-      const response = await orderService.createOrder(payload);
+
+      console.log(
+        "Final API order payload:",
+        payload
+      );
+
+      const response =
+        await orderService.createOrder(
+          payload
+        );
+
       return response?.data || response;
     },
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
-    }
+      queryClient.invalidateQueries({
+        queryKey: orderKeys.lists(),
+      });
+    },
   });
 }
 

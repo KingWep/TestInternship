@@ -29,7 +29,7 @@ const GlobalNavbar = ({ lang, onToggleLang, t }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-20">
           {/* Logo Brand */}
-          <a href="#" className="logo-wrapper">
+          <a href="#" className="logo-wrapper flex items-center gap-3">
             <img
               src={logoImg}
               onError={(e) => {
@@ -38,10 +38,10 @@ const GlobalNavbar = ({ lang, onToggleLang, t }) => {
               alt="Logo"
               className="site-logo"
             />
-            <div className="logo-brand">
-              <span className="brand-name">
+            <div className="logo-brand flex flex-col leading-none">
+              <span className="brand-name flex items-center gap-1.5">
                 {t.brand_name} <span className="highlight">{t.brand_highlight}</span>
-              </span>
+              </span> 
               <span className="brand-tagline">{t.brand_tagline}</span>
             </div>
           </a>
@@ -78,7 +78,7 @@ const GlobalNavbar = ({ lang, onToggleLang, t }) => {
             {/* Language Switcher */}
             <button
               onClick={onToggleLang}
-              className="lang-btn flex items-center px-2 py-1 rounded-md hover:bg-gray-100 transition-colors ml-2"
+              className="lang-btn flex items-center justify-center gap-2 px-7 py-1.5 rounded-full bg-gray-100 hover:bg-gray-300 transition-colors ml-2"
               title="ប្តូរភាសា / Switch Language"
             >
               <img
@@ -88,7 +88,7 @@ const GlobalNavbar = ({ lang, onToggleLang, t }) => {
                     : 'https://flagicons.lipis.dev/flags/4x3/gb.svg'
                 }
                 alt={lang === 'km' ? 'Khmer' : 'English'}
-                className="flag-icon"
+                className="flag-icon rounded"
               />
               <span className="font-semibold text-sm text-gray-700">
                 {lang === 'km' ? 'ខ្មែរ' : 'EN'}

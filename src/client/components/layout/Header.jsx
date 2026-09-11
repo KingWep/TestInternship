@@ -35,7 +35,7 @@ export default function Header() {
 
           <div className="flex items-center justify-between md:justify-start">
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 overflow-hidden">
               {isLoading ? (
                 <div className="flex items-center gap-2 animate-pulse">
                   <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-200 rounded-full shrink-0" />
@@ -47,7 +47,7 @@ export default function Header() {
                     <img
                       src={logoUrl}
                       alt={shopName}
-                      className="h-8 w-8 md:h-14 md:w-14 object-cover rounded-md border-[2px] border-red-800"
+                      className="h-8 w-8 md:h-14 md:w-14 object-cover rounded-md border-[1px] border-red-800"
                       onError={() => setImgError(true)}
                     />
                   ) : (

@@ -3,7 +3,7 @@ import Footer from "../../../components/layout/Footer";
 import Container from "../../../components/layout/Container";
 import PromoBanner from "../components/PromoBanner";
 import ProductSection from "../components/ProductSection";
-import CartDrawer from "../../cart/components/CartDrawer";
+import CartDrawer from "../../../features/cart/components/CartDrawer";
 import { useSearch } from "../../../../context/SearchContext";
 import ScrollToTopButton from "../../../components/common/ScrollToTopButton";
 import { useRef } from "react";

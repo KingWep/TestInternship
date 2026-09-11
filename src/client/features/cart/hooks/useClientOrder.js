@@ -18,6 +18,7 @@ export default function useClientOrder() {
       phone,
       address,
       deliveryMethod,
+      deliveryFee,
     }
 
     const result = clientOrderSchema(t).safeParse(dataToValidate)

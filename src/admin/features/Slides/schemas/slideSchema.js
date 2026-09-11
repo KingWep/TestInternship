@@ -1,44 +1,70 @@
 import { z } from "zod";
 
-export const slideSchema = z.object({
-  tag: z
+const HEX_REGEX = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
+
+const RGB_REGEX =
+  /^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}(?:\s*,\s*(?:0|1|0?\.\d+))?\s*\)$/;
+
+const LINEAR_GRADIENT_REGEX =
+  /^linear-gradient\(\s*(?:\d+(?:\.\d+)?deg\s*,\s*)?.+\)$/i;
+
+const RADIAL_GRADIENT_REGEX =
+  /^radial-gradient\(\s*.+\)$/i;
+
+const optionalString = (maxLen, maxMessage) =>
+  z
     .string()
-    .max(50, "validation.tagMaxLength")
-    .optional(),
+    .trim()
+    .max(maxLen, maxMessage)
+    .optional()
+    .or(z.literal(""));
+
+export const slideSchema = z.object({
+  tag: optionalString(50, "validation.tagMax"),
 
   title: z
     .string()
-    .min(1, "validation.requiredTitle")
-    .max(100, "validation.titleMaxLength"),
+    .trim()
+    .min(1, "validation.titleRequired")
+    .max(150, "validation.titleMax"),
 
-  description: z
-    .string()
-    .max(300, "validation.descriptionMaxLength")
-    .optional(),
+  description: optionalString(
+    500,
+    "validation.descriptionMax"
+  ),
 
   discountPercentage: z
-    .coerce
-    .number()
-    .min(0, "validation.percentMin")
-    .max(100, "validation.percentMax")
+    .union([
+      z.literal(""),
+      z.coerce
+        .number({
+          message: "validation.discountNumber",
+        })
+        .min(0, "validation.discountMin")
+        .max(100, "validation.discountMax"),
+    ])
     .optional(),
 
-  ctaText: z
-    .string()
-    .max(30, "validation.buttonTextMaxLength")
-    .optional(),
+  ctaText: optionalString(50, "validation.ctaMax"),
 
   backgroundColor: z
     .string()
-    .regex(
-      /^#[0-9A-Fa-f]{6}$/,
-      "validation.invalidHex"
+    .trim()
+    .min(1, "validation.backgroundRequired")
+    .refine(
+      (value) =>
+        HEX_REGEX.test(value) ||
+        RGB_REGEX.test(value) ||
+        LINEAR_GRADIENT_REGEX.test(value) ||
+        RADIAL_GRADIENT_REGEX.test(value),
+      {
+        message: "validation.invalidBackground",
+      }
     ),
 
-  shop_code: z
-    .string()
-    .max(50, "validation.shopCodeMaxLength")
-    .optional(),
-
-  status: z.enum(["Active", "Inactive"]),
+  status: z.enum(["Active", "Inactive"], {
+    message: "validation.statusRequired",
+  }),
 });
+
+export default slideSchema;

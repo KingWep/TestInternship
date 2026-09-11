@@ -79,7 +79,7 @@
     "orders": "ការបញ្ជាទិញ",
     "saleForm": "ទម្រង់លក់",
     "categories": "ប្រភេទ",
-    "slides": "ស្លាយ",
+    "promotions": "ការផ្សព្វផ្សាយ",
     "users": "អ្នកប្រើប្រាស់",
     "deliveryProviders": "អ្នកដឹកជញ្ជូន",
     "qrCode": "QR Code",
@@ -508,7 +508,7 @@
     "selectIcon": "ជ្រើសរើស Icon...",
     "noSocialMedia": "មិនទាន់មានបណ្តាញសង្គម"
   },
-  "slides": {
+  "promotions": {
     "bgColor": "ពណ៌ (Background)",
     "badge": "ស្លាក",
     "titleLabel": "ចំណងជើង",
@@ -519,8 +519,8 @@
     "active": "សកម្ម",
     "inactive": "អសកម្ម",
     "createdAt": "កាលបរិច្ឆេទបង្កើត",
-    "editSlide": "កែប្រែស្លាយ",
-    "addSlideTitle": "បន្ថែមស្លាយថ្មី",
+    "editPromotion": "កែប្រែស្លាយ",
+    "addPromotionTitle": "បន្ថែមស្លាយថ្មី",
     "pageTitle": "បដាស្លាយ",
     "pageDescription": "គ្រប់គ្រងស្លាយ និងក្រាហ្វិកផ្សព្វផ្សាយ។",
     "badgePlaceholder": "ឧទាហរណ៍: ទំនិញថ្មី",

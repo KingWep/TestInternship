@@ -5,9 +5,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { slideSchema } from "../schemas/slideSchema";
+import GradientPicker from "./GradientPicker";
 
 export default function SlideForm({ onSubmit, initialData }) {
   const { t } = useTranslation();
+
   const {
     register,
     handleSubmit,
@@ -23,7 +25,8 @@ export default function SlideForm({ onSubmit, initialData }) {
       description: "",
       discountPercentage: "",
       ctaText: "",
-      backgroundColor: "#FF5733",
+      backgroundColor:
+        "linear-gradient(90deg, #FF5733 0%, #FFC300 100%)",
       status: "Active",
     },
   });
@@ -36,9 +39,12 @@ export default function SlideForm({ onSubmit, initialData }) {
       tag: initialData?.tag || "",
       title: initialData?.title || "",
       description: initialData?.description || "",
-      discountPercentage: initialData?.discountPercentage ?? "",
+      discountPercentage:
+        initialData?.discountPercentage ?? "",
       ctaText: initialData?.ctaText || "",
-      backgroundColor: initialData?.backgroundColor || "#FF5733",
+      backgroundColor:
+        initialData?.backgroundColor ||
+        "linear-gradient(90deg, #FF5733 0%, #FFC300 100%)",
       status: initialData?.status || "Active",
     });
   }, [initialData, reset]);
@@ -50,21 +56,20 @@ export default function SlideForm({ onSubmit, initialData }) {
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
-      className="space-y-5"
+      className="space-y-6 bg-white p-6 rounded-2xl shadow-sm border border-slate-100"
     >
-      <div className="grid grid-cols-2 gap-3">
+      {/* Section 1: Core Information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">
-            {t('slides.badge')}
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+            {t("promotions.badge")}
           </label>
-
           <input
             type="text"
             {...register("tag")}
-            placeholder={t('slides.badgePlaceholder')}
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            placeholder={t("promotions.badgePlaceholder")}
+            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
-
           {errors.tag && (
             <p className="text-xs text-red-500 mt-1">
               {errors.tag?.message ? t(errors.tag.message) : ""}
@@ -73,17 +78,16 @@ export default function SlideForm({ onSubmit, initialData }) {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">
-            {t('slides.titleLabel')} <span className="text-red-500">*</span>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+            {t("promotions.titleLabel")}{" "}
+            <span className="text-red-500">*</span>
           </label>
-
           <input
             type="text"
             {...register("title")}
-            placeholder={t('slides.titlePlaceholder')}
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            placeholder={t("promotions.titlePlaceholder")}
+            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
-
           {errors.title && (
             <p className="text-xs text-red-500 mt-1">
               {errors.title?.message ? t(errors.title.message) : ""}
@@ -92,12 +96,12 @@ export default function SlideForm({ onSubmit, initialData }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      {/* Section 2: Discount & Status */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">
-            {t('slides.discount')}
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+            {t("promotions.discount")}
           </label>
-
           <input
             type="number"
             min="0"
@@ -106,30 +110,29 @@ export default function SlideForm({ onSubmit, initialData }) {
               setValueAs: (value) =>
                 value === "" ? undefined : Number(value),
             })}
-            placeholder={t('slides.discountPlaceholder')}
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            placeholder={t("promotions.discountPlaceholder")}
+            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
-
           {errors.discountPercentage && (
             <p className="text-xs text-red-500 mt-1">
-              {errors.discountPercentage?.message ? t(errors.discountPercentage.message) : ""}
+              {errors.discountPercentage?.message
+                ? t(errors.discountPercentage.message)
+                : ""}
             </p>
           )}
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">
-            {t('slides.status')}
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+            {t("promotions.status")}
           </label>
-
           <select
             {...register("status")}
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           >
-            <option value="Active">{t('slides.active')}</option>
-            <option value="Inactive">{t('slides.inactive')}</option>
+            <option value="Active">{t("promotions.active")}</option>
+            <option value="Inactive">{t("promotions.inactive")}</option>
           </select>
-
           {errors.status && (
             <p className="text-xs text-red-500 mt-1">
               {errors.status?.message ? t(errors.status.message) : ""}
@@ -138,88 +141,89 @@ export default function SlideForm({ onSubmit, initialData }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      {/* Section 3: Action & Description */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">
-            {t('slides.ctaLabel')}
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+            {t("promotions.ctaLabel")}
           </label>
-
           <input
             type="text"
             {...register("ctaText")}
-            placeholder={t('slides.ctaPlaceholder')}
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            placeholder={t("promotions.ctaPlaceholder")}
+            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
-
           {errors.ctaText && (
             <p className="text-xs text-red-500 mt-1">
               {errors.ctaText?.message ? t(errors.ctaText.message) : ""}
             </p>
           )}
         </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">
-            {t('slides.bgColorLabel')}
-          </label>
-
-          <div className="flex items-center gap-2">
-            <input
-              type="color"
-              value={backgroundColor || "#FF5733"}
-              onChange={(e) =>
-                setValue("backgroundColor", e.target.value, {
-                  shouldValidate: true,
-                  shouldDirty: true,
-                })
-              }
-              className="w-10 h-10 p-1 bg-gray-50 rounded-lg outline-none cursor-pointer"
-            />
-
-            <input
-              type="text"
-              {...register("backgroundColor")}
-              placeholder="#FF5733"
-              className="flex-1 px-3 py-2 text-sm uppercase bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
-            />
-          </div>
-
-          {errors.backgroundColor && (
-            <p className="text-xs text-red-500 mt-1">
-              {errors.backgroundColor?.message ? t(errors.backgroundColor.message) : ""}
-            </p>
-          )}
-        </div>
       </div>
 
-      <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1">
-          {t('slides.descriptionLabel')}
-        </label>
+      {/* Section 4: Full-width Background Gradient Picker */}
+      <div className="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
+            {t("promotions.bgColorLabel")}
+          </label>
+          {/* Live Preview Swatch */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-400">Preview:</span>
+            <div
+              className="w-8 h-4 rounded-md shadow-inner border border-slate-200"
+              style={{ background: backgroundColor }}
+            />
+          </div>
+        </div>
 
-        <textarea
-          {...register("description")}
-          rows={3}
-          placeholder={t('slides.descPlaceholder')}
-          className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none resize-none focus:ring-2 focus:ring-gray-200"
+        <GradientPicker
+          value={backgroundColor}
+          onChange={(value) =>
+            setValue("backgroundColor", value, {
+              shouldValidate: true,
+              shouldDirty: true,
+            })
+          }
         />
 
-        {errors.description && (
+        {errors.backgroundColor && (
           <p className="text-xs text-red-500 mt-1">
-            {errors.description?.message ? t(errors.description.message) : ""}
+            {errors.backgroundColor?.message
+              ? t(errors.backgroundColor.message)
+              : ""}
           </p>
         )}
       </div>
 
-      <div className="flex justify-end pt-2">
+      {/* Section 5: Description */}
+      <div>
+        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+          {t("promotions.descriptionLabel")}
+        </label>
+        <textarea
+          {...register("description")}
+          rows={3}
+          placeholder={t("promotions.descPlaceholder")}
+          className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none resize-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+        {errors.description && (
+          <p className="text-xs text-red-500 mt-1">
+            {errors.description?.message
+              ? t(errors.description.message)
+              : ""}
+          </p>
+        )}
+      </div>
+
+      {/* Action Footer */}
+      <div className="flex items-center justify-end pt-4 border-t border-slate-100">
         <button
           type="submit"
-          className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+          className="flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98] transition shadow-sm shadow-blue-200"
         >
           <Save size={16} />
-          {isEditing
-            ? t('slides.updateBtn')
-            : t('slides.saveBtn')}
+          {isEditing ? t("promotions.updateBtn") : t("promotions.saveBtn")}
         </button>
       </div>
     </form>

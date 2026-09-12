@@ -1,21 +1,26 @@
+import { settingService } from './settingService'
+
 const TELEGRAM_API = 'https://api.telegram.org'
 
-const getTelegramConfig = () => {
+const getTelegramToken = () => {
   const token = import.meta.env.VITE_TELEGRAM_BOT_TOKEN
-  const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID
 
-  if (!token || !chatId) {
+  if (!token) {
     throw new Error(
-      'Telegram configuration is missing. Check your .env file.'
+      'Telegram bot token is missing. Check your .env file.'
     )
   }
 
-  return { token, chatId }
+  return token
 }
 
 // ── Shared send helper ─────────────────────────────────────────────────────
-const sendMessage = async (text) => {
-  const { token, chatId } = getTelegramConfig()
+const sendMessage = async (text, chatId) => {
+  if (!chatId) {
+    throw new Error('Telegram chat ID is missing for this shop.')
+  }
+
+  const token = getTelegramToken()
 
   const response = await fetch(
     `${TELEGRAM_API}/bot${token}/sendMessage`,
@@ -93,9 +98,32 @@ const buildStickerMessage = (order = {}, courier) => {
   )
 }
 
-// ── Exports ────────────────────────────────────────────────────────────────
-export const sendOrderToTelegram = (order) =>
-  sendMessage(buildOrderMessage(order))
+// ── Helper to resolve chat ID ──────────────────────────────────────────────
+const resolveChatId = async (order) => {
+  const settingId = order.settingId || order.setting_id;
+  
+  if (!settingId) {
+    throw new Error('Order settingId is missing. Cannot determine target Telegram chat.')
+  }
 
-export const sendStickerToTelegram = (order, courier) =>
-  sendMessage(buildStickerMessage(order, courier))
+  const settingData = await settingService.getSettingById(settingId)
+  const rawData = settingData?.data || settingData || []
+  const settings = Array.isArray(rawData) ? rawData[0] || {} : rawData
+
+  if (!settings.chat_id) {
+    throw new Error('Target shop does not have a Telegram chat ID configured.')
+  }
+
+  return settings.chat_id
+}
+
+// ── Exports ────────────────────────────────────────────────────────────────
+export const sendOrderToTelegram = async (order) => {
+  const chatId = await resolveChatId(order)
+  return sendMessage(buildOrderMessage(order), chatId)
+}
+
+export const sendStickerToTelegram = async (order, courier) => {
+  const chatId = await resolveChatId(order)
+  return sendMessage(buildStickerMessage(order, courier), chatId)
+}

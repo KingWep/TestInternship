@@ -17,11 +17,8 @@ export default function Footer() {
   const { shop_code } = useParams();
   const { data: settingData, isLoading } = usePublicSettingsQuery(shop_code);
   const shopName = settingData?.shop_name || "Shop";
-  // const supportFile = settingData?.support || "support.pdf";
-  // console.log("SupportFile", supportFile);
 
   const socialMediaLinks = settingData?.social_media || [];
-  console.log("SocialMediaLinks", socialMediaLinks);
 
   // Maps icon value strings (saved from GeneralSettings) to React icon components
   const socialIconMap = {
@@ -49,7 +46,6 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-3 pt-1">
               {socialMediaLinks.map((social, index) => {
-                console.log("SocialMedia", social);
                 return (
                   <a
                     key={index}
@@ -77,9 +73,9 @@ export default function Footer() {
               <li>
                 <a
                   href={settingData?.support || "#"}
-                  target="_blank" // បើកនៅ Tab ថ្មី
-                  rel="noopener noreferrer" // ការពាររឿង Security (Best Practice ពេលប្រើ target="_blank")
-                  download={false} // ទុកជា False បើចង់ឱ្យវាបង្ហាញមើល (Preview) ក្នុង Browser ផ្ទាល់
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  download={false} 
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
                   របៀបបញ្ជាទិញ
@@ -88,9 +84,9 @@ export default function Footer() {
               <li>
                 <a
                   href={settingData?.support || "#"}
-                  target="_blank" // បើកនៅ Tab ថ្មី
-                  rel="noopener noreferrer" // ការពាររឿង Security (Best Practice ពេលប្រើ target="_blank")
-                  download={false} // ទុកជា False បើចង់ឱ្យវាបង្ហាញមើល (Preview) ក្នុង Browser ផ្ទាល់
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  download={false} 
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
                   គោលការណ៍ដឹកជញ្ជូន
@@ -107,9 +103,9 @@ export default function Footer() {
               <li>
                 <a
                   href={settingData?.support || "#"}
-                  target="_blank" // បើកនៅ Tab ថ្មី
-                  rel="noopener noreferrer" // ការពាររឿង Security (Best Practice ពេលប្រើ target="_blank")
-                  download={false} // ទុកជា False បើចង់ឱ្យវាបង្ហាញមើល (Preview) ក្នុង Browser ផ្ទាល់
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  download={false} 
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
                   គោលការណ៍ឯកជនភាព
@@ -118,9 +114,9 @@ export default function Footer() {
               <li>
                  <a
                   href={settingData?.support || "#"}
-                  target="_blank" // បើកនៅ Tab ថ្មី
-                  rel="noopener noreferrer" // ការពាររឿង Security (Best Practice ពេលប្រើ target="_blank")
-                  download={false} // ទុកជា False បើចង់ឱ្យវាបង្ហាញមើល (Preview) ក្នុង Browser ផ្ទាល់
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  download={false} 
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
                   លក្ខខណ្ឌសេវាកម្ម

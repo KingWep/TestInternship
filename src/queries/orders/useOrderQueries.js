@@ -5,6 +5,17 @@ import Swal from 'sweetalert2';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+export function useOrderQuery(orderId, initialData) {
+  return useQuery({
+    queryKey: orderKeys.detail(orderId),
+    queryFn: () => orderService.getOrder(orderId),
+    enabled: !!orderId,
+    initialData: initialData ?? undefined,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
 export function useOrdersQuery(params = {}) {
   return useQuery({
     queryKey: orderKeys.list(params),

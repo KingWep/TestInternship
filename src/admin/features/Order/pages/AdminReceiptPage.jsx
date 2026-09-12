@@ -12,17 +12,15 @@ import {
 import { useReactToPrint } from "react-to-print";
 import { toPng } from "html-to-image";
 import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
-import { orderService } from "../../../../services/orderService";
 import { sendOrderToTelegram } from "../../../../services/telegramService";
-import { useSettingsQuery } from "../../../../queries/settings/useSettingQueries";
+import { useSettingsQuery, useSettingByIdQuery } from "../../../../queries/settings/useSettingQueries";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from 'react-i18next';
 
 function AdminReceiptCard({ order }) {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const shopCode = user?.shop?.code;
-  const { data: settingData } = useSettingsQuery(shopCode);
+  const settingId = order?.settingId;
+  const { data: settingData } = useSettingByIdQuery(settingId);
   const [imgError, setImgError] = useState(false);
   const shopName = settingData?.shop_name || "Shop";
   const rawLogo = settingData?.logo;
@@ -55,9 +53,9 @@ function AdminReceiptCard({ order }) {
           {shopName}
         </h2>
         <p className="text-[11px] text-slate-900 mt-1">
-          {t('order.phone')} 088 66 77 456
+          {t('order.phone')} {settingData?.phone || "—"}
         </p>
-        <p className="text-[11px] text-slate-900">{t('order.phnomPenhCambodia')}</p>
+        <p className="text-[11px] text-slate-900">{settingData?.address || ""}</p>
       </div>
 
       {/* Meta Info */}

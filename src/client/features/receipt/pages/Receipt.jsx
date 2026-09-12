@@ -1,278 +1,52 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useMemo, useRef, useState } from "react";
+import { useLocation, useParams, Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useParams, Link } from "react-router-dom";
-import {
-  Printer,
-  FileDown,
-  Share2,
-  ArrowLeft,
-  Loader2,
-  Package,
-} from "lucide-react";
+import { toPng } from "html-to-image";
 import { useReactToPrint } from "react-to-print";
-import { toPng, toBlob } from "html-to-image";
-import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
-import { orderService } from "../../../../services/orderService";
-import { sendOrderToTelegram } from "../../../../services/telegramService";
-import { useSettingsQuery, usePublicSettingsQuery } from "../../../../queries/settings/useSettingQueries";
-import { Store } from "lucide-react";
+import { Printer, FileDown, Share2, ArrowLeft, Loader2, Package } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-export function ReceiptCard({ order }) {
-  const { shop_code: paramShopCode } = useParams();
-  const shopCode = order?.shop_code || order?.shop?.code || paramShopCode;
-  const { data: settingData } = usePublicSettingsQuery(shopCode);
-  console.log("SettingData", settingData);
-  const [imgError, setImgError] = useState(false);
-  const shopName = settingData?.shop_name || "Shop";
-  const rawLogo = settingData?.logo;
-  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
-  const logoUrl = rawLogo ? (rawLogo.startsWith('http') ? rawLogo : `${baseUrl}${rawLogo.startsWith('/') ? '' : '/'}${rawLogo}`) : "";
+import { useSettingsQuery, useSettingByIdQuery } from "../../../../queries/settings/useSettingQueries";
+import { useOrderQuery } from "../../../../queries/orders/useOrderQueries";
 
-  const delivery = Number(order?.deliveryFee ?? order?.delivery ?? 0);
-  const total = Number(order?.totalAmount ?? order?.total ?? 0);
-  const rawItems = order?.orderDetails || order?.items || [];
-
-  const itemsTotal = rawItems.reduce((sum, item) => {
-    const price = Number(item.price || item.salePrice || 0);
-    const qty = Number(item.quantity || 1);
-    return sum + price * qty;
-  }, 0);
-
-  const subtotal =
-    Number(order?.subtotal) ||
-    (itemsTotal > 0 ? itemsTotal : total > delivery ? total - delivery : 0);
-  const finalTotal = total > 0 ? total : subtotal + delivery;
-
-  const orderNum = order?.orderNo || order?.orderNumber || order?.id || "N/A";
-  const dateFormatted = order?.createdAt
-    ? new Date(order.createdAt).toLocaleString("km-KH", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-    : `${order?.date || ""} ${order?.time || ""}`.trim() ||
-    new Date().toLocaleDateString("km-KH");
-
-  return (
-    <div
-      id="receipt-card"
-      style={{
-        width: "340px",
-        fontFamily:
-          "'Geist Variable', 'Battambang', 'Siemreap', 'Kantumruy Pro', 'Noto Sans Khmer', sans-serif",
-        boxSizing: "border-box",
-        WebkitFontSmoothing: "antialiased",
-        MozOsxFontSmoothing: "grayscale",
-        textRendering: "optimizeLegibility",
-      }}
-      className="bg-white text-slate-900 mx-auto text-xs px-5 py-6 shadow-sm overflow-hidden flex flex-col"
-    >
-      {/* Header */}
-      <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
-        {logoUrl && !imgError ? (
-          <img src={logoUrl} alt={shopName} className="h-10 mx-auto mb-2 object-contain" onError={() => setImgError(true)} />
-        ) : null}
-        <h2 className="font-black text-base tracking-wider uppercase text-slate-900 leading-tight">
-          {shopName}
-        </h2>
-        <p className="text-[11px] text-slate-900 mt-1">
-          ទូរស័ព្ទ: 088 66 77 456
-        </p>
-        <p className="text-[11px] text-slate-900">ភ្នំពេញ, កម្ពុជា</p>
-      </div>
-
-      {/* Meta Info */}
-      <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">
-        <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">លេខវិក្កយបត្រ:</span>
-          <span className="font-mono font-bold text-slate-900">
-            {orderNum}
-          </span>
-        </div>
-        <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">កាលបរិច្ឆេទ:</span>
-          <span className="font-mono text-slate-800">
-            {order?.createdAt
-              ? new Date(order.createdAt).toLocaleDateString()
-              : order?.date || ""}{" "}
-            {order?.createdAt
-              ? new Date(order.createdAt).toLocaleTimeString()
-              : order?.time || ""}
-          </span>
-        </div>
-        {order?.customerName && (
-          <div className="flex justify-between items-center w-full">
-            <span className="font-medium text-slate-900">អតិថិជន:</span>
-            <span className="font-bold text-slate-900 truncate max-w-[180px]">
-              {order.customerName}
-            </span>
-          </div>
-        )}
-        <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">លេខទូរស័ព្ទ:</span>
-          <span className="font-mono text-slate-900 font-semibold">
-            {order?.customerPhone || order?.phone || "—"}
-          </span>
-        </div>
-        <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">សេវាដឹក:</span>
-          <span className="font-bold text-slate-900">
-            {order?.deliveryProvider?.name || order?.deliveryMethod || "មិនមាន"}
-          </span>
-        </div>
-        {(order?.customerAddress || order?.address) && (
-          <div className="flex justify-between items-start w-full">
-            <span className="font-medium text-slate-900 shrink-0">
-              អាសយដ្ឋាន:
-            </span>
-            <span className="text-slate-800 text-right truncate max-w-[190px]">
-              {order.customerAddress || order.address}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Items Table */}
-      <div className="mb-3 w-full border-b border-dashed border-slate-800 pb-3">
-        <table className="w-full text-[11px] table-fixed border-collapse">
-          <thead>
-            <tr className="border-b border-slate-800 text-slate-900 font-bold">
-              <th className="text-left pb-1.5 font-bold w-[45%]">ទំនិញ</th>
-              <th className="text-center pb-1.5 font-bold w-[15%]">ចំនួន</th>
-              <th className="text-right pb-1.5 font-bold w-[20%]">តម្លៃ</th>
-              <th className="text-right pb-1.5 font-bold w-[20%]">សរុប</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {rawItems.length > 0 ? (
-              rawItems.map((item, idx) => {
-                const price = Number(item.price || item.salePrice || 0);
-                const qty = Number(item.quantity || 1);
-                const name = item.product_name || item.name || "ទំនិញ";
-                return (
-                  <tr key={item.id ?? idx} className="text-slate-800">
-                    <td className="py-1.5 pr-1 font-medium break-words text-left align-top leading-snug">
-                      {name}
-                    </td>
-                    <td className="py-1.5 text-center tabular-nums text-slate-600 font-semibold align-top">
-                      {qty}
-                    </td>
-                    <td className="py-1.5 text-right tabular-nums text-slate-600 align-top">
-                      ${price.toFixed(2)}
-                    </td>
-                    <td className="py-1.5 text-right tabular-nums font-bold text-slate-900 align-top">
-                      ${(price * qty).toFixed(2)}
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan={4} className="py-3 text-center text-slate-400">
-                  គ្មានទំនិញ
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pricing Summary */}
-      <div className="space-y-1.5 pb-3 mb-3 border-b border-dashed border-slate-800 text-[11px] text-slate-700 w-full">
-        <div className="flex justify-between items-center">
-          <span className="text-slate-900">តម្លៃទំនិញសរុប (Subtotal):</span>
-          <span className="tabular-nums font-medium text-slate-800">
-            ${subtotal.toFixed(2)}
-          </span>
-        </div>
-        <div className="flex justify-between items-center">
-          <span className="text-slate-900">សេវាដឹកជញ្ជូន (Delivery):</span>
-          <span className="tabular-nums font-medium text-slate-800">
-            ${delivery.toFixed(2)}
-          </span>
-        </div>
-        <div className="flex justify-between items-center pt-1.5 border-t border-slate-800 text-sm font-bold text-slate-900">
-          <span>ទឹកប្រាក់សរុប (Total):</span>
-          <span className="tabular-nums font-black text-slate-950">
-            ${finalTotal.toFixed(2)}
-          </span>
-        </div>
-      </div>
-
-      {/* Footer message */}
-      <div className="text-center space-y-0.5 pt-0.5 w-full">
-        <p className="text-[11px] font-bold text-slate-900">
-          អរគុណសម្រាប់ការគាំទ្រ! 🙏
-        </p>
-        <p className="text-[10px] text-slate-900 font-medium tracking-wide uppercase">
-          សូមអញ្ជើញមកម្តងទៀត
-        </p>
-      </div>
-    </div>
-  );
-}
+import ReceiptCard from "../components/ReceiptCard";
 
 export default function Receipt() {
-  const { orderId: paramNo } = useParams();
-  const { data: orders = [] } = useOrdersQuery();
-  const [fetchedOrder, setFetchedOrder] = useState(null);
-  const [fetching, setFetching] = useState(false);
+  const { t } = useTranslation();
+  const { orderId: orderNo } = useParams();
+  const location = useLocation();
+  const receiptRef = useRef(null);
+  const [loading, setLoading] = useState(null);
 
-  const printRef = useRef(null);
-  const [actionLoading, setActionLoading] = useState(null);
+  const orderId = location.state?.orderId;
+  const initialOrder = location.state?.orderData ?? null;
 
-  // Find order from global context by orderNo / orderNumber strictly
-  const contextOrder = orders?.find(
-    (o) =>
-      String(o.orderNo) === String(paramNo) ||
-      String(o.orderNumber) === String(paramNo)
-  );
+  const {
+    data: orderResponse,
+    isLoading: orderLoading,
+  } = useOrderQuery(orderId, initialOrder);
 
-  const order = contextOrder || fetchedOrder;
+  const order = useMemo(() => {
+    if (initialOrder) return initialOrder;
+    return orderResponse?.data ?? orderResponse ?? null;
+  }, [initialOrder, orderResponse]);
 
-  // Fallback: Fetch order directly from API if page was refreshed
-  useEffect(() => {
-    if (!contextOrder && paramNo) {
-      let isMounted = true;
-      setFetching(true);
-      orderService
-        .getOrder(paramNo)
-        .then((res) => {
-          if (isMounted) {
-            const data = res?.data || res;
-            if (data) {
-              // Strictly verify that the URL param is actually the orderNo
-              if (
-                String(data.orderNo) === String(paramNo) ||
-                String(data.orderNumber) === String(paramNo)
-              ) {
-                setFetchedOrder(data);
-              } else {
-                // Reject if they tried to use the database ID
-                setFetchedOrder(null);
-                console.warn("Access by ID is not allowed. Please use orderNo.");
-              }
-            }
-          }
-        })
-        .catch((err) => {
-          console.error("Failed to fetch order:", err);
-        })
-        .finally(() => {
-          if (isMounted) setFetching(false);
-        });
+  const {
+    data: settingsData,
+    isLoading: settingsLoading,
+  } = useSettingByIdQuery(order?.settingId);
 
-      return () => {
-        isMounted = false;
-      };
+  const settings = useMemo(() => {
+    if (Array.isArray(settingsData)) {
+      return settingsData[0] || {};
     }
-  }, [paramNo, contextOrder]);
+
+    return settingsData?.data ?? settingsData ?? {};
+  }, [settingsData]);
 
   const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: `Receipt-ORD-${order?.orderNo || order?.orderNumber || order?.id || "order"}`,
+    contentRef: receiptRef,
+    documentTitle: `Receipt-${order?.orderNo || orderNo || "Order"}`,
     pageStyle: `
       @page { 
         size: auto; 
@@ -290,7 +64,7 @@ export default function Receipt() {
           -webkit-print-color-adjust: exact; 
           print-color-adjust: exact;
         }
-        #receipt-card {
+        #client-receipt-card {
           margin: auto !important;
           border: none !important;
           box-shadow: none !important;
@@ -300,98 +74,128 @@ export default function Receipt() {
   });
 
   const handleSaveImage = async () => {
-    if (!printRef.current) return;
-    setActionLoading("img");
+    if (!receiptRef.current) return;
+    setLoading("img");
     try {
       await document.fonts.ready;
 
-      const dataUrl = await toPng(printRef.current, {
+      const dataUrl = await toPng(receiptRef.current, {
         cacheBust: true,
         pixelRatio: 4,
         backgroundColor: "#ffffff",
       });
 
       const link = document.createElement("a");
-      link.download = `Receipt-ORD-${order.orderNo || order.orderNumber || order.id}.png`;
+      link.download = `Receipt-${order?.orderNo || orderNo || "Order"}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
       console.error("Image export failed:", err);
       Swal.fire({
         icon: "error",
-        title: "បរាជ័យ!",
-        text: "មានបញ្ហាក្នុងការទាញយករូបភាព!",
+        title: t('common.failed'),
+        text: t('order.downloadImgError') || "Failed to save image",
         confirmButtonColor: "#0f172a",
       });
     } finally {
-      setActionLoading(null);
+      setLoading(null);
     }
   };
 
   const handleShare = async () => {
-    if (!navigator.share) {
-      Swal.fire({
-        icon: "warning",
-        title: "មិនគាំទ្រការចែករំលែក",
-        text: "កម្មវិធីរុករករបស់អ្នកមិនគាំទ្រមុខងារនេះទេ។ សូមថតចម្លងតំណដោយខ្លួនឯង។",
-        confirmButtonColor: "#0f172a",
-      });
+    if (!receiptRef.current) {
       return;
     }
+    
+    setLoading("share");
 
-    setActionLoading("share");
     try {
-      await document.fonts.ready;
-      
-      let shareData = {
-        title: `វិក្កយបត្របញ្ជាទិញ #${order?.orderNo || order?.orderNumber || order?.id || ""}`,
-        text: `សូមពិនិត្យមើលវិក្កយបត្ររបស់អ្នក។ សរុប: $${Number(order?.totalAmount ?? order?.total ?? 0).toFixed(2)}`,
-      };
+      const image = await toPng(receiptRef.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: "#ffffff",
+      });
 
-      if (navigator.canShare && printRef.current) {
-        const blob = await toBlob(printRef.current, {
-          cacheBust: true,
-          pixelRatio: 4,
-          backgroundColor: "#ffffff",
-        });
+      const blob = await fetch(image).then((res) => res.blob());
 
-        if (blob) {
-          const file = new File([blob], `Receipt-ORD-${order?.orderNo || order?.orderNumber || order?.id || "N/A"}.png`, { type: "image/png" });
-          
-          if (navigator.canShare({ files: [file] })) {
-            shareData.files = [file];
-          } else {
-            shareData.url = window.location.href; // Fallback to link
-          }
-        } else {
-          shareData.url = window.location.href;
+      const file = new File(
+        [blob],
+        `receipt-${order?.orderNo || orderNo || "order"}.png`,
+        {
+          type: "image/png",
         }
-      } else {
-        shareData.url = window.location.href;
-      }
+      );
 
-      await navigator.share(shareData);
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({
+          files: [file],
+        })
+      ) {
+        await navigator.share({
+          title: `Receipt ${order?.orderNo || orderNo}`,
+          text: "Order Receipt",
+          files: [file],
+        });
+      } else {
+        const link = document.createElement("a");
+        link.href = image;
+        link.download = `receipt-${order?.orderNo || orderNo || "order"}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        await Swal.fire({
+          icon: "success",
+          title: "ជោគជ័យ",
+          text: "Receipt ត្រូវបានទាញយក",
+          confirmButtonColor: "#0f172a",
+        });
+      }
     } catch (error) {
-      if (error.name !== "AbortError") {
-        console.error("Error sharing:", error);
-        Swal.fire({
+      console.error("Share receipt error:", error);
+
+      if (error?.name !== "AbortError") {
+        await Swal.fire({
           icon: "error",
-          title: "បរាជ័យ!",
-          text: "មានបញ្ហាក្នុងការចែករំលែកវិក្កយបត្រ។",
+          title: "មានបញ្ហា",
+          text: "មិនអាច Share Receipt បានទេ",
           confirmButtonColor: "#0f172a",
         });
       }
     } finally {
-      setActionLoading(null);
+      setLoading(null);
     }
   };
 
-  if (fetching) {
+  if (!orderId && !initialOrder) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
-        <Loader2 size={36} className="animate-spin text-slate-700 mb-3" />
-        <p className="text-sm font-medium text-slate-600">
-          កំពុងទាញយកព័ត៌មានវិក្កយបត្រ...
+        <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+          <Package size={28} />
+        </div>
+        <p className="text-base font-semibold text-slate-700 mb-1">
+          {t('order.receiptNotFound') || "Receipt not found"}
+        </p>
+        <p className="text-xs text-slate-400 mb-4">{t('order.receiptId') || "Receipt ID"} #{orderNo}</p>
+        <button
+          onClick={() => window.history.back()}
+          className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white px-3 py-1 rounded-xl shadow-xs border border-slate-200 text-sm font-medium transition-colors"
+        >
+          <ArrowLeft size={16} />
+          <span>{t('order.goBack') || "Go Back"}</span>
+        </button>
+      </div>
+    );
+  }
+
+  if (!initialOrder && orderLoading) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center">
+        <Loader2 size={32} className="animate-spin text-slate-400 mb-4" />
+        <p className="text-slate-500 font-medium text-sm">
+          កំពុងទាញយកវិក្កយបត្រ...
         </p>
       </div>
     );
@@ -404,16 +208,16 @@ export default function Receipt() {
           <Package size={28} />
         </div>
         <p className="text-base font-semibold text-slate-700 mb-1">
-          រកមិនឃើញវិក្កយបត្រនេះទេ
+          {t('order.receiptNotFound') || "Receipt not found"}
         </p>
-        <p className="text-xs text-slate-400 mb-4">លេខសម្គាល់: #{paramNo}</p>
-        <Link
-          to="/"
+        <p className="text-xs text-slate-400 mb-4">{t('order.receiptId') || "Receipt ID"} #{orderNo}</p>
+        <button
+          onClick={() => window.history.back()}
           className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white px-3 py-1 rounded-xl shadow-xs border border-slate-200 text-sm font-medium transition-colors"
         >
           <ArrowLeft size={16} />
-          <span>ត្រលប់ទៅទំព័រដើម</span>
-        </Link>
+          <span>{t('order.goBack') || "Go Back"}</span>
+        </button>
       </div>
     );
   }
@@ -421,21 +225,25 @@ export default function Receipt() {
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col items-center py-8 px-4 font-sans text-slate-800">
       <div className="w-full max-w-md flex items-center justify-between mb-5">
-        <Link
-          to="/"
-          className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3 py-1 rounded-lg shadow-xs border border-slate-200 text-sm font-medium transition-colors"
+        <button
+          onClick={() => window.history.back()}
+          className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3 py-1 rounded-lg shadow-xs border border-slate-200 text-sm font-medium transition-colors cursor-pointer"
         >
           <ArrowLeft size={16} />
-          <span>ត្រលប់ក្រោយ</span>
-        </Link>
+          <span>{t('order.goBack') || "Go Back"}</span>
+        </button>
         <span className="text-xs font-bold text-slate-900 bg-slate-200/70 px-2.5 py-1 rounded">
-          ទម្រង់វិក្កយបត្រ (Receipt)
+          {t('order.receiptSize') || "80mm"} (Receipt)
         </span>
       </div>
 
       <div className="bg-white mb-6 border border-slate-200 flex items-center justify-center">
-        <div ref={printRef} className="bg-white inline-block">
-          <ReceiptCard order={order} />
+        <div ref={receiptRef} className="bg-white inline-block">
+          <ReceiptCard
+            order={order}
+            settings={settings}
+            settingsLoading={settingsLoading}
+          />
         </div>
       </div>
 
@@ -444,49 +252,47 @@ export default function Receipt() {
         {/* Print Button */}
         <button
           onClick={handlePrint}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-slate-900 text-white px-0 py-0.5 rounded-lg hover:bg-slate-800 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs cursor-pointer group"
+          className="flex-1 flex items-center justify-center gap-1.5 bg-slate-900 text-white px-0 py-2.5 sm:py-2 rounded-lg hover:bg-slate-800 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs cursor-pointer group"
         >
           <Printer
-            size={14}
+            size={16}
             className="transition-transform group-hover:-translate-y-0.5"
           />
-          <span>បោះពុម្ព</span>
+          <span>{t('order.printReceipt') || "Print"}</span>
         </button>
 
         {/* Download PNG Button */}
         <button
           onClick={handleSaveImage}
-          disabled={actionLoading === "img"}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-white text-slate-700 border border-slate-200 px-0 py-0.5 rounded-lg hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:scale-[0.98] transition-all text-xs font-semibold shadow-2xs disabled:opacity-60 cursor-pointer group"
+          disabled={loading === "img"}
+          className="flex-1 flex items-center justify-center gap-1.5 bg-white text-slate-700 border border-slate-200 px-0 py-2.5 sm:py-2 rounded-lg hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:scale-[0.98] transition-all text-xs font-semibold shadow-2xs disabled:opacity-60 cursor-pointer group"
         >
-          {actionLoading === "img" ? (
-            <Loader2 size={14} className="animate-spin text-slate-900" />
+          {loading === "img" ? (
+            <Loader2 size={16} className="animate-spin text-slate-900" />
           ) : (
             <FileDown
-              size={14}
+              size={16}
               className="transition-transform group-hover:translate-y-0.5 text-slate-500 group-hover:text-slate-900"
             />
           )}
-          <span>{actionLoading === "img" ? "កំពុងទាញយក..." : "ទាញយក PNG"}</span>
+          <span>{loading === "img" ? t('order.saving') || "Saving..." : t('order.downloadReceipt') || "Save Image"}</span>
         </button>
 
         {/* Share Button */}
         <button
           onClick={handleShare}
-          disabled={actionLoading === "share"}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-sky-600 text-white px-0 py-0.5 rounded-lg hover:bg-sky-500 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer group"
+          disabled={loading === "share"}
+          className="flex-1 flex items-center justify-center gap-1.5 bg-sky-600 text-white px-0 py-2.5 sm:py-2 rounded-lg hover:bg-sky-500 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer group"
         >
-          {actionLoading === "share" ? (
-            <Loader2 size={14} className="animate-spin" />
+          {loading === "share" ? (
+            <Loader2 size={16} className="animate-spin" />
           ) : (
             <Share2
-              size={14}
-              className="transition-transform group-hover:scale-110"
+              size={16}
+              className="transition-transform group-hover:translate-x-0.5"
             />
           )}
-          <span>
-            {actionLoading === "share" ? "កំពុងរៀបចំ..." : "ចែករំលែក"}
-          </span>
+          <span>{loading === "share" ? "Sharing..." : "Share"}</span>
         </button>
       </div>
     </div>

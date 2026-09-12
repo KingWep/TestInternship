@@ -50,7 +50,6 @@ export default function CartDrawer() {
   } = useClientOrder();
 
   const hasItems = cartItems.length > 0;
-
   const grandTotal = cartTotal + (hasItems ? deliveryFee : 0);
 
   const handleCreateOrder = async (formattedPhone) => {
@@ -87,11 +86,6 @@ export default function CartDrawer() {
 
     if (!isValid) return;
 
-    console.log("Setting ID before order:", settingId);
-    console.log("Delivery Provider ID before order:", deliveryProviderId);
-    console.log("Delivery method:", deliveryMethod);
-    console.log("Delivery fee:", deliveryFee);
-
     if (!settingId) {
       await Swal.fire({
         icon: "warning",
@@ -99,7 +93,6 @@ export default function CartDrawer() {
         text: "សូមជ្រើសរើស Delivery Provider មុនពេលបញ្ជាទិញ",
         confirmButtonColor: "#7f1d1d",
       });
-
       return;
     }
 
@@ -110,7 +103,6 @@ export default function CartDrawer() {
         text: "សូមជ្រើសរើស Delivery Provider មុនពេលបញ្ជាទិញ",
         confirmButtonColor: "#7f1d1d",
       });
-
       return;
     }
 
@@ -119,18 +111,23 @@ export default function CartDrawer() {
 
       console.log("Created order:", newOrder);
 
-      try {
-        await sendOrderToTelegram(newOrder);
-      } catch (err) {
-        console.error(
-          "Failed to send order to Telegram:",
-          err
-        );
-      }
-
       const orderData = newOrder?.data ?? newOrder;
 
+      if (!orderData?.id || !orderData?.orderNo) {
+        await Swal.fire({
+          icon: "error",
+          title: "រកមិនឃើញ Order Number",
+          text: "Order ត្រូវបានបង្កើត ប៉ុន្តែមិនអាចបើកវិក្កយបត្របានទេ",
+          confirmButtonColor: "#7f1d1d",
+        });
+        return;
+      }
+
       resetCheckoutForm();
+
+      sendOrderToTelegram(orderData).catch((error) => {
+        console.error("Failed to send order to Telegram:", error);
+      });
 
       await Swal.fire({
         icon: "success",
@@ -153,23 +150,19 @@ export default function CartDrawer() {
       });
 
       if (result.isConfirmed) {
-        if (orderData?.orderNo) {
-          navigate(`/print-receipt/${orderData.orderNo}`);
-        } else {
-          await Swal.fire({
-            icon: "error",
-            title: "រកមិនឃើញ Order Number",
-            text: "Order ត្រូវបានបង្កើត ប៉ុន្តែមិនអាចបើកវិក្កយបត្របានទេ",
-            confirmButtonColor: "#7f1d1d",
-          });
-        }
+        navigate(`/print-receipt/${orderData.orderNo}`, {
+          state: {
+            orderId: orderData.id,
+            orderData,
+          },
+        });
       } else {
         setIsCartOpen(false);
       }
     } catch (error) {
       console.error("Create order error:", error);
 
-      Swal.fire({
+      await Swal.fire({
         icon: "error",
         title: "បរាជ័យ",
         text:
@@ -194,9 +187,7 @@ export default function CartDrawer() {
 
       <div
         className={`fixed right-0 top-0 bottom-0 z-50 w-full sm:w-[420px] md:w-[480px] bg-white flex flex-col shadow-2xl md:rounded-l-3xl overflow-hidden transition-transform duration-300 ease-in-out ${
-          isCartOpen
-            ? "translate-x-0"
-            : "translate-x-full"
+          isCartOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <CartHeader />
@@ -240,13 +231,9 @@ export default function CartDrawer() {
           <button
             type="button"
             onClick={handleOrder}
-            disabled={
-              !hasItems ||
-              createOrderMutation.isPending
-            }
+            disabled={!hasItems || createOrderMutation.isPending}
             className={`w-full py-2 rounded-full font-semibold transition ${
-              hasItems &&
-              !createOrderMutation.isPending
+              hasItems && !createOrderMutation.isPending
                 ? "bg-red-900 text-white hover:bg-red-800"
                 : "bg-slate-300 text-slate-500 cursor-not-allowed"
             }`}

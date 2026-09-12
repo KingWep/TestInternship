@@ -15,7 +15,6 @@ export default function Header() {
   const { shop_code } = useParams();
 
   const { data: settingData, isLoading } = usePublicSettingsQuery(shop_code);
-  console.log("SETTING DATA:", settingData);
 
   const [imgError, setImgError] = useState(false);
 

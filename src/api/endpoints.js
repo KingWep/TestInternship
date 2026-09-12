@@ -20,7 +20,7 @@ export const API_ENDPOINTS = {
     },
     ORDERS: {
         GET_ALL: 'api/orders',
-        GET_ONE: (id) => `api/orders/${id}`,
+        GET_ONE: (id) => `api/orders?id=${id}`,
         CREATE: 'api/orders',
         UPDATE: (id) => `api/orders?id=${id}`,
     },

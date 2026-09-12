@@ -1,168 +1,182 @@
-// // src/components/receipt/ReceiptModal.jsx
-// import { useRef, useState } from "react"
-// import { X, Printer, FileDown, Share2, Send } from "lucide-react"
-// import { useReactToPrint } from "react-to-print"
-// import html2canvas from "html2canvas"
-// import jsPDF from "jspdf"
-// import { ReceiptCard } from "./ReceiptCard" // Import ReceiptCard from co-located file
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-// export default function ReceiptModal({ order, onClose }) {
-//   const printRef = useRef(null)
-//   const [loading, setLoading] = useState(null) 
+export default function ReceiptCard({ order, settings, settingsLoading }) {
+  const { t } = useTranslation();
+  const [imgError, setImgError] = useState(false);
 
-//   const handlePrint = useReactToPrint({
-//     contentRef: printRef,
-//     documentTitle: `receipt-${order.orderId}`,
-//   })
+  const shopName = settings?.shop_name || settings?.shopName ;
+  console.log("Shop Name from settings:", shopName);
+  const rawLogo = settings?.logo;
+  console.log("Logo from settings:", rawLogo);
+  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
+  const logoUrl = rawLogo
+    ? rawLogo.startsWith("http")
+      ? rawLogo
+      : `${baseUrl}${rawLogo.startsWith("/") ? "" : "/"}${rawLogo}`
+    : "";
+    console.log("logoUrl", logoUrl);
 
-// const handleSavePdf = async () => {
-//   if (!printRef.current) return
-//   setLoading("pdf")
-//   try {
-//     const margin = 10
-//     const canvas = await html2canvas(printRef.current, { scale: 2 })
-//     const imgData = canvas.toDataURL("image/png")
-//     const pdf = new jsPDF("p", "mm", "a4")
+  const delivery = Number(order?.deliveryFee) || 0;
+  const total = Number(order?.totalAmount) || 0;
+  const subtotal = total - delivery;
 
-//     const pageWidth = pdf.internal.pageSize.getWidth() - margin * 2
-//     const pageHeight = pdf.internal.pageSize.getHeight() - margin * 2
-//     const imgWidth = pageWidth
-//     const imgHeight = (canvas.height * imgWidth) / canvas.width
+  const orderItems = order?.orderDetails || order?.items || [];
 
-//     let heightLeft = imgHeight
-//     let position = margin
+  return (
+    <div
+      id="client-receipt-card"
+      style={{
+        width: "340px",
+        fontFamily:
+          "'Geist Variable', 'Battambang', 'Siemreap', 'Kantumruy Pro', 'Noto Sans Khmer', sans-serif",
+        boxSizing: "border-box",
+        WebkitFontSmoothing: "antialiased",
+        MozOsxFontSmoothing: "grayscale",
+        textRendering: "optimizeLegibility",
+      }}
+      className="bg-white text-slate-900 mx-auto text-xs px-5 py-6 shadow-sm overflow-hidden flex flex-col"
+    >
+      <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
+        {logoUrl && !imgError && !settingsLoading ? (
+          <img
+            src={logoUrl}
+            alt={shopName}
+            className="h-10 mx-auto mb-2 object-contain rounded-md"
+            onError={() => setImgError(true)}
+          />
+        ) : null}
+        <h2 className="font-black text-base tracking-wider uppercase text-slate-900 leading-tight">
+          {shopName}
+        </h2>
+        <p className="text-[11px] text-slate-900 mt-1">
+          {t("order.phone")} {settings?.phone || "—"}
+        </p>
+        <p className="text-[11px] text-slate-900">{settings?.address || ""}</p>
+      </div>
 
-//     pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight)
-//     heightLeft -= pageHeight
-//     while (heightLeft > 0) {
-//       position = heightLeft - imgHeight + margin
-//       pdf.addPage()
-//       pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight)
-//       heightLeft -= pageHeight
-//     }
+      <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">
+        <div className="flex justify-between items-center w-full">
+          <span className="font-medium text-slate-900">{t("order.receiptNo")}</span>
+          <span className="font-mono font-bold text-slate-900">
+            {order?.orderNo || order?.orderNumber || `ORD-${order?.id}`}
+          </span>
+        </div>
+        <div className="flex justify-between items-center w-full">
+          <span className="font-medium text-slate-900">{t("order.date")}</span>
+          <span className="font-mono text-slate-800">
+            {order?.createdAt
+              ? new Date(order.createdAt).toLocaleDateString()
+              : order?.date || ""}{" "}
+            {order?.createdAt
+              ? new Date(order.createdAt).toLocaleTimeString()
+              : order?.time || ""}
+          </span>
+        </div>
+        {order?.customerName && (
+          <div className="flex justify-between items-center w-full">
+            <span className="font-medium text-slate-900">{t("order.customer")}</span>
+            <span className="font-bold text-slate-900 truncate max-w-[180px]">
+              {order.customerName}
+            </span>
+          </div>
+        )}
+        <div className="flex justify-between items-center w-full">
+          <span className="font-medium text-slate-900">{t("order.phone")}</span>
+          <span className="font-mono text-slate-900 font-semibold">
+            {order?.customerPhone || order?.phone || "—"}
+          </span>
+        </div>
+        <div className="flex justify-between items-center w-full">
+          <span className="font-medium text-slate-900">{t("order.deliveryService")}</span>
+          <span className="font-bold text-slate-900">
+            {order?.deliveryProvider?.name || order?.deliveryMethod || t("order.none")}
+          </span>
+        </div>
+        {(order?.customerAddress || order?.address) && (
+          <div className="flex justify-between items-start w-full">
+            <span className="font-medium text-slate-900 shrink-0">
+              {t("order.addressLabel")}
+            </span>
+            <span className="text-slate-800 text-right truncate max-w-[190px]">
+              {order.customerAddress || order.address}
+            </span>
+          </div>
+        )}
+      </div>
 
-//     pdf.save(`receipt-${orderId}.pdf`)
-//   } catch (err) {
-//     console.error("PDF generation failed:", err)
-//   } finally {
-//     setLoading(null)
-//   }
-// }
+      <div className="mb-3 w-full border-b border-dashed border-slate-800 pb-3">
+        <table className="w-full text-[11px] table-fixed border-collapse">
+          <thead>
+            <tr className="border-b border-slate-800 text-slate-900 font-bold">
+              <th className="text-left pb-1.5 font-bold w-[45%]">{t("order.itemCol")}</th>
+              <th className="text-center pb-1.5 font-bold w-[15%]">{t("order.qtyCol")}</th>
+              <th className="text-right pb-1.5 font-bold w-[20%]">{t("order.priceCol")}</th>
+              <th className="text-right pb-1.5 font-bold w-[20%]">{t("order.totalCol")}</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {orderItems.length > 0 ? (
+              orderItems.map((item, idx) => {
+                const price = Number(item.price) || Number(item.salePrice) || 0;
+                const qty = Number(item.quantity) || 0;
+                return (
+                  <tr key={item.id ?? idx} className="text-slate-800">
+                    <td className="py-1.5 pr-1 font-medium break-words text-left align-top leading-snug">
+                      {item.product_name || item.name}
+                    </td>
+                    <td className="py-1.5 text-center tabular-nums text-slate-600 font-semibold align-top">
+                      {qty}
+                    </td>
+                    <td className="py-1.5 text-right tabular-nums text-slate-600 align-top">
+                      ${price.toFixed(2)}
+                    </td>
+                    <td className="py-1.5 text-right tabular-nums font-bold text-slate-900 align-top">
+                      ${(price * qty).toFixed(2)}
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan={4} className="py-3 text-center text-slate-400">
+                  {t("order.noItems")}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-//   const handleShare = async () => {
-//     setLoading("share")
-//     const text = `វិក្កយបត្រ ${order.orderId}\nសរុប: $${order.total.toFixed(2)}\nអតិថិជន: ${order.customerName}`
-//     try {
-//       if (navigator.share) {
-//         await navigator.share({ title: "វិក្កយបត្រ", text })
-//       } else {
-//         await navigator.clipboard.writeText(text)
-//         alert("Browser មិន support share ទេ — ចម្លងទៅ clipboard ជំនួសវិញ")
-//       }
-//     } catch (err) {
-//       // user cancelled
-//     } finally {
-//       setLoading(null)
-//     }
-//   }
+      <div className="space-y-1.5 pb-3 mb-3 border-b border-dashed border-slate-800 text-[11px] text-slate-700 w-full">
+        <div className="flex justify-between items-center">
+          <span className="text-slate-900">{t("order.subtotalLabel")}</span>
+          <span className="tabular-nums font-medium text-slate-800">
+            ${subtotal.toFixed(2)}
+          </span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-slate-900">{t("order.deliveryFeeLabel")}</span>
+          <span className="tabular-nums font-medium text-slate-800">
+            ${delivery.toFixed(2)}
+          </span>
+        </div>
+        <div className="flex justify-between items-center pt-1.5 border-t border-slate-800 text-sm font-bold text-slate-900">
+          <span>{t("order.totalLabel")}</span>
+          <span className="tabular-nums font-black text-slate-950">
+            ${total.toFixed(2)}
+          </span>
+        </div>
+      </div>
 
-//   const handleSendTelegram = async () => {
-//     const token = import.meta.env.VITE_TELEGRAM_BOT_TOKEN
-//     const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID
-
-//     if (!token || !chatId) {
-//       alert("សូមកំណត់ VITE_TELEGRAM_BOT_TOKEN និង VITE_TELEGRAM_CHAT_ID ក្នុងឯកសារ .env")
-//       return
-//     }
-
-//     setLoading("telegram")
-//     try {
-//       const text =
-//         `🧾 វិក្កយបត្រ ${order.orderId}\n` +
-//         `👤 ${order.customerName} (${order.phone})\n` +
-//         `📍 ${order.address}\n` +
-//         `🚚 ${order.deliveryMethod}  |  💳 ${order.paymentMethod}\n` +
-//         `------------------------\n` +
-//         order.items.map((i) => `${i.name} × ${i.quantity} — $${(i.price * i.quantity).toFixed(2)}`).join("\n") +
-//         `\n------------------------\n` +
-//         `💰 សរុប: $${order.total.toFixed(2)}`
-
-//       const res = await fetch(
-//         `https://api.telegram.org/bot${token}/sendMessage`,
-//         {
-//           method: "POST",
-//           headers: { "Content-Type": "application/json" },
-//           body: JSON.stringify({ chat_id: chatId, text }),
-//         }
-//       )
-
-//       if (!res.ok) throw new Error("Telegram API returned an error")
-//       alert("បានផ្ញើវិក្កយបត្រទៅ Telegram ✅")
-//     } catch (err) {
-//       console.error(err)
-//       alert("មិនអាចផ្ញើទៅ Telegram បានទេ")
-//     } finally {
-//       setLoading(null)
-//     }
-//   }
-
-//   return (
-//     <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
-//       <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden">
-//         {/* Header */}
-//         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 shrink-0">
-//           <h2 className="font-bold text-slate-900">វិក្កយបត្រ</h2>
-//           <button
-//             onClick={onClose}
-//             className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100"
-//           >
-//             <X size={18} className="text-slate-500" />
-//           </button>
-//         </div>
-
-//         {/* Receipt content wrapper bound to printRef */}
-//         <div className="overflow-y-auto py-4" ref={printRef}>
-//           <ReceiptCard order={order} />
-//         </div>
-
-//         {/* Actions */}
-//         <div className="grid grid-cols-2 gap-2 p-2 border-t border-slate-100 shrink-0">
-//           <button
-//             onClick={handlePrint}
-//             className="flex items-center justify-center gap-2 bg-red-900 text-white font-medium py-1 rounded-full hover:bg-red-800 transition-colors"
-//           >
-//             <Printer size={16} />
-//             Print
-//           </button>
-
-//           <button
-//             onClick={handleSavePdf}
-//             disabled={loading === "pdf"}
-//             className="flex items-center justify-center gap-2 border border-slate-200 text-slate-700 font-medium py-1 rounded-full hover:bg-slate-50 transition-colors disabled:opacity-50"
-//           >
-//             <FileDown size={16} />
-//             {loading === "pdf" ? "កំពុងរក្សា..." : "Save PDF"}
-//           </button>
-
-//           <button
-//             onClick={handleShare}
-//             disabled={loading === "share"}
-//             className="flex items-center justify-center gap-2 border border-slate-200 text-slate-700 font-medium py-2.5 rounded-full hover:bg-slate-50 transition-colors disabled:opacity-50"
-//           >
-//             <Share2 size={16} />
-//             Share
-//           </button>
-
-//           <button
-//             onClick={handleSendTelegram}
-//             disabled={loading === "telegram"}
-//             className="flex items-center justify-center gap-2 border border-slate-200 text-slate-700 font-medium py-2.5 rounded-full hover:bg-slate-50 transition-colors disabled:opacity-50"
-//           >
-//             <Send size={16} />
-//             {loading === "telegram" ? "កំពុងផ្ញើ..." : "Telegram"}
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
+      <div className="text-center space-y-0.5 pt-0.5 w-full">
+        <p className="text-[11px] font-bold text-slate-900">
+          {t("order.thankYouReceipt")}
+        </p>
+        <p className="text-[10px] text-slate-900 font-medium tracking-wide uppercase">
+          {t("order.comeAgain")}
+        </p>
+      </div>
+    </div>
+  );
+}

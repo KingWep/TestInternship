@@ -11,6 +11,18 @@ export function useSettingsQuery(shopCode) {
   });
 }
 
+export function useSettingByIdQuery(id) {
+  return useQuery({
+    queryKey: settingKeys.byId(id),
+    queryFn: () => settingService.getSettingById(id),
+    select: (data) => {
+      const rawData = data?.data || data || [];
+      return Array.isArray(rawData) ? rawData[0] || {} : rawData;
+    },
+    enabled: !!id,
+  });
+}
+
 export const usePublicSettingsQuery = useSettingsQuery;
 
 export function useUpdateSettingMutation(shopCode) {

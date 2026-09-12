@@ -32,6 +32,22 @@ export const settingService = {
     }
   },
 
+  getSettingById: async (id) => {
+    try {
+      const response = await axiosClient.get(API_ENDPOINTS.SETTINGS.GET_ALL, {
+        params: { id: id },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Setting API Error [getSettingById]:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+      });
+      throw error;
+    }
+  },
+
   // updateSetting: async (id, settingData) => {
   //   try {
   //     let response;

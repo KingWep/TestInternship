@@ -25,8 +25,6 @@ export function useSlides(settingId = null, shopCode = null) {
         params.shop_code = shopCode
       }
       const response = await slideService.getSlides(params)
-      console.log('Fetched slides:', response) 
-      // Adapt based on backend response format
       setSlides(response.data || response || [])
     } catch (error) {
       console.error('Error fetching slides:', error)

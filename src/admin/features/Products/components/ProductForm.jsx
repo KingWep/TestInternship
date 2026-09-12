@@ -260,7 +260,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
   const totalImageCount = images?.length || 0;
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1">

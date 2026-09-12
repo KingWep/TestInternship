@@ -8,14 +8,14 @@ import {
   ArrowLeft,
   Loader2,
   Package,
+  ReceiptText,
 } from "lucide-react";
 import { useReactToPrint } from "react-to-print";
 import { toPng } from "html-to-image";
 import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
 import { sendOrderToTelegram } from "../../../../services/telegramService";
-import { useSettingsQuery, useSettingByIdQuery } from "../../../../queries/settings/useSettingQueries";
-import { useAuth } from "@/hooks/useAuth";
-import { useTranslation } from 'react-i18next';
+import { useSettingByIdQuery } from "../../../../queries/settings/useSettingQueries";
+import { useTranslation } from "react-i18next";
 
 function AdminReceiptCard({ order }) {
   const { t } = useTranslation();
@@ -24,8 +24,12 @@ function AdminReceiptCard({ order }) {
   const [imgError, setImgError] = useState(false);
   const shopName = settingData?.shop_name || "Shop";
   const rawLogo = settingData?.logo;
-  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
-  const logoUrl = rawLogo ? (rawLogo.startsWith('http') ? rawLogo : `${baseUrl}${rawLogo.startsWith('/') ? '' : '/'}${rawLogo}`) : "";
+  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
+  const logoUrl = rawLogo
+    ? rawLogo.startsWith("http")
+      ? rawLogo
+      : `${baseUrl}${rawLogo.startsWith("/") ? "" : "/"}${rawLogo}`
+    : "";
   const delivery = Number(order?.deliveryFee) || 0;
   const total = Number(order?.totalAmount) || 0;
   const subtotal = total - delivery;
@@ -47,27 +51,36 @@ function AdminReceiptCard({ order }) {
       {/* Header */}
       <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
         {logoUrl && !imgError ? (
-          <img src={logoUrl} alt={shopName} className="h-10 mx-auto mb-2 object-contain rounded-md" onError={() => setImgError(true)} />
+          <img
+            src={logoUrl}
+            alt={shopName}
+            className="h-10 mx-auto mb-2 object-contain rounded-md"
+            onError={() => setImgError(true)}
+          />
         ) : null}
         <h2 className="font-black text-base tracking-wider uppercase text-slate-900 leading-tight">
           {shopName}
         </h2>
         <p className="text-[11px] text-slate-900 mt-1">
-          {t('order.phone')} {settingData?.phone || "—"}
+          {t("order.phone")} {settingData?.phone || "—"}
         </p>
-        <p className="text-[11px] text-slate-900">{settingData?.address || ""}</p>
+        <p className="text-[11px] text-slate-900">
+          {settingData?.address || ""}
+        </p>
       </div>
 
       {/* Meta Info */}
       <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">
         <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">{t('order.receiptNo')}</span>
+          <span className="font-medium text-slate-900">
+            {t("order.receiptNo")}
+          </span>
           <span className="font-mono font-bold text-slate-900">
             {order?.orderNo || order?.orderNumber || `ORD-${order?.id}`}
           </span>
         </div>
         <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">{t('order.date')}</span>
+          <span className="font-medium text-slate-900">{t("order.date")}</span>
           <span className="font-mono text-slate-800">
             {order?.createdAt
               ? new Date(order.createdAt).toLocaleDateString()
@@ -79,28 +92,34 @@ function AdminReceiptCard({ order }) {
         </div>
         {order?.customerName && (
           <div className="flex justify-between items-center w-full">
-            <span className="font-medium text-slate-900">{t('order.customer')}</span>
+            <span className="font-medium text-slate-900">
+              {t("order.customer")}
+            </span>
             <span className="font-bold text-slate-900 truncate max-w-[180px]">
-              {order.customerName || t('order.generalCustomer')}
+              {order.customerName || t("order.generalCustomer")}
             </span>
           </div>
         )}
         <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">{t('order.phone')}</span>
+          <span className="font-medium text-slate-900">{t("order.phone")}</span>
           <span className="font-mono text-slate-900 font-semibold">
             {order?.customerPhone || order?.phone || "—"}
           </span>
         </div>
         <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">{t('order.deliveryService')}</span>
+          <span className="font-medium text-slate-900">
+            {t("order.deliveryService")}
+          </span>
           <span className="font-bold text-slate-900">
-            {order?.deliveryProvider?.name || order?.deliveryMethod || t('order.none')}
+            {order?.deliveryProvider?.name ||
+              order?.deliveryMethod ||
+              t("order.none")}
           </span>
         </div>
         {(order?.customerAddress || order?.address) && (
           <div className="flex justify-between items-start w-full">
             <span className="font-medium text-slate-900 shrink-0">
-              {t('order.addressLabel')}
+              {t("order.addressLabel")}
             </span>
             <span className="text-slate-800 text-right truncate max-w-[190px]">
               {order.customerAddress || order.address}
@@ -114,10 +133,18 @@ function AdminReceiptCard({ order }) {
         <table className="w-full text-[11px] table-fixed border-collapse">
           <thead>
             <tr className="border-b border-slate-800 text-slate-900 font-bold">
-              <th className="text-left pb-1.5 font-bold w-[45%]">{t('order.itemCol')}</th>
-              <th className="text-center pb-1.5 font-bold w-[15%]">{t('order.qtyCol')}</th>
-              <th className="text-right pb-1.5 font-bold w-[20%]">{t('order.priceCol')}</th>
-              <th className="text-right pb-1.5 font-bold w-[20%]">{t('order.totalCol')}</th>
+              <th className="text-left pb-1.5 font-bold w-[45%]">
+                {t("order.itemCol")}
+              </th>
+              <th className="text-center pb-1.5 font-bold w-[15%]">
+                {t("order.qtyCol")}
+              </th>
+              <th className="text-right pb-1.5 font-bold w-[20%]">
+                {t("order.priceCol")}
+              </th>
+              <th className="text-right pb-1.5 font-bold w-[20%]">
+                {t("order.totalCol")}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -148,7 +175,7 @@ function AdminReceiptCard({ order }) {
               ) : (
                 <tr>
                   <td colSpan={4} className="py-3 text-center text-slate-400">
-                    {t('order.noItems')}
+                    {t("order.noItems")}
                   </td>
                 </tr>
               );
@@ -160,19 +187,19 @@ function AdminReceiptCard({ order }) {
       {/* Pricing Summary */}
       <div className="space-y-1.5 pb-3 mb-3 border-b border-dashed border-slate-800 text-[11px] text-slate-700 w-full">
         <div className="flex justify-between items-center">
-          <span className="text-slate-900">{t('order.subtotalLabel')}</span>
+          <span className="text-slate-900">{t("order.subtotalLabel")}</span>
           <span className="tabular-nums font-medium text-slate-800">
             ${subtotal.toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-slate-900">{t('order.deliveryFeeLabel')}</span>
+          <span className="text-slate-900">{t("order.deliveryFeeLabel")}</span>
           <span className="tabular-nums font-medium text-slate-800">
             ${delivery.toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between items-center pt-1.5 border-t border-slate-800 text-sm font-bold text-slate-900">
-          <span>{t('order.totalLabel')}</span>
+          <span>{t("order.totalLabel")}</span>
           <span className="tabular-nums font-black text-slate-950">
             ${total.toFixed(2)}
           </span>
@@ -182,10 +209,10 @@ function AdminReceiptCard({ order }) {
       {/* Footer message */}
       <div className="text-center space-y-0.5 pt-0.5 w-full">
         <p className="text-[11px] font-bold text-slate-900">
-          {t('order.thankYouReceipt')}
+          {t("order.thankYouReceipt")}
         </p>
         <p className="text-[10px] text-slate-900 font-medium tracking-wide uppercase">
-          {t('order.comeAgain')}
+          {t("order.comeAgain")}
         </p>
       </div>
     </div>
@@ -199,7 +226,7 @@ export default function AdminReceiptPage() {
   const order = orders?.find(
     (o) =>
       String(o.orderNo) === String(paramNo) ||
-      String(o.orderNumber) === String(paramNo)
+      String(o.orderNumber) === String(paramNo),
   );
 
   const printRef = useRef(null);
@@ -207,7 +234,7 @@ export default function AdminReceiptPage() {
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `Receipt-${order?.orderNo || order?.orderNumber || order?.id || 'order'}`,
+    documentTitle: `Receipt-${order?.orderNo || order?.orderNumber || order?.id || "order"}`,
     pageStyle: `
       @page { 
         size: auto; 
@@ -241,15 +268,17 @@ export default function AdminReceiptPage() {
           <Package size={28} />
         </div>
         <p className="text-base font-semibold text-slate-700 mb-1">
-          {t('order.receiptNotFound')}
+          {t("order.receiptNotFound")}
         </p>
-        <p className="text-xs text-slate-400 mb-4">{t('order.receiptId')} #{paramNo}</p>
+        <p className="text-xs text-slate-400 mb-4">
+          {t("order.receiptId")} #{paramNo}
+        </p>
         <Link
           to="/admin/orders"
           className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white px-3 py-1 rounded-xl shadow-xs border border-slate-200 text-sm font-medium transition-colors"
         >
           <ArrowLeft size={16} />
-          <span>{t('order.goBack')}</span>
+          <span>{t("order.goBack")}</span>
         </Link>
       </div>
     );
@@ -275,8 +304,8 @@ export default function AdminReceiptPage() {
       console.error("Image export failed:", err);
       Swal.fire({
         icon: "error",
-        title: t('common.failed'),
-        text: t('order.downloadImgError'),
+        title: t("common.failed"),
+        text: t("order.downloadImgError"),
         confirmButtonColor: "#0f172a",
       });
     } finally {
@@ -292,8 +321,8 @@ export default function AdminReceiptPage() {
 
       Swal.fire({
         icon: "success",
-        title: t('common.success'),
-        text: t('order.receiptSentToTelegram'),
+        title: t("common.success"),
+        text: t("order.receiptSentToTelegram"),
         confirmButtonColor: "#0284c7",
         timer: 3000,
         timerProgressBar: true,
@@ -303,8 +332,8 @@ export default function AdminReceiptPage() {
 
       Swal.fire({
         icon: "error",
-        title: t('common.failed'),
-        text: error.message || t('order.telegramSendError'),
+        title: t("common.failed"),
+        text: error.message || t("order.telegramSendError"),
         confirmButtonColor: "#0f172a",
       });
     } finally {
@@ -317,13 +346,14 @@ export default function AdminReceiptPage() {
       <div className="w-full max-w-md flex items-center justify-between mb-5">
         <Link
           to="/admin/orders"
-          className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3 py-1 rounded-lg shadow-xs border border-slate-200 text-sm font-medium transition-colors"
+          className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3 py-0.5 rounded-lg shadow-xs border border-slate-200 text-sm font-medium transition-colors"
         >
-          <ArrowLeft size={16} />
-          <span>{t('order.goBack')}</span>
+          <ArrowLeft size={14} />
+          <span>{t("order.goBack")}</span>
         </Link>
-        <span className="text-xs font-bold text-slate-900 bg-slate-200/70 px-2.5 py-1 rounded">
-          {t('order.receiptSize')} (Receipt)
+        <span className="flex items-center gap-1.5 text-xs font-bold text-slate-900 bg-slate-200/70 px-2.5 py-1 rounded">
+          <ReceiptText size={14} />
+          <span>{t("order.receiptSize")} (Receipt)</span>
         </span>
       </div>
 
@@ -334,24 +364,22 @@ export default function AdminReceiptPage() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-center gap-2 max-w-md w-full pt-1">
-        {/* Print Button */}
+      <div className="flex flex-wrap items-center justify-center gap-2 max-w-lg w-full pt-1">
         <button
           onClick={handlePrint}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-slate-900 text-white px-0 py-0.5 rounded-lg hover:bg-slate-800 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs cursor-pointer group"
+          className="flex-1 min-w-[130px] flex items-center justify-center gap-1.5 bg-slate-900 text-white px-3 py-1.5 rounded-md md:rounded-lg hover:bg-slate-800 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs cursor-pointer group"
         >
           <Printer
             size={14}
             className="transition-transform group-hover:-translate-y-0.5"
           />
-          <span>{t('order.printReceipt')}</span>
+          <span>{t("order.printReceipt")}</span>
         </button>
 
-        {/* Download PNG Button */}
         <button
           onClick={handleSaveImage}
           disabled={loading === "img"}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-white text-slate-700 border border-slate-200 px-0 py-0.5 rounded-lg hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:scale-[0.98] transition-all text-xs font-semibold shadow-2xs disabled:opacity-60 cursor-pointer group"
+          className="flex-1 min-w-[130px] flex items-center justify-center gap-1.5 bg-white text-slate-700 border border-slate-200 px-3 py-1.5 rounded-md md:rounded-lg hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:scale-[0.98] transition-all text-xs font-semibold shadow-2xs disabled:opacity-60 cursor-pointer group"
         >
           {loading === "img" ? (
             <Loader2 size={14} className="animate-spin text-slate-900" />
@@ -361,14 +389,15 @@ export default function AdminReceiptPage() {
               className="transition-transform group-hover:translate-y-0.5 text-slate-500 group-hover:text-slate-900"
             />
           )}
-          <span>{loading === "img" ? t('order.saving') : t('order.downloadReceipt')}</span>
+          <span>
+            {loading === "img" ? t("order.saving") : t("order.downloadReceipt")}
+          </span>
         </button>
 
-        {/* Telegram Button */}
         <button
           onClick={handleSendTelegram}
           disabled={loading === "telegram"}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-sky-600 text-white px-0 py-0.5 rounded-lg hover:bg-sky-500 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer group"
+          className="w-full sm:w-auto md:flex-1 min-w-[160px] flex items-center justify-center gap-1.5 bg-sky-600 text-white px-4 py-1.5 rounded-md md:rounded-lg hover:bg-sky-500 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer group"
         >
           {loading === "telegram" ? (
             <Loader2 size={14} className="animate-spin" />
@@ -378,7 +407,11 @@ export default function AdminReceiptPage() {
               className="transition-transform group-hover:translate-x-0.5"
             />
           )}
-          <span>{loading === "telegram" ? t('order.sending') : t('order.sendToTelegram')}</span>
+          <span>
+            {loading === "telegram"
+              ? t("order.sending")
+              : t("order.sendToTelegram")}
+          </span>
         </button>
       </div>
     </div>

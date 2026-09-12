@@ -108,9 +108,6 @@ export default function CartDrawer() {
 
     try {
       const newOrder = await handleCreateOrder(formattedPhone);
-
-      console.log("Created order:", newOrder);
-
       const orderData = newOrder?.data ?? newOrder;
 
       if (!orderData?.id || !orderData?.orderNo) {

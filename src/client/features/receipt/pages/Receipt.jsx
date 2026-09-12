@@ -3,10 +3,17 @@ import { useLocation, useParams, Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { toPng } from "html-to-image";
 import { useReactToPrint } from "react-to-print";
-import { Printer, FileDown, Share2, ArrowLeft, Loader2, Package } from "lucide-react";
+import {
+  Printer,
+  FileDown,
+  Share2,
+  ArrowLeft,
+  Loader2,
+  Package,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { useSettingsQuery, useSettingByIdQuery } from "../../../../queries/settings/useSettingQueries";
+import { useSettingByIdQuery } from "../../../../queries/settings/useSettingQueries";
 import { useOrderQuery } from "../../../../queries/orders/useOrderQueries";
 
 import ReceiptCard from "../components/ReceiptCard";
@@ -21,20 +28,18 @@ export default function Receipt() {
   const orderId = location.state?.orderId;
   const initialOrder = location.state?.orderData ?? null;
 
-  const {
-    data: orderResponse,
-    isLoading: orderLoading,
-  } = useOrderQuery(orderId, initialOrder);
+  const { data: orderResponse, isLoading: orderLoading } = useOrderQuery(
+    orderId,
+    initialOrder,
+  );
 
   const order = useMemo(() => {
     if (initialOrder) return initialOrder;
     return orderResponse?.data ?? orderResponse ?? null;
   }, [initialOrder, orderResponse]);
 
-  const {
-    data: settingsData,
-    isLoading: settingsLoading,
-  } = useSettingByIdQuery(order?.settingId);
+  const { data: settingsData, isLoading: settingsLoading } =
+    useSettingByIdQuery(order?.settingId);
 
   const settings = useMemo(() => {
     if (Array.isArray(settingsData)) {
@@ -93,8 +98,8 @@ export default function Receipt() {
       console.error("Image export failed:", err);
       Swal.fire({
         icon: "error",
-        title: t('common.failed'),
-        text: t('order.downloadImgError') || "Failed to save image",
+        title: t("common.failed"),
+        text: t("order.downloadImgError") || "Failed to save image",
         confirmButtonColor: "#0f172a",
       });
     } finally {
@@ -106,7 +111,7 @@ export default function Receipt() {
     if (!receiptRef.current) {
       return;
     }
-    
+
     setLoading("share");
 
     try {
@@ -123,7 +128,7 @@ export default function Receipt() {
         `receipt-${order?.orderNo || orderNo || "order"}.png`,
         {
           type: "image/png",
-        }
+        },
       );
 
       if (
@@ -176,15 +181,17 @@ export default function Receipt() {
           <Package size={28} />
         </div>
         <p className="text-base font-semibold text-slate-700 mb-1">
-          {t('order.receiptNotFound') || "Receipt not found"}
+          {t("order.receiptNotFound") || "Receipt not found"}
         </p>
-        <p className="text-xs text-slate-400 mb-4">{t('order.receiptId') || "Receipt ID"} #{orderNo}</p>
+        <p className="text-xs text-slate-400 mb-4">
+          {t("order.receiptId") || "Receipt ID"} #{orderNo}
+        </p>
         <button
           onClick={() => window.history.back()}
           className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white px-3 py-1 rounded-xl shadow-xs border border-slate-200 text-sm font-medium transition-colors"
         >
           <ArrowLeft size={16} />
-          <span>{t('order.goBack') || "Go Back"}</span>
+          <span>{t("order.goBack") || "Go Back"}</span>
         </button>
       </div>
     );
@@ -208,15 +215,17 @@ export default function Receipt() {
           <Package size={28} />
         </div>
         <p className="text-base font-semibold text-slate-700 mb-1">
-          {t('order.receiptNotFound') || "Receipt not found"}
+          {t("order.receiptNotFound") || "Receipt not found"}
         </p>
-        <p className="text-xs text-slate-400 mb-4">{t('order.receiptId') || "Receipt ID"} #{orderNo}</p>
+        <p className="text-xs text-slate-400 mb-4">
+          {t("order.receiptId") || "Receipt ID"} #{orderNo}
+        </p>
         <button
           onClick={() => window.history.back()}
           className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white px-3 py-1 rounded-xl shadow-xs border border-slate-200 text-sm font-medium transition-colors"
         >
           <ArrowLeft size={16} />
-          <span>{t('order.goBack') || "Go Back"}</span>
+          <span>{t("order.goBack") || "Go Back"}</span>
         </button>
       </div>
     );
@@ -230,10 +239,10 @@ export default function Receipt() {
           className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3 py-1 rounded-lg shadow-xs border border-slate-200 text-sm font-medium transition-colors cursor-pointer"
         >
           <ArrowLeft size={16} />
-          <span>{t('order.goBack') || "Go Back"}</span>
+          <span>{t("order.goBack") || "Go Back"}</span>
         </button>
         <span className="text-xs font-bold text-slate-900 bg-slate-200/70 px-2.5 py-1 rounded">
-          {t('order.receiptSize') || "80mm"} (Receipt)
+          {t("order.receiptSize") || "80mm"} (Receipt)
         </span>
       </div>
 
@@ -247,48 +256,48 @@ export default function Receipt() {
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex items-center justify-center gap-2 max-w-md w-full pt-1">
-        {/* Print Button */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-w-lg w-full pt-1">
         <button
           onClick={handlePrint}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-slate-900 text-white px-0 py-2.5 sm:py-2 rounded-lg hover:bg-slate-800 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs cursor-pointer group"
+          className="w-full flex items-center justify-center gap-1.5 bg-slate-900 text-white px-3 py-1.5 rounded-lg hover:bg-slate-800 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs cursor-pointer group"
         >
           <Printer
-            size={16}
+            size={14}
             className="transition-transform group-hover:-translate-y-0.5"
           />
-          <span>{t('order.printReceipt') || "Print"}</span>
+          <span>{t("order.printReceipt") || "Print"}</span>
         </button>
 
-        {/* Download PNG Button */}
         <button
           onClick={handleSaveImage}
           disabled={loading === "img"}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-white text-slate-700 border border-slate-200 px-0 py-2.5 sm:py-2 rounded-lg hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:scale-[0.98] transition-all text-xs font-semibold shadow-2xs disabled:opacity-60 cursor-pointer group"
+          className="w-full flex items-center justify-center gap-1.5 bg-white text-slate-700 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:scale-[0.98] transition-all text-xs font-semibold shadow-2xs disabled:opacity-60 cursor-pointer group"
         >
           {loading === "img" ? (
-            <Loader2 size={16} className="animate-spin text-slate-900" />
+            <Loader2 size={14} className="animate-spin text-slate-900" />
           ) : (
             <FileDown
-              size={16}
+              size={14}
               className="transition-transform group-hover:translate-y-0.5 text-slate-500 group-hover:text-slate-900"
             />
           )}
-          <span>{loading === "img" ? t('order.saving') || "Saving..." : t('order.downloadReceipt') || "Save Image"}</span>
+          <span>
+            {loading === "img"
+              ? t("order.saving") || "Saving..."
+              : t("order.downloadReceipt") || "Save Image"}
+          </span>
         </button>
 
-        {/* Share Button */}
         <button
-          onClick={handleShare}
-          disabled={loading === "share"}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-sky-600 text-white px-0 py-2.5 sm:py-2 rounded-lg hover:bg-sky-500 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer group"
+          onClick={handleShare} // ឬ handleSendTelegram អាស្រ័យលើកូដរបស់អ្នក
+          disabled={loading === "share"} // ឬ loading === "telegram"
+          className="col-span-2 md:col-span-1 justify-self-center w-3/4 sm:w-2/3 md:w-full flex items-center justify-center gap-1.5 bg-sky-600 text-white px-3 py-1.5 rounded-lg hover:bg-sky-500 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer group"
         >
           {loading === "share" ? (
-            <Loader2 size={16} className="animate-spin" />
+            <Loader2 size={14} className="animate-spin" />
           ) : (
             <Share2
-              size={16}
+              size={14}
               className="transition-transform group-hover:translate-x-0.5"
             />
           )}

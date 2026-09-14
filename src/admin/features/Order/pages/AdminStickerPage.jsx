@@ -1,6 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
+
 import Swal from "sweetalert2";
+
 import { useParams, useNavigate, Link } from "react-router-dom";
+
 import {
   Printer,
   Download,
@@ -16,10 +19,23 @@ import {
   Loader2,
   Package,
   FileWarning,
+  Globe,
 } from "lucide-react";
+
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaTelegramPlane,
+  FaTiktok,
+  FaYoutube,
+  FaLinkedinIn,
+  FaTwitter,
+} from "react-icons/fa";
+
 import { useReactToPrint } from "react-to-print";
 import { toPng } from "html-to-image";
 import { useTranslation } from "react-i18next";
+
 import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
 import { sendStickerToTelegram } from "../../../../services/telegramService";
 import { useSettingsQuery } from "../../../../queries/settings/useSettingQueries";
@@ -27,28 +43,54 @@ import { useDeliveryProvidersQuery } from "../../../../queries/deliveryProviders
 import { useAuth } from "@/hooks/useAuth";
 
 function AdminStickerCard({ order, courier, setCourier }) {
+  const socialIconMap = {
+    "fa-telegram": <FaTelegramPlane size={16} className="text-white" />,
+    "fa-facebook": <FaFacebookF size={16} className="text-white" />,
+    "fa-tiktok": <FaTiktok size={16} className="text-white" />,
+    "fa-instagram": <FaInstagram size={16} className="text-white" />,
+    "fa-twitter": <FaTwitter size={16} className="text-white" />,
+    "fa-youtube": <FaYoutube size={16} className="text-white" />,
+    "fa-linkedin": <FaLinkedinIn size={16} className="text-white" />,
+    "fa-globe": <Globe size={16} className="text-white" />,
+  };
+
   const { t } = useTranslation();
   const { user } = useAuth();
+
   const shopCode = user?.shop?.code;
+
   const { data: settingData } = useSettingsQuery(shopCode);
   const [imgError, setImgError] = useState(false);
-  const shopName = settingData?.shop_name || "Shop";
+  const shopName = settingData?.shop_name || "N/A";
+  const socialMedia = Array.isArray(settingData?.social_media)
+    ? settingData.social_media[0]
+    : null;
+
+  const socialMediaTitle = socialMedia?.title || "";
+  const socialMediaIcon = socialMedia?.icon || "";
+  const shopPhone = settingData?.phone;
   const rawLogo = settingData?.logo;
   const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
+
   const logoUrl = rawLogo
     ? rawLogo.startsWith("http")
       ? rawLogo
       : `${baseUrl}${rawLogo.startsWith("/") ? "" : "/"}${rawLogo}`
     : "";
+
   const delivery = Number(order?.deliveryFee) || 0;
+
   const total = Number(order?.totalAmount) || 0;
+
   const subtotal = total - delivery;
 
   const { data: providers } = useDeliveryProvidersQuery();
+
   const dynamicCouriers =
     providers
       ?.filter((p) => p.status === "Active" || p.status === undefined)
       .map((p) => p.name) || [];
+
   const couriers =
     dynamicCouriers.length > 0
       ? dynamicCouriers
@@ -73,6 +115,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
       }}
       className="bg-white border-2 border-slate-900 rounded-xl p-4 text-slate-900 select-none mx-auto flex flex-col justify-between w-full md:w-[580px] print:w-[580px]"
     >
+      {/* Header */}
       <div className="flex flex-col md:flex-row print:flex-row items-start md:items-center print:items-center justify-between pb-2.5 border-b-2 border-slate-900 gap-3 md:gap-0 print:gap-0">
         <div className="flex items-center gap-2.5">
           <div className="bg-slate-900 text-white rounded-md overflow-hidden flex items-center justify-center">
@@ -87,89 +130,109 @@ function AdminStickerCard({ order, courier, setCourier }) {
               <ShoppingBag size={20} strokeWidth={2.5} />
             )}
           </div>
+
           <div>
             <span className="text-[11px] font-bold text-slate-600 block leading-tight">
-              {t("order.deliverySticker")}
+              Have a good day!
             </span>
+
             <h1 className="font-black text-xl tracking-wider text-slate-900 leading-none">
               {shopName}
             </h1>
           </div>
         </div>
 
+        {/* Shop phone + social icons */}
         <div className="flex items-center gap-3 text-xs font-bold text-slate-800 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-300">
           <div className="flex items-center gap-1.5">
             <Phone size={13} className="text-slate-900" />
-            <span>088 999 9999</span>
+            <span>{shopPhone || "—"}</span>
           </div>
-          <span className="text-slate-400">|</span>
-          <div className="flex items-center gap-1.5">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="text-slate-900"
-            >
-              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-            </svg>
-            <span>{shopName}</span>
-          </div>
+          {socialMedia && (
+            <>
+              <span className="text-slate-400">|</span>
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-slate-900 flex items-center justify-center">
+                  {socialIconMap[socialMediaIcon] ?? (
+                    <Globe size={4} className="text-white" />
+                  )}
+                </div>
+                <span className="font-bold text-slate-900">
+                  {socialMediaTitle}
+                </span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
+      {/* Main content */}
       <div className="flex flex-col md:grid md:grid-cols-12 print:grid print:grid-cols-12 gap-2.5 my-2.5 flex-1 items-stretch">
+        {/* Left */}
         <div className="md:col-span-7 print:col-span-7 flex flex-col gap-2 justify-between">
           <div className="flex flex-col sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 print:grid-cols-2 gap-2">
+            {/* Sender */}
             <div className="border border-slate-800 rounded-lg p-2.5 bg-slate-50/60 flex flex-col justify-center">
               <div className="flex items-center gap-1 text-[11px] font-bold text-slate-600 mb-1">
-                <User size={12} /> {t("order.sender")}
+                <User size={12} />
+                {t("order.sender")}
               </div>
+
               <p className="font-bold text-xs text-slate-900 truncate">
-                John Wick
+                {order?.shop?.name || shopName}
               </p>
+
               <p className="text-[11px] text-slate-700 font-semibold">
-                096 123 9999
+                {shopPhone || order?.shop?.phone || "—"}
               </p>
             </div>
 
+            {/* Receiver */}
             <div className="border border-slate-800 rounded-lg p-2.5 bg-slate-50/60 flex flex-col justify-center">
               <div className="flex items-center gap-1 text-[11px] font-bold text-slate-600 mb-1">
-                <Phone size={12} /> {t("order.receiver")}
+                <Phone size={12} />
+                {t("order.receiver")}
               </div>
+
               <p className="font-bold text-xs text-slate-900 truncate">
                 {order?.customerName || t("order.generalCustomer")}
               </p>
+
               <p className="text-[11px] font-bold text-slate-900 tracking-wide">
                 {order?.customerPhone || order?.phone || "—"}
               </p>
             </div>
           </div>
 
+          {/* Address */}
           <div className="border border-slate-800 rounded-lg p-2.5 flex-1 flex flex-col justify-start bg-white">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
-                <MapPin size={13} className="text-slate-900" />{" "}
+                <MapPin size={13} className="text-slate-900" />
                 {t("order.deliveryAddress")}
               </div>
+
               <div className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
                 {order?.deliveryProvider?.name ||
                   order?.deliveryMethod ||
                   t("order.none")}
               </div>
             </div>
+
             <p className="font-medium text-xs text-slate-800 leading-relaxed border border-slate-100 p-1.5 rounded bg-slate-50">
               {order?.customerAddress || order?.address || t("order.noAddress")}
             </p>
           </div>
         </div>
 
+        {/* Right */}
         <div className="md:col-span-5 print:col-span-5 flex flex-col gap-2 justify-between">
+          {/* KHQR */}
           <div className="border border-slate-800 rounded-lg overflow-hidden flex flex-col items-center bg-white">
             <div className="w-full bg-slate-900 text-white text-center py-1 text-[10px] font-black tracking-widest uppercase">
               KHQR PAYMENT
             </div>
+
             <div className="p-2 flex items-center justify-center bg-white">
               <img
                 src="/images/qrbank.JPG"
@@ -178,32 +241,42 @@ function AdminStickerCard({ order, courier, setCourier }) {
                 crossOrigin="anonymous"
               />
             </div>
+
             <div className="w-full text-center border-t border-slate-200 py-1 text-[10px] font-bold text-slate-800 uppercase bg-slate-50">
               LENG CHANTHA
             </div>
           </div>
 
+          {/* Price */}
           <div className="border border-slate-800 rounded-lg p-2.5 bg-slate-50/60 flex flex-col justify-center gap-1.5 text-xs">
             <div className="flex justify-between items-center bg-slate-50 p-1.5 rounded border border-slate-100 text-[11px]">
               <span className="flex items-center gap-1 font-bold">
-                <Tag size={12} /> {t("order.items")}
+                <Tag size={12} />
+                {t("order.items")}
               </span>
+
               <span className="font-bold text-slate-800">
                 ${subtotal.toFixed(2)}
               </span>
             </div>
+
             <div className="flex justify-between items-center bg-slate-50 p-1.5 rounded border border-slate-100 text-[11px]">
               <span className="flex items-center gap-1 font-bold">
-                <Bike size={12} /> {t("order.shipping")}
+                <Bike size={12} />
+                {t("order.shipping")}
               </span>
+
               <span className="font-bold text-slate-800">
                 ${delivery.toFixed(2)}
               </span>
             </div>
+
             <div className="flex justify-between items-center bg-blue-50/50 p-1.5 rounded border border-blue-100 text-slate-950 font-black text-xs">
               <span className="flex items-center gap-1">
-                <Receipt size={13} /> {t("order.total")}
+                <Receipt size={13} />
+                {t("order.total")}
               </span>
+
               <span className="text-sm font-black text-slate-950">
                 ${total.toFixed(2)}
               </span>
@@ -212,10 +285,12 @@ function AdminStickerCard({ order, courier, setCourier }) {
         </div>
       </div>
 
+      {/* Footer */}
       <div className="flex flex-col md:flex-row print:flex-row items-center justify-between pt-2 border-t-2 border-slate-900 text-xs gap-3 md:gap-0 print:gap-0">
         <div className="flex flex-wrap items-center justify-center md:justify-start print:justify-start gap-2">
           {couriers.map((c) => {
             const isSelected = courier === c;
+
             return (
               <button
                 type="button"
@@ -228,17 +303,21 @@ function AdminStickerCard({ order, courier, setCourier }) {
                 }`}
               >
                 <div
-                  className={`w-3 h-3 rounded-full border flex items-center justify-center ${isSelected ? "border-white bg-white" : "border-slate-400"}`}
+                  className={`w-3 h-3 rounded-full border flex items-center justify-center ${
+                    isSelected ? "border-white bg-white" : "border-slate-400"
+                  }`}
                 >
                   {isSelected && (
                     <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
                   )}
                 </div>
+
                 <span>{c}</span>
               </button>
             );
           })}
         </div>
+
         <p className="text-xs font-black tracking-wide text-slate-900">
           {t("order.thankYouSticker")}
         </p>
@@ -249,27 +328,48 @@ function AdminStickerCard({ order, courier, setCourier }) {
 
 export default function AdminStickerPage() {
   const { t } = useTranslation();
+
   const { id: paramNo } = useParams();
+
   const navigate = useNavigate();
+
   const { data: orders = [] } = useOrdersQuery();
+
   const order = orders?.find(
     (o) =>
       String(o.orderNo) === String(paramNo) ||
-      String(o.orderNumber) === String(paramNo),
+      String(o.orderNumber) === String(paramNo) ||
+      String(o.id) === String(paramNo),
   );
 
   const printRef = useRef(null);
+
   const [loading, setLoading] = useState(null);
+
   const [courier, setCourier] = useState(t("order.courier1"));
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `Sticker-${order?.orderNo || order?.orderNumber || order?.id || "sticker"}`,
+
+    documentTitle: `Sticker-${
+      order?.orderNo || order?.orderNumber || order?.id || "sticker"
+    }`,
+
     pageStyle: `
-      @page { size: 150mm 100mm landscape; margin: 0; }
+      @page {
+        size: 150mm 100mm landscape;
+        margin: 0;
+      }
+
       @media print {
-        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        #admin-sticker-card { margin: auto !important; }
+        body {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        #admin-sticker-card {
+          margin: auto !important;
+        }
       }
     `,
   });
@@ -278,6 +378,7 @@ export default function AdminStickerPage() {
     if (order) {
       const deliveryName =
         order?.deliveryProvider?.name || order?.deliveryMethod;
+
       if (deliveryName) {
         setCourier(deliveryName);
       }
@@ -288,9 +389,11 @@ export default function AdminStickerPage() {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center py-20">
         <FileWarning size={48} className="text-slate-300 mb-4" />
+
         <p className="text-base font-semibold text-slate-600 mb-4">
           {t("order.stickerNotFound")}
         </p>
+
         <button
           onClick={() => navigate("/admin/orders")}
           className="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 hover:bg-slate-50 rounded-lg transition-colors font-medium text-sm shadow-sm border border-slate-200"
@@ -304,20 +407,30 @@ export default function AdminStickerPage() {
 
   const handleSaveImage = async () => {
     if (!printRef.current) return;
+
     setLoading("img");
+
     try {
       await document.fonts.ready;
+
       const dataUrl = await toPng(printRef.current, {
         cacheBust: true,
         pixelRatio: 4,
         backgroundColor: "#ffffff",
       });
+
       const link = document.createElement("a");
-      link.download = `Sticker-${order.orderNo || order.orderNumber || order.id}.png`;
+
+      link.download = `Sticker-${
+        order.orderNo || order.orderNumber || order.id
+      }.png`;
+
       link.href = dataUrl;
+
       link.click();
     } catch (err) {
       console.error("Export failed:", err);
+
       Swal.fire({
         icon: "error",
         title: t("common.failed"),
@@ -331,8 +444,10 @@ export default function AdminStickerPage() {
 
   const handleSendTelegram = async () => {
     setLoading("telegram");
+
     try {
       await sendStickerToTelegram(order, courier);
+
       Swal.fire({
         icon: "success",
         title: t("common.success"),
@@ -343,6 +458,7 @@ export default function AdminStickerPage() {
       });
     } catch (err) {
       console.error(err);
+
       Swal.fire({
         icon: "error",
         title: t("common.failed"),
@@ -364,6 +480,7 @@ export default function AdminStickerPage() {
           <ArrowLeft size={14} />
           <span>{t("order.goBack")}</span>
         </Link>
+
         <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
           <Package size={14} />
           {t("order.stickerSize")}
@@ -399,6 +516,7 @@ export default function AdminStickerPage() {
           ) : (
             <Download size={14} />
           )}
+
           {loading === "img" ? t("order.saving") : t("order.downloadImage")}
         </button>
 
@@ -412,6 +530,7 @@ export default function AdminStickerPage() {
           ) : (
             <Send size={14} />
           )}
+
           {loading === "telegram"
             ? t("order.sending")
             : t("order.sendToTelegram")}

@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   Loader2,
   Package,
+  ReceiptText,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -238,11 +239,13 @@ export default function Receipt() {
           onClick={() => window.history.back()}
           className="flex items-center gap-2 text-slate-600 hover:text-slate-900 bg-white px-3 py-1 rounded-lg shadow-xs border border-slate-200 text-sm font-medium transition-colors cursor-pointer"
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={14} />
           <span>{t("order.goBack") || "Go Back"}</span>
         </button>
-        <span className="text-xs font-bold text-slate-900 bg-slate-200/70 px-2.5 py-1 rounded">
-          {t("order.receiptSize") || "80mm"} (Receipt)
+        
+        <span className="text-xs flex items-center gap-1 font-bold text-slate-900 bg-slate-200/70 px-2.5 py-1 rounded">
+          <ReceiptText size={14} />
+          <span>{t("order.receiptSize") || "80mm"} (Receipt)</span>
         </span>
       </div>
 

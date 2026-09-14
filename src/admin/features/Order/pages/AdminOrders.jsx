@@ -57,42 +57,44 @@ export default function AdminOrders() {
         />
       </Modal>
 
-      <div className="flex flex-row items-center justify-between gap-2 sm:gap-4">
-        <div className="flex-1 min-w-0">
+      {/* Responsive Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="min-w-0">
           <PageHeader
             title={t('order.ordersTitle')}
             description={t('order.ordersSubtitle')}
           />
         </div>
-        {/* View Toggle */}
-        <div className="flex items-center bg-slate-100 p-1 rounded-xl w-fit">
-          <button
-            onClick={() => setViewMode('list')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              viewMode === 'list'
-                ? 'bg-white text-blue-600 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            <List size={16} />
-            <span className="hidden sm:inline">{t('order.viewList')}</span>
-          </button>
-          <button
-            onClick={() => setViewMode('card')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              viewMode === 'card'
-                ? 'bg-white text-blue-600 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            <LayoutGrid size={16} />
-            <span className="hidden sm:inline">{t('order.viewCard')}</span>
-          </button>
+      
+        <div className="flex flex-wrap items-center gap-3 justify-between md:justify-end">
+          
+          <OrderExportActions />
+          {/* View Toggle */}
+          <div className="flex items-center bg-slate-100 p-1 rounded-xl w-fit">
+            <button
+              onClick={() => setViewMode('list')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                viewMode === 'list'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              <List size={16} />
+              <span className="hidden sm:inline">{t('order.viewList')}</span>
+            </button>
+            <button
+              onClick={() => setViewMode('card')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                viewMode === 'card'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              <LayoutGrid size={16} />
+              <span className="hidden sm:inline">{t('order.viewCard')}</span>
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div className="flex justify-end">
-        <OrderExportActions />
       </div>
 
       <OrderFilterBar
@@ -137,7 +139,7 @@ export default function AdminOrders() {
           </div>
         </div>
       ) : (
-        <div className=" flex flex-col items-center justify-center py-16 text-slate-400">
+        <div className="flex flex-col items-center justify-center py-16 text-slate-400">
           <PackageX size={64} className="mb-4 mt-20 text-slate-300" strokeWidth={1.5} />
           <h3 className="text-lg font-medium text-slate-600 mb-1">{t('order.ordersNotFound')}</h3>
           <p className="text-sm">{t('order.searchOrFilterHint')}</p>

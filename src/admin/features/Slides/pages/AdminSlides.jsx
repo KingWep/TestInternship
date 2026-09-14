@@ -1,21 +1,13 @@
 import React, { useState } from "react";
-
 import { Edit, Plus } from "lucide-react";
-
 import { useTranslation } from "react-i18next";
-
+import Swal from "sweetalert2"; // 1. Don't forget to import SweetAlert2!
 import { useSlides } from "../hooks/useSlides";
-
 import SlideForm from "../components/SlideForm";
-
 import PageHeader from "../../../components/common/PageHeader";
-
 import DataTable from "../../../components/common/DataTable";
-
 import DataTableSkeleton from "../../../components/common/DataTableSkeleton";
-
 import Modal from "../../../components/common/Modal";
-
 import Pagination from "../../../components/common/Pagination";
 
 export default function AdminSlides() {
@@ -33,7 +25,25 @@ export default function AdminSlides() {
     handleEdit,
     openAddModal,
     closeModal,
+    slides,
   } = useSlides();
+
+  const MAX_PROMOTIONS = 5;
+  const totalCount = slides ? slides.length : paginatedSlides.length;
+  const isLimitReached = totalCount >= MAX_PROMOTIONS;
+
+  const handleAddClick = () => {
+    if (isLimitReached) {
+      Swal.fire({
+        icon: "warning",
+        title: t("promotions.limitAlertTitle") || "Limit Reached",
+        text: t("promotions.limitAlertText") || "You can only create a maximum of 5 promotions.",
+        confirmButtonColor: "#2563eb",
+      });
+      return;
+    }
+    openAddModal();
+  };
 
   const columns = [
     {
@@ -155,9 +165,14 @@ export default function AdminSlides() {
           description={t("promotions.pageDescription")}
         />
 
+        {/* 2. Removed `disabled={isLimitReached}` so onClick can fire and show SweetAlert */}
         <button
-          onClick={openAddModal}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm"
+          onClick={handleAddClick}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors shadow-sm ${
+            isLimitReached
+              ? "bg-slate-200 text-slate-500 hover:bg-slate-300 cursor-pointer"
+              : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
         >
           <Plus size={16} />
           {t("promotions.addPromotionTitle")}

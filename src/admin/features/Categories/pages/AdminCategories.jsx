@@ -18,7 +18,6 @@ export default function AdminCategories() {
   const { t } = useTranslation()
   const { products } = useProducts()
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   const {
     filters,
@@ -159,8 +158,23 @@ export default function AdminCategories() {
 
       <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex-1 min-w-[200px]">
-            <div className="relative">
+          {/* Desktop Filters Layout: Status -- Sort */}
+          <div className="hidden md:flex flex-wrap items-center gap-4">
+            <FilterBar
+              filters={categoryFilters}
+              values={filters}
+              onChange={handleFilterChange}
+            />
+
+            <FilterBar
+              filters={[{ key: 'sort', options: [t('common.sortNewest'), t('common.sortAZ'), t('common.sortZA')] }]}
+              values={{ sort: sortOrder }}
+              onChange={(key, value) => handleSortChange({ target: { value } })}
+            />
+          </div>
+
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="relative w-full md:w-64">
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
@@ -170,24 +184,28 @@ export default function AdminCategories() {
                 className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <button
+            <Button
+              variant="primary"
               onClick={() => {
                 setEditingCategory(null)
                 setIsModalOpen(true)
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm whitespace-nowrap"
+              className="shrink-0 whitespace-nowrap h-[42px] px-5"
             >
-              <Plus size={18} />
+              <Plus size={16} className="mr-2" />
               <span className="hidden md:inline">{t('category.addCategoryBtn')}</span>
               <span className="md:hidden">{t('common.addBtn')}</span>
-            </button>
+            </Button>
 
             <button
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="flex items-center justify-center p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors"
+              type="button"
+              onClick={() => setShowAdvancedFilters((prev) => !prev)}
+              className={`md:hidden shrink-0 w-10 py-2.5 flex items-center justify-center rounded-xl border transition-colors ${
+                showAdvancedFilters
+                  ? "bg-slate-100 border-slate-300 text-slate-700"
+                  : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+              }`}
               title={t('common.showFilters')}
               aria-label={t('common.showFilters')}
             >
@@ -196,14 +214,22 @@ export default function AdminCategories() {
           </div>
         </div>
 
-        {isFilterOpen && (
-          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-             <div className="flex flex-wrap gap-4">
+        {/* Mobile Filters Dropdown Layout */}
+        <div
+          className={`grid transition-all duration-300 ease-in-out md:hidden ${
+            showAdvancedFilters
+              ? "grid-rows-[1fr] opacity-100"
+              : "grid-rows-[0fr] opacity-0 !mt-0"
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
               <FilterBar
                 filters={categoryFilters}
                 values={filters}
                 onChange={handleFilterChange}
               />
+
               <FilterBar
                 filters={[{ key: 'sort', options: [t('common.sortNewest'), t('common.sortAZ'), t('common.sortZA')] }]}
                 values={{ sort: sortOrder }}
@@ -211,7 +237,7 @@ export default function AdminCategories() {
               />
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       <div className="overflow-x-auto bg-white border border-slate-200 rounded-2xl">

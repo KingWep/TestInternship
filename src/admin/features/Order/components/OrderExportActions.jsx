@@ -53,7 +53,7 @@ export default function OrderExportActions() {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 bg-white p-2 rounded-xl border border-slate-200">
+    <div className="flex flex-nowrap items-center gap-2 bg-white p-2 rounded-xl border border-slate-200">
       <span className="text-sm font-medium text-slate-600 ml-1 hidden sm:inline">Monthly Export:</span>
       <input
         type="month"

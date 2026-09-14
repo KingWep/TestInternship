@@ -1,21 +1,22 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-
+import { useParams } from "react-router-dom";
+import { usePublicSettingsQuery } from "../../../../queries/settings/useSettingQueries";
 export default function ReceiptCard({ order, settings, settingsLoading }) {
   const { t } = useTranslation();
   const [imgError, setImgError] = useState(false);
 
-  const shopName = settings?.shop_name || settings?.shopName ;
-  console.log("Shop Name from settings:", shopName);
-  const rawLogo = settings?.logo;
-  console.log("Logo from settings:", rawLogo);
+  const { shop_code } = useParams();
+  const { data: settingData, isLoading } = usePublicSettingsQuery(shop_code);
+  const setting = settingData?.data || settings;
+  const shopName = setting?.shop_name || setting?.shopName ;
+  const rawLogo = setting?.logo;
   const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
   const logoUrl = rawLogo
     ? rawLogo.startsWith("http")
       ? rawLogo
       : `${baseUrl}${rawLogo.startsWith("/") ? "" : "/"}${rawLogo}`
     : "";
-    console.log("logoUrl", logoUrl);
 
   const delivery = Number(order?.deliveryFee) || 0;
   const total = Number(order?.totalAmount) || 0;
@@ -50,9 +51,9 @@ export default function ReceiptCard({ order, settings, settingsLoading }) {
           {shopName}
         </h2>
         <p className="text-[11px] text-slate-900 mt-1">
-          {t("order.phone")} {settings?.phone || "—"}
+          {t("order.phone")} {setting?.phone || "xxxxxxxxx"}
         </p>
-        <p className="text-[11px] text-slate-900">{settings?.address || ""}</p>
+        <p className="text-[11px] text-slae-900">{settings?.address || ""}</p>
       </div>
 
       <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">

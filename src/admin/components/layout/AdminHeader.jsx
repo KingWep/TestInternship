@@ -20,7 +20,7 @@ export default function AdminHeader({ sidebarState, setSidebarState }) {
         {/* Home */}
       <div className="flex items-center gap-2 text-slate-600 text-xl">
         <Link
-          to="/"
+          to="/admin"
           className="text-slate-600 px-2 py-1.5 border-[2px] hover:bg-blue-200 rounded-md hover:text-blue-600 transition-colors"
         >
           <FaHome size={18} />

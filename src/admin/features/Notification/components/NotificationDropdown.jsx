@@ -1,6 +1,6 @@
 import React from 'react';
 import { IoNotifications } from "react-icons/io5";
-import { Filter, BellOff } from 'lucide-react';
+import { Filter, ShoppingBag, AlertTriangle, AlertCircle } from 'lucide-react';
 import { useNotifications } from '../hooks/useNotification';
 import { useTranslation } from "react-i18next";
 
@@ -11,11 +11,38 @@ export default function NotificationDropdown() {
     dropdownRef,
     activeTab,
     setActiveTab,
+    typeFilter,
+    setTypeFilter,
     filteredNotifications,
     unreadCount,
     markAllAsRead,
     toggleDropdown,
+    handleNotificationClick
   } = useNotifications();
+
+  // Helper for relative time (frontend-only fallback)
+  const getRelativeTime = (dateString) => {
+    if (!dateString) return '';
+    const diffInSeconds = Math.floor((new Date() - new Date(dateString)) / 1000);
+    
+    if (diffInSeconds < 60) return t('notifications.justNow');
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) return `${diffInMinutes} ${t('notifications.minutesAgo')}`;
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours} ${t('notifications.hoursAgo')}`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays === 1) return t('notifications.yesterday');
+    return `${diffInDays} ${t('notifications.daysAgo')}`;
+  };
+
+  const renderIcon = (type) => {
+    switch(type) {
+      case 'order': return <ShoppingBag className="text-blue-600" size={20} />;
+      case 'low_stock': return <AlertTriangle className="text-amber-500" size={20} />;
+      case 'out_of_stock': return <AlertCircle className="text-red-500" size={20} />;
+      default: return <IoNotifications className="text-slate-500" size={20} />;
+    }
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -33,7 +60,7 @@ export default function NotificationDropdown() {
 
       {/* Pop-up Card */}
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-80 md:w-96 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden">
+        <div className="absolute right-0 mt-3 w-80 md:w-96 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden flex flex-col">
           
           {/* Header */}
           <div className="flex items-center justify-between px-5 pt-5 pb-3">
@@ -46,7 +73,7 @@ export default function NotificationDropdown() {
             </button>
           </div>
 
-          {/* Tabs */}
+          {/* Status Tabs */}
           <div className="flex items-center justify-between px-5 border-b border-slate-100">
             <div className="flex gap-6 text-sm font-medium">
               <button
@@ -57,7 +84,7 @@ export default function NotificationDropdown() {
                     : 'border-transparent text-slate-400 hover:text-slate-600'
                 }`}
               >
-                All Notifications
+                {t('notifications.all')}
               </button>
               <button
                 onClick={() => setActiveTab('unread')}
@@ -67,7 +94,7 @@ export default function NotificationDropdown() {
                     : 'border-transparent text-slate-400 hover:text-slate-600'
                 }`}
               >
-                Unread
+                {t('notifications.unread')}
                 {unreadCount > 0 && (
                   <span className="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full text-xs">
                     {unreadCount}
@@ -75,33 +102,60 @@ export default function NotificationDropdown() {
                 )}
               </button>
             </div>
-            <button className="text-slate-400 hover:text-slate-600 pb-3">
+            <div className="text-slate-400 pb-3 flex items-center gap-1">
               <Filter size={16} />
-            </button>
+            </div>
+          </div>
+
+          {/* Type Filters */}
+          <div className="px-5 py-3 flex gap-2 overflow-x-auto whitespace-nowrap border-b border-slate-50">
+            {[
+              { id: 'all', label: t('notifications.all') },
+              { id: 'order', label: t('notifications.orders') },
+              { id: 'low_stock', label: t('notifications.lowStock') },
+              { id: 'out_of_stock', label: t('notifications.outOfStock') }
+            ].map(filter => (
+              <button
+                key={filter.id}
+                onClick={() => setTypeFilter(filter.id)}
+                className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                  typeFilter === filter.id 
+                    ? 'bg-slate-800 text-white' 
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
           </div>
 
           {/* List */}
-          <div className="max-h-[380px] overflow-y-auto divide-y divide-slate-50">
+          <div className="max-h-[350px] overflow-y-auto divide-y divide-slate-50">
             {filteredNotifications.length > 0 ? (
               filteredNotifications.map((item) => (
                 <div
                   key={item.id}
+                  onClick={() => handleNotificationClick(item)}
                   className={`flex items-start gap-3.5 px-5 py-3.5 hover:bg-slate-50 transition-colors cursor-pointer ${
                     !item.read ? 'bg-slate-50/60' : ''
                   }`}
                 >
-                  <img
-                    src={item.avatar}
-                    alt={item.name}
-                    className="w-10 h-10 rounded-full object-cover shrink-0"
-                  />
+                  <div className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center bg-slate-100">
+                    {renderIcon(item.type)}
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-slate-500">
-                      <span className="font-semibold text-slate-900">{item.name}</span>{' '}
-                      {item.action}
+                    <p className="text-sm text-slate-900 font-medium">
+                      {item.type === 'order' && t('notifications.newOrder')}
+                      {item.type === 'low_stock' && t('notifications.lowStock')}
+                      {item.type === 'out_of_stock' && t('notifications.outOfStock')}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-0.5 truncate">
+                      {item.type === 'order' && `${item.orderNo} - $${item.totalAmount}`}
+                      {item.type === 'low_stock' && `${item.name} (${t('notifications.onlyItemsLeft').replace('{{count}}', item.stockQuantity)})`}
+                      {item.type === 'out_of_stock' && `${item.name} - ${t('notifications.outOfStockMessage')}`}
                     </p>
                     <span className="text-[11px] text-slate-400 mt-1 block">
-                      {item.time}
+                      {getRelativeTime(item.createdAt)}
                     </span>
                   </div>
                   {!item.read && (
@@ -111,7 +165,7 @@ export default function NotificationDropdown() {
               ))
             ) : (
               <div className="py-12 text-center text-slate-400 text-sm">
-                {t('common.noNotifications')}
+                {t('notifications.empty')}
               </div>
             )}
           </div>

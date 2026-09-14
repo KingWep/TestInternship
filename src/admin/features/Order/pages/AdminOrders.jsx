@@ -119,7 +119,7 @@ export default function AdminOrders() {
           <DataTableSkeleton columns={9} rows={5} />
         )
       ) : orders.length > 0 ? (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col">
           {viewMode === 'card' ? (
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
               {paginatedOrders.map(order => (
@@ -129,8 +129,7 @@ export default function AdminOrders() {
           ) : (
             <OrderList orders={paginatedOrders} onEdit={openEditModal} />
           )}
-          
-          <div className="mt-4">
+          <div>
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

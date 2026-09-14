@@ -10,6 +10,7 @@ import Pagination from '../../../components/common/Pagination'
 import DataTableSkeleton from '../../../components/common/DataTableSkeleton'
 import DataCardSkeletonGrid from '../../../components/common/DataCardSkeleton'
 import { PackageOpen, LayoutGrid, List, PackageX } from 'lucide-react'
+import OrderExportActions from '../components/OrderExportActions'
 
 import { useOrders } from '../hooks/useOrders'
 
@@ -88,6 +89,10 @@ export default function AdminOrders() {
             <span className="hidden sm:inline">{t('order.viewCard')}</span>
           </button>
         </div>
+      </div>
+
+      <div className="flex justify-end">
+        <OrderExportActions />
       </div>
 
       <OrderFilterBar

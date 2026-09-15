@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import zone from "zod";
 
 import { useDeliveryProvidersQuery } from "../../../../queries/deliveryProviders/useDeliveryProviderQueries";
 
@@ -46,22 +47,6 @@ export default function DeliveryForm({
     const selectedSettingId = Number(
       option.setting_id
     );
-
-    console.log(
-      "Selected delivery:",
-      option
-    );
-
-    console.log(
-      "Delivery Provider ID:",
-      providerId
-    );
-
-    console.log(
-      "Setting ID:",
-      selectedSettingId
-    );
-
     setDeliveryMethod(providerId);
 
     if (setDeliveryProviderId) {

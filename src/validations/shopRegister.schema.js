@@ -11,41 +11,41 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-export const accountSetupSchema = z.object({
+export const accountSetupSchema = (t) => z.object({
   name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
+    message: t("auth.nameMinLength") || "Name must be at least 2 characters.",
   }),
 
-  email: emailRule,
+  email: emailRule(t),
 
-  password: passwordRule,
+  password: passwordRule(t),
 
   phone: z.string().min(8, {
-    message: "Phone number is required.",
+    message: t("validation.requiredPhone") || "Phone number is required.",
   }),
 });
 
-export const shopIdentitySchema = z.object({
+export const shopIdentitySchema = (t) => z.object({
   shop_name: z.string().min(2, {
-    message: "Shop name is required.",
+    message: t("validation.requiredShopName") || "Shop name is required.",
   }),
 
   logo: z
     .any()
-    .refine((file) => file && file.length > 0, "Logo image is required.")
+    .refine((file) => file && file.length > 0, t("validation.requiredIcon") || "Logo image is required.")
     .refine((file) => {
       if (!file || file.length === 0) return true;
       return file[0]?.size <= MAX_FILE_SIZE;
-    }, "Max file size is 1MB.")
+    }, t("settings.imageTooLarge") || "Max file size is 1MB.")
     .refine((file) => {
       if (!file || file.length === 0) return true;
       return ACCEPTED_IMAGE_TYPES.includes(file[0]?.type);
-    }, "Only .jpg, .jpeg, .png and .webp formats are supported."),
+    }, t("settings.invalidFile") || "Only .jpg, .jpeg, .png and .webp formats are supported."),
 
   chat_id: z.string().optional(),
 });
 
-export const contactSupportSchema = z.object({
+export const contactSupportSchema = (t) => z.object({
   address: z.string().optional(),
 
   support: z
@@ -54,23 +54,23 @@ export const contactSupportSchema = z.object({
     .refine((file) => {
       if (!file || file.length === 0) return true;
       return file[0]?.size <= MAX_FILE_SIZE;
-    }, "Max file size is 5MB."),
+    }, t("settings.fileTooLarge") || "Max file size is 1MB."),
 
   social_media: z
     .array(
       z.object({
         platform: z.string().min(1, {
-          message: "Platform is required",
+          message: t("validation.requiredTitle") || "Platform is required",
         }),
 
         url: z.string().url({
-          message: "Must be a valid URL",
+          message: t("validation.invalidUrl") || "Must be a valid URL",
         }),
       }),
     )
     .optional(),
 });
 
-export const shopRegisterSchema = accountSetupSchema
-  .merge(shopIdentitySchema)
-  .merge(contactSupportSchema);
+export const shopRegisterSchema = (t) => accountSetupSchema(t)
+  .merge(shopIdentitySchema(t))
+  .merge(contactSupportSchema(t));

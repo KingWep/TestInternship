@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { ReactQRCode as QRCode } from "@lglab/react-qr-code";
 import { useAuth } from "../../../../hooks/useAuth";
+// import { useProductsQuery } from "../../../../queries/settings/useSettingQueries";
 import {
   Copy,
   Download,
@@ -14,10 +15,12 @@ import { useTranslation } from "react-i18next";
 export default function AdminQRCode() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  // const { data: settingData, isLoading } = useProductsQuery(user?.shop?.code || "");
+  // console.log("AdminQRCode - settingData:", settingData);
   const [copied, setCopied] = useState(false);
   const qrRef = useRef(null);
-
   const shopCode = user?.shop?.code || "";
+  console.log("AdminQRCode - shopCode:", shopCode);
   const baseUrl = window.location.origin;
   const shopUrl = shopCode ? `${baseUrl}/shop/${shopCode}` : "";
 

@@ -11,11 +11,8 @@ export default function OrderFormFields({
   watch,
 }) {
   const { t } = useTranslation();
-
   const { data: providers = [] } = useDeliveryProvidersQuery();
-
   const activeProviders = providers.filter((p) => p.is_active == 1);
-
   const selectedProviderId = watch
     ? watch("deliveryProviderId")
     : null;
@@ -48,7 +45,11 @@ export default function OrderFormFields({
             className="flex-1 px-3 py-2 bg-transparent text-sm text-slate-800 focus:outline-hidden"
             {...register("phone", {
               onChange: (e) => {
-                e.target.value = e.target.value.replace(/\D/g, "");
+                const degitsOnly = 
+                  e.target.value.replace(/\D/g, "");
+                if (degitsOnly.length <= 10) {
+                  e.target.value = degitsOnly;
+                }
               },
             })}
           />

@@ -19,7 +19,7 @@ export const AccountSetupStep = ({ register, errors }) => {
         />
         {errors.name && (
           <span className="text-[11px] text-red-600 mt-1 block">
-            {t(errors.name.message)}
+            {errors.name.message}
           </span>
         )}
       </div>
@@ -35,7 +35,7 @@ export const AccountSetupStep = ({ register, errors }) => {
         />
         {errors.email && (
           <span className="text-[11px] text-red-600 mt-1 block">
-            {t(errors.email.message)}
+            {errors.email.message}
           </span>
         )}
       </div>
@@ -51,7 +51,7 @@ export const AccountSetupStep = ({ register, errors }) => {
         />
         {errors.phone && (
           <span className="text-[11px] text-red-600 mt-1 block">
-            {t(errors.phone.message)}
+            {errors.phone.message}
           </span>
         )}
       </div>
@@ -77,7 +77,7 @@ export const AccountSetupStep = ({ register, errors }) => {
         </div>
         {errors.password && (
           <span className="text-[11px] text-red-600 mt-1 block">
-            {t(errors.password.message)}
+            {errors.password.message}
           </span>
         )}
       </div>

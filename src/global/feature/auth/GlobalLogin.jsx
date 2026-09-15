@@ -21,7 +21,7 @@ import { Swirling } from "@/components/swirling";
 import { useTranslation } from "react-i18next";
 
 const GlobalLogin = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -31,14 +31,21 @@ const GlobalLogin = () => {
   const {
     register,
     handleSubmit,
+    trigger,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema(t)),
     defaultValues: {
       email: "",
       password: "",
     },
   });
+
+  React.useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      trigger();
+    }
+  }, [i18n.language]);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -148,7 +155,7 @@ const GlobalLogin = () => {
 
                 {errors.email && (
                   <span className="text-xs text-red-500 mt-1 block font-medium">
-                    {t(errors.email.message)}
+                    {errors.email.message}
                   </span>
                 )}
               </div>
@@ -164,7 +171,7 @@ const GlobalLogin = () => {
                     to="/forgot-password"
                     className="text-xs font-medium text-[#2212ac] hover:text-[#010643] transition-colors"
                   >
-                    {t("auth.forgotPassword") || "Forgot Password?"}
+                    {t("auth.forgotPassword")}
                   </Link>
                 </div>
 
@@ -195,7 +202,7 @@ const GlobalLogin = () => {
 
                 {errors.password && (
                   <span className="text-xs text-red-500 mt-1 block font-medium">
-                    {t(errors.password.message)}
+                    {errors.password.message}
                   </span>
                 )}
               </div>
@@ -225,7 +232,7 @@ const GlobalLogin = () => {
 
             {/* Sign Up Alternative */}
             <div className="mt-5 text-center text-xs text-gray-500">
-              {t("auth.noAccount") || "Don't have an account?"}{" "}
+              {t("auth.noAccount")}{" "}
               <Link
                 to="/register"
                 className="font-semibold text-[#2212ac] hover:text-[#010643] hover:underline"
@@ -238,7 +245,7 @@ const GlobalLogin = () => {
             <div className="border-t mt-4 border-gray-100 space-y-2">
               <div className="flex items-center justify-center gap-1.5 text-[11px] font-medium text-slate-600">
                 <ShieldCheck size={14} />
-                <span>Secure 256-bit Encrypted Connection</span>
+                <span>{t("auth.secureConnection256")}</span>
               </div>
 
               <div className="text-center">

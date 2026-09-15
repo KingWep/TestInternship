@@ -55,7 +55,7 @@ export const ContactSupportStep = ({
 
         {errors.address && (
           <span className="text-[11px] text-red-600 mt-0.5 block">
-            {t(errors.address.message)}
+            {errors.address.message}
           </span>
         )}
       </div>
@@ -98,7 +98,7 @@ export const ContactSupportStep = ({
 
         {errors.support && (
           <span className="text-[11px] text-red-600 mt-0.5 block">
-            {t(errors.support.message)}
+            {errors.support.message}
           </span>
         )}
       </div>
@@ -139,7 +139,7 @@ export const ContactSupportStep = ({
 
                   {errors.social_media?.[index]?.platform && (
                     <span className="text-[10px] text-red-600 block">
-                      {t(errors.social_media[index].platform.message)}
+                      {errors.social_media[index].platform.message}
                     </span>
                   )}
 
@@ -152,7 +152,7 @@ export const ContactSupportStep = ({
 
                   {errors.social_media?.[index]?.url && (
                     <span className="text-[10px] text-red-600 block">
-                      {t(errors.social_media[index].url.message)}
+                      {errors.social_media[index].url.message}
                     </span>
                   )}
                 </div>

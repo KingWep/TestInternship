@@ -17,7 +17,7 @@ i18n
     lng: savedLanguage, // Set initial language
     fallbackLng: 'en',  // Use English if a translation is missing
     interpolation: {
-      escapeValue: false // React already escapes values to prevent XSS
+      escapeValue: false
     }
   });
 

@@ -33,6 +33,8 @@ export const API_ENDPOINTS = {
         GET_ALL: 'api/settings',
         CREATE: 'api/settings/register',
         UPDATE: (id) => `api/settings?id=${id}`,
+        FORGOT_PASSWORD: 'api/settings/forgot-password',
+        RESET_PASSWORD: 'api/settings/reset-password',
     },
     DELIVERY_PROVIDERS: {
         GET_ALL: 'api/delivery-providers',

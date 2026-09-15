@@ -29,7 +29,7 @@ const GlobalRegister = () => {
     prevStep,
     onSubmit,
     isLoading,
-  } = useShopRegisterForm();
+  } = useShopRegisterForm(t);
 
   const {
     register,
@@ -183,7 +183,7 @@ const GlobalRegister = () => {
 
             <div className="pt-2 border-t border-gray-100 flex items-center justify-center gap-1.5 text-[11px] font-medium text-gray-400">
               <ShieldCheck size={13} />
-              <span>Secure Encrypted Connection</span>
+              <span>{t("auth.secureConnection")}</span>
             </div>
           </div>
         </div>

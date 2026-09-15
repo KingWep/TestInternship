@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './global.css';
 
 import { translations } from './translations';
@@ -10,15 +10,19 @@ import FeaturesSection from './components/FeaturesSection';
 import CustomersSection from './components/CustomersSection';
 import MobileAppSection from './components/MobileAppSection';
 import ContactSection from './components/ContactSection';
+import { useTranslation } from 'react-i18next';
 
 const GlobalPage = () => {
-  const [lang, setLang] = useState('km');
+  const { i18n } = useTranslation();
+  const lang = i18n.language || 'en';
 
   const toggleLanguage = () => {
-    setLang((prev) => (prev === 'km' ? 'en' : 'km'));
+    const newLang = lang === 'km' ? 'en' : 'km';
+    i18n.changeLanguage(newLang);
+    localStorage.setItem('language', newLang);
   };
 
-  const t = translations[lang] || translations.km;
+  const t = translations[lang] || translations.en;
 
   return (
     <div className={`global-overview-root min-h-screen text-[#333] bg-[#e8e8e8] ${lang === 'en' ? 'lang-en' : ''}`}>

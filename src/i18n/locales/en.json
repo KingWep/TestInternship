@@ -165,7 +165,14 @@
     "socialMedia": "Social Media",
     "add": "Add",
     "fullName": "Full Name",
-    "phone": "Phone Number"
+    "phone": "Phone Number",
+    "secureConnection": "Secure Encrypted Connection",
+    "secureConnection256": "Secure 256-bit Encrypted Connection",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "accountSetup": "Account Setup",
+    "shopIdentity": "Shop Identity",
+    "contactSupport": "Contact & Support"
   },
   "overview": {
     "step1Num": "01",

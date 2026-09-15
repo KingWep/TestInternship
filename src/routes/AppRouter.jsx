@@ -8,6 +8,8 @@ import Receipt from "../client/features/receipt/pages/Receipt"
 import GlobalPage from "../global/feature/overview/GlobalPage"
 import GlobalLogin from "../global/feature/auth/GlobalLogin"
 import GlobalRegister from "../global/feature/auth/GlobalRegister"
+import GlobalForgotPassword from "../global/feature/auth/GlobalForgotPassword"
+import GlobalResetPassword from "../global/feature/auth/GlobalResetPassword"
 
 // Admin Layout & Pages
 import AdminLayout from '../admin/components/layout/AdminLayout'
@@ -32,6 +34,8 @@ export default function AppRouter() {
       <Route path="/login" element={<GlobalLogin />} />
       <Route path="/signin" element={<Navigate to="/login" replace />} />
       <Route path="/register" element={<GlobalRegister />} />
+      <Route path="/forgot-password" element={<GlobalForgotPassword />} />
+      <Route path="/reset-password" element={<GlobalResetPassword />} />
       <Route path="/signup" element={<Navigate to="/register" replace />} />
 
       {/* Existing Digital E-Commerce (Moved to /shop) */}

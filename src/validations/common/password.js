@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const passwordRule = z
+export const passwordRule = (t) => z
   .string()
   .trim()
-  .min(8, { message: "Password must be at least 8 characters long." })
+  .min(8, { message: t("validation.passwordMinLength") });

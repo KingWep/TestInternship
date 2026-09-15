@@ -75,7 +75,7 @@ export const ShopIdentityStep = ({
 
         {errors.shop_name && (
           <span className="text-[11px] text-red-600 mt-0.5 block">
-            {t(errors.shop_name.message)}
+            {errors.shop_name.message}
           </span>
         )}
       </div>
@@ -143,7 +143,7 @@ export const ShopIdentityStep = ({
 
         {errors.logo && (
           <span className="text-[11px] text-red-600 mt-0.5 block">
-            {t(errors.logo.message)}
+            {errors.logo.message}
           </span>
         )}
       </div>
@@ -163,7 +163,7 @@ export const ShopIdentityStep = ({
 
         {errors.chat_id && (
           <span className="text-[11px] text-red-600 mt-0.5 block">
-            {t(errors.chat_id.message)}
+            {errors.chat_id.message}
           </span>
         )}
       </div>

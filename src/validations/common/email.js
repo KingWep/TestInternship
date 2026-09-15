@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const emailRule = z
+export const emailRule = (t) => z
   .string()
   .trim()
-  .min(5, { message: "Username or Email must be at least 5 characters." })
+  .min(5, { message: t("validation.requiredUsernameOrEmail") });

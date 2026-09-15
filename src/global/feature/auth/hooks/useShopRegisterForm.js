@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateSettingMutation } from "../../../../queries/settings/useSettingQueries";
@@ -10,19 +10,21 @@ import {
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { shopRegisterSchema } from "../../../../validations/shopRegister.schema";
+import { useTranslation } from "react-i18next";
 
-const steps = [
-  { id: 1, name: "Account Setup", schema: accountSetupSchema },
-  { id: 2, name: "Shop Identity", schema: shopIdentitySchema },
-  { id: 3, name: "Contact & Support", schema: contactSupportSchema },
-];
+export const useShopRegisterForm = (t) => {
+  const { i18n } = useTranslation();
+  const steps = [
+    { id: 1, name: t("auth.accountSetup") || "Account Setup", schema: accountSetupSchema(t) },
+    { id: 2, name: t("auth.shopIdentity") || "Shop Identity", schema: shopIdentitySchema(t) },
+    { id: 3, name: t("auth.contactSupport") || "Contact & Support", schema: contactSupportSchema(t) },
+  ];
 
-export const useShopRegisterForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const navigate = useNavigate();
   const createSettingMutation = useCreateSettingMutation();
   const form = useForm({
-    resolver: zodResolver(shopRegisterSchema),
+    resolver: zodResolver(shopRegisterSchema(t)),
     shouldUnregister: false,
     defaultValues: {
       name: "",
@@ -38,6 +40,12 @@ export const useShopRegisterForm = () => {
     },
     mode: "onTouched",
   });
+
+  useEffect(() => {
+    if (Object.keys(form.formState.errors).length > 0) {
+      form.trigger();
+    }
+  }, [i18n.language]);
 
   const nextStep = async () => {
     let fields = [];

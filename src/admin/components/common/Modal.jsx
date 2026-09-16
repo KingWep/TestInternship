@@ -73,7 +73,7 @@ export default function Modal({ isOpen, onClose, title, children }) {
           flex flex-col
           transition-all
           duration-500
-          ease-[cubic-bezier(0.22,1,0.36,1)]
+          [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]
           ${
             active
               ? "opacity-100 translate-y-0 scale-100 blur-0"

@@ -172,7 +172,27 @@
     "noAccount": "Don't have an account?",
     "accountSetup": "Account Setup",
     "shopIdentity": "Shop Identity",
-    "contactSupport": "Contact & Support"
+    "contactSupport": "Contact & Support",
+    "passwordRecovery": "Password Recovery",
+    "emailAddress": "Email Address",
+    "sendEmail": "Send Email",
+    "sending": "Sending...",
+    "resendEmail": "Resend Email",
+    "emailSentSuccessfully": "Reset link sent successfully",
+    "rememberPassword": "Remember Password?",
+    "emailSentSuccess": "Email Sent Successfully",
+    "securePasswordUpdate": "Secure Password Update",
+    "createNewPassword": "Create New Password",
+    "newPasswordDescription": "Your new password must be different from any of your previous passwords.",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "resetPassword": "Reset Password",
+    "resetting": "Resetting...",
+    "login": "Login",
+    "forgot_password": {
+      "check_email": "Please check your email for the password reset link.",
+      "error": "An error occurred. Please try again."
+    }
   },
   "overview": {
     "step1Num": "01",
@@ -316,7 +336,9 @@
     "totalCol": "Total",
     "noItems": "No items",
     "subtotalLabel": "Subtotal:",
+    "subtotal": "Subtotal",
     "deliveryFeeLabel": "Delivery Fee:",
+    "deliveryFee": "Delivery Fee",
     "totalLabel": "Total:",
     "thankYouReceipt": "Thank you for your support! 🙏",
     "comeAgain": "Please come again",

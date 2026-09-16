@@ -70,7 +70,7 @@ export const ShopIdentityStep = ({
         <input
           {...register("shop_name")}
           placeholder="My Awesome Shop"
-          className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm"
+          className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-pink-900/20 focus:border-pink-900 outline-none transition-all text-sm text-pink-950"
         />
 
         {errors.shop_name && (
@@ -129,7 +129,7 @@ export const ShopIdentityStep = ({
 
             <label
               htmlFor="logo-upload"
-              className="flex items-center justify-center gap-2 w-full px-4 py-2 border border-dashed border-blue-300 bg-blue-50/50 text-blue-600 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors text-sm font-medium"
+              className="flex items-center justify-center gap-2 w-full px-4 py-2 border border-dashed border-gray-300 bg-gray-50 text-gray-600 rounded-lg cursor-pointer hover:bg-gray-100 hover:border-pink-900 hover:text-pink-900 transition-colors text-sm font-medium"
             >
               <UploadCloud size={18} />
               {t('auth.chooseImage')}
@@ -158,7 +158,7 @@ export const ShopIdentityStep = ({
         <input
           {...register("chat_id")}
           placeholder="@username or ID"
-          className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm"
+          className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-pink-900/20 focus:border-pink-900 outline-none transition-all text-sm text-pink-950"
         />
 
         {errors.chat_id && (

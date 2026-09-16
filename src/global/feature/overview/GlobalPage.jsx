@@ -33,27 +33,19 @@ const GlobalPage = () => {
         t={t}
       />
 
-      {/* Main Content Sections */}
       <main>
-        {/* Hero & Read Box */}
         <HeroSection t={t} />
 
-        {/* Why Us Section (#why-us) */}
         <WhyUsSection t={t} />
 
-        {/* Businesses Section (#businesses) */}
         <BusinessesSection t={t} />
 
-        {/* Features Section (#features) */}
         <FeaturesSection t={t} />
 
-        {/* Customers Section (#customers) */}
         <CustomersSection t={t} />
 
-        {/* Mobile App Section (#mobile-app) */}
         <MobileAppSection t={t} />
 
-        {/* Contact Section (#contact) */}
         <ContactSection t={t} />
       </main>
     </div>

@@ -31,7 +31,7 @@ export default function OrderList({ orders, onEdit }) {
     },
     Pickup: {
       styles: "bg-blue-100 text-blue-700",
-      label: t('order.statusPickup'),
+      label: t('dashboard.statusPickedUp'),
     },
     Delivering: {
       styles: "bg-purple-100 text-purple-800",
@@ -40,7 +40,7 @@ export default function OrderList({ orders, onEdit }) {
     },
     Completed: {
       styles: "bg-green-100 text-green-700",
-      label: t('order.statusCompleted'),
+      label: t('dashboard.statusCompleted'),
     },
     Cancelled: {
       styles: "bg-rose-100 text-rose-800",

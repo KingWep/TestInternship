@@ -172,7 +172,27 @@
     "noAccount": "មិនទាន់មានគណនីមែនទេ?",
     "accountSetup": "ការកំណត់គណនី",
     "shopIdentity": "អត្តសញ្ញាណហាង",
-    "contactSupport": "ទំនាក់ទំនង & ជំនួយ"
+    "contactSupport": "ទំនាក់ទំនង & ជំនួយ",
+    "passwordRecovery": "សង្គ្រោះពាក្យសម្ងាត់",
+    "emailAddress": "អាសយដ្ឋានអ៊ីមែល",
+    "sendEmail": "ផ្ញើអ៊ីមែល",
+    "sending": "កំពុងផ្ញើ...",
+    "resendEmail": "ផ្ញើអ៊ីមែលម្ដងទៀត",
+    "emailSentSuccessfully": "តំណភ្ជាប់សម្រាប់កំណត់ឡើងវិញត្រូវបានផ្ញើដោយជោគជ័យ",
+    "rememberPassword": "ចាំពាក្យសម្ងាត់ទេ?",
+    "emailSentSuccess": "អ៊ីមែលត្រូវបានផ្ញើដោយជោគជ័យ",
+    "securePasswordUpdate": "ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់ដោយសុវត្ថិភាព",
+    "createNewPassword": "បង្កើតពាក្យសម្ងាត់ថ្មី",
+    "newPasswordDescription": "ពាក្យសម្ងាត់ថ្មីរបស់អ្នកត្រូវតែខុសពីពាក្យសម្ងាត់មុនៗ។",
+    "newPassword": "ពាក្យសម្ងាត់ថ្មី",
+    "confirmPassword": "បញ្ជាក់ពាក្យសម្ងាត់",
+    "resetPassword": "កំណត់ពាក្យសម្ងាត់ឡើងវិញ",
+    "resetting": "កំពុងកំណត់ឡើងវិញ...",
+    "login": "ចូលគណនី",
+    "forgot_password": {
+      "check_email": "សូមពិនិត្យមើលអ៊ីមែលរបស់អ្នកសម្រាប់តំណភ្ជាប់កំណត់ពាក្យសម្ងាត់ឡើងវិញ។",
+      "error": "មានបញ្ហា។ សូមព្យាយាមម្តងទៀត។"
+    }
   },
   "overview": {
     "step1Num": "០១",
@@ -316,7 +336,9 @@
     "totalCol": "សរុប",
     "noItems": "គ្មានទំនិញ",
     "subtotalLabel": "តម្លៃទំនិញសរុប (Subtotal):",
+    "subtotal": "តម្លៃទំនិញសរុប",
     "deliveryFeeLabel": "សេវាដឹកជញ្ជូន (Delivery):",
+    "deliveryFee": "សេវាដឹកជញ្ជូន",
     "totalLabel": "ទឹកប្រាក់សរុប (Total):",
     "thankYouReceipt": "អរគុណសម្រាប់ការគាំទ្រ! 🙏",
     "comeAgain": "សូមអញ្ជើញមកម្តងទៀត",

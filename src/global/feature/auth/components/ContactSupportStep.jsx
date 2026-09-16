@@ -50,7 +50,7 @@ export const ContactSupportStep = ({
           {...register("address")}
           placeholder="Shop Address"
           rows={2}
-          className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm resize-none"
+          className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-pink-900/20 focus:border-pink-900 outline-none transition-all text-sm resize-none text-pink-950"
         />
 
         {errors.address && (
@@ -78,12 +78,12 @@ export const ContactSupportStep = ({
 
           <label
             htmlFor="support-upload"
-            className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-dashed border-gray-300 bg-gray-50 text-gray-600 rounded-lg cursor-pointer hover:bg-gray-100 hover:border-blue-300 transition-colors text-sm font-medium"
+            className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-dashed border-gray-300 bg-gray-50 text-gray-600 rounded-lg cursor-pointer hover:bg-gray-100 hover:border-pink-900 transition-colors text-sm font-medium"
           >
             {supportFileName ? (
               <>
-                <FileText size={18} className="text-blue-500" />
-                <span className="text-blue-700 font-semibold">
+                <FileText size={18} className="text-pink-900" />
+                <span className="text-pink-950 font-semibold">
                   {supportFileName}
                 </span>
               </>
@@ -114,7 +114,7 @@ export const ContactSupportStep = ({
           <button
             type="button"
             onClick={() => append({ platform: "", url: "" })}
-            className="text-[11px] font-medium text-blue-600 flex items-center gap-1 hover:text-blue-800 transition-colors"
+            className="text-[11px] font-medium text-[#c026d3] flex items-center gap-1 hover:text-[#a21caf] transition-colors"
           >
             <Plus size={12} />
             {t('auth.add')}
@@ -134,7 +134,7 @@ export const ContactSupportStep = ({
                   <input
                     {...register(`social_media.${index}.platform`)}
                     placeholder="Platform (e.g., Facebook, Telegram)"
-                    className="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-xs"
+                    className="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-pink-900/20 focus:border-pink-900 outline-none transition-all text-xs text-pink-950"
                   />
 
                   {errors.social_media?.[index]?.platform && (
@@ -147,7 +147,7 @@ export const ContactSupportStep = ({
                   <input
                     {...register(`social_media.${index}.url`)}
                     placeholder="https://..."
-                    className="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-xs"
+                    className="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-pink-900/20 focus:border-pink-900 outline-none transition-all text-xs text-pink-950"
                   />
 
                   {errors.social_media?.[index]?.url && (

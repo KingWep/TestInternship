@@ -135,7 +135,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
       <aside
         className={`
         fixed md:relative z-50 h-full text-slate-300 flex flex-col border-r border-blue-950/80 
-        transition-[width,transform] duration-300 ease-[cubic-bezier(0.2,0,0,1)] select-none
+        transition-[width,transform] duration-300 [transition-timing-function:cubic-bezier(0.2,0,0,1)] select-none
         ${sidebarState === 0 ? "-translate-x-full md:translate-x-0 w-[80px]" : "translate-x-0"}
         ${sidebarState === 1 ? "w-[80px]" : ""}
         ${sidebarState === 2 ? "w-64" : ""}
@@ -173,7 +173,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
 
           {/* Text Container (Shop Name & User Name) */}
           <div
-            className={`grid transition-[grid-template-columns,opacity] duration-300 ease-[cubic-bezier(0.2,0,0,1)] overflow-hidden ${
+            className={`grid transition-[grid-template-columns,opacity] duration-300 [transition-timing-function:cubic-bezier(0.2,0,0,1)] overflow-hidden ${
               isFull
                 ? "grid-cols-[1fr] opacity-100 ml-4"
                 : "grid-cols-[0fr] opacity-0 ml-0"
@@ -212,7 +212,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
           {menuSections.map((section, idx) => (
             <div key={idx} className="space-y-1">
               <div
-                className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${
+                className={`grid transition-[grid-template-rows,opacity,margin] duration-300 [transition-timing-function:cubic-bezier(0.2,0,0,1)] ${
                   isFull
                     ? "grid-rows-[1fr] opacity-100 mb-2"
                     : "grid-rows-[0fr] opacity-0 mb-0"
@@ -241,7 +241,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
                     <div className="flex items-center min-w-0">
                       <Icon size={18} className="shrink-0" />
                       <div
-                        className={`grid transition-[grid-template-columns,opacity] duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${
+                        className={`grid transition-[grid-template-columns,opacity] duration-300 [transition-timing-function:cubic-bezier(0.2,0,0,1)] ${
                           isFull
                             ? "grid-cols-[1fr] opacity-100 ml-3"
                             : "grid-cols-[0fr] opacity-0 ml-0"
@@ -275,7 +275,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
             <div className="flex items-center min-w-0">
               <LogOut size={18} className="shrink-0" />
               <div
-                className={`grid transition-[grid-template-columns,opacity] duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${
+                className={`grid transition-[grid-template-columns,opacity] duration-300 [transition-timing-function:cubic-bezier(0.2,0,0,1)] ${
                   isFull
                     ? "grid-cols-[1fr] opacity-100 ml-3"
                     : "grid-cols-[0fr] opacity-0 ml-0"

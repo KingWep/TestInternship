@@ -37,12 +37,12 @@ export default function useForgotPassword(t) {
         email: data.email,
       });
 
-      Swal.fire({
-        icon: "success",
-        title: t("auth.emailSentSuccess"),
-        text: t("auth.forgot_password.check_email"),
-        confirmButtonColor: "#2212ac",
-      });
+      // Swal.fire({
+      //   icon: "success",
+      //   title: t("auth.emailSentSuccess", "Email Sent Successfully"),
+      //   text: t("auth.forgot_password.check_email", "Please check your email for the password reset link."),
+      //   confirmButtonColor: "#831843",
+      // });
       setIsEmailSent(true);
       setSubmittedEmail(data.email);
     } catch (error) {
@@ -50,12 +50,12 @@ export default function useForgotPassword(t) {
         "Error occurred while sending forgot password email:",
         error,
       );
-      Swal.fire({
-        icon: "error",
-        title: t("common.error"),
-        text: t("auth.forgot_password.error"),
-        confirmButtonColor: "#2212ac",
-      });
+      // Swal.fire({
+      //   icon: "error",
+      //   title: t("common.error", "Error"),
+      //   text: t("auth.forgot_password.error", "An error occurred. Please try again."),
+      //   confirmButtonColor: "#831843",
+      // });
     } finally {
       setLoading(false);
     }

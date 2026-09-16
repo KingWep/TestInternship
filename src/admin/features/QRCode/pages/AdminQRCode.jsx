@@ -15,8 +15,8 @@ import { useTranslation } from "react-i18next";
 export default function AdminQRCode() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  // const { data: settingData, isLoading } = useProductsQuery(user?.shop?.code || "");
-  // console.log("AdminQRCode - settingData:", settingData);
+  const { data: settingData, isLoading } = useProductsQuery(user?.shop?.code || "");
+  console.log("AdminQRCode - settingData:", settingData);
   const [copied, setCopied] = useState(false);
   const qrRef = useRef(null);
   const shopCode = user?.shop?.code || "";

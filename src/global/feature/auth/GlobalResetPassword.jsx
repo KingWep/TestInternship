@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Lock, Eye, ShieldCheck, Home } from "lucide-react";
-import  useResetPassword  from "./hooks/useResetPassword";
+import { Lock, Eye, EyeOff, ShieldCheck, Home } from "lucide-react";
+import useResetPassword from "./hooks/useResetPassword";
 import { useTranslation } from "react-i18next";
 import LanguageToggle from "@/components/LanguageToggle";
 import { ParticleBackground } from "./components/ParticleBackground";
 
 export default function GlobalResetPassword() {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
 
+  const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
+
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -25,10 +28,10 @@ export default function GlobalResetPassword() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#5f013b] relative overflow-hidden py-6 px-4">
       <ParticleBackground />
+
       <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in-95 duration-500">
         <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
           <div className="bg-white p-6 pb-2 text-center relative overflow-visible sm:overflow-hidden">
-            {/* Top Navigation Controls */}
             <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-50">
               <Link
                 to="/"
@@ -37,7 +40,8 @@ export default function GlobalResetPassword() {
               >
                 <Home size={16} />
               </Link>
-              <div className="[&_div.bg-white\/10]:!bg-gray-50 [&_div.bg-white\/10]:!border-gray-200 [&_div.text-white]:!text-gray-500 [&_div.bg-white]:!bg-white [&_div.bg-white]:!text-pink-950 [&_div.bg-white]:!shadow-sm">
+
+              <div className="[&_div.bg-white\\/10]:!bg-gray-50 [&_div.bg-white\\/10]:!border-gray-200 [&_div.text-white]:!text-gray-500 [&_div.bg-white]:!bg-white [&_div.bg-white]:!text-pink-950 [&_div.bg-white]:!shadow-sm">
                 <LanguageToggle className="scale-90 origin-top-right" />
               </div>
             </div>
@@ -66,7 +70,10 @@ export default function GlobalResetPassword() {
               </h3>
 
               <p className="text-xs text-gray-500 leading-relaxed">
-                {t("auth.newPasswordDescription", "Your new password must be different from any of your previous passwords.")}
+                {t(
+                  "auth.newPasswordDescription",
+                  "Your new password must be different from any of your previous passwords."
+                )}
               </p>
             </div>
 
@@ -85,7 +92,7 @@ export default function GlobalResetPassword() {
                   </span>
 
                   <input
-                    type="password"
+                    type={showNewPassword ? "text" : "password"}
                     placeholder="••••••••"
                     {...register("newPassword")}
                     className="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-pink-900/20 focus:border-pink-900 outline-none transition-all text-sm text-pink-950 placeholder:text-gray-400"
@@ -93,9 +100,15 @@ export default function GlobalResetPassword() {
 
                   <button
                     type="button"
+                    onClick={() => setShowNewPassword((prev) => !prev)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-900 transition-colors p-1"
+                    aria-label={
+                      showNewPassword
+                        ? t("auth.hidePassword", "Hide password")
+                        : t("auth.showPassword", "Show password")
+                    }
                   >
-                    <Eye size={16} />
+                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
 
@@ -117,7 +130,7 @@ export default function GlobalResetPassword() {
                   </span>
 
                   <input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="••••••••"
                     {...register("confirmPassword")}
                     className="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-pink-900/20 focus:border-pink-900 outline-none transition-all text-sm text-pink-950 placeholder:text-gray-400"
@@ -125,9 +138,21 @@ export default function GlobalResetPassword() {
 
                   <button
                     type="button"
+                    onClick={() =>
+                      setShowConfirmPassword((prev) => !prev)
+                    }
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-900 transition-colors p-1"
+                    aria-label={
+                      showConfirmPassword
+                        ? t("auth.hidePassword", "Hide password")
+                        : t("auth.showPassword", "Show password")
+                    }
                   >
-                    <Eye size={16} />
+                    {showConfirmPassword ? (
+                      <EyeOff size={16} />
+                    ) : (
+                      <Eye size={16} />
+                    )}
                   </button>
                 </div>
 
@@ -143,7 +168,9 @@ export default function GlobalResetPassword() {
                 disabled={loading}
                 className="w-full mt-3 bg-[#88004d] hover:bg-[#66013f] text-white font-medium py-3 rounded-xl shadow-md shadow-[#c026d3]/20 transition-all flex items-center justify-center gap-2 group text-sm active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loading ? t("auth.resetting", "Resetting...") : t("auth.resetPassword", "Reset Password")}
+                {loading
+                  ? t("auth.resetting", "Resetting...")
+                  : t("auth.resetPassword", "Reset Password")}
               </button>
             </form>
 
@@ -160,7 +187,12 @@ export default function GlobalResetPassword() {
             <div className="border-t mt-4 pt-3 border-gray-100 space-y-2">
               <div className="flex items-center justify-center gap-1.5 text-[11px] font-medium text-slate-600">
                 <ShieldCheck size={14} />
-                <span>{t("auth.secureConnection256", "256-bit Secure Connection")}</span>
+                <span>
+                  {t(
+                    "auth.secureConnection256",
+                    "256-bit Secure Connection"
+                  )}
+                </span>
               </div>
             </div>
           </div>

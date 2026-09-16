@@ -102,6 +102,12 @@
   * {
     @apply border-border outline-ring;
   }
+
+  /* Remove default browser eye icon for password fields */
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
+  }
 }
 
 @layer utilities {

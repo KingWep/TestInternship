@@ -4,10 +4,12 @@ import ReactCountryFlag from "react-country-flag";
 
 const LanguageToggle = ({ className = "" }) => {
   const { i18n } = useTranslation();
+
   const isKhmer = i18n.language === "km";
 
   const toggleLanguage = () => {
     const newLang = isKhmer ? "en" : "km";
+
     i18n.changeLanguage(newLang);
     localStorage.setItem("language", newLang);
   };
@@ -19,22 +21,49 @@ const LanguageToggle = ({ className = "" }) => {
       title="Toggle Language"
     >
       <div
-        className={`flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-300 ${!isKhmer
-            ? "bg-white text-[#2212ac] shadow-sm"
-            : "text-white hover:text-white/80"
-          }`}
+        className={`flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
+          !isKhmer
+            ? "bg-pink-600 shadow-sm"
+            : "hover:bg-white/10"
+        }`}
       >
-        <ReactCountryFlag countryCode="US" svg className="rounded-full w-4 h-4 object-cover" />
-        EN
+        <ReactCountryFlag
+          countryCode="US"
+          svg
+          className="rounded-full w-4 h-4 object-cover"
+        />
+        <span
+          className={`transition-colors ${
+            !isKhmer
+              ? "text-white"
+              : "text-gray-500 hover:text-pink-600"
+          }`}
+        >
+          EN
+        </span>
       </div>
+
       <div
-        className={`flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-300 ${isKhmer
-            ? "bg-white text-[#2212ac] shadow-sm"
-            : "text-white hover:text-white/80"
-          }`}
+        className={`flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
+          isKhmer
+            ? "bg-pink-600 shadow-sm"
+            : "hover:bg-white/10"
+        }`}
       >
-        <ReactCountryFlag countryCode="KH" svg className="rounded-full w-4 h-4 object-cover" />
-        KH
+        <ReactCountryFlag
+          countryCode="KH"
+          svg
+          className="rounded-full w-4 h-4 object-cover"
+        />
+        <span
+          className={`transition-colors ${
+            isKhmer
+              ? "text-white"
+              : "text-gray-500 hover:text-pink-600"
+          }`}
+        >
+          KH
+        </span>
       </div>
     </div>
   );

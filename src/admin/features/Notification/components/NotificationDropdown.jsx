@@ -101,6 +101,16 @@ export default function NotificationDropdown() {
                   </span>
                 )}
               </button>
+              <button
+                onClick={() => setActiveTab('read')}
+                className={`pb-3 border-b-2 transition-colors flex items-center gap-1.5 ${
+                  activeTab === 'read'
+                    ? 'border-slate-900 text-slate-900 font-semibold'
+                    : 'border-transparent text-slate-400 hover:text-slate-600'
+                }`}
+              >
+                {t('notifications.read')}
+              </button>
             </div>
             <div className="text-slate-400 pb-3 flex items-center gap-1">
               <Filter size={16} />

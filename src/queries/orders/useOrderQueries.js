@@ -34,7 +34,7 @@ export function useOrderStats() {
   const topSellingProducts = useMemo(() => {
     return orders
       .filter((order) => order.paymentStatus === "Paid")
-      .flatMap((order) => order.orderDetails || order.items || []) // Handle both field names
+      .flatMap((order) => order.orderDetails || order.items || [])
       .reduce((acc, item) => {
         const productId = item.productId || item.product_id || item.id;
 
@@ -259,3 +259,41 @@ export function useUpdateOrderPaymentStatusMutation() {
     },
   });
 }
+
+export function useUpdateOrderViewedMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    // Only send viewed: 1 — do NOT spread the whole order to avoid overwriting fields
+    mutationFn: async ({ orderId }) => {
+      const response = await orderService.updateOrder(orderId, { viewed: 1 });
+      return response;
+    },
+    onMutate: async ({ orderId }) => {
+      await queryClient.cancelQueries({ queryKey: orderKeys.lists() });
+      const previousOrders = queryClient.getQueryData(orderKeys.list({}));
+
+      // Optimistic update: mark viewed = 1 in cache immediately
+      if (previousOrders) {
+        queryClient.setQueryData(
+          orderKeys.list({}),
+          previousOrders.map((order) =>
+            order.id === orderId ? { ...order, viewed: 1 } : order
+          )
+        );
+      }
+      return { previousOrders };
+    },
+    onError: (err, variables, context) => {
+      // Rollback optimistic update on failure
+      if (context?.previousOrders) {
+        queryClient.setQueryData(orderKeys.list({}), context.previousOrders);
+      }
+    },
+    onSettled: () => {
+      // Always refetch to sync real backend state
+      queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
+    },
+  });
+}
+

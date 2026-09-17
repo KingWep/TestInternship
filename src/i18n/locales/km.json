@@ -550,6 +550,8 @@
     "createdAt": "កាលបរិច្ឆេទបង្កើត",
     "editPromotion": "កែប្រែស្លាយ",
     "addPromotionTitle": "បន្ថែមស្លាយថ្មី",
+    "limitAlertTitle": "ឈានដល់ដែនកំណត់",
+    "limitAlertText": "អ្នកអាចបង្កើតការផ្សព្វផ្សាយបានអតិបរមាចំនួន ៥ ប៉ុណ្ណោះ។",
     "pageTitle": "បដាស្លាយ",
     "pageDescription": "គ្រប់គ្រងស្លាយ និងក្រាហ្វិកផ្សព្វផ្សាយ។",
     "badgePlaceholder": "ឧទាហរណ៍: ទំនិញថ្មី",
@@ -688,5 +690,24 @@
     "printReceiptPrompt": "តើអ្នកចង់បោះពុម្ពវិក្កយបត្រដែរឬទេ?",
     "skip": "រំលង",
     "invalidPhone": "សូមបញ្ចូលលេខទូរស័ព្ទត្រឹមត្រូវ (8-9 ខ្ទង់)"
+  },
+  "notifications": {
+    "title": "សេចក្តីជូនដំណឹង",
+    "markAllAsRead": "សម្គាល់ទាំងអស់ថាបានអាន",
+    "all": "ទាំងអស់",
+    "unread": "មិនទាន់អាន",
+    "read": "បានអាន",
+    "orders": "បញ្ជាទិញ",
+    "lowStock": "ស្តុកទាប",
+    "outOfStock": "អស់ស្តុក",
+    "newOrder": "មានបញ្ជាទិញថ្មី",
+    "outOfStockMessage": "អស់ស្តុក",
+    "onlyItemsLeft": "នៅសល់តែ {{count}} ប៉ុណ្ណោះ",
+    "empty": "មិនមានសេចក្តីជូនដំណឹង",
+    "justNow": "ទើបតែ",
+    "minutesAgo": "នាទីមុន",
+    "hoursAgo": "ម៉ោងមុន",
+    "yesterday": "ម្សិលមិញ",
+    "daysAgo": "ថ្ងៃមុន"
   }
 }

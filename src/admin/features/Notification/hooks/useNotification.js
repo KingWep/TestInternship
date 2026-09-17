@@ -1,84 +1,38 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
-import { useOrdersQuery } from '../../../../queries/orders/useOrderQueries';
-import { useProductsQuery } from '../../../../queries/products/useProductQueries';
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import {
+  useOrdersQuery,
+  useUpdateOrderViewedMutation,
+} from "../../../../queries/orders/useOrderQueries";
+import { useProductsQuery } from "../../../../queries/products/useProductQueries";
+import { useNavigate } from "react-router-dom";
 
-const NOTIFICATIONS_KEY = 'admin_notifications';
-const STOCK_STATES_KEY = 'admin_stock_states';
-const RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
+const STOCK_NOTIFICATIONS_KEY = "admin_stock_notifications";
+const STOCK_STATES_KEY = "admin_stock_states";
 
 export function useNotifications() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [notifications, setNotifications] = useState([]);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+
+  const [stockNotifications, setStockNotifications] = useState(() => {
+    try {
+      const raw = localStorage.getItem(STOCK_NOTIFICATIONS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
 
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const { data: orders = [] } = useOrdersQuery();
   const { data: products = [] } = useProductsQuery();
+  const updateOrderViewedMutation = useUpdateOrderViewedMutation();
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(NOTIFICATIONS_KEY);
-      const stored = raw ? JSON.parse(raw) : [];
-      const safeStored = Array.isArray(stored) ? stored : [];
-      const now = Date.now();
+    if (!isOpen) return;
 
-      const valid = safeStored.filter((notification) => {
-        if (
-          !notification ||
-          !notification.id ||
-          !notification.createdAt
-        ) {
-          return false;
-        }
-
-        const createdAt = new Date(notification.createdAt).getTime();
-
-        if (Number.isNaN(createdAt)) {
-          return false;
-        }
-
-        return now - createdAt <= RETENTION_MS;
-      });
-
-      setNotifications(valid);
-      localStorage.setItem(
-        NOTIFICATIONS_KEY,
-        JSON.stringify(valid)
-      );
-    } catch (error) {
-      console.error(
-        'Error loading notifications from localStorage',
-        error
-      );
-
-      setNotifications([]);
-    } finally {
-      setIsInitialized(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    try {
-      localStorage.setItem(
-        NOTIFICATIONS_KEY,
-        JSON.stringify(notifications)
-      );
-    } catch (error) {
-      console.error(
-        'Error saving notifications to localStorage',
-        error
-      );
-    }
-  }, [notifications, isInitialized]);
-
-  useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         dropdownRef.current &&
@@ -88,254 +42,199 @@ export function useNotifications() {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        'mousedown',
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isOpen]);
 
   useEffect(() => {
-    if (!isInitialized) return;
+    if (!Array.isArray(products) || products.length === 0) return;
 
-    if (!Array.isArray(orders) && !Array.isArray(products)) {
-      return;
+    let stockStates = {};
+
+    try {
+      const raw = localStorage.getItem(STOCK_STATES_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        stockStates = parsed;
+      }
+    } catch {
+      stockStates = {};
     }
 
-    setNotifications((prev) => {
-      const existingIds = new Set(
-        prev.map((notification) => notification.id)
+    let stockStatesChanged = false;
+    const newStockNotifications = [];
+
+    products.forEach((product) => {
+      if (!product?.id) return;
+
+      const productId = product.id;
+      const stock = Number(product.stockQuantity ?? 0);
+
+      const currentState =
+        stock === 0
+          ? "out_of_stock"
+          : stock <= 10
+          ? "low_stock"
+          : "normal";
+
+      const previousState = stockStates[productId];
+
+      if (previousState === currentState) return;
+
+      stockStates[productId] = currentState;
+      stockStatesChanged = true;
+
+      if (currentState === "low_stock" || currentState === "out_of_stock") {
+        const timestamp = Date.now();
+
+        newStockNotifications.push({
+          id: `product-${currentState}-${productId}-${timestamp}`,
+          type: currentState,
+          productId,
+          name: product.name || "",
+          stockQuantity: stock,
+          createdAt: new Date(timestamp).toISOString(),
+          read: false,
+        });
+      }
+    });
+
+    if (stockStatesChanged) {
+      localStorage.setItem(
+        STOCK_STATES_KEY,
+        JSON.stringify(stockStates)
+      );
+    }
+
+    if (newStockNotifications.length === 0) return;
+
+    setStockNotifications((prev) => {
+      const existingIds = new Set(prev.map((notification) => notification.id));
+
+      const newNotifications = newStockNotifications.filter(
+        (notification) => !existingIds.has(notification.id)
       );
 
-      const updated = [...prev];
-      let hasChanges = false;
+      if (newNotifications.length === 0) return prev;
 
-      if (Array.isArray(orders)) {
-        orders.forEach((order) => {
-          if (!order?.id) return;
+      const updated = [...prev, ...newNotifications];
 
-          const stableId = `order-${order.id}`;
-
-          if (existingIds.has(stableId)) {
-            return;
-          }
-
-          if (!order.createdAt) {
-            return;
-          }
-
-          updated.push({
-            id: stableId,
-            type: 'order',
-            orderId: order.id,
-            orderNo: order.orderNo || order.id,
-            totalAmount: order.totalAmount || 0,
-            createdAt: order.createdAt,
-            read: false,
-          });
-
-          existingIds.add(stableId);
-          hasChanges = true;
-        });
-      }
-
-      if (Array.isArray(products) && products.length > 0) {
-        let stockStates = {};
-
-        try {
-          const raw = localStorage.getItem(STOCK_STATES_KEY);
-          const parsed = raw ? JSON.parse(raw) : {};
-
-          if (
-            parsed &&
-            typeof parsed === 'object' &&
-            !Array.isArray(parsed)
-          ) {
-            stockStates = parsed;
-          }
-        } catch (error) {
-          stockStates = {};
-        }
-
-        let stockStatesChanged = false;
-
-        products.forEach((product) => {
-          if (!product?.id) return;
-
-          const productId = product.id;
-          const stock = Number(product.stockQuantity ?? 0);
-
-          let currentState = 'normal';
-
-          if (stock === 0) {
-            currentState = 'out_of_stock';
-          } else if (stock > 0 && stock < 10) {
-            currentState = 'low_stock';
-          }
-
-          const isFirstObservation = !(
-            productId in stockStates
-          );
-
-          if (isFirstObservation) {
-            stockStates[productId] = currentState;
-            stockStatesChanged = true;
-            return;
-          }
-
-          const previousState = stockStates[productId];
-
-          if (currentState === previousState) {
-            return;
-          }
-
-          stockStates[productId] = currentState;
-          stockStatesChanged = true;
-
-          if (currentState === 'low_stock') {
-            const timestamp = Date.now();
-            const notificationId =
-              `product-low-stock-${productId}-${timestamp}`;
-
-            updated.push({
-              id: notificationId,
-              type: 'low_stock',
-              productId,
-              name: product.name || '',
-              stockQuantity: stock,
-              createdAt: new Date(timestamp).toISOString(),
-              read: false,
-            });
-
-            existingIds.add(notificationId);
-            hasChanges = true;
-          }
-
-          if (currentState === 'out_of_stock') {
-            const timestamp = Date.now();
-            const notificationId =
-              `product-out-stock-${productId}-${timestamp}`;
-
-            updated.push({
-              id: notificationId,
-              type: 'out_of_stock',
-              productId,
-              name: product.name || '',
-              stockQuantity: 0,
-              createdAt: new Date(timestamp).toISOString(),
-              read: false,
-            });
-
-            existingIds.add(notificationId);
-            hasChanges = true;
-          }
-        });
-
-        if (stockStatesChanged) {
-          try {
-            localStorage.setItem(
-              STOCK_STATES_KEY,
-              JSON.stringify(stockStates)
-            );
-          } catch (error) {
-            console.error(
-              'Error saving stock states',
-              error
-            );
-          }
-        }
-      }
-
-      if (!hasChanges) {
-        return prev;
-      }
-
-      updated.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() -
-          new Date(a.createdAt).getTime()
+      localStorage.setItem(
+        STOCK_NOTIFICATIONS_KEY,
+        JSON.stringify(updated)
       );
 
       return updated;
     });
-  }, [orders, products, isInitialized]);
+  }, [products]);
+
+  const orderNotifications = useMemo(() => {
+    if (!Array.isArray(orders)) return [];
+
+    return orders
+      .filter((order) => order?.id && order?.createdAt)
+      .map((order) => ({
+        id: `order-${order.id}`,
+        type: "order",
+        orderId: order.id,
+        orderNo: order.orderNo || order.id,
+        totalAmount: order.totalAmount || 0,
+        createdAt: order.createdAt,
+        read: Number(order.viewed) === 1,
+      }));
+  }, [orders]);
+
+  const notifications = useMemo(
+    () =>
+      [...orderNotifications, ...stockNotifications].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() -
+          new Date(a.createdAt).getTime()
+      ),
+    [orderNotifications, stockNotifications]
+  );
 
   const filteredNotifications = useMemo(() => {
     return notifications.filter((notification) => {
       const matchesType =
-        typeFilter === 'all' ||
+        typeFilter === "all" ||
         notification.type === typeFilter;
 
       const matchesRead =
-        activeTab === 'all' ||
-        notification.read === false;
+        activeTab === "all" ||
+        (activeTab === "unread" && !notification.read) ||
+        (activeTab === "read" && notification.read);
 
       return matchesType && matchesRead;
     });
-  }, [
-    notifications,
-    activeTab,
-    typeFilter,
-  ]);
+  }, [notifications, activeTab, typeFilter]);
 
-  const unreadCount = useMemo(() => {
-    return notifications.filter(
-      (notification) => !notification.read
-    ).length;
-  }, [notifications]);
+  const unreadCount = useMemo(
+    () => notifications.filter((notification) => !notification.read).length,
+    [notifications]
+  );
 
-  const markAsRead = useCallback((id) => {
-    setNotifications((prev) => {
-      const updated = prev.map((notification) =>
-        notification.id === id
-          ? {
-              ...notification,
-              read: true,
-            }
-          : notification
+  const markAsRead = useCallback(
+    (id) => {
+      const notification = notifications.find(
+        (item) => item.id === id
       );
 
-      try {
-        localStorage.setItem(
-          NOTIFICATIONS_KEY,
-          JSON.stringify(updated)
-        );
-      } catch (error) {
-        console.error(
-          'Error saving notification read state',
-          error
-        );
+      if (!notification || notification.read) return;
+
+      if (notification.type === "order") {
+        updateOrderViewedMutation.mutate({
+          orderId: notification.orderId,
+        });
+        return;
       }
 
-      return updated;
-    });
-  }, []);
+      setStockNotifications((prev) => {
+        const updated = prev.map((item) =>
+          item.id === id ? { ...item, read: true } : item
+        );
+
+        localStorage.setItem(
+          STOCK_NOTIFICATIONS_KEY,
+          JSON.stringify(updated)
+        );
+
+        return updated;
+      });
+    },
+    [notifications, updateOrderViewedMutation]
+  );
 
   const markAllAsRead = useCallback(() => {
-    setNotifications((prev) => {
+    notifications
+      .filter(
+        (notification) =>
+          notification.type === "order" && !notification.read
+      )
+      .forEach((notification) => {
+        updateOrderViewedMutation.mutate({
+          orderId: notification.orderId,
+        });
+      });
+
+    setStockNotifications((prev) => {
       const updated = prev.map((notification) => ({
         ...notification,
         read: true,
       }));
 
-      try {
-        localStorage.setItem(
-          NOTIFICATIONS_KEY,
-          JSON.stringify(updated)
-        );
-      } catch (error) {
-        console.error(
-          'Error saving notification read state',
-          error
-        );
-      }
+      localStorage.setItem(
+        STOCK_NOTIFICATIONS_KEY,
+        JSON.stringify(updated)
+      );
 
       return updated;
     });
-  }, []);
+  }, [notifications, updateOrderViewedMutation]);
 
   const toggleDropdown = useCallback(() => {
     setIsOpen((prev) => !prev);
@@ -346,12 +245,11 @@ export function useNotifications() {
       markAsRead(notification.id);
       setIsOpen(false);
 
-      if (notification.type === 'order') {
-        navigate('/admin/orders');
-        return;
-      }
-
-      navigate('/admin/products');
+      navigate(
+        notification.type === "order"
+          ? `/admin/print-receipt/${notification.orderNo}`
+          : "/admin/products"
+      );
     },
     [markAsRead, navigate]
   );

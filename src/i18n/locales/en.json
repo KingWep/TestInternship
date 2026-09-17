@@ -550,6 +550,8 @@
     "createdAt": "Created At",
     "editPromotion": "Edit Promotion",
     "addPromotionTitle": "Add New Promotion",
+    "limitAlertTitle": "Limit Reached",
+    "limitAlertText": "You can only create a maximum of 5 promotions.",
     "pageTitle": "Promotions",
     "pageDescription": "Manage promotional banners and offers.",
     "badgePlaceholder": "e.g., New Arrival",
@@ -688,5 +690,24 @@
     "printReceiptPrompt": "Do you want to print the receipt?",
     "skip": "Skip",
     "invalidPhone": "Please enter a valid phone number (8-9 digits)"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllAsRead": "Mark all as read",
+    "all": "All",
+    "unread": "Unread",
+    "read": "Read",
+    "orders": "Orders",
+    "lowStock": "Low Stock",
+    "outOfStock": "Out of Stock",
+    "newOrder": "New Order",
+    "outOfStockMessage": "Out of stock",
+    "onlyItemsLeft": "Only {{count}} left",
+    "empty": "No notifications",
+    "justNow": "Just now",
+    "minutesAgo": "min ago",
+    "hoursAgo": "hr ago",
+    "yesterday": "Yesterday",
+    "daysAgo": "days ago"
   }
 }

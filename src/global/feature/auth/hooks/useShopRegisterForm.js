@@ -5,7 +5,6 @@ import { useCreateSettingMutation } from "../../../../queries/settings/useSettin
 import {
   accountSetupSchema,
   shopIdentitySchema,
-  contactSupportSchema,
 } from "../../../../validations/shopRegister.schema";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +16,6 @@ export const useShopRegisterForm = (t) => {
   const steps = [
     { id: 1, name: t("auth.accountSetup") || "Account Setup", schema: accountSetupSchema(t) },
     { id: 2, name: t("auth.shopIdentity") || "Shop Identity", schema: shopIdentitySchema(t) },
-    { id: 3, name: t("auth.contactSupport") || "Contact & Support", schema: contactSupportSchema(t) },
   ];
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -30,13 +28,10 @@ export const useShopRegisterForm = (t) => {
       name: "",
       email: "",
       password: "",
-      phone: "",
       shop_name: "",
-      logo: undefined,
-      chat_id: "",
+      phone: "",
       address: "",
-      support: undefined,
-      social_media: [{ platform: "", url: "" }],
+      logo: undefined,
     },
     mode: "onTouched",
   });
@@ -51,14 +46,11 @@ export const useShopRegisterForm = (t) => {
     let fields = [];
 
     if (currentStep === 1) {
-      fields = ["name", "email", "password", "phone"];
+      fields = ["name", "email", "password"];
     }
 
     if (currentStep === 2) {
-      fields = ["shop_name", "logo", "chat_id"];
-    }
-    if (currentStep === 3) {
-      fields = ["address", "support", "social_media"];
+      fields = ["shop_name", "phone", "address", "logo"];
     }
     const isStepValid = await form.trigger(fields);
     if (!isStepValid) {
@@ -86,31 +78,14 @@ export const useShopRegisterForm = (t) => {
     formData.append("name", data.name);
     formData.append("email", data.email);
     formData.append("password", data.password);
-    formData.append("phone", data.phone);
 
     // Append Shop Identity
     formData.append("shop_name", data.shop_name);
-    formData.append("chat_id", data.chat_id || "");
+    formData.append("phone", data.phone);
+    formData.append("address", data.address || "");
 
     if (data.logo && data.logo.length > 0) {
       formData.append("logo", data.logo[0]);
-    }
-
-    // Append Contact & Support
-    formData.append("address", data.address || "");
-    if (data.support && data.support.length > 0) {
-      formData.append("support", data.support[0]);
-    }
-
-    // Filter out empty social media links
-    const validSocialMedia = data.social_media?.filter(
-      (sm) => sm.platform.trim() !== "" && sm.url.trim() !== "",
-    );
-
-    if (validSocialMedia && validSocialMedia.length > 0) {
-      formData.append("social_media", JSON.stringify(validSocialMedia));
-    } else {
-      formData.append("social_media", "[]");
     }
 
     try {

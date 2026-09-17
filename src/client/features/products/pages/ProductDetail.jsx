@@ -157,7 +157,7 @@ export default function ProductDetail() {
           </p>
 
           <Link
-            to={`/shop/${shop_code}`}
+            to={`/${shop_code}`}
             className="mt-6 inline-flex items-center gap-2 bg-red-800 text-white font-medium px-5 py-2.5 rounded-xl hover:bg-red-900 transition-all shadow-sm"
           >
             <ArrowLeft size={16} />
@@ -278,7 +278,7 @@ export default function ProductDetail() {
       <Container className="pt-4 md:pt-4 flex-1">
         <div className="mb-4 flex items-center justify-between">
           <Link
-            to={`/shop/${shop_code}`}
+            to={`/${shop_code}`}
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white bg-red-600 border border-slate-200 px-3.5 py-2 rounded-bl-xl rounded-tr-xl hover:text-red-700 hover:border-red-200 hover:bg-red-200/50 transition-all shadow-xs"
           >
             <ArrowLeft size={16} />

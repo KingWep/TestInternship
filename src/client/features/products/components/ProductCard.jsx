@@ -89,7 +89,7 @@ export default function ProductCard({ product = {}, index = 0 }) {
     <div
       data-aos="fade-up"
       data-aos-delay={Math.min(index % 4, 3) * 100}
-      onClick={() => navigate(`/shop/${shop_code}/products/${id}`)} // 3. Add onClick handler to the main card container
+      onClick={() => navigate(`/${shop_code}/products/${id}`)} // 3. Add onClick handler to the main card container
       className="flex flex-col h-full bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer" // 4. Added cursor-pointer
     >
       <div
@@ -168,7 +168,7 @@ export default function ProductCard({ product = {}, index = 0 }) {
           <div className="flex flex-col items-center">
             {/* You can keep this as a Link or change to a span since the whole card now routes */}
             <Link
-              to={`/shop/${shop_code}/products/${id}`}
+              to={`/${shop_code}/products/${id}`}
               className="translate-y-4 group-hover/image:translate-y-0 transition-all duration-300 flex items-center gap-2 px-5 py-2.5 bg-white/90 backdrop-blur-sm text-gray-900 font-semibold text-sm rounded-full shadow-xl hover:bg-red-600 hover:text-white pointer-events-auto"
             >
               <Eye size={18} />

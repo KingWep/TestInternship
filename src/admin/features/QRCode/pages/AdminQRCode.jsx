@@ -51,7 +51,7 @@ export default function AdminQRCode() {
   const baseUrl = window.location.origin;
 
   const shopUrl = shopCode
-    ? `${baseUrl}/shop/${shopCode}`
+    ? `${baseUrl}/${shopCode}`
     : "";
 
   // Create a perfect circular logo

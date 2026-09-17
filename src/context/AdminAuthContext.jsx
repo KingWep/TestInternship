@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 
 export const AdminAuthContext = createContext(null);
 
@@ -8,6 +8,14 @@ export const useAdminAuth = () => useContext(AdminAuthContext);
 export const AdminAuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  const logout = useCallback(() => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }, []);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -18,7 +26,17 @@ export const AdminAuthProvider = ({ children }) => {
         console.error('Failed to parse stored user', e);
       }
     }
-  }, []);
+    setIsInitializing(false);
+
+    const handleAuthLogout = () => {
+      logout();
+    };
+    window.addEventListener('auth:logout', handleAuthLogout);
+    
+    return () => {
+      window.removeEventListener('auth:logout', handleAuthLogout);
+    };
+  }, [logout]);
 
   const login = (newToken, userData) => {
     setToken(newToken);
@@ -27,15 +45,8 @@ export const AdminAuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-  };
-
   return (
-    <AdminAuthContext.Provider value={{ user, token, login, logout }}>
+    <AdminAuthContext.Provider value={{ user, token, isInitializing, login, logout }}>
       {children}
     </AdminAuthContext.Provider>
   );

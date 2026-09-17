@@ -14,8 +14,6 @@ import { AccountSetupStep } from "./components/AccountSetupStep";
 
 import { ShopIdentityStep } from "./components/ShopIdentityStep";
 
-import { ContactSupportStep } from "./components/ContactSupportStep";
-
 import { useTranslation } from "react-i18next";
 
 import LanguageToggle from "@/components/LanguageToggle";
@@ -120,16 +118,6 @@ const GlobalRegister = () => {
                   <ShopIdentityStep
                     register={register}
                     errors={errors}
-                    setValue={setValue}
-                    watch={watch}
-                  />
-                )}
-
-                {currentStep === 3 && (
-                  <ContactSupportStep
-                    register={register}
-                    errors={errors}
-                    control={control}
                     setValue={setValue}
                     watch={watch}
                   />

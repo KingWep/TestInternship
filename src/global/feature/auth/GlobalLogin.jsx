@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   Eye,
@@ -28,7 +28,13 @@ const GlobalLogin = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, token, isInitializing } = useAuth();
+
+  useEffect(() => {
+    if (!isInitializing && token) {
+      navigate("/admin");
+    }
+  }, [token, isInitializing, navigate]);
 
   const {
     register,

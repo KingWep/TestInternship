@@ -47,42 +47,6 @@ export const settingService = {
       throw error;
     }
   },
-
-  // updateSetting: async (id, settingData) => {
-  //   try {
-  //     let response;
-  //     if (settingData instanceof FormData) {
-  //       if (!settingData.has('id')) {
-  //         settingData.append('id', id);
-  //       }
-  //       settingData.append('_method', 'PUT');
-  //       // Laravel requires POST for multipart/form-data to parse files properly, but user explicitly asked to use PUT
-  //       response = await axiosClient.put(
-  //         API_ENDPOINTS.SETTINGS.UPDATE,
-  //         settingData,
-  //         {
-  //           headers: {
-  //             'Content-Type': 'multipart/form-data',
-  //           },
-  //         }
-  //       );
-  //     } else {
-  //       settingData.id = id;
-  //       response = await axiosClient.put(
-  //         API_ENDPOINTS.SETTINGS.UPDATE,
-  //         settingData
-  //       );
-  //     }
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('Setting API Error [updateSetting]:', {
-  //       status: error.response?.status,
-  //       data: JSON.stringify(error.response?.data),
-  //       message: error.message,
-  //     });
-  //     throw error;
-  //   }
-  // },
   updateSetting: async (id, settingData) => {
     try {
       let response;

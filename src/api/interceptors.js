@@ -34,12 +34,7 @@ const setupInterceptors = (axiosClient) => {
           localStorage.removeItem('token')
           localStorage.removeItem('user')
           
-          const pathname = window.location.pathname
-          const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/dashboard')
-          
-          if (isAdminRoute && pathname !== '/login') {
-            window.location.href = '/login'
-          }
+          window.dispatchEvent(new Event('auth:logout'))
         }
 
         if (status === 403) {

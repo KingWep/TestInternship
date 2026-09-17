@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, ShoppingBag, UserLock, Store } from "lucide-react";
 import Container from "./Container";
 import { useSearch } from "../../../context/SearchContext";
@@ -26,6 +26,22 @@ export default function Header() {
   const logoUrl = rawLogo
     ? (rawLogo.startsWith('http') ? rawLogo : `${baseUrl}${rawLogo.startsWith('/') ? '' : '/'}${rawLogo}`)
     : "";
+
+  useEffect(() => {
+    if (!shop_code) return;
+
+    let manifestLink = document.querySelector('link[rel="manifest"]');
+    if (!manifestLink) {
+      manifestLink = document.createElement("link");
+      manifestLink.rel = "manifest";
+      document.head.appendChild(manifestLink);
+    }
+    
+    const newManifestUrl = `/api/manifest?shop_code=${shop_code}`;
+    if (manifestLink.getAttribute('href') !== newManifestUrl) {
+      manifestLink.setAttribute('href', newManifestUrl);
+    }
+  }, [shop_code]);
 
   return (
     <header className="sticky top-0 z-50 md:shadow-md shadow-lg bg-white md:border-b md:border-slate-100 border-b-2 border-red-800">

@@ -38,9 +38,9 @@ export default function AppRouter() {
       <Route path="/reset-password" element={<GlobalResetPassword />} />
       <Route path="/signup" element={<Navigate to="/register" replace />} />
 
-      {/* Existing Digital E-Commerce (Moved to /shop) */}
-      <Route path="/shop/:shop_code" element={<Home />} />
-      <Route path="/shop/:shop_code/products/:id" element={<ProductDetail />} />
+      {/* Existing Digital E-Commerce (Moved to /:shop_code) */}
+      <Route path="/:shop_code" element={<Home />} />
+      <Route path="/:shop_code/products/:id" element={<ProductDetail />} />
       
       <Route path="/print-receipt/:orderId" element={<Receipt />} />
       <Route path="/admin/print-receipt/:No" element={<AdminReceiptPage />} />

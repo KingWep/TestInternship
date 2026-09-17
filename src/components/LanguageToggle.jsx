@@ -28,7 +28,7 @@ const LanguageToggle = ({ className = "" }) => {
         }`}
       >
         <ReactCountryFlag
-          countryCode="US"
+          countryCode="GB"
           svg
           className="rounded-full w-4 h-4 object-cover"
         />

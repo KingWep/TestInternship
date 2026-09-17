@@ -42,22 +42,6 @@ export const AccountSetupStep = ({ register, errors }) => {
 
       <div>
         <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-          {t('auth.phone')} <span className="text-red-500">*</span>
-        </label>
-        <input
-          {...register("phone")}
-          placeholder="012345678"
-          className="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-pink-900/20 focus:border-pink-900 outline-none transition-all text-sm text-pink-950"
-        />
-        {errors.phone && (
-          <span className="text-[11px] text-red-600 mt-1 block">
-            {errors.phone.message}
-          </span>
-        )}
-      </div>
-
-      <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
           {t('auth.password')} <span className="text-red-500">*</span>
         </label>
         <div className="relative">

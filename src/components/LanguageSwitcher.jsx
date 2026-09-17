@@ -4,7 +4,7 @@ import { ChevronDown, Check } from "lucide-react";
 import ReactCountryFlag from "react-country-flag";
 
 const LANGUAGES = [
-  { code: "en", label: "English", countryCode: "US" },
+  { code: "en", label: "English", countryCode: "GB" },
   { code: "km", label: "ខ្មែរ",   countryCode: "KH" },
 ];
 

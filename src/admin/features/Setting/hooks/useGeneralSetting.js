@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import {
+  useForm,
+  useFieldArray,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
@@ -8,234 +11,636 @@ import { settingSchema } from "../schemas/settingSchema";
 import {
   useSettingsQuery,
   useUpdateSettingMutation,
-} from "../../../../queries/settings/useSettingQueries";
+} from "@/queries/settings/useSettingQueries";
 
-const getLogoUrl = (logo) => {
-  if (!logo) return "";
-  if (logo.startsWith("http")) return logo;
+const MAX_IMAGE_SIZE = 1024 * 1024;
+const MAX_SUPPORT_SIZE = 5 * 1024 * 1024;
 
-  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
-  return `${baseUrl}${logo.startsWith("/") ? "" : "/"}${logo}`;
+const getFileUrl = (file) => {
+  if (!file || typeof file !== "string") {
+    return "";
+  }
+
+  if (
+    file.startsWith("http://") ||
+    file.startsWith("https://")
+  ) {
+    return file;
+  }
+
+  const baseUrl =
+    import.meta.env.VITE_API_URL?.replace(
+      /\/$/,
+      ""
+    ) || "";
+
+  return `${baseUrl}${
+    file.startsWith("/") ? "" : "/"
+  }${file}`;
 };
-const getSupportFileName = (support) => {
-  if (!support || typeof support !== "string") return "";
-  return support.split("/").pop() || "";
+
+const getFileName = (file) => {
+  if (!file || typeof file !== "string") {
+    return "";
+  }
+
+  return file.split("/").pop() || "";
 };
 
-export function useGeneralSetting() {
-  const { t } = useTranslation()
+const parseSocialMedia = (data) => {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (typeof data === "string") {
+    try {
+      const parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  return [];
+};
+
+export const useGeneralSetting = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
-  const shopCode = user?.shop?.code;
-  const { data: settingData, isLoading } = useSettingsQuery(shopCode);
-  const updateMutation = useUpdateSettingMutation(shopCode);
 
-  const [logoPreview, setLogoPreview] = useState("");
-  const [supportFileName, setSupportFileName] = useState("");
+  const shopCode = user?.shop?.code;
+
+  const {
+    data: settingData,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useSettingsQuery(shopCode);
+
+  const updateSettingMutation =
+    useUpdateSettingMutation(shopCode);
+
+  const [logoPreview, setLogoPreview] =
+    useState("");
+
+  const [qrPreview, setQrPreview] =
+    useState("");
+
+  const [qrFileName, setQrFileName] =
+    useState("");
+
+  const [supportFileName, setSupportFileName] =
+    useState("");
 
   const {
     register,
     control,
-    handleSubmit,
     reset,
     setValue,
+    handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(settingSchema),
     defaultValues: {
       shop_name: "",
       shop_code: "",
-      phone: "",
       logo: "",
+      phone: "",
       chat_id: "",
       support: "",
+      bio_shop: "",
+      qr_upload: "",
       social_media: [],
       address: "",
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields,
+    append,
+    remove,
+  } = useFieldArray({
     control,
     name: "social_media",
   });
 
   useEffect(() => {
-    if (!settingData) return;
+    if (!settingData) {
+      return;
+    }
 
     reset({
-      shop_name: settingData.shop_name || "",
-      shop_code: settingData.shop_code || "",
-      phone: settingData.phone || "",
-      logo: settingData.logo || "",
-      chat_id: settingData.chat_id || "",
-      support: settingData.support || "",
-      social_media: Array.isArray(settingData.social_media)
-        ? settingData.social_media
-        : [],
-      address: settingData.address || "",
+      shop_name:
+        settingData?.shop_name || "",
+
+      shop_code:
+        settingData?.shop_code || "",
+
+      logo:
+        settingData?.logo || "",
+
+      phone:
+        settingData?.phone || "",
+
+      chat_id:
+        settingData?.chat_id || "",
+
+      support:
+        settingData?.support || "",
+
+      bio_shop:
+        settingData?.bio_shop || "",
+
+      qr_upload:
+        settingData?.qr_upload || "",
+
+      social_media: parseSocialMedia(
+        settingData?.social_media
+      ),
+
+      address:
+        settingData?.address || "",
     });
 
-    setLogoPreview(getLogoUrl(settingData.logo));
-    setSupportFileName(getSupportFileName(settingData.support));
+    setLogoPreview(
+      getFileUrl(settingData?.logo)
+    );
+
+    setQrPreview(
+      getFileUrl(settingData?.qr_upload)
+    );
+
+    setQrFileName(
+      getFileName(settingData?.qr_upload)
+    );
+
+    setSupportFileName(
+      getFileName(settingData?.support)
+    );
   }, [settingData, reset]);
 
-  // Logo file selection handler
-  const handleLogoChange = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      Swal.fire({
-        icon: "error",
-        title: t('settings.invalidFile'),
-        text: t('settings.selectImageFile'),
-      });
-      return;
+  const validateImage = (file) => {
+    if (!file) {
+      return false;
     }
 
-    if (file.size > 1 * 1024 * 1024) {
+    const allowedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
       Swal.fire({
         icon: "error",
-        title: t('settings.imageTooLarge'),
-        text: t('settings.imageSizeLimit'),
+        title: t(
+          "common.error",
+          "Error"
+        ),
+        text: t(
+          "settings.invalidImageType",
+          "Only PNG, JPG and WEBP images are allowed."
+        ),
       });
-      return;
+
+      return false;
     }
 
-    setValue("logo", file, { shouldValidate: true, shouldDirty: true });
-    setLogoPreview(URL.createObjectURL(file));
+    if (file.size > MAX_IMAGE_SIZE) {
+      Swal.fire({
+        icon: "error",
+        title: t(
+          "common.error",
+          "Error"
+        ),
+        text: t(
+          "settings.imageTooLarge",
+          "Image size must be less than 1MB."
+        ),
+      });
+
+      return false;
+    }
+
+    return true;
   };
 
-  // Support file selection handler
-  const handleSupportFileChange = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const validateSupportFile = (file) => {
+    if (!file) {
+      return false;
+    }
 
-    if (file.size > 1 * 1024 * 1024) {
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
       Swal.fire({
         icon: "error",
-        title: t('settings.fileTooLarge'),
-        text: t('settings.fileSizeLimit'),
+        title: t(
+          "common.error",
+          "Error"
+        ),
+        text: t(
+          "settings.invalidSupportType",
+          "Only PDF, DOC and DOCX files are allowed."
+        ),
       });
+
+      return false;
+    }
+
+    if (file.size > MAX_SUPPORT_SIZE) {
+      Swal.fire({
+        icon: "error",
+        title: t(
+          "common.error",
+          "Error"
+        ),
+        text: t(
+          "settings.supportTooLarge",
+          "Support document must be less than 5MB."
+        ),
+      });
+
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleLogoChange = (event) => {
+    const file =
+      event.target.files?.[0];
+
+    if (!file) {
       return;
     }
 
-    setValue("support", file, { shouldValidate: true, shouldDirty: true });
+    if (!validateImage(file)) {
+      event.target.value = "";
+      return;
+    }
+
+    setValue("logo", file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    const previewUrl =
+      URL.createObjectURL(file);
+
+    setLogoPreview((previous) => {
+      if (
+        previous &&
+        previous.startsWith("blob:")
+      ) {
+        URL.revokeObjectURL(previous);
+      }
+
+      return previewUrl;
+    });
+  };
+
+  const handleQrUploadChange = (event) => {
+    const file =
+      event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!validateImage(file)) {
+      event.target.value = "";
+      return;
+    }
+
+    setValue("qr_upload", file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    const previewUrl =
+      URL.createObjectURL(file);
+
+    setQrPreview((previous) => {
+      if (
+        previous &&
+        previous.startsWith("blob:")
+      ) {
+        URL.revokeObjectURL(previous);
+      }
+
+      return previewUrl;
+    });
+
+    setQrFileName(file.name);
+  };
+
+  const handleSupportChange = (event) => {
+    const file =
+      event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!validateSupportFile(file)) {
+      event.target.value = "";
+      return;
+    }
+
+    setValue("support", file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
     setSupportFileName(file.name);
   };
 
-  // Clear the support file
-  const handleClearSupport = () => {
-    setValue("support", "", { shouldDirty: true, shouldValidate: true });
-    setSupportFileName("");
+  const handleClearLogo = () => {
+    const savedLogo =
+      settingData?.logo || "";
+
+    setValue("logo", savedLogo, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setLogoPreview(
+      getFileUrl(savedLogo)
+    );
+
+    const input =
+      document.getElementById(
+        "logo-upload"
+      );
+
+    if (input) {
+      input.value = "";
+    }
   };
 
-  // Form submit — build FormData and fire mutation
-  const onSubmit = (data) => {
-    if (!settingData?.id) {
+  const handleClearQr = () => {
+    const savedQr =
+      settingData?.qr_upload || "";
+
+    setValue("qr_upload", savedQr, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setQrPreview(
+      getFileUrl(savedQr)
+    );
+
+    setQrFileName(
+      getFileName(savedQr)
+    );
+
+    const input =
+      document.getElementById(
+        "qr-upload"
+      );
+
+    if (input) {
+      input.value = "";
+    }
+  };
+
+  const handleClearSupport = () => {
+    const savedSupport =
+      settingData?.support || "";
+
+    setValue(
+      "support",
+      savedSupport,
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      }
+    );
+
+    setSupportFileName(
+      getFileName(savedSupport)
+    );
+
+    const input =
+      document.getElementById(
+        "support-upload"
+      );
+
+    if (input) {
+      input.value = "";
+    }
+  };
+
+  const onSubmit = async (data) => {
+    if (!shopCode) {
       Swal.fire({
         icon: "error",
-        title: t('settings.settingIdNotFound'),
-        text: t('settings.cannotEditSetting'),
+        title: t(
+          "common.error",
+          "Error"
+        ),
+        text: t(
+          "settings.shopNotFound",
+          "Shop information was not found."
+        ),
       });
+
       return;
     }
-    const formData = new FormData();
 
-    Object.entries(data).forEach(([key, value]) => {
-      // Social media
-      if (key === "social_media") {
-        formData.append("social_media", JSON.stringify(value || []));
-        return;
-      }
+    try {
+      const formData = new FormData();
 
-      // Logo
-      if (key === "logo") {
-        if (value instanceof File) {
-          formData.append("logo", value);
+      Object.entries(data).forEach(
+        ([key, value]) => {
+          if (key === "social_media") {
+            formData.append(
+              "social_media",
+              JSON.stringify(
+                Array.isArray(value)
+                  ? value
+                  : []
+              )
+            );
+
+            return;
+          }
+
+          if (key === "logo") {
+            if (value instanceof File) {
+              formData.append(key, value);
+            }
+            return;
+          }
+
+          if (key === "qr_upload" || key === "support") {
+            formData.append(key, value);
+            return;
+          }
+
+          if (
+            value !== undefined &&
+            value !== null
+          ) {
+            formData.append(
+              key,
+              String(value)
+            );
+          }
         }
-        return;
-      }
+      );
 
-      // Support
-      if (key === "support") {
-        formData.append("support", value);
-        return;
-      }
+      await updateSettingMutation.mutateAsync({
+        id: settingData.id,
+        data: formData
+      });
 
-      // Other fields
-      if (value !== null && value !== undefined) {
-        formData.append(key, String(value));
-      }
+      await refetch();
 
-      console.log("LOGO:", data.logo);
-      console.log("LOGO IS FILE:", data.logo instanceof File);
-
-      console.log("SUPPORT:", data.support);
-      console.log("SUPPORT IS FILE:", data.support instanceof File);
-    });
-
-    updateMutation.mutate(
-      { id: settingData.id, data: formData },
-      {
-        onSuccess: () => {
-          Swal.fire({
-            icon: "success",
-            title: t('common.success'),
-            text: t('settings.saveSuccess'),
-            timer: 1500,
-            showConfirmButton: false,
-          });
-        },
-        onError: (error) => {
-          Swal.fire({
-            icon: "error",
-            title: t('common.failed'),
-            text:
-              error.response?.data?.message || t('settings.saveFailed'),
-          });
-        },
-      },
-    );
+      Swal.fire({
+        icon: "success",
+        title: t(
+          "common.success",
+          "Success"
+        ),
+        text: t(
+          "settings.updateSuccess",
+          "Settings updated successfully."
+        ),
+        timer: 1800,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error(error);
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || error.message || t("settings.updateFailed", "Failed to update settings. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: t(
+          "common.error",
+          "Error"
+        ),
+        text: errorMsg,
+      });
+    }
   };
 
-  // Cancel — restore form to last saved state
   const handleCancel = () => {
-    if (!settingData) return;
+    if (!settingData) {
+      return;
+    }
 
     reset({
-      shop_name: settingData.shop_name || "",
-      shop_code: settingData.shop_code || "",
-      phone: settingData.phone || "",
-      logo: settingData.logo || "",
-      chat_id: settingData.chat_id || "",
-      support: settingData.support || "",
-      social_media: Array.isArray(settingData.social_media)
-        ? settingData.social_media
-        : [],
-      address: settingData.address || "",
+      shop_name:
+        settingData?.shop_name || "",
+
+      shop_code:
+        settingData?.shop_code || "",
+
+      logo:
+        settingData?.logo || "",
+
+      phone:
+        settingData?.phone || "",
+
+      chat_id:
+        settingData?.chat_id || "",
+
+      support:
+        settingData?.support || "",
+
+      bio_shop:
+        settingData?.bio_shop || "",
+
+      qr_upload:
+        settingData?.qr_upload || "",
+
+      social_media: parseSocialMedia(
+        settingData?.social_media
+      ),
+
+      address:
+        settingData?.address || "",
     });
 
-    setLogoPreview(getLogoUrl(settingData.logo));
-    setSupportFileName(getSupportFileName(settingData.support));
+    setLogoPreview(
+      getFileUrl(settingData?.logo)
+    );
+
+    setQrPreview(
+      getFileUrl(
+        settingData?.qr_upload
+      )
+    );
+
+    setQrFileName(
+      getFileName(
+        settingData?.qr_upload
+      )
+    );
+
+    setSupportFileName(
+      getFileName(
+        settingData?.support
+      )
+    );
+
+    const logoInput =
+      document.getElementById(
+        "logo-upload"
+      );
+
+    const qrInput =
+      document.getElementById(
+        "qr-upload"
+      );
+
+    const supportInput =
+      document.getElementById(
+        "support-upload"
+      );
+
+    if (logoInput) {
+      logoInput.value = "";
+    }
+
+    if (qrInput) {
+      qrInput.value = "";
+    }
+
+    if (supportInput) {
+      supportInput.value = "";
+    }
   };
 
   return {
-    isLoading,
-    isSaving: updateMutation.isPending,
     register,
     control,
-    setValue,
-    handleSubmit,
     errors,
     fields,
     append,
     remove,
-    logoPreview,
-    supportFileName,
+    watch,
+    handleSubmit,
     onSubmit,
     handleCancel,
     handleLogoChange,
-    handleSupportFileChange,
+    handleQrUploadChange,
+    handleSupportChange,
+    handleClearLogo,
+    handleClearQr,
     handleClearSupport,
+    logoPreview,
+    qrPreview,
+    qrFileName,
+    supportFileName,
+    settingData,
+    isLoading,
+    isFetching,
+    isSubmitting:
+      updateSettingMutation.isPending,
   };
-}
+};

@@ -6,7 +6,10 @@ export function useSettingsQuery(shopCode) {
   return useQuery({
     queryKey: settingKeys.byShopCode(shopCode),
     queryFn: () => settingService.getByShopCode(shopCode),
-    select: (data) => data?.data || data || {},
+    select: (data) => {
+      const rawData = data?.data || data || {};
+      return Array.isArray(rawData) ? rawData[0] || {} : rawData;
+    },
     enabled: !!shopCode,
   });
 }

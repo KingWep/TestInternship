@@ -17,11 +17,19 @@ export default function Footer() {
   const { shop_code } = useParams();
   const { data: settingData, isLoading } = usePublicSettingsQuery(shop_code);
   const shopName = settingData?.shop_name || "Shop";
-
+  const bioShop = settingData?.bio_shop || "Welcome to our shop!";
   const socialMediaLinks = settingData?.social_media || [];
 
   // Maps icon value strings (saved from GeneralSettings) to React icon components
   const socialIconMap = {
+    "telegram": <FaTelegramPlane size={16} className="text-white" />,
+    "facebook": <FaFacebookF size={16} className="text-white" />,
+    "tiktok": <FaTiktok size={16} className="text-white" />,
+    "instagram": <FaInstagram size={16} className="text-white" />,
+    "twitter": <FaTwitter size={16} className="text-white" />,
+    "youtube": <FaYoutube size={16} className="text-white" />,
+    "linkedin": <FaLinkedinIn size={16} className="text-white" />,
+    "website": <Globe size={16} className="text-white" />,
     "fa-telegram": <FaTelegramPlane size={16} className="text-white" />,
     "fa-facebook": <FaFacebookF size={16} className="text-white" />,
     "fa-tiktok": <FaTiktok size={16} className="text-white" />,
@@ -41,8 +49,7 @@ export default function Footer() {
               {isLoading ? "..." : shopName}
             </h3>
             <p className="text-sm text-black leading-relaxed">
-              យើងខ្ញុំផ្តល់ជូនផលិតផលដែលមានគុណភាពនិងសុវត្ថិភាព 100%
-              សម្រាប់សុខភាពនិងសម្រស់របស់អ្នក។
+              {bioShop}
             </p>
             <div className="flex items-center gap-3 pt-1">
               {socialMediaLinks.map((social, index) => {

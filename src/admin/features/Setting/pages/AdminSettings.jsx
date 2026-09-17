@@ -17,15 +17,15 @@ export default function AdminSettings() {
   ];
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+    <div className="space-y-6">
       <PageHeader
         title={t('settings.title')}
         description={t('settings.description')}
       />
 
-      <div className="flex flex-col md:flex-row gap-8 items-start">
+      <div className="flex flex-col md:flex-row gap-4 items-start">
         {/* Sidebar Navigation */}
-        <div className="w-full md:w-64 shrink-0 space-y-1 bg-white p-2 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="w-full md:w-52 shrink-0 space-y-1 bg-white p-2 rounded-2xl border border-slate-200 shadow-xs">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;

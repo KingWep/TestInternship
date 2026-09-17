@@ -44,6 +44,14 @@ import { useAuth } from "@/hooks/useAuth";
 
 function AdminStickerCard({ order, courier, setCourier }) {
   const socialIconMap = {
+    "telegram": <FaTelegramPlane size={16} className="text-white" />,
+    "facebook": <FaFacebookF size={16} className="text-white" />,
+    "tiktok": <FaTiktok size={16} className="text-white" />,
+    "instagram": <FaInstagram size={16} className="text-white" />,
+    "twitter": <FaTwitter size={16} className="text-white" />,
+    "youtube": <FaYoutube size={16} className="text-white" />,
+    "linkedin": <FaLinkedinIn size={16} className="text-white" />,
+    "website": <Globe size={16} className="text-white" />,
     "fa-telegram": <FaTelegramPlane size={16} className="text-white" />,
     "fa-facebook": <FaFacebookF size={16} className="text-white" />,
     "fa-tiktok": <FaTiktok size={16} className="text-white" />,
@@ -70,12 +78,20 @@ function AdminStickerCard({ order, courier, setCourier }) {
   const socialMediaIcon = socialMedia?.icon || "";
   const shopPhone = settingData?.phone;
   const rawLogo = settingData?.logo;
+  const qrCode = settingData?.qr_upload || "";
+  console.log("qrCode", qrCode);
   const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
 
   const logoUrl = rawLogo
     ? rawLogo.startsWith("http")
       ? rawLogo
       : `${baseUrl}${rawLogo.startsWith("/") ? "" : "/"}${rawLogo}`
+    : "";
+
+  const qrCodeUrl = qrCode
+    ? qrCode.startsWith("http")
+      ? qrCode
+      : `${baseUrl}${qrCode.startsWith("/") ? "" : "/"}${qrCode}`
     : "";
 
   const delivery = Number(order?.deliveryFee) || 0;
@@ -235,15 +251,11 @@ function AdminStickerCard({ order, courier, setCourier }) {
 
             <div className="p-2 flex items-center justify-center bg-white">
               <img
-                src="/images/qrbank.JPG"
+                src={qrCodeUrl || "null"}
                 alt="KHQR QR Code"
                 className="w-16 h-16 object-contain"
                 crossOrigin="anonymous"
               />
-            </div>
-
-            <div className="w-full text-center border-t border-slate-200 py-1 text-[10px] font-bold text-slate-800 uppercase bg-slate-50">
-              LENG CHANTHA
             </div>
           </div>
 

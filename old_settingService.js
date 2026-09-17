@@ -1,4 +1,4 @@
-import axiosClient from "../api/axiosClient";
+﻿import axiosClient from "../api/axiosClient";
 import { API_ENDPOINTS } from "../api/endpoints";
 
 export const settingService = {
@@ -107,11 +107,6 @@ export const settingService = {
         response = await axiosClient.put(
           API_ENDPOINTS.SETTINGS.UPDATE(id),
           settingData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
         );
       } else {
         response = await axiosClient.put(

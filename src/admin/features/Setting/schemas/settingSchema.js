@@ -54,4 +54,13 @@ export const settingSchema = z.object({
   social_media: z
     .array(socialMediaSchema)
     .optional(),
+  bio_shop: z
+    .string()
+    .optional(),
+  qr_upload: z
+    .union([
+      z.instanceof(File),
+      z.string(),
+    ])
+    .optional(),
 });

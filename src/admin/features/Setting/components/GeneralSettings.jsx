@@ -18,674 +18,807 @@ import {
   AtSign,
   Play,
   Briefcase,
+  QrCode,
+  Save,
+  RotateCcw,
 } from "lucide-react";
 import Select from "react-select";
 import { Controller } from "react-hook-form";
-import Button from "../../../components/common/Button";
-import { useGeneralSetting } from "../hooks/useGeneralSetting";
-import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
+import { useGeneralSetting } from "../hooks/useGeneralSetting";
 
 const socialIconOptions = [
   {
-    value: "fa-telegram",
+    value: "telegram",
     label: "Telegram",
-    title: "Telegram",
-    icon: <Send size={16} className="text-blue-500" />,
+    icon: Send,
+    color: "#229ED9",
   },
   {
-    value: "fa-facebook",
+    value: "facebook",
     label: "Facebook",
-    title: "Facebook",
-    icon: <Users size={16} className="text-blue-600" />,
+    icon: Users,
+    color: "#1877F2",
   },
   {
-    value: "fa-tiktok",
+    value: "tiktok",
     label: "TikTok",
-    title: "TikTok",
-    icon: <Video size={16} className="text-slate-900" />,
+    icon: Video,
+    color: "#000000",
   },
   {
-    value: "fa-instagram",
+    value: "instagram",
     label: "Instagram",
-    title: "Instagram",
-    icon: <Camera size={16} className="text-pink-500" />,
+    icon: Camera,
+    color: "#E4405F",
   },
   {
-    value: "fa-twitter",
+    value: "twitter",
     label: "Twitter / X",
-    title: "Twitter",
-    icon: <AtSign size={16} className="text-sky-400" />,
+    icon: AtSign,
+    color: "#111827",
   },
   {
-    value: "fa-youtube",
+    value: "youtube",
     label: "YouTube",
-    title: "YouTube",
-    icon: <Play size={16} className="text-red-500" />,
+    icon: Play,
+    color: "#FF0000",
   },
   {
-    value: "fa-linkedin",
+    value: "linkedin",
     label: "LinkedIn",
-    title: "LinkedIn",
-    icon: <Briefcase size={16} className="text-blue-700" />,
+    icon: Briefcase,
+    color: "#0A66C2",
   },
   {
-    value: "fa-globe",
+    value: "website",
     label: "Website / Other",
-    title: "Website",
-    icon: <Globe size={16} className="text-slate-500" />,
+    icon: Globe,
+    color: "#475569",
   },
 ];
 
-const formatOptionLabel = ({ label, icon }) => (
-  <div className="flex items-center gap-2">
-    {icon}
-    <span className="text-xs font-medium text-slate-800">
-      {label}
-    </span>
-  </div>
-);
+const SectionHeader = ({ icon: Icon, title, description }) => {
+  return (
+    <div className="flex items-start gap-3 mb-5">
+      <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+        <Icon size={19} className="text-slate-700" />
+      </div>
 
-const selectStyles = {
-  control: (base, state) => ({
-    ...base,
-    minHeight: "36px",
-    borderRadius: "0.75rem",
-    borderColor: state.isFocused ? "#3b82f6" : "#e2e8f0",
-    backgroundColor: "#ffffff",
-    boxShadow: state.isFocused
-      ? "0 0 0 2px rgba(59,130,246,0.2)"
-      : "none",
-    fontSize: "0.75rem",
-    cursor: "pointer",
-    "&:hover": {
-      borderColor: "#3b82f6",
-    },
-    transition: "all 0.15s ease",
-  }),
+      <div className="min-w-0">
+        <h3 className="text-sm font-bold text-slate-900">{title}</h3>
 
-  valueContainer: (base) => ({
-    ...base,
-    padding: "2px 8px",
-  }),
-
-  indicatorSeparator: () => ({
-    display: "none",
-  }),
-
-  dropdownIndicator: (base) => ({
-    ...base,
-    padding: "4px",
-  }),
-
-  menu: (base) => ({
-    ...base,
-    borderRadius: "0.75rem",
-    border: "1px solid #e2e8f0",
-    boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-    overflow: "hidden",
-    zIndex: 50,
-  }),
-
-  menuList: (base) => ({
-    ...base,
-    padding: "4px",
-  }),
-
-  option: (base, state) => ({
-    ...base,
-    borderRadius: "0.5rem",
-    padding: "6px 10px",
-    backgroundColor: state.isSelected
-      ? "#eff6ff"
-      : state.isFocused
-        ? "#f8fafc"
-        : "transparent",
-    color: "#1e293b",
-    cursor: "pointer",
-  }),
-
-  singleValue: (base) => ({
-    ...base,
-    color: "#1e293b",
-  }),
-
-  placeholder: (base) => ({
-    ...base,
-    color: "#94a3b8",
-    fontSize: "0.75rem",
-  }),
+        {description && (
+          <p className="text-xs text-slate-500 mt-1 leading-5">{description}</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
-function truncateFileName(name, maxLength = 25) {
-  if (!name) return "";
-
-  if (name.length <= maxLength) return name;
-
-  const extension = name.slice(
-    ((name.lastIndexOf(".") - 1) >>> 0) + 1
-  );
-
-  const baseName = name.substring(0, name.lastIndexOf("."));
-
-  if (!baseName) return name;
-
-  const charsToShow = maxLength - extension.length - 3;
-
-  if (charsToShow <= 0) return name;
-
-  return `${baseName.substring(0, charsToShow)}...${extension}`;
-}
-
-export default function GeneralSettings() {
-  const { user } = useAuth();
-  const shopCode = user?.shop?.code;
-
-  const { t } = useTranslation();
-
-  const {
-    isLoading,
-    isSaving,
-    register,
-    control,
-    handleSubmit,
-    errors,
-    fields,
-    append,
-    remove,
-    logoPreview,
-    supportFileName,
-    onSubmit,
-    handleCancel,
-    handleLogoChange,
-    handleSupportFileChange,
-    handleClearSupport,
-  } = useGeneralSetting();
-
-  if (isLoading) {
-    return (
-      <div className="w-full min-w-0 space-y-6 animate-pulse">
-        <div className="h-8 bg-slate-200 rounded-lg w-64" />
-        <div className="h-96 bg-slate-100 rounded-3xl" />
-      </div>
-    );
-  }
-
-  return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="w-full min-w-0 space-y-4 animate-in fade-in duration-300"
-    >
-      <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 rounded-3xl p-6 shadow-xs">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-inner">
-            <Store size={24} />
-          </div>
-
-          <div>
-            <h3 className="text-lg font-bold text-slate-800">
-              {t("settings.generalSettings")}
-            </h3>
-
-            <p className="text-sm text-slate-500 mt-1">
-              {t("settings.generalDesc")}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            type="button"
-            onClick={handleCancel}
-          >
-            {t("common.cancel")}
-          </Button>
-
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={isSaving}
-          >
-            {isSaving ? (
-              <>
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-                {t("common.saving")}
-              </>
-            ) : (
-              t("settings.saveChanges")
-            )}
-          </Button>
-        </div>
-      </div>
-
-      <div className="w-full min-w-0 bg-white border border-slate-200/80 rounded-3xl p-6 md:p-10 shadow-xs space-y-0">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center pb-4">
-          <div className="md:col-span-4 flex flex-col items-center justify-center">
-            <label className="text-sm font-semibold text-slate-700 block">
-              {t("settings.shopLogo")}
-            </label>
-
-            <label
-              htmlFor="shop-logo"
-              className="relative flex flex-col items-center justify-center w-28 h-28 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-blue-50/30 hover:border-blue-400 transition-all cursor-pointer overflow-hidden group shadow-xs"
-            >
-              {logoPreview ? (
-                <>
-                  <img
-                    src={logoPreview}
-                    alt="Logo Preview"
-                    className="w-full h-full rounded-2xl object-contain p-2 bg-white"
-                  />
-
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-xs">
-                    <div className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-1 shadow-sm">
-                      <Upload size={14} />
-                    </div>
-
-                    <span className="text-xs font-medium text-slate-700 group-hover:text-blue-600 transition-colors">
-                      {t("settings.change")}
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <div className="flex flex-col items-center text-center p-2">
-                  <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 shadow-xs mb-1">
-                    <ImageIcon
-                      size={16}
-                      className="text-blue-500"
-                    />
-                  </div>
-
-                  <span className="text-[11px] font-semibold text-slate-700">
-                    Upload Logo
-                  </span>
-                </div>
-              )}
-
-              <input
-                id="shop-logo"
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                className="hidden"
-                onChange={handleLogoChange}
-              />
-            </label>
-
-            {errors.logo && (
-              <p className="text-red-500 text-xs mt-1">
-                {t(errors.logo.message)}
-              </p>
-            )}
-          </div>
-
-          <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FormField
-              label={t("settings.shopName")}
-              required
-              error={errors.shop_name?.message}
-            >
-              <input
-                type="text"
-                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                placeholder={t("settings.shopNamePlaceholder")}
-                {...register("shop_name")}
-              />
-            </FormField>
-
-            <FormField
-              label={t("settings.supportPhone")}
-              required
-              error={errors.phone?.message}
-            >
-              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50">
-                <span className="flex items-center px-3 bg-slate-100/80 border-r border-slate-200 text-xs font-bold text-slate-600">
-                  +855
-                </span>
-
-                <input
-                  type="tel"
-                  className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                  placeholder={t("settings.phonePlaceholder")}
-                  {...register("phone")}
-                />
-              </div>
-            </FormField>
-          </div>
-        </div>
-
-        <input
-          type="hidden"
-          {...register("shop_code")}
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          <FormField
-            label={t("settings.telegramChatId")}
-            error={errors.chat_id?.message}
-          >
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50">
-              <span className="flex items-center px-3.5 bg-slate-100/80 border-r border-slate-200 text-slate-400">
-                <MessageCircle size={16} />
-              </span>
-
-              <input
-                type="text"
-                placeholder="-1004454335612"
-                className="w-full px-3.5 py-2.5 bg-transparent text-sm focus:outline-none text-slate-800"
-                {...register("chat_id")}
-              />
-            </div>
-          </FormField>
-
-          <FormField
-            label={t("settings.supportDocument")}
-            error={errors.support?.message}
-          >
-            <div className="flex items-center gap-3">
-              <label
-                htmlFor="support-file"
-                className="flex-1 flex items-center justify-between px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-sm text-slate-600 hover:border-blue-400 hover:bg-blue-50/20 transition-all cursor-pointer shadow-xs"
-              >
-                <div className="flex items-center gap-2.5 truncate">
-                  {supportFileName ? (
-                    <FileText
-                      size={16}
-                      className="text-blue-500 shrink-0"
-                    />
-                  ) : (
-                    <Upload
-                      size={16}
-                      className="text-slate-400 shrink-0"
-                    />
-                  )}
-
-                  <span
-                    className={`truncate text-xs ${
-                      supportFileName
-                        ? "font-bold text-slate-800"
-                        : "font-medium text-slate-400"
-                    }`}
-                    title={supportFileName}
-                  >
-                    {supportFileName
-                      ? truncateFileName(supportFileName, 22)
-                      : t("settings.selectSupportDocument")}
-                  </span>
-                </div>
-
-                <span className="text-[10px] bg-slate-200/70 text-slate-700 px-2.5 py-1 rounded-md font-bold shrink-0">
-                  {supportFileName
-                    ? t("settings.change")
-                    : t("common.browse")}
-                </span>
-              </label>
-
-              <input
-                id="support-file"
-                type="file"
-                className="hidden"
-                onChange={handleSupportFileChange}
-              />
-
-              {supportFileName && (
-                <button
-                  type="button"
-                  onClick={handleClearSupport}
-                  className="p-2.5 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-colors shrink-0"
-                  title={t("common.deleteFile")}
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </div>
-          </FormField>
-        </div>
-
-        <div>
-          <FormField
-            label={t("settings.address")}
-            required
-            error={errors.address?.message}
-          >
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50">
-              <span className="flex items-start px-3.5 pt-3 bg-slate-100/80 border-r border-slate-200 text-slate-400">
-                <MapPin size={16} />
-              </span>
-
-              <textarea
-                rows={3}
-                placeholder={t("settings.addressDetailedPlaceholder")}
-                className="w-full px-3.5 py-2.5 bg-transparent text-sm focus:outline-none resize-none text-slate-800"
-                {...register("address")}
-              />
-            </div>
-          </FormField>
-        </div>
-
-        <div className="space-y-4 pt-4 border-t border-slate-100">
-          <div className="bg-slate-50 rounded-xl p-5 border border-slate-100">
-            <h4 className="font-semibold text-slate-700 mb-4 flex items-center gap-2">
-              <Store
-                size={18}
-                className="text-blue-500"
-              />
-              {t("settings.shopIdentity")}
-            </h4>
-
-            <button
-              type="button"
-              onClick={() =>
-                append({
-                  title: "",
-                  url: "",
-                  icon: "",
-                })
-              }
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-bold transition-colors"
-            >
-              <Plus size={15} />
-              {t("settings.addSocialMedia")}
-            </button>
-          </div>
-
-          <div className="space-y-3">
-            {fields.map((field, index) => (
-              <div
-                key={field.id}
-                className="p-4 bg-slate-50/80 border border-slate-200/80 rounded-2xl relative group transition-all hover:border-blue-200"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
-                  <div className="sm:col-span-3">
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                      Social Media Name
-                    </label>
-
-                    <input
-                      type="text"
-                      placeholder={t(
-                        "settings.socialMediaPlaceholder"
-                      )}
-                      className={smallInputClass(
-                        !!errors?.social_media?.[index]?.title
-                      )}
-                      {...register(
-                        `social_media.${index}.title`
-                      )}
-                    />
-
-                    {errors?.social_media?.[index]?.title && (
-                      <p className="text-red-500 text-[11px] mt-1">
-                        {t(
-                          errors.social_media[index].title
-                            .message
-                        )}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="sm:col-span-5">
-                    <label className="block text-[11px] font-bold text-slate-500 mb-1">
-                      {t("settings.socialMediaUrl")}
-                    </label>
-
-                    <input
-                      type="text"
-                      placeholder="https://t.me/yourpage"
-                      className={smallInputClass(
-                        !!errors?.social_media?.[index]?.url
-                      )}
-                      {...register(
-                        `social_media.${index}.url`
-                      )}
-                    />
-
-                    {errors?.social_media?.[index]?.url && (
-                      <p className="text-red-500 text-[11px] mt-1">
-                        {t(
-                          errors.social_media[index].url
-                            .message
-                        )}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="sm:col-span-3">
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                      Social Media
-                    </label>
-
-                    <Controller
-                      name={`social_media.${index}.icon`}
-                      control={control}
-                      render={({ field: controllerField }) => {
-                        const selectedOption =
-                          socialIconOptions.find(
-                            (opt) =>
-                              opt.value === controllerField.value
-                          ) ?? null;
-
-                        return (
-                          <div>
-                            <Select
-                              inputId={`social_media_${index}_icon`}
-                              options={socialIconOptions}
-                              value={selectedOption}
-                              onChange={(option) => {
-                                controllerField.onChange(
-                                  option?.value ?? ""
-                                );
-                              }}
-                              onBlur={controllerField.onBlur}
-                              formatOptionLabel={
-                                formatOptionLabel
-                              }
-                              styles={selectStyles}
-                              placeholder={t(
-                                "settings.selectIcon"
-                              )}
-                              isClearable
-                              menuPosition="fixed"
-                            />
-
-                            {errors?.social_media?.[index]
-                              ?.icon && (
-                              <p className="text-red-500 text-[11px] mt-1">
-                                {t(
-                                  errors.social_media[index]
-                                    .icon.message
-                                )}
-                              </p>
-                            )}
-                          </div>
-                        );
-                      }}
-                    />
-                  </div>
-
-                  <div className="sm:col-span-1 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="w-full sm:w-auto h-10 px-3 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
-                      title={t("common.delete")}
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {fields.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-10 bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl text-center">
-                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 shadow-xs mb-2">
-                  <LinkIcon size={18} />
-                </div>
-
-                <p className="text-xs font-semibold text-slate-600">
-                  {t("settings.noSocialMedia")}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </form>
-  );
-}
-
-function FormField({
+const FormField = ({
   label,
-  required = false,
   error,
+  required = false,
   children,
   className = "",
-}) {
+}) => {
   return (
-    <div className={`space-y-1.5 ${className}`}>
-      <label className="block text-sm font-medium text-slate-700 mb-1.5">
-        {label}{" "}
-        {required && (
-          <span className="text-red-500">*</span>
-        )}
+    <div className={className}>
+      <label className="block text-xs font-semibold text-slate-700 mb-2">
+        {label}
+
+        {required && <span className="text-red-500 ml-1">*</span>}
       </label>
 
       {children}
 
-      {error && (
-        <p className="text-red-500 text-xs mt-1">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-xs text-red-500 mt-1.5">{error.message}</p>}
     </div>
   );
-}
+};
 
-function inputClass(hasError = false) {
-  return `
-    w-full px-3.5 py-2.5 bg-slate-50/50 border rounded-xl
-    text-sm text-slate-800 placeholder:text-slate-400
-    focus:outline-none focus:bg-white focus:border-blue-500
-    focus:ring-2 focus:ring-blue-500/20 transition-all
-    ${
-      hasError
-        ? "border-red-500 bg-red-50/10"
-        : "border-slate-200"
-    }
-  `;
-}
+const inputClass =
+  "w-full h-10 rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10";
 
-function smallInputClass(hasError = false) {
-  return `
-    w-full px-3 py-2 bg-white border rounded-xl
-    text-xs text-slate-800 placeholder:text-slate-400
-    focus:outline-none focus:border-blue-500
-    focus:ring-2 focus:ring-blue-500/20 transition-all
-    ${
-      hasError
-        ? "border-red-500 bg-red-50/10"
-        : "border-slate-200"
-    }
-  `;
-}
+const textareaClass =
+  "w-full min-h-[96px] rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none resize-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10";
+
+
+
+const GeneralSettings = () => {
+  const { t } = useTranslation();
+
+  const {
+    register,
+    control,
+    errors,
+    fields,
+    append,
+    remove,
+    watch,
+    handleSubmit,
+    onSubmit,
+    handleCancel,
+    handleLogoChange,
+    handleQrUploadChange,
+    handleSupportChange,
+    handleClearLogo,
+    handleClearQr,
+    handleClearSupport,
+    logoPreview,
+    qrPreview,
+    qrFileName,
+    supportFileName,
+    isSubmitting,
+  } = useGeneralSetting();
+
+  const socialMedia = watch("social_media");
+
+  return (
+    <div className="w-full">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+          <div className="px-5 sm:px-6 py-5 border-b border-slate-200">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-blue-700 flex items-center justify-center">
+                  <Store size={20} className="text-white" />
+                </div>
+
+                <div>
+                  <h1 className="text-base font-bold text-slate-900">
+                    {t("settings.generalSettings", "General Settings")}
+                  </h1>
+
+                  <p className="text-xs text-slate-500 mt-1">
+                    {t(
+                      "settings.generalDesc",
+                      "Manage your shop information and branding.",
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  disabled={isSubmitting}
+                  className="h-9 px-3.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:bg-slate-50 transition disabled:opacity-50 flex items-center gap-2"
+                >
+                  <RotateCcw size={15} />
+
+                  {t("common.cancel", "Cancel")}
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="h-9 px-4 rounded-lg bg-blue-700 text-white text-xs font-semibold hover:bg-blue-900 transition disabled:opacity-50 flex items-center gap-2"
+                >
+                  <Save size={15} />
+
+                  {isSubmitting
+                    ? t("common.saving", "Saving...")
+                    : t("settings.saveChanges", "Save Changes")}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-5 sm:p-6">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
+              <div className="xl:col-span-8 space-y-5">
+                <section className="border border-slate-200 rounded-2xl p-5">
+                  <SectionHeader
+                    icon={Store}
+                    title={t("settings.shopIdentity", "Shop Identity")}
+                    description={t(
+                      "settings.shopIdentityDesc",
+                      "Configure the basic information displayed across your shop.",
+                    )}
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <FormField
+                      label={t("settings.shopName", "Shop Name")}
+                      required
+                      error={errors.shop_name}
+                    >
+                      <input
+                        type="text"
+                        placeholder={t(
+                          "settings.shopNamePlaceholder",
+                          "Enter shop name",
+                        )}
+                        className={inputClass}
+                        {...register("shop_name")}
+                      />
+                    </FormField>
+
+                    {/*
+                    <FormField
+                      label={t("settings.shopCode", "Shop Code")}
+                      error={errors.shop_code}
+                    >
+                      <input
+                        type="text"
+                        readOnly
+                        className={`${inputClass} bg-slate-50 text-slate-500 cursor-not-allowed`}
+                        {...register("shop_code")}
+                      />
+                    </FormField>
+                    */}
+
+                    <FormField
+                      label={t("settings.supportPhone", "Support Phone")}
+                      error={errors.phone}
+                    >
+                      <input
+                        type="text"
+                        placeholder={t(
+                          "settings.phonePlaceholder",
+                          "+855 12 345 678",
+                        )}
+                        className={inputClass}
+                        {...register("phone")}
+                      />
+                    </FormField>
+
+                    <FormField
+                      label={t("settings.telegramChatId", "Telegram Chat ID")}
+                      error={errors.chat_id}
+                    >
+                      <input
+                        type="text"
+                        placeholder={t(
+                          "settings.telegramChatIdPlaceholder",
+                          "Enter Telegram chat ID",
+                        )}
+                        className={inputClass}
+                        {...register("chat_id")}
+                      />
+                    </FormField>
+
+                    <FormField
+                      label={t("settings.address", "Address")}
+                      error={errors.address}
+                      className="md:col-span-2"
+                    >
+                      <div className="relative">
+                        <MapPin
+                          size={16}
+                          className="absolute left-3 top-3 text-slate-400"
+                        />
+
+                        <textarea
+                          placeholder={t(
+                            "settings.addressDetailedPlaceholder",
+                            "Enter your shop address",
+                          )}
+                          className={`${textareaClass} pl-9`}
+                          {...register("address")}
+                        />
+                      </div>
+                    </FormField>
+
+                    <FormField
+                      label={t("settings.bioShop", "Shop Bio")}
+                      error={errors.bio_shop}
+                      className="md:col-span-2"
+                    >
+                      <textarea
+                        placeholder={t(
+                          "settings.bioShopPlaceholder",
+                          "Write a short description about your shop",
+                        )}
+                        className={textareaClass}
+                        {...register("bio_shop")}
+                      />
+                    </FormField>
+                  </div>
+                </section>
+
+                <section className="border border-slate-200 rounded-2xl p-5">
+                  <SectionHeader
+                    icon={LinkIcon}
+                    title={t("settings.socialMedia", "Social Media")}
+                    description={t(
+                      "settings.socialMediaDesc",
+                      "Manage the social media links displayed on your storefront.",
+                    )}
+                  />
+
+                  <div className="space-y-3">
+                    {fields.length > 0 ? (
+                      fields.map((field, index) => {
+                        const currentName =
+                          socialMedia?.[index]?.title?.trim() || "";
+
+                        const currentIcon = socialMedia?.[index]?.icon || "";
+
+                        const matchedByIcon = socialIconOptions.find(
+                          (option) => option.value === currentIcon,
+                        );
+
+                        const matchedByName = socialIconOptions.find(
+                          (option) =>
+                            option.label.toLowerCase() ===
+                            currentName.toLowerCase(),
+                        );
+
+                        const selectedOption =
+                          matchedByIcon ||
+                          matchedByName ||
+                          socialIconOptions.find(
+                            (option) => option.value === "website",
+                          );
+
+                        const Icon = selectedOption.icon;
+
+                        return (
+                          <div
+                            key={field.id}
+                            className="group rounded-xl border border-slate-200 bg-white p-3 hover:border-slate-300 hover:shadow-sm transition-all"
+                          >
+                            <div className="grid grid-cols-1 md:grid-cols-[48px_minmax(150px,0.8fr)_minmax(240px,1.5fr)_40px] gap-3 items-end">
+                              <Controller
+                                name={`social_media.${index}.icon`}
+                                control={control}
+                                render={({ field: selectField }) => (
+                                  <div>
+                                    <label className="block text-[10px] font-semibold text-slate-500 mb-2">
+                                      {t("settings.icon", "Icon")}
+                                    </label>
+
+                                    <Select
+                                      value={
+                                        socialIconOptions.find(
+                                          (option) =>
+                                            option.value === selectField.value,
+                                        ) || null
+                                      }
+                                      onChange={(option) =>
+                                        selectField.onChange(
+                                          option?.value || "",
+                                        )
+                                      }
+                                      options={socialIconOptions}
+                                      isSearchable={false}
+                                      isClearable
+                                      placeholder="—"
+                                      className="text-sm"
+                                      styles={{
+                                        control: (base, state) => ({
+                                          ...base,
+                                          minHeight: "40px",
+                                          height: "40px",
+                                          width: "48px",
+                                          borderRadius: "10px",
+                                          borderColor: state.isFocused
+                                            ? "#3b82f6"
+                                            : "#e2e8f0",
+                                          boxShadow: state.isFocused
+                                            ? "0 0 0 2px rgba(59,130,246,.08)"
+                                            : "none",
+                                          cursor: "pointer",
+                                        }),
+
+                                        valueContainer: (base) => ({
+                                          ...base,
+                                          padding: "0 8px",
+                                          justifyContent: "center",
+                                        }),
+
+                                        indicatorsContainer: (base) => ({
+                                          ...base,
+                                          display: "none",
+                                        }),
+
+                                        singleValue: (base) => ({
+                                          ...base,
+                                          margin: 0,
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                        }),
+
+                                        menu: (base) => ({
+                                          ...base,
+                                          width: "190px",
+                                          zIndex: 50,
+                                        }),
+
+                                        option: (base, state) => ({
+                                          ...base,
+                                          backgroundColor: state.isFocused
+                                            ? "#f8fafc"
+                                            : "white",
+                                          color: "#334155",
+                                          cursor: "pointer",
+                                        }),
+                                      }}
+
+                                      formatOptionLabel={(
+                                        option,
+                                        { context },
+                                      ) => {
+                                        const OptionIcon = option.icon;
+
+                                        if (context === "value") {
+                                          return (
+                                            <OptionIcon
+                                              size={17}
+                                              style={{
+                                                color: option.color,
+                                              }}
+                                            />
+                                          );
+                                        }
+
+                                        return (
+                                          <div className="flex items-center gap-2">
+                                            <OptionIcon
+                                              size={15}
+                                              style={{
+                                                color: option.color,
+                                              }}
+                                            />
+
+                                            <span className="text-xs">
+                                              {option.label}
+                                            </span>
+                                          </div>
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              />
+
+                              <FormField
+                                label={t(
+                                  "settings.socialMediaName",
+                                  "Social Media Name",
+                                )}
+                                error={errors.social_media?.[index]?.title}
+                              >
+                                <input
+                                  type="text"
+                                  placeholder={t(
+                                    "settings.socialMediaNamePlaceholder",
+                                    "Facebook",
+                                  )}
+                                  className={`${inputClass} font-medium`}
+                                  {...register(`social_media.${index}.title`)}
+                                />
+                              </FormField>
+
+                              <FormField
+                                label={t("settings.socialMediaUrl", "URL")}
+                                error={errors.social_media?.[index]?.url}
+                              >
+                                <div className="relative">
+                                  <LinkIcon
+                                    size={14}
+                                    className="absolute left-3 top-3 text-slate-400"
+                                  />
+
+                                  <input
+                                    type="url"
+                                    placeholder={t(
+                                      "settings.socialMediaPlaceholder",
+                                      "https://chomnenhdigita.com",
+                                    )}
+                                    className={`${inputClass} pl-9`}
+                                    {...register(`social_media.${index}.url`)}
+                                  />
+                                </div>
+                              </FormField>
+
+                              <button
+                                type="button"
+                                onClick={() => remove(index)}
+                                className="h-10 w-10 rounded-xl border border-slate-200 text-slate-400 hover:border-red-200 hover:bg-red-50 hover:text-red-500 transition flex items-center justify-center"
+                                title={t("common.delete", "Delete")}
+                              >
+                                <Trash2 size={15} />
+                              </button>
+                            </div>
+
+                            {currentName && (
+                              <div className="mt-2 ml-0 md:ml-[60px] flex items-center gap-2">
+                                <Icon
+                                  size={13}
+                                  style={{
+                                    color: selectedOption.color,
+                                  }}
+                                />
+
+                                <span className="text-[10px] text-slate-400">
+                                  {selectedOption.label !== currentName
+                                    ? selectedOption.label
+                                    : currentName}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="border border-dashed border-slate-300 rounded-xl py-9 text-center">
+                        <div className="w-10 h-10 mx-auto rounded-xl bg-slate-50 flex items-center justify-center mb-3">
+                          <Globe size={19} className="text-slate-300" />
+                        </div>
+
+                        <p className="text-xs font-medium text-slate-500">
+                          {t(
+                            "settings.noSocialMedia",
+                            "No social media links added yet.",
+                          )}
+                        </p>
+
+                        <p className="text-[10px] text-slate-400 mt-1">
+                          {t(
+                            "settings.addSocialMediaHint",
+                            "Add your social media name and URL below.",
+                          )}
+                        </p>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        append({
+                          icon: "",
+                          title: "",
+                          url: "",
+                        })
+                      }
+                      className="w-full h-10 rounded-xl border border-dashed border-slate-300 text-xs font-semibold text-slate-600 hover:border-slate-400 hover:bg-slate-50 transition flex items-center justify-center gap-2"
+                    >
+                      <Plus size={15} />
+
+                      {t("settings.addSocialMedia", "Add Social Media")}
+                    </button>
+                  </div>
+                </section>
+              </div>
+
+              <div className="xl:col-span-4 space-y-5">
+                <section className="border border-slate-200 rounded-2xl p-5">
+                  <SectionHeader
+                    icon={ImageIcon}
+                    title={t("settings.shopLogo", "Shop Logo")}
+                    description={t(
+                      "settings.uploadLogo",
+                      "Upload your shop logo.",
+                    )}
+                  />
+
+                  <div className="flex flex-col items-center">
+                    <div className="relative group w-40 h-40 rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden">
+                      {logoPreview ? (
+                        <>
+                          <img
+                            src={logoPreview}
+                            alt="Shop Logo"
+                            className="w-full h-full object-contain p-4 bg-white"
+                          />
+
+                          <div className="absolute inset-0 bg-slate-950/45 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
+                            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-2">
+                              <Upload size={17} className="text-white" />
+                            </div>
+
+                            <span className="text-xs font-semibold text-white">
+                              {t("settings.change", "Change")}
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <label
+                          htmlFor="logo-upload"
+                          className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
+                        >
+                          <div className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center mb-3">
+                            <ImageIcon size={20} className="text-slate-400" />
+                          </div>
+
+                          <span className="text-xs font-semibold text-slate-600">
+                            {t("settings.uploadLogo", "Upload Logo")}
+                          </span>
+
+                          <span className="text-[10px] text-slate-400 mt-1">
+                            PNG, JPG, WEBP
+                          </span>
+                        </label>
+                      )}
+
+                      <input
+                        id="logo-upload"
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        className="hidden"
+                        onChange={handleLogoChange}
+                      />
+
+                      {logoPreview && (
+                        <label
+                          htmlFor="logo-upload"
+                          className="absolute inset-0 cursor-pointer"
+                        />
+                      )}
+                    </div>
+
+                    {logoPreview && (
+                      <button
+                        type="button"
+                        onClick={handleClearLogo}
+                        className="mt-3 text-xs text-red-500 hover:text-red-600 font-medium flex items-center gap-1"
+                      >
+                        <X size={13} />
+
+                        {t("common.delete", "Remove")}
+                      </button>
+                    )}
+                  </div>
+                </section>
+
+                <section className="border border-slate-200 rounded-2xl p-5">
+                  <SectionHeader
+                    icon={QrCode}
+                    title={t("settings.qrUpload", "QR Code")}
+                    description={t(
+                      "settings.qrUploadDesc",
+                      "Upload a QR code image for your customers.",
+                    )}
+                  />
+
+                  <div className="flex flex-col items-center">
+                    <div className="relative group w-48 h-48 rounded-2xl border border-dashed border-slate-300 bg-slate-50 overflow-hidden">
+                      {qrPreview ? (
+                        <>
+                          <img
+                            src={qrPreview}
+                            alt="QR Code Preview"
+                            className="w-full h-full object-contain p-4 bg-white"
+                          />
+
+                          <div className="absolute inset-0 bg-slate-950/45 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
+                            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-2">
+                              <Upload size={17} className="text-white" />
+                            </div>
+
+                            <span className="text-xs font-semibold text-white">
+                              {t("settings.change", "Change")}
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <label
+                          htmlFor="qr-upload"
+                          className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
+                        >
+                          <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center mb-3">
+                            <QrCode size={24} className="text-slate-400" />
+                          </div>
+
+                          <span className="text-xs font-semibold text-slate-600">
+                            {t("settings.uploadQr", "Upload QR Code")}
+                          </span>
+
+                          <span className="text-[10px] text-slate-400 mt-1">
+                            PNG, JPG, WEBP
+                          </span>
+                        </label>
+                      )}
+
+                      <input
+                        id="qr-upload"
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        className="hidden"
+                        onChange={handleQrUploadChange}
+                      />
+
+                      {qrPreview && (
+                        <label
+                          htmlFor="qr-upload"
+                          className="absolute inset-0 cursor-pointer"
+                        />
+                      )}
+                    </div>
+
+                    {qrFileName && (
+                      <div className="w-full mt-3 flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <FileText
+                            size={14}
+                            className="text-slate-400 shrink-0"
+                          />
+
+                          <span className="text-xs text-slate-600 truncate">
+                            {qrFileName}
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleClearQr}
+                          className="text-slate-400 hover:text-red-500 transition shrink-0"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </section>
+
+                <section className="border border-slate-200 rounded-2xl p-5">
+                  <SectionHeader
+                    icon={MessageCircle}
+                    title={t("settings.supportDocument", "Support Document")}
+                    description={t(
+                      "settings.supportDocumentDesc",
+                      "Upload a document used for customer support.",
+                    )}
+                  />
+
+                  <div className="relative">
+                    <input
+                      id="support-upload"
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      className="hidden"
+                      onChange={handleSupportChange}
+                    />
+
+                    <label
+                      htmlFor="support-upload"
+                      className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 transition cursor-pointer"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                        <FileText size={18} className="text-slate-500" />
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-slate-700 truncate">
+                          {supportFileName ||
+                            t(
+                              "settings.selectSupportDocument",
+                              "Select Support Document",
+                            )}
+                        </p>
+
+                        <p className="text-[10px] text-slate-400 mt-1">
+                          PDF, DOC, DOCX
+                        </p>
+                      </div>
+
+                      <Upload size={16} className="text-slate-400 shrink-0" />
+                    </label>
+
+                    {supportFileName && (
+                      <button
+                        type="button"
+                        onClick={handleClearSupport}
+                        className="absolute right-2 top-2 w-6 h-6 rounded-md bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-red-500 transition"
+                      >
+                        <X size={13} />
+                      </button>
+                    )}
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default GeneralSettings;

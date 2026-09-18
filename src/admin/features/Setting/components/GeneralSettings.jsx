@@ -81,7 +81,7 @@ const socialIconOptions = [
 const SectionHeader = ({ icon: Icon, title, description }) => {
   return (
     <div className="flex items-start gap-3 mb-5">
-      <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+      <div className="w-10 h-10 rounded-xl bg-[#fcfafb] flex items-center justify-center shrink-0">
         <Icon size={19} className="text-slate-700" />
       </div>
 
@@ -119,10 +119,10 @@ const FormField = ({
 };
 
 const inputClass =
-  "w-full h-10 rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10";
+  "w-full h-10 rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-[#870d4c] focus:ring-2 focus:ring-[#870d4c]/30/10";
 
 const textareaClass =
-  "w-full min-h-[96px] rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none resize-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10";
+  "w-full min-h-[96px] rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none resize-none transition focus:border-[#870d4c] focus:ring-2 focus:ring-[#870d4c]/30/10";
 
 
 
@@ -162,7 +162,7 @@ const GeneralSettings = () => {
           <div className="px-5 sm:px-6 py-5 border-b border-slate-200">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-blue-700 flex items-center justify-center">
+                <div className="w-11 h-11 rounded-xl bg-[#9d1159] flex items-center justify-center">
                   <Store size={20} className="text-white" />
                 </div>
 
@@ -195,7 +195,7 @@ const GeneralSettings = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="h-9 px-4 rounded-lg bg-blue-700 text-white text-xs font-semibold hover:bg-blue-900 transition disabled:opacity-50 flex items-center gap-2"
+                  className="h-9 px-4 rounded-lg bg-[#9d1159] text-white text-xs font-semibold hover:bg-[#9d1159] transition disabled:opacity-50 flex items-center gap-2"
                 >
                   <Save size={15} />
 
@@ -245,7 +245,7 @@ const GeneralSettings = () => {
                       <input
                         type="text"
                         readOnly
-                        className={`${inputClass} bg-slate-50 text-slate-500 cursor-not-allowed`}
+                        className={`${inputClass} bg-[#fcfafb] text-slate-500 cursor-not-allowed`}
                         {...register("shop_code")}
                       />
                     </FormField>
@@ -548,7 +548,7 @@ const GeneralSettings = () => {
                       })
                     ) : (
                       <div className="border border-dashed border-slate-300 rounded-xl py-9 text-center">
-                        <div className="w-10 h-10 mx-auto rounded-xl bg-slate-50 flex items-center justify-center mb-3">
+                        <div className="w-10 h-10 mx-auto rounded-xl bg-[#fcfafb] flex items-center justify-center mb-3">
                           <Globe size={19} className="text-slate-300" />
                         </div>
 
@@ -599,7 +599,7 @@ const GeneralSettings = () => {
                   />
 
                   <div className="flex flex-col items-center">
-                    <div className="relative group w-40 h-40 rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden">
+                    <div className="relative group w-40 h-40 rounded-2xl border border-slate-200 bg-[#fcfafb] overflow-hidden">
                       {logoPreview ? (
                         <>
                           <img
@@ -678,7 +678,7 @@ const GeneralSettings = () => {
                   />
 
                   <div className="flex flex-col items-center">
-                    <div className="relative group w-48 h-48 rounded-2xl border border-dashed border-slate-300 bg-slate-50 overflow-hidden">
+                    <div className="relative group w-48 h-48 rounded-2xl border border-dashed border-slate-300 bg-[#fcfafb] overflow-hidden">
                       {qrPreview ? (
                         <>
                           <img
@@ -733,7 +733,7 @@ const GeneralSettings = () => {
                     </div>
 
                     {qrFileName && (
-                      <div className="w-full mt-3 flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200">
+                      <div className="w-full mt-3 flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-[#fcfafb] border border-slate-200">
                         <div className="flex items-center gap-2 min-w-0">
                           <FileText
                             size={14}
@@ -778,7 +778,7 @@ const GeneralSettings = () => {
 
                     <label
                       htmlFor="support-upload"
-                      className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 transition cursor-pointer"
+                      className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-slate-300 bg-[#fcfafb] hover:bg-slate-100 transition cursor-pointer"
                     >
                       <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
                         <FileText size={18} className="text-slate-500" />

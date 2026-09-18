@@ -271,7 +271,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
             type="text"
             {...register("name")}
             placeholder={t('products.productNamePlaceholder')}
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
 
           {errors.name && (
@@ -312,7 +312,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
             {...register("stockQuantity")}
             min="0"
             placeholder="0"
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
 
           {errors.stockQuantity && (
@@ -332,7 +332,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
             min="0"
             step="0.01"
             placeholder="0.00"
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
 
           {errors.price && (
@@ -359,7 +359,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
             min="0"
             step="0.01"
             placeholder="0.00"
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
 
           {errors.discountPrice && (
@@ -378,7 +378,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
             type="number"
             value={calculatedSalePrice}
             readOnly
-            className="w-full px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg outline-none cursor-not-allowed"
+            className="w-full px-3 py-2 text-sm bg-[#fcfafb] text-gray-600 rounded-lg outline-none cursor-not-allowed"
           />
         </div>
       </div>
@@ -392,7 +392,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
           {...register("description")}
           rows="3"
           placeholder={t('products.descriptionPlaceholder')}
-          className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none resize-none focus:ring-2 focus:ring-gray-200"
+          className="w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none resize-none focus:ring-2 focus:ring-gray-200"
         />
 
         {errors.description && (
@@ -405,7 +405,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
           <label className="block text-xs font-semibold text-gray-600">
             {t('products.productImagesLabel')}
             {totalImageCount > 0 && (
-              <span className="ml-1 text-blue-500">({totalImageCount})</span>
+              <span className="ml-1 text-[#870d4c]">({totalImageCount})</span>
             )}
           </label>
 
@@ -429,7 +429,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
 
           <label
             htmlFor="product-image-upload"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 cursor-pointer transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#870d4c]/5 text-[#870d4c] hover:bg-[#870d4c]/10 cursor-pointer transition-colors"
           >
             <ImagePlus size={14} />
             {t('products.addImage')}
@@ -437,7 +437,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
         </div>
 
         {totalImageCount > 0 ? (
-          <div className="flex flex-wrap gap-3 p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+          <div className="flex flex-wrap gap-3 p-3 bg-[#fcfafb] rounded-xl border border-dashed border-gray-200">
             {images.map((image, index) => (
               <div key={image.id ?? `new-${index}`} className="relative">
                 <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
@@ -460,7 +460,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
                 <button
                   type="button"
                   onClick={() => handleImageReplaceClick(index)}
-                  className="absolute -top-2 -left-0 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-md hover:bg-blue-600 z-10"
+                  className="absolute -top-2 -left-0 w-5 h-5 rounded-full bg-[#870d4c] text-white flex items-center justify-center shadow-md hover:bg-[#9d1159] z-10"
                   title={t('common.changeImage')}
                 >
                   <RefreshCw size={11} strokeWidth={3} />
@@ -477,7 +477,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
         ) : (
           <label
             htmlFor="product-image-upload"
-            className="flex flex-col items-center justify-center gap-2 w-full h-28 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 text-gray-400 cursor-pointer hover:border-blue-300 hover:text-blue-400 transition-colors"
+            className="flex flex-col items-center justify-center gap-2 w-full h-28 rounded-xl border-2 border-dashed border-gray-200 bg-[#fcfafb] text-gray-400 cursor-pointer hover:border-[#870d4c]/50 hover:text-[#870d4c] transition-colors"
           >
             <ImagePlus size={24} />
 
@@ -493,7 +493,7 @@ export default function ProductsForm({ onSubmit, initialData }) {
       <div className="flex justify-end pt-2">
         <button
           type="submit"
-          className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+          className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-[#9d1159] text-white hover:bg-[#9d1159] transition"
         >
           <Save size={16} />
 
@@ -543,7 +543,7 @@ function SearchableCategorySelect({ categories, value, onChange }) {
   return (
     <div className="relative" ref={dropdownRef}>
       <div
-        className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg flex justify-between items-center cursor-pointer ${
+        className={`w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg flex justify-between items-center cursor-pointer ${
           isOpen ? "ring-2 ring-gray-200" : ""
         }`}
         onClick={() => setIsOpen(!isOpen)}
@@ -570,7 +570,7 @@ function SearchableCategorySelect({ categories, value, onChange }) {
 
             <input
               type="text"
-              className="w-full pl-8 pr-3 py-1.5 text-sm bg-gray-50 rounded-md outline-none"
+              className="w-full pl-8 pr-3 py-1.5 text-sm bg-[#fcfafb] rounded-md outline-none"
               placeholder={t('products.searchCategoryPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -593,7 +593,7 @@ function SearchableCategorySelect({ categories, value, onChange }) {
                   key={category.id}
                   className={`px-3 py-2 text-sm cursor-pointer hover:bg-blue-50 ${
                     String(value) === String(category.id)
-                      ? "bg-blue-50 text-blue-600 font-medium"
+                      ? "bg-[#870d4c]/5 text-[#870d4c] font-medium"
                       : "text-gray-700"
                   }`}
                   onClick={() => handleSelect(category.id)}

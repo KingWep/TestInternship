@@ -202,7 +202,7 @@ export default function AdminSaleForm() {
                   className="col-span-2 xl:col-span-4 flex justify-center items-center py-5"
                 >
                   <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <span className="w-4 h-4 border-2 border-slate-300 border-t-blue-600 rounded-full animate-spin" />
+                    <span className="w-4 h-4 border-2 border-slate-300 border-t-[#9d1159] rounded-full animate-spin" />
                     {t("common.loading")}
                   </div>
                 </div>
@@ -228,14 +228,14 @@ export default function AdminSaleForm() {
         <form
           onSubmit={handleSubmit(onCheckout)}
           className={`
-            fixed inset-0 z-50 bg-slate-50 flex flex-col p-4 pb-6 overflow-y-auto transition-transform duration-300
+            fixed inset-0 z-50 bg-[#fcfafb] flex flex-col p-4 pb-6 overflow-y-auto transition-transform duration-300
             ${isCartOpen ? "translate-y-0" : "translate-y-full"}
             lg:static lg:translate-y-0 lg:z-auto lg:p-0 lg:pb-0 lg:bg-transparent lg:col-span-5 lg:flex lg:flex-col lg:gap-4 lg:overflow-y-auto lg:will-change-scroll lg:overscroll-contain transform-gpu
           `}
         >
           <div className="lg:hidden flex items-center justify-between mb-4 bg-white p-3 rounded-xl border border-slate-200 shadow-sm sticky top-0 z-10 flex-shrink-0">
             <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <ShoppingCart size={20} className="text-blue-600" />
+              <ShoppingCart size={20} className="text-[#870d4c]" />
 
               {t("sales.reviewOrder")}
             </h2>
@@ -275,7 +275,7 @@ export default function AdminSaleForm() {
         <button
           type="button"
           onClick={() => setIsCartOpen(true)}
-          className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-3xl py-3 px-4 font-bold flex items-center justify-between transition-colors shadow-md"
+          className="w-full bg-[#9d1159] hover:bg-[#9d1159] active:bg-[#44092e] text-white rounded-3xl py-3 px-4 font-bold flex items-center justify-between transition-colors shadow-md"
         >
           <span className="bg-white/25 text-white px-2.5 py-0.5 rounded-lg text-sm">
             {cart.length} {t("sales.items")}

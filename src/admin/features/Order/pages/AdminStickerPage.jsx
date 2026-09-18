@@ -159,7 +159,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
         </div>
 
         {/* Shop phone + social icons */}
-        <div className="flex items-center gap-3 text-xs font-bold text-slate-800 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-300">
+        <div className="flex items-center gap-3 text-xs font-bold text-slate-800 bg-[#fcfafb] px-3 py-1.5 rounded-md border border-slate-300">
           <div className="flex items-center gap-1.5">
             <Phone size={13} className="text-slate-900" />
             <span>{shopPhone || "—"}</span>
@@ -188,7 +188,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
         <div className="md:col-span-7 print:col-span-7 flex flex-col gap-2 justify-between">
           <div className="flex flex-col sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 print:grid-cols-2 gap-2">
             {/* Sender */}
-            <div className="border border-slate-800 rounded-lg p-2.5 bg-slate-50/60 flex flex-col justify-center">
+            <div className="border border-slate-800 rounded-lg p-2.5 bg-[#fcfafb]/60 flex flex-col justify-center">
               <div className="flex items-center gap-1 text-[11px] font-bold text-slate-600 mb-1">
                 <User size={12} />
                 {t("order.sender")}
@@ -204,7 +204,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
             </div>
 
             {/* Receiver */}
-            <div className="border border-slate-800 rounded-lg p-2.5 bg-slate-50/60 flex flex-col justify-center">
+            <div className="border border-slate-800 rounded-lg p-2.5 bg-[#fcfafb]/60 flex flex-col justify-center">
               <div className="flex items-center gap-1 text-[11px] font-bold text-slate-600 mb-1">
                 <Phone size={12} />
                 {t("order.receiver")}
@@ -228,14 +228,14 @@ function AdminStickerCard({ order, courier, setCourier }) {
                 {t("order.deliveryAddress")}
               </div>
 
-              <div className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+              <div className="text-[10px] font-bold text-[#9d1159] bg-[#870d4c]/5 px-2 py-0.5 rounded border border-[#870d4c]/10">
                 {order?.deliveryProvider?.name ||
                   order?.deliveryMethod ||
                   t("order.none")}
               </div>
             </div>
 
-            <p className="font-medium text-xs text-slate-800 leading-relaxed border border-slate-100 p-1.5 rounded bg-slate-50">
+            <p className="font-medium text-xs text-slate-800 leading-relaxed border border-slate-100 p-1.5 rounded bg-[#fcfafb]">
               {order?.customerAddress || order?.address || t("order.noAddress")}
             </p>
           </div>
@@ -260,8 +260,8 @@ function AdminStickerCard({ order, courier, setCourier }) {
           </div>
 
           {/* Price */}
-          <div className="border border-slate-800 rounded-lg p-2.5 bg-slate-50/60 flex flex-col justify-center gap-1.5 text-xs">
-            <div className="flex justify-between items-center bg-slate-50 p-1.5 rounded border border-slate-100 text-[11px]">
+          <div className="border border-slate-800 rounded-lg p-2.5 bg-[#fcfafb]/60 flex flex-col justify-center gap-1.5 text-xs">
+            <div className="flex justify-between items-center bg-[#fcfafb] p-1.5 rounded border border-slate-100 text-[11px]">
               <span className="flex items-center gap-1 font-bold">
                 <Tag size={12} />
                 {t("order.items")}
@@ -272,7 +272,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
               </span>
             </div>
 
-            <div className="flex justify-between items-center bg-slate-50 p-1.5 rounded border border-slate-100 text-[11px]">
+            <div className="flex justify-between items-center bg-[#fcfafb] p-1.5 rounded border border-slate-100 text-[11px]">
               <span className="flex items-center gap-1 font-bold">
                 <Bike size={12} />
                 {t("order.shipping")}
@@ -283,7 +283,7 @@ function AdminStickerCard({ order, courier, setCourier }) {
               </span>
             </div>
 
-            <div className="flex justify-between items-center bg-blue-50/50 p-1.5 rounded border border-blue-100 text-slate-950 font-black text-xs">
+            <div className="flex justify-between items-center bg-[#870d4c]/5/50 p-1.5 rounded border border-[#870d4c]/10 text-slate-950 font-black text-xs">
               <span className="flex items-center gap-1">
                 <Receipt size={13} />
                 {t("order.total")}
@@ -399,7 +399,7 @@ export default function AdminStickerPage() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center py-20">
+      <div className="min-h-screen bg-[#fcfafb] flex flex-col items-center justify-center py-20">
         <FileWarning size={48} className="text-slate-300 mb-4" />
 
         <p className="text-base font-semibold text-slate-600 mb-4">
@@ -483,7 +483,7 @@ export default function AdminStickerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center py-8 px-4 font-sans text-slate-800">
+    <div className="min-h-screen bg-[#fcfafb] flex flex-col items-center py-8 px-4 font-sans text-slate-800">
       <div className="w-full max-w-2xl flex items-center justify-between mb-5">
         <Link
           to="/admin/orders"
@@ -493,7 +493,7 @@ export default function AdminStickerPage() {
           <span>{t("order.goBack")}</span>
         </Link>
 
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#870d4c]/5 text-[#9d1159] rounded-lg text-sm font-medium">
           <Package size={14} />
           {t("order.stickerSize")}
         </div>
@@ -512,7 +512,7 @@ export default function AdminStickerPage() {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-2xl pt-1">
         <button
           onClick={handlePrint}
-          className="w-full flex items-center justify-center gap-2 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 py-1 bg-[#9d1159] text-white rounded-lg hover:bg-[#9d1159] transition-colors font-medium shadow-sm cursor-pointer"
         >
           <Printer size={14} />
           {t("order.printSticker")}

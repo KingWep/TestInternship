@@ -31,7 +31,7 @@ export default function OrderFilterBar({
             type="text"
             value={search}
             onChange={onSearchChange}
-            className="block w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-xs sm:text-sm"
+            className="block w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl bg-[#fcfafb] text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#870d4c]/30 focus:bg-white text-xs sm:text-sm"
             placeholder={t('order.searchByCodeOrPhone')}
           />
         </div>
@@ -40,7 +40,7 @@ export default function OrderFilterBar({
           <select
           value={paymentFilter}
           onChange={onPaymentChange}
-          className="appearance-none block w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm cursor-pointer"
+          className="appearance-none block w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-xl bg-[#fcfafb] text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#870d4c]/30 text-xs sm:text-sm cursor-pointer"
           >
             <option value="" disabled>{t('order.selectPayment')}</option>
             <option value="All">{t('order.all')}</option>
@@ -56,7 +56,7 @@ export default function OrderFilterBar({
           <select
             value={statusFilter}
             onChange={onStatusChange}
-            className="appearance-none block w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm cursor-pointer"
+            className="appearance-none block w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-xl bg-[#fcfafb] text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#870d4c]/30 text-xs sm:text-sm cursor-pointer"
           >
             <option value="" disabled>{t('order.selectStatus')}</option>
             <option value="All">{t('order.all')}</option>
@@ -77,8 +77,8 @@ export default function OrderFilterBar({
           onClick={() => setShowAdvanced(!showAdvanced)}
           className={`xl:hidden p-2.5 rounded-xl border transition-colors flex items-center justify-center ${
             showAdvanced || fromDate || toDate
-              ? "bg-blue-50 border-blue-200 text-blue-600"
-              : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
+              ? "bg-[#870d4c]/5 border-[#870d4c]/20 text-[#870d4c]"
+              : "bg-[#fcfafb] border-slate-200 text-slate-600 hover:bg-slate-100"
           }`}
           title={t('order.filterByDate')}
         >
@@ -102,7 +102,7 @@ export default function OrderFilterBar({
                 type="date"
                 value={fromDate}
                 onChange={onFromDateChange}
-                className="block w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm"
+                className="block w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-[#fcfafb] text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#870d4c]/30 text-xs sm:text-sm"
               />
             </div>
 
@@ -114,7 +114,7 @@ export default function OrderFilterBar({
                 type="date"
                 value={toDate}
                 onChange={onToDateChange}
-                className="block w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm"
+                className="block w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-[#fcfafb] text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#870d4c]/30 text-xs sm:text-sm"
               />
             </div>
 
@@ -129,7 +129,7 @@ export default function OrderFilterBar({
                   onFromDateChange({ target: { value: "" } });
                   onToDateChange({ target: { value: "" } });
                 }}
-                className="w-full sm:w-auto px-3 py-2 border border-slate-200 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 flex items-center justify-center gap-2 text-xs sm:text-sm transition-colors"
+                className="w-full sm:w-auto px-3 py-2 border border-slate-200 rounded-xl bg-[#fcfafb] hover:bg-slate-100 text-slate-600 flex items-center justify-center gap-2 text-xs sm:text-sm transition-colors"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 <span>{t('order.reset')}</span>

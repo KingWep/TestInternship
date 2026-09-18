@@ -54,7 +54,7 @@ export default function AdminProducts() {
             className="h-16 w-16 min-w-[4rem] object-cover rounded-lg"
           />
         ) : (
-          <div className="h-16 w-16 min-w-[4rem] bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
+          <div className="h-16 w-16 min-w-[4rem] bg-[#fcfafb] rounded-lg flex items-center justify-center text-xs text-gray-400">
             {t('products.noImage')}
           </div>
         ),
@@ -78,7 +78,7 @@ export default function AdminProducts() {
     {
       header: t('products.originalPrice'),
       render: (row) => (
-        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-slate-100 text-slate-600">
+        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-[#fcfafb] text-slate-600">
           ${Number(row.price).toFixed(2)}
         </span>
       ),
@@ -162,7 +162,7 @@ export default function AdminProducts() {
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
-            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
+            className="p-2 bg-[#fcfafb] border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
             title={t('products.editProduct')}
           >
             <Edit size={18} />
@@ -170,7 +170,7 @@ export default function AdminProducts() {
 
           <DeleteButton
             onConfirm={() => handleDelete(row.id)}
-            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
+            className="p-2 bg-[#fcfafb] border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
           >
             <Trash2 size={18} />
           </DeleteButton>
@@ -268,7 +268,7 @@ export default function AdminProducts() {
               onClick={() => setShowAdvancedFilters((prev) => !prev)}
               className={`md:hidden shrink-0 w-10 py-2.5 flex items-center justify-center rounded-xl border transition-colors ${
                 showAdvancedFilters
-                  ? "bg-slate-100 border-slate-300 text-slate-700"
+                  ? "bg-[#fcfafb] border-slate-300 text-slate-700"
                   : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
               }`}
               title={t('common.showFilters')}
@@ -288,7 +288,7 @@ export default function AdminProducts() {
           }`}
         >
           <div className="overflow-hidden">
-            <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-[#fcfafb] border border-slate-200 rounded-xl">
               <FilterBar
                 filters={productFilters}
                 values={filters}

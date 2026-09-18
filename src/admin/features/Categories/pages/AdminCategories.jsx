@@ -75,7 +75,7 @@ export default function AdminCategories() {
     {
       header: 'Slug',
       render: (row) => (
-        <span className="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">
+        <span className="font-mono text-xs text-slate-500 bg-[#fcfafb] px-2 py-1 rounded">
           {row.slug}
         </span>
       ),
@@ -87,7 +87,7 @@ export default function AdminCategories() {
           (product) => String(product.categoryId) === String(row.id)
         ).length;
         return (
-          <span className="font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+          <span className="font-medium text-[#870d4c] bg-[#870d4c]/5 px-2 py-1 rounded">
             {count}
           </span>
         );
@@ -127,7 +127,7 @@ export default function AdminCategories() {
           </button>
           <DeleteButton
             onConfirm={() => handleDelete(row.id)}
-            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
+            className="p-2 bg-[#fcfafb] border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
           >
             <Trash2 size={18} />
           </DeleteButton>
@@ -181,7 +181,7 @@ export default function AdminCategories() {
                 placeholder={t('category.searchPlaceholder')}
                 value={filters.search || ''}
                 onChange={(e) => updateFilter('search', e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#870d4c]/30"
               />
             </div>
 
@@ -203,7 +203,7 @@ export default function AdminCategories() {
               onClick={() => setShowAdvancedFilters((prev) => !prev)}
               className={`md:hidden shrink-0 w-10 py-2.5 flex items-center justify-center rounded-xl border transition-colors ${
                 showAdvancedFilters
-                  ? "bg-slate-100 border-slate-300 text-slate-700"
+                  ? "bg-[#fcfafb] border-slate-300 text-slate-700"
                   : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
               }`}
               title={t('common.showFilters')}
@@ -223,7 +223,7 @@ export default function AdminCategories() {
           }`}
         >
           <div className="overflow-hidden">
-            <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-[#fcfafb] border border-slate-200 rounded-xl">
               <FilterBar
                 filters={categoryFilters}
                 values={filters}

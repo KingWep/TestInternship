@@ -30,7 +30,7 @@ export default function ProductSelectCard({ product, onSelect }) {
       className={`bg-white border rounded-xl p-3 shadow-2xs flex flex-col justify-between group transition-all duration-200 w-full h-full ${
         isOutOfStock
           ? "border-slate-200 opacity-50 cursor-not-allowed"
-          : "border-slate-200 hover:shadow-sm hover:border-blue-300 cursor-pointer"
+          : "border-slate-200 hover:shadow-sm hover:border-[#870d4c]/50 cursor-pointer"
       }`}
     >
       <div>
@@ -88,10 +88,10 @@ export default function ProductSelectCard({ product, onSelect }) {
             <>
               <IoGift
                 size={13}
-                className="text-blue-500 flex-shrink-0"
+                className="text-[#870d4c] flex-shrink-0"
               />
 
-              <span className="text-[10px] font-khmer text-blue-600 rounded line-clamp-1">
+              <span className="text-[10px] font-khmer text-[#870d4c] rounded line-clamp-1">
                 {t("sales.save")} ${discountPrice.toFixed(2)}
               </span>
             </>
@@ -103,8 +103,8 @@ export default function ProductSelectCard({ product, onSelect }) {
         <span
           className={`block w-full text-center text-xs py-1 rounded-md font-semibold transition-colors ${
             isOutOfStock
-              ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-              : "bg-blue-500 text-white hover:bg-blue-600"
+              ? "bg-[#fcfafb] text-slate-400 cursor-not-allowed"
+              : "bg-[#870d4c] text-white hover:bg-[#9d1159]"
           }`}
         >
           {isOutOfStock

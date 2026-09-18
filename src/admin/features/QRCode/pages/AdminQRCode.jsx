@@ -252,7 +252,7 @@ export default function AdminQRCode() {
 
       <div className="flex flex-col md:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-2 md:gap-4">
-          <div className="w-14 h-14 md:w-20 md:h-20 rounded bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-inner">
+          <div className="w-14 h-14 md:w-20 md:h-20 rounded bg-[#870d4c]/5 border border-[#870d4c]/10 flex items-center justify-center text-[#870d4c] shadow-inner">
             <QrCodeIcon className="w-10 h-10 md:w-16 md:h-16" />
           </div>
 
@@ -299,7 +299,7 @@ export default function AdminQRCode() {
           <div className="mt-6 md:mt-8 z-10 w-full flex justify-center">
             <button
               onClick={downloadQRCode}
-              className="flex items-center gap-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md shadow-blue-500/30 transition-all active:scale-95"
+              className="flex items-center gap-1 px-4 py-3 bg-[#9d1159] hover:bg-[#9d1159] text-white font-semibold rounded-xl shadow-md shadow-[#870d4c]/30 transition-all active:scale-95"
             >
               <Download size={18} />
 
@@ -330,8 +330,8 @@ export default function AdminQRCode() {
               URL
             </label>
 
-            <div className="flex items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50/80 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
-              <span className="flex items-center justify-center px-3 sm:px-4 py-3 bg-slate-100 border-r border-slate-200 text-slate-400 shrink-0">
+            <div className="flex items-center overflow-hidden rounded-xl border border-slate-200 bg-[#fcfafb]/80 focus-within:border-[#870d4c] focus-within:ring-2 focus-within:ring-[#870d4c]/30/20 transition-all">
+              <span className="flex items-center justify-center px-3 sm:px-4 py-3 bg-[#fcfafb] border-r border-slate-200 text-slate-400 shrink-0">
                 <LinkIcon
                   size={16}
                   className="sm:w-[18px] sm:h-[18px]"

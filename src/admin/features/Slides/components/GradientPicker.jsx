@@ -360,7 +360,7 @@ export default function GradientPicker({ value, onChange }) {
             className={`px-3 py-2 text-sm rounded-lg border transition ${
               type === "linear"
                 ? "bg-slate-900 text-white border-slate-900"
-                : "bg-gray-50 text-slate-600 border-gray-200 hover:bg-gray-100"
+                : "bg-[#fcfafb] text-slate-600 border-gray-200 hover:bg-gray-100"
             }`}
           >
             Linear
@@ -372,7 +372,7 @@ export default function GradientPicker({ value, onChange }) {
             className={`px-3 py-2 text-sm rounded-lg border transition ${
               type === "radial"
                 ? "bg-slate-900 text-white border-slate-900"
-                : "bg-gray-50 text-slate-600 border-gray-200 hover:bg-gray-100"
+                : "bg-[#fcfafb] text-slate-600 border-gray-200 hover:bg-gray-100"
             }`}
           >
             Radial
@@ -419,7 +419,7 @@ export default function GradientPicker({ value, onChange }) {
               onChange={(e) =>
                 handleAngleChange(e.target.value)
               }
-              className="w-20 px-2 py-2 text-sm bg-gray-50 rounded-lg outline-none border border-gray-200 focus:ring-2 focus:ring-gray-200"
+              className="w-20 px-2 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none border border-gray-200 focus:ring-2 focus:ring-gray-200"
             />
           </div>
         </div>
@@ -435,7 +435,7 @@ export default function GradientPicker({ value, onChange }) {
             type="button"
             onClick={addStop}
             disabled={stops.length >= 8}
-            className="text-xs font-semibold text-blue-600 hover:text-blue-700 disabled:text-gray-400"
+            className="text-xs font-semibold text-[#870d4c] hover:text-[#9d1159] disabled:text-gray-400"
           >
             + Add color
           </button>
@@ -491,8 +491,8 @@ export default function GradientPicker({ value, onChange }) {
                 key={stop.id}
                 className={`flex items-center gap-2 p-2 rounded-lg border ${
                   selectedStopId === stop.id
-                    ? "border-slate-300 bg-slate-50"
-                    : "border-gray-100 bg-gray-50"
+                    ? "border-slate-300 bg-[#fcfafb]"
+                    : "border-gray-100 bg-[#fcfafb]"
                 }`}
               >
                 <input
@@ -566,7 +566,7 @@ export default function GradientPicker({ value, onChange }) {
           value={gradient}
           readOnly
           rows={3}
-          className="w-full px-3 py-2 text-xs font-mono bg-gray-50 rounded-lg border border-gray-200 outline-none resize-none"
+          className="w-full px-3 py-2 text-xs font-mono bg-[#fcfafb] rounded-lg border border-gray-200 outline-none resize-none"
         />
       </div>
 

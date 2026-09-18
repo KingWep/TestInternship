@@ -71,7 +71,7 @@ export default function AdminSlides() {
     {
       header: t("promotions.badge"),
       render: (row) => (
-        <span className="inline-block whitespace-nowrap font-bold bg-slate-100 text-black/70 py-1 px-2 rounded border-2 border-slate-400">
+        <span className="inline-block whitespace-nowrap font-bold bg-[#fcfafb] text-black/70 py-1 px-2 rounded border-2 border-slate-400">
           {row.tag}
         </span>
       ),
@@ -171,7 +171,7 @@ export default function AdminSlides() {
           className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors shadow-sm ${
             isLimitReached
               ? "bg-slate-200 text-slate-500 hover:bg-slate-300 cursor-pointer"
-              : "bg-blue-600 text-white hover:bg-blue-700"
+              : "bg-[#9d1159] text-white hover:bg-[#9d1159]"
           }`}
         >
           <Plus size={16} />

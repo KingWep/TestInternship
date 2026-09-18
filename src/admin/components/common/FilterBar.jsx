@@ -50,7 +50,7 @@ function CustomSelect({ filter, value, onChange }) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="appearance-none flex justify-between items-center w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm cursor-pointer text-left"
+        className="appearance-none flex justify-between items-center w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-xl bg-[#fcfafb] text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#870d4c]/30 text-xs sm:text-sm cursor-pointer text-left"
       >
         <span className="truncate">
           {selectedOption?.label ||
@@ -73,7 +73,7 @@ function CustomSelect({ filter, value, onChange }) {
                   placeholder={t('common.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#870d4c]/30"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
@@ -82,7 +82,7 @@ function CustomSelect({ filter, value, onChange }) {
 
           <ul className="overflow-y-auto py-1">
 
-            <li className="px-3 py-2 text-xs sm:text-sm text-slate-400 bg-slate-100 cursor-not-allowed">
+            <li className="px-3 py-2 text-xs sm:text-sm text-slate-400 bg-[#fcfafb] cursor-not-allowed">
               {t('common.selectFilter')}
             </li>
 
@@ -100,7 +100,7 @@ function CustomSelect({ filter, value, onChange }) {
                     hover:bg-slate-50
                     ${
                       value === option.value
-                        ? 'bg-blue-50 text-blue-600 font-medium'
+                        ? 'bg-[#870d4c]/5 text-[#870d4c] font-medium'
                         : 'text-slate-700'
                     }
                   `}

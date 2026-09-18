@@ -48,7 +48,7 @@ export default function OrderSummaryBox({
       </div>
 
       {/* Emphasized Total Box */}
-      <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 my-4 flex justify-between items-center">
+      <div className="bg-[#fcfafb] border border-slate-200 rounded-xl px-4 py-3 my-4 flex justify-between items-center">
         <span className="text-sm font-bold text-slate-700 uppercase">
           {t('order.grandTotal')}
         </span>
@@ -61,7 +61,7 @@ export default function OrderSummaryBox({
       <button
         onClick={onCheckout}
         disabled={disabled}
-        className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+        className="w-full flex items-center justify-center gap-2 py-3 bg-[#9d1159] hover:bg-[#9d1159] text-white font-bold rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed mt-4"
       >
         {t('order.checkout')}
       </button>

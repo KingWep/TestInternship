@@ -10,7 +10,7 @@ export default function Button({
   const baseStyles = 'inline-flex items-center justify-center font-medium transition-colors rounded-xl focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none'
   
   const variants = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+    primary: 'bg-[#9d1159] text-white hover:bg-[#9d1159] shadow-sm',
     secondary: 'bg-slate-200 text-slate-800 hover:bg-slate-300',
     danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
     outline: 'border border-slate-300 text-slate-700 hover:bg-slate-100'

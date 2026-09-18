@@ -16,7 +16,7 @@ export default function DataTable({ columns, data, keyField = 'id', onRowClick, 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse whitespace-nowrap">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            <tr className="bg-[#fcfafb] border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
               {columns.map((col, index) => (
                 <th 
                   key={index} 

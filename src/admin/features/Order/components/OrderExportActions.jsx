@@ -60,7 +60,7 @@ export default function OrderExportActions() {
         value={selectedMonth}
         onChange={(e) => setSelectedMonth(e.target.value)}
         max={maxMonth()}
-        className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-700 outline-none focus:border-blue-500 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors"
+        className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-700 outline-none focus:border-[#870d4c] bg-[#fcfafb] cursor-pointer hover:bg-slate-100 transition-colors"
       />
       <button
         onClick={handleExcelExport}

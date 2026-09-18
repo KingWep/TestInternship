@@ -37,7 +37,7 @@ export default function NotificationDropdown() {
 
   const renderIcon = (type) => {
     switch(type) {
-      case 'order': return <ShoppingBag className="text-blue-600" size={20} />;
+      case 'order': return <ShoppingBag className="text-[#870d4c]" size={20} />;
       case 'low_stock': return <AlertTriangle className="text-amber-500" size={20} />;
       case 'out_of_stock': return <AlertCircle className="text-red-500" size={20} />;
       default: return <IoNotifications className="text-slate-500" size={20} />;
@@ -49,12 +49,12 @@ export default function NotificationDropdown() {
       {/* Bell Trigger Button using IoNotifications */}
       <button
         onClick={toggleDropdown}
-        className="relative p-2 text-slate-600 px-2 py-1.5 border-[2px] hover:bg-blue-200 rounded-md transition-colors flex items-center justify-center"
+        className="relative p-2 text-slate-600 px-2 py-1.5 border-[2px] hover:bg-[#870d4c]/20 rounded-md transition-colors flex items-center justify-center"
         aria-label="Notifications"
       >
         <IoNotifications size={18} />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-600 rounded-full ring-2 ring-white"></span>
+          <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-[#9d1159] rounded-full ring-2 ring-white"></span>
         )}
       </button>
 
@@ -67,7 +67,7 @@ export default function NotificationDropdown() {
             <h3 className="text-lg font-bold text-slate-900">{t('notifications.title')}</h3>
             <button
               onClick={markAllAsRead}
-              className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+              className="text-xs font-semibold text-[#870d4c] hover:text-[#9d1159] transition-colors"
             >
               {t('notifications.markAllAsRead')}
             </button>
@@ -96,7 +96,7 @@ export default function NotificationDropdown() {
               >
                 {t('notifications.unread')}
                 {unreadCount > 0 && (
-                  <span className="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full text-xs">
+                  <span className="bg-[#fcfafb] text-slate-600 px-1.5 py-0.5 rounded-full text-xs">
                     {unreadCount}
                   </span>
                 )}
@@ -131,7 +131,7 @@ export default function NotificationDropdown() {
                 className={`px-3 py-1 text-xs rounded-full transition-colors ${
                   typeFilter === filter.id 
                     ? 'bg-slate-800 text-white' 
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    : 'bg-[#fcfafb] text-slate-600 hover:bg-slate-200'
                 }`}
               >
                 {filter.label}
@@ -147,10 +147,10 @@ export default function NotificationDropdown() {
                   key={item.id}
                   onClick={() => handleNotificationClick(item)}
                   className={`flex items-start gap-3.5 px-5 py-3.5 hover:bg-slate-50 transition-colors cursor-pointer ${
-                    !item.read ? 'bg-slate-50/60' : ''
+                    !item.read ? 'bg-[#fcfafb]/60' : ''
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center bg-slate-100">
+                  <div className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center bg-[#fcfafb]">
                     {renderIcon(item.type)}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -169,7 +169,7 @@ export default function NotificationDropdown() {
                     </span>
                   </div>
                   {!item.read && (
-                    <span className="w-2 h-2 bg-blue-600 rounded-full shrink-0 self-center mt-1"></span>
+                    <span className="w-2 h-2 bg-[#9d1159] rounded-full shrink-0 self-center mt-1"></span>
                   )}
                 </div>
               ))

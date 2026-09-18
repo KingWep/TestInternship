@@ -30,11 +30,11 @@ export default function OrderFormFields({
         </label>
 
         <div
-          className={`flex items-center w-full bg-slate-50 border rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-colors ${
+          className={`flex items-center w-full bg-[#fcfafb] border rounded-xl overflow-hidden focus-within:border-[#870d4c] focus-within:ring-1 focus-within:ring-[#870d4c]/30 transition-colors ${
             errors.phone ? "border-red-500" : "border-slate-200"
           }`}
         >
-          <div className="pl-3.5 pr-2 py-2 text-slate-600 text-sm font-semibold select-none flex items-center bg-slate-100 border-r border-slate-200 h-full">
+          <div className="pl-3.5 pr-2 py-2 text-slate-600 text-sm font-semibold select-none flex items-center bg-[#fcfafb] border-r border-slate-200 h-full">
             +855{" "}
             <span className="text-slate-300 ml-1.5 text-xs">|</span>
           </div>
@@ -72,7 +72,7 @@ export default function OrderFormFields({
           {...register("address")}
           placeholder={t("order.enterAddress")}
           rows={3}
-          className={`w-full px-3.5 py-2 bg-slate-50 border rounded-xl text-sm text-slate-800 focus:outline-hidden focus:border-blue-500 transition-colors resize-y ${
+          className={`w-full px-3.5 py-2 bg-[#fcfafb] border rounded-xl text-sm text-slate-800 focus:outline-hidden focus:border-[#870d4c] transition-colors resize-y ${
             errors.address ? "border-red-500" : "border-slate-200"
           }`}
         />

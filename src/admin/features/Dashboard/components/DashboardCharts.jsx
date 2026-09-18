@@ -68,7 +68,7 @@ export default function DashboardCharts() {
   const barChartConfig = {
     total: {
       label: t('dashboard.totalSales'),
-      color: 'hsl(var(--primary))',
+      color: '#870d4c',
     },
   }
 
@@ -89,12 +89,12 @@ export default function DashboardCharts() {
     }, {})
 
     const COLORS = [
-      '#0088FE',
-      '#00C49F',
-      '#FFBB28',
-      '#FF8042',
-      '#8884d8',
-      '#82ca9d',
+      '#870d4c',
+      '#b31b6b',
+      '#5d0a35',
+      '#c92a7e',
+      '#44092e',
+      '#db4d98',
     ]
 
     return Object.values(stockByCategory).map((item, index) => ({

@@ -68,7 +68,7 @@ export default function SlideForm({ onSubmit, initialData }) {
             type="text"
             {...register("tag")}
             placeholder={t("promotions.badgePlaceholder")}
-            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-[#870d4c] focus:ring-2 focus:ring-[#870d4c]/10"
           />
           {errors.tag && (
             <p className="text-xs text-red-500 mt-1">
@@ -86,7 +86,7 @@ export default function SlideForm({ onSubmit, initialData }) {
             type="text"
             {...register("title")}
             placeholder={t("promotions.titlePlaceholder")}
-            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-[#870d4c] focus:ring-2 focus:ring-[#870d4c]/10"
           />
           {errors.title && (
             <p className="text-xs text-red-500 mt-1">
@@ -111,7 +111,7 @@ export default function SlideForm({ onSubmit, initialData }) {
                 value === "" ? undefined : Number(value),
             })}
             placeholder={t("promotions.discountPlaceholder")}
-            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-[#870d4c] focus:ring-2 focus:ring-[#870d4c]/10"
           />
           {errors.discountPercentage && (
             <p className="text-xs text-red-500 mt-1">
@@ -128,7 +128,7 @@ export default function SlideForm({ onSubmit, initialData }) {
           </label>
           <select
             {...register("status")}
-            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-[#870d4c] focus:ring-2 focus:ring-[#870d4c]/10"
           >
             <option value="Active">{t("promotions.active")}</option>
             <option value="Inactive">{t("promotions.inactive")}</option>
@@ -151,7 +151,7 @@ export default function SlideForm({ onSubmit, initialData }) {
             type="text"
             {...register("ctaText")}
             placeholder={t("promotions.ctaPlaceholder")}
-            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none transition focus:border-[#870d4c] focus:ring-2 focus:ring-[#870d4c]/10"
           />
           {errors.ctaText && (
             <p className="text-xs text-red-500 mt-1">
@@ -162,7 +162,7 @@ export default function SlideForm({ onSubmit, initialData }) {
       </div>
 
       {/* Section 4: Full-width Background Gradient Picker */}
-      <div className="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-3">
+      <div className="p-4 bg-[#fcfafb] border border-slate-200/80 rounded-2xl space-y-3">
         <div className="flex items-center justify-between">
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
             {t("promotions.bgColorLabel")}
@@ -205,7 +205,7 @@ export default function SlideForm({ onSubmit, initialData }) {
           {...register("description")}
           rows={3}
           placeholder={t("promotions.descPlaceholder")}
-          className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none resize-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl outline-none resize-none transition focus:border-[#870d4c] focus:ring-2 focus:ring-[#870d4c]/10"
         />
         {errors.description && (
           <p className="text-xs text-red-500 mt-1">
@@ -220,7 +220,7 @@ export default function SlideForm({ onSubmit, initialData }) {
       <div className="flex items-center justify-end pt-4 border-t border-slate-100">
         <button
           type="submit"
-          className="flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98] transition shadow-sm shadow-blue-200"
+          className="flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-xl bg-[#9d1159] text-white hover:bg-[#9d1159] active:scale-[0.98] transition shadow-sm shadow-[#870d4c]/20"
         >
           <Save size={16} />
           {isEditing ? t("promotions.updateBtn") : t("promotions.saveBtn")}

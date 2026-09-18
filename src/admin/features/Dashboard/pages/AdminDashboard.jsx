@@ -19,7 +19,7 @@ export default function AdminDashboard() {
       label: t('dashboard.statusPending'),
     },
     Pickup: {
-      styles: "bg-blue-100 text-blue-700",
+      styles: "bg-[#870d4c]/10 text-[#9d1159]",
       label: t('dashboard.statusPickedUp'),
     },
     Delivering: {
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
       render: (row) => {
         // Apply the statusConfig dictionary here instead of nested ternaries
         const config = statusConfig[row.status] || {
-          styles: "bg-gray-100 text-gray-700",
+          styles: "bg-[#fcfafb] text-gray-700",
           label: row.status,
         };
         return (
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
         <div className="flex justify-end space-x-2">
           <Link
             to="/admin/orders"
-            className="px-5 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-5 py-1 bg-[#870d4c] text-white rounded hover:bg-[#9d1159]"
           >
             <Eye className="w-4 h-4" />
           </Link>

@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next'
 
 const ROLE_COLORS = {
   Admin: 'bg-purple-100 text-purple-700',
-  User: 'bg-blue-100 text-blue-700',
+  User: 'bg-[#870d4c]/10 text-[#9d1159]',
 }
 
 export default function AdminUsers() {
@@ -63,7 +63,7 @@ export default function AdminUsers() {
       header: t('users.avatar'),
       accessor: 'avatar',
       render: (row) => (
-        <div className=" h-10 w-10 min-w-[2.5rem] bg-blue-100 border border-blue-200 rounded-full flex items-center justify-center text-blue-600 text-sm font-bold">
+        <div className=" h-10 w-10 min-w-[2.5rem] bg-[#870d4c]/10 border border-[#870d4c]/20 rounded-full flex items-center justify-center text-[#870d4c] text-sm font-bold">
           {row.name?.charAt(0)?.toUpperCase()}
         </div>
       ),
@@ -72,7 +72,7 @@ export default function AdminUsers() {
       header: t('users.id'),
       accessor: 'id',
       render: (row) => (
-        <span className="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">
+        <span className="font-mono text-xs text-slate-500 bg-[#fcfafb] px-2 py-1 rounded">
           {row.id}
         </span>
       ),
@@ -94,7 +94,7 @@ export default function AdminUsers() {
         const roleKhmer = row.role === 'Admin' ? t('users.admin') : row.role === 'User' ? t('users.user') : row.role;
         return (
         <span
-          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${ROLE_COLORS[row.role] || 'bg-gray-100 text-gray-600'
+          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${ROLE_COLORS[row.role] || 'bg-[#fcfafb] text-gray-600'
             }`}
         >
           {roleKhmer}
@@ -127,14 +127,14 @@ export default function AdminUsers() {
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
-            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
+            className="p-2 bg-[#fcfafb] border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
             title={t('users.editUser')}
           >
             <Edit size={18} />
           </button>
           <DeleteButton
             onConfirm={() => handleDelete(row.id)}
-            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
+            className="p-2 bg-[#fcfafb] border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
           >
             <Trash2 size={18} />
           </DeleteButton>
@@ -200,7 +200,7 @@ export default function AdminUsers() {
               onClick={() => setShowAdvancedFilters(prev => !prev)}
               className={`md:hidden shrink-0 w-10 py-2.5 flex items-center justify-center rounded-xl border transition-colors ${
                 showAdvancedFilters
-                  ? 'bg-slate-100 border-slate-300 text-slate-700'
+                  ? 'bg-[#fcfafb] border-slate-300 text-slate-700'
                   : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700'
               }`}
               title={t('common.showFilters')}
@@ -217,7 +217,7 @@ export default function AdminUsers() {
           }`}
         >
           <div className="overflow-hidden">
-            <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div className="flex flex-nowrap overflow-x-auto justify-between items-center gap-4 p-4 bg-[#fcfafb] border border-slate-200 rounded-xl">
 
               <FilterBar
                 filters={roleFilters}

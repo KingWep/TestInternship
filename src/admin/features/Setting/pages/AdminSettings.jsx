@@ -35,11 +35,11 @@ export default function AdminSettings() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                   isActive 
-                    ? 'bg-blue-50 text-blue-700 shadow-sm' 
+                    ? 'bg-[#870d4c]/5 text-[#9d1159] shadow-sm' 
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
-                <Icon size={18} className={isActive ? 'text-blue-600' : 'text-slate-400'} />
+                <Icon size={18} className={isActive ? 'text-[#870d4c]' : 'text-slate-400'} />
                 {tab.label}
               </button>
             );

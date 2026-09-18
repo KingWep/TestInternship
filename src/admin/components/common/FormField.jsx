@@ -8,7 +8,7 @@ export default function FormField({ label, name, type = 'text', value, onChange,
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#870d4c]/30"
       />
     </div>
   )

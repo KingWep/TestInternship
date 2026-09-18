@@ -39,7 +39,7 @@ export default function PermissionSettings() {
       </div>
 
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-        <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+        <div className="p-4 bg-[#fcfafb] border-b border-slate-200 flex justify-between items-center">
           <h4 className="font-semibold text-slate-700 text-sm">{t('settings.roleAccessConfig')}</h4>
           <Button variant="primary" size="sm" className="rounded-lg text-xs py-1.5">{t('settings.saveChanges')}</Button>
         </div>
@@ -48,7 +48,7 @@ export default function PermissionSettings() {
           {/* Permission Row 1 */}
           <div className="p-5 flex items-center justify-between hover:bg-slate-50 transition-colors">
             <div className="flex items-center gap-4">
-              <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+              <div className="p-2.5 bg-[#870d4c]/5 text-[#870d4c] rounded-xl">
                 <LayoutDashboard size={20} />
               </div>
               <div>
@@ -58,7 +58,7 @@ export default function PermissionSettings() {
             </div>
             <button 
               onClick={() => togglePermission('staffDashboard')}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${permissions.staffDashboard ? 'bg-blue-600' : 'bg-slate-200'}`}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${permissions.staffDashboard ? 'bg-[#9d1159]' : 'bg-slate-200'}`}
             >
               <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ease-in-out ${permissions.staffDashboard ? 'translate-x-5' : 'translate-x-0'}`} />
             </button>

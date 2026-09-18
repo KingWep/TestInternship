@@ -30,7 +30,7 @@ export default function OrderList({ orders, onEdit }) {
       icon: <AlertCircle className="w-4 h-4 mr-1" />
     },
     Pickup: {
-      styles: "bg-blue-100 text-blue-700",
+      styles: "bg-[#870d4c]/10 text-[#9d1159]",
       label: t('dashboard.statusPickedUp'),
     },
     Delivering: {
@@ -54,7 +54,7 @@ export default function OrderList({ orders, onEdit }) {
       accessor: "id",
       render: (order) => (
         <div>
-          <div className="font-bold text-blue-600">#{order.id}</div>
+          <div className="font-bold text-[#870d4c]">#{order.id}</div>
           <div className="text-xs text-slate-400">
             {order.orderNo || `ORD-${order.orderNumber}`}
           </div>
@@ -126,7 +126,7 @@ export default function OrderList({ orders, onEdit }) {
       accessor: "status",
       render: (order) => {
         const config = statusConfig[order.status] || {
-          styles: "bg-gray-100 text-gray-700",
+          styles: "bg-[#fcfafb] text-gray-700",
           label: order.status || t('order.unknownStatus'),
         };
 
@@ -184,7 +184,7 @@ export default function OrderList({ orders, onEdit }) {
         <div className="flex justify-end gap-2">
           <button
             onClick={() => onEdit(order)}
-            className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            className="p-1.5 text-slate-500 hover:text-[#9d1159] hover:bg-blue-50 rounded transition-colors"
             title={t('order.edit')}
           >
             <SquarePen size={16} className="text-yellow-600" />

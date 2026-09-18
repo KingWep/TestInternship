@@ -3,25 +3,30 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const colorStyles = {
+  emerald: {
+    bg: "bg-[#870d4c]/10",
+    text: "text-[#870d4c]",
+    border: "border-l-[#870d4c]",
+  },
   green: {
-    bg: "bg-emerald-50",
-    text: "text-emerald-600",
-    border: "border-l-emerald-400",
+    bg: "bg-[#870d4c]/10",
+    text: "text-[#870d4c]",
+    border: "border-l-[#870d4c]",
   },
   blue: {
-    bg: "bg-blue-50",
-    text: "text-blue-600",
-    border: "border-l-blue-400",
+    bg: "bg-[#9d1159]/10",
+    text: "text-[#9d1159]",
+    border: "border-l-[#9d1159]",
   },
   purple: {
-    bg: "bg-purple-50",
-    text: "text-purple-600",
-    border: "border-l-purple-400",
+    bg: "bg-[#5d0a35]/10",
+    text: "text-[#5d0a35]",
+    border: "border-l-[#5d0a35]",
   },
   amber: {
-    bg: "bg-amber-50",
-    text: "text-amber-600",
-    border: "border-l-amber-400",
+    bg: "bg-[#c92a7e]/10",
+    text: "text-[#c92a7e]",
+    border: "border-l-[#c92a7e]",
   },
 };
 

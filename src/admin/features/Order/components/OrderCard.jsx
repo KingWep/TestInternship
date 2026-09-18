@@ -33,7 +33,7 @@ export default function OrderCard({ order, onEdit }) {
       case 'Pending':
         return 'bg-amber-50 text-amber-700 border-amber-200'
       case 'Pickup':
-        return 'bg-blue-50 text-blue-700 border-blue-200'
+        return 'bg-[#870d4c]/5 text-[#9d1159] border-[#870d4c]/20'
       case 'Delivering':
         return 'bg-purple-50 text-purple-700 border-purple-200'
       case 'Completed':
@@ -41,7 +41,7 @@ export default function OrderCard({ order, onEdit }) {
       case 'Cancelled':
         return 'bg-rose-50 text-rose-700 border-rose-200'
       default:
-        return 'bg-slate-50 text-slate-600 border-slate-200'
+        return 'bg-[#fcfafb] text-slate-600 border-slate-200'
     }
   }
 
@@ -72,17 +72,17 @@ export default function OrderCard({ order, onEdit }) {
   return (
     <div className="group flex h-full min-w-0 w-full flex-col overflow-hidden rounded-lg sm:rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
 
-      <div className="h-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500" />
+      <div className="h-0.5 bg-gradient-to-r from-[#870d4c] via-indigo-500 to-violet-500" />
 
       {/* Header */}
-      <div className="relative overflow-hidden border-b border-blue-100/70 bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-2.5 py-2 sm:px-3 sm:py-2.5">
-        <div className="pointer-events-none absolute -right-8 -top-10 h-24 w-24 rounded-full bg-blue-100/40 blur-2xl" />
+      <div className="relative overflow-hidden border-b border-[#870d4c]/10/70 bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-2.5 py-2 sm:px-3 sm:py-2.5">
+        <div className="pointer-events-none absolute -right-8 -top-10 h-24 w-24 rounded-full bg-[#870d4c]/10/40 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-10 -left-8 h-20 w-20 rounded-full bg-indigo-100/30 blur-2xl" />
 
         <div className="relative z-10 flex min-w-0 items-center justify-between gap-1.5 sm:gap-2">
 
           <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-100 bg-white/90 text-blue-600 shadow-sm sm:h-8 sm:w-8 sm:rounded-xl">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[#870d4c]/10 bg-white/90 text-[#870d4c] shadow-sm sm:h-8 sm:w-8 sm:rounded-xl">
               <Package className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             </div>
 
@@ -137,7 +137,7 @@ export default function OrderCard({ order, onEdit }) {
         <div className="space-y-1.5 sm:space-y-2">
 
           <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
-            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-slate-50 text-slate-500 sm:h-6 sm:w-6 sm:rounded-lg">
+            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-[#fcfafb] text-slate-500 sm:h-6 sm:w-6 sm:rounded-lg">
               <Phone className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             </div>
 
@@ -153,7 +153,7 @@ export default function OrderCard({ order, onEdit }) {
           </div>
 
           <div className="flex min-w-0 items-start gap-1.5 sm:gap-2">
-            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-slate-50 text-slate-500 sm:h-6 sm:w-6 sm:rounded-lg">
+            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-[#fcfafb] text-slate-500 sm:h-6 sm:w-6 sm:rounded-lg">
               <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             </div>
 
@@ -172,7 +172,7 @@ export default function OrderCard({ order, onEdit }) {
       </div>
 
       {/* Pricing */}
-      <div className="border-y border-slate-100 bg-slate-50/60 px-2.5 py-2 sm:px-3">
+      <div className="border-y border-slate-100 bg-[#fcfafb]/60 px-2.5 py-2 sm:px-3">
         <div className="flex justify-between items-center text-sm font-medium mb-2">
           <span className="text-slate-500">{t('order.itemPrice')}</span>
           <span className="font-semibold text-slate-700">
@@ -192,7 +192,7 @@ export default function OrderCard({ order, onEdit }) {
             {t('order.total')}
           </div>
 
-          <span className="shrink-0 text-xs font-black text-blue-600 sm:text-sm">
+          <span className="shrink-0 text-xs font-black text-[#870d4c] sm:text-sm">
             ${formatCurrency(totalAmount)}
           </span>
         </div>
@@ -242,7 +242,7 @@ export default function OrderCard({ order, onEdit }) {
 
         <button
           onClick={onEdit}
-          className="flex min-w-0 items-center justify-center gap-0.5 bg-white px-1 py-1.5 text-[8px] font-semibold text-slate-600 transition-all hover:bg-blue-50 hover:text-blue-600 sm:gap-1 sm:py-1.5 sm:text-[9px]"
+          className="flex min-w-0 items-center justify-center gap-0.5 bg-white px-1 py-1.5 text-[8px] font-semibold text-slate-600 transition-all hover:bg-blue-50 hover:text-[#9d1159] sm:gap-1 sm:py-1.5 sm:text-[9px]"
         >
           <FileEdit size={16} className="shrink-0" />
           <span className="truncate">{t('order.edit')}</span>

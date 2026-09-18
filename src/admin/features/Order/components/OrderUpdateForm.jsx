@@ -36,7 +36,7 @@ function SearchableProductSelect({ value, onChange, products, hasError }) {
   return (
     <div className="relative" ref={dropdownRef}>
       <div
-        className={`flex items-center justify-between w-full px-3 py-2 text-sm bg-white border rounded-lg cursor-pointer hover:border-blue-400 shadow-sm transition-all ${hasError ? 'border-red-500' : 'border-slate-200'}`}
+        className={`flex items-center justify-between w-full px-3 py-2 text-sm bg-white border rounded-lg cursor-pointer hover:border-[#870d4c] shadow-sm transition-all ${hasError ? 'border-red-500' : 'border-slate-200'}`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="relative text-xs">
@@ -56,7 +56,7 @@ function SearchableProductSelect({ value, onChange, products, hasError }) {
                 placeholder={t('common.search')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-6 pr-2 py-1 text-xs border border-slate-200 rounded outline-none focus:border-blue-400"
+                className="w-full pl-6 pr-2 py-1 text-xs border border-slate-200 rounded outline-none focus:border-[#870d4c]"
               />
             </div>
           </div>
@@ -73,7 +73,7 @@ function SearchableProductSelect({ value, onChange, products, hasError }) {
                       setSearch("");
                     }}
                     className={`px-3 py-2 text-xs cursor-pointer hover:bg-blue-50 flex items-center justify-between transition-colors ${
-                      isSelected ? "bg-blue-50 text-blue-600" : "text-slate-700"
+                      isSelected ? "bg-[#870d4c]/5 text-[#870d4c]" : "text-slate-700"
                     }`}
                   >
                     <span className="truncate mr-2">{p.name}</span>
@@ -153,9 +153,9 @@ export default function OrderUpdateForm({ onSubmit, initialData, onClose, isSubm
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 text-slate-800">
-      <div className="bg-slate-50 border border-slate-100 p-4 rounded-xl space-y-4 shadow-sm">
+      <div className="bg-[#fcfafb] border border-slate-100 p-4 rounded-xl space-y-4 shadow-sm">
         <h3 className="font-bold text-slate-800 text-sm border-b border-slate-200 pb-2 flex items-center gap-2">
-          <div className="w-1.5 h-4 bg-blue-500 rounded-full" />
+          <div className="w-1.5 h-4 bg-[#870d4c] rounded-full" />
           {t('order.orderInfoTitle')}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -165,7 +165,7 @@ export default function OrderUpdateForm({ onSubmit, initialData, onClose, isSubm
             </label>
             <select
               {...register("status")}
-              className="w-full text-sm rounded-lg border border-slate-200 px-3 py-2 bg-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-sm"
+              className="w-full text-sm rounded-lg border border-slate-200 px-3 py-2 bg-white outline-none focus:border-[#870d4c] focus:ring-1 focus:ring-[#870d4c]/30 transition-all shadow-sm"
             >
               <option value="Pending">{t('order.statusPendingTitle')}</option>
               <option value="Pickup">{t('order.statusPickupTitle')}</option>
@@ -181,7 +181,7 @@ export default function OrderUpdateForm({ onSubmit, initialData, onClose, isSubm
             </label>
             <select
               {...register("paymentStatus")}
-              className="w-full text-sm rounded-lg border border-slate-200 px-3 py-2 bg-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-sm"
+              className="w-full text-sm rounded-lg border border-slate-200 px-3 py-2 bg-white outline-none focus:border-[#870d4c] focus:ring-1 focus:ring-[#870d4c]/30 transition-all shadow-sm"
             >
               <option value="Paid">{t('order.paidTitle')}</option>
               <option value="Unpaid">{t('order.unpaidTitle')}</option>
@@ -191,7 +191,7 @@ export default function OrderUpdateForm({ onSubmit, initialData, onClose, isSubm
         </div>
       </div>
 
-      <div className="bg-slate-50 border border-slate-100 p-4 rounded-xl space-y-4 shadow-sm">
+      <div className="bg-[#fcfafb] border border-slate-100 p-4 rounded-xl space-y-4 shadow-sm">
         <h3 className="font-bold text-slate-800 text-sm border-b border-slate-200 pb-2 flex items-center gap-2">
           <div className="w-1.5 h-4 bg-indigo-500 rounded-full" />
           {t('order.customerAndDeliveryInfo')}
@@ -202,11 +202,11 @@ export default function OrderUpdateForm({ onSubmit, initialData, onClose, isSubm
               {t('order.phoneTitle')} <span className="text-red-500">*</span>
             </label>
             <div 
-              className={`flex items-center w-full bg-slate-50 border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:bg-white transition-all ${
+              className={`flex items-center w-full bg-[#fcfafb] border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#870d4c]/30 focus-within:bg-white transition-all ${
                 errors.customerPhone ? 'border-red-500' : 'border-slate-200'
               }`}
             >
-              <div className="pl-3.5 pr-2 py-2.5 text-slate-600 text-sm font-semibold select-none flex items-center bg-slate-100 border-r border-slate-200 h-full">
+              <div className="pl-3.5 pr-2 py-2.5 text-slate-600 text-sm font-semibold select-none flex items-center bg-[#fcfafb] border-r border-slate-200 h-full">
                 +855 <span className="text-slate-300 ml-1.5 text-xs">|</span>
               </div>
               <input
@@ -232,7 +232,7 @@ export default function OrderUpdateForm({ onSubmit, initialData, onClose, isSubm
                 type="number"
                 step="0.01"
                 {...register("deliveryFee")}
-                className={`w-full pl-8 pr-3 py-2.5 text-sm bg-slate-50 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all ${errors.deliveryFee ? 'border-red-500' : 'border-slate-200'}`}
+                className={`w-full pl-8 pr-3 py-2.5 text-sm bg-[#fcfafb] border rounded-lg outline-none focus:ring-2 focus:ring-[#870d4c]/30 focus:bg-white transition-all ${errors.deliveryFee ? 'border-red-500' : 'border-slate-200'}`}
               />
             </div>
             {errors.deliveryFee && <p className="text-red-500 text-xs mt-1">{errors.deliveryFee.message}</p>}
@@ -245,13 +245,13 @@ export default function OrderUpdateForm({ onSubmit, initialData, onClose, isSubm
           <textarea
             rows="2"
             {...register("customerAddress")}
-            className={`w-full px-3 py-2.5 text-sm bg-slate-50 border rounded-lg outline-none resize-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all ${errors.customerAddress ? 'border-red-500' : 'border-slate-200'}`}
+            className={`w-full px-3 py-2.5 text-sm bg-[#fcfafb] border rounded-lg outline-none resize-none focus:ring-2 focus:ring-[#870d4c]/30 focus:bg-white transition-all ${errors.customerAddress ? 'border-red-500' : 'border-slate-200'}`}
           />
           {errors.customerAddress && <p className="text-red-500 text-xs mt-1">{errors.customerAddress.message}</p>}
         </div>
       </div>
 
-      <div className="bg-slate-50 border border-slate-100 p-4 rounded-xl space-y-4 shadow-sm">
+      <div className="bg-[#fcfafb] border border-slate-100 p-4 rounded-xl space-y-4 shadow-sm">
         <div className="flex items-center justify-between border-b border-slate-200 pb-2">
           <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
             <div className="w-1.5 h-4 bg-emerald-500 rounded-full" />
@@ -302,7 +302,7 @@ export default function OrderUpdateForm({ onSubmit, initialData, onClose, isSubm
         <button
           type="button"
           onClick={() => append({ productId: "", quantity: 1, price: 0, salePrice: 0 })}
-          className="w-full flex items-center justify-center gap-2 py-2 border-2 border-dashed border-slate-300 rounded-lg text-sm font-semibold text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50/50 transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-2 border-2 border-dashed border-slate-300 rounded-lg text-sm font-semibold text-slate-500 hover:border-[#870d4c] hover:text-[#9d1159] hover:bg-blue-50/50 transition-colors"
         >
           <Plus size={16} /> {t('order.addProduct')}
         </button>
@@ -319,7 +319,7 @@ export default function OrderUpdateForm({ onSubmit, initialData, onClose, isSubm
         </div>
         <div className="flex justify-between items-center pt-2 border-t border-slate-700/50">
           <span className="text-sm font-bold text-white">{t('order.grandTotalAmount')}</span>
-          <span className="text-lg font-black text-blue-400">${calcTotal.toFixed(2)}</span>
+          <span className="text-lg font-black text-[#870d4c]">${calcTotal.toFixed(2)}</span>
         </div>
       </div>
 
@@ -327,14 +327,14 @@ export default function OrderUpdateForm({ onSubmit, initialData, onClose, isSubm
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+          className="px-4 py-2 text-sm font-semibold text-slate-600 bg-[#fcfafb] hover:bg-slate-200 rounded-lg transition-colors"
         >
           {t('common.cancel')}
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-6 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-6 py-2 text-sm font-semibold text-white bg-[#9d1159] hover:bg-[#9d1159] rounded-lg transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           {isSubmitting ? t('common.saving') : t('order.updateOrderBtn')}
         </button>

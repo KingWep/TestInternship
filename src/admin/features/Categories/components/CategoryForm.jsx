@@ -88,7 +88,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
             type="text"
             {...register("name")}
             placeholder={t('category.namePlaceholder')}
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
           {errors.name && (
             <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
@@ -103,7 +103,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
             type="text"
             {...register("slug")}
             placeholder="slug"
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
           {errors.slug && (
             <p className="text-xs text-red-500 mt-1">{errors.slug.message}</p>
@@ -119,7 +119,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
           {...register("description")}
           rows={3}
           placeholder={t('category.descPlaceholder')}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-none bg-slate-50/50 hover:bg-white focus:bg-white text-slate-700"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-[#870d4c] focus:ring-4 focus:ring-[#870d4c]/10 transition-all duration-200 resize-none bg-[#fcfafb]/50 hover:bg-white focus:bg-white text-slate-700"
         />
         {errors.description && (
           <p className="text-xs text-red-500 mt-1">
@@ -133,7 +133,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
           {t('category.imageLabel')}
         </label>
         <div className="flex items-center gap-3">
-          <label className="flex-1 flex items-center gap-2 px-3 py-2 text-sm bg-gray-50 rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition">
+          <label className="flex-1 flex items-center gap-2 px-3 py-2 text-sm bg-[#fcfafb] rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition">
             <Upload size={16} className="text-gray-500" />
             <span className="flex-1 truncate text-left text-slate-600 font-medium group-hover:text-slate-800 transition-colors">
               {watch("image")?.name ? watch("image").name : t('category.selectImage')}
@@ -146,7 +146,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
             />
           </label>
 
-          <div className="w-12 h-12 rounded-lg border border-gray-200 bg-gray-100 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+          <div className="w-12 h-12 rounded-lg border border-gray-200 bg-[#fcfafb] flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
             {previewImage ? (
               <img
                 src={previewImage}
@@ -168,7 +168,7 @@ export default function CategoryForm({ onSubmit, initialData }) {
       <div className="flex justify-end pt-2">
         <button
           type="submit"
-          className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+          className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-[#870d4c] to-[#9d1159] hover:from-[#9d1159] hover:to-[#44092e] text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200"
         >
           {isEditing ? t('category.updateBtn') : t('category.saveBtn')}
         </button>

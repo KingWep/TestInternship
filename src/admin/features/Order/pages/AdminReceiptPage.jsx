@@ -263,8 +263,8 @@ export default function AdminReceiptPage() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+      <div className="min-h-screen bg-[#fcfafb] flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-14 h-14 bg-[#fcfafb] rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
           <Package size={28} />
         </div>
         <p className="text-base font-semibold text-slate-700 mb-1">
@@ -342,7 +342,7 @@ export default function AdminReceiptPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center py-8 px-4 font-sans text-slate-800">
+    <div className="min-h-screen bg-[#fcfafb] flex flex-col items-center py-8 px-4 font-sans text-slate-800">
       <div className="w-full max-w-md flex items-center justify-between mb-5">
         <Link
           to="/admin/orders"

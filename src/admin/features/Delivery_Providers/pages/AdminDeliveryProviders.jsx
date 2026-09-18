@@ -62,7 +62,7 @@ export default function AdminDeliveryProviders() {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-slate-50 flex items-center justify-center">
+            <div className="w-full h-full bg-[#fcfafb] flex items-center justify-center">
               <Ban size={20} className="text-gray-300" />
             </div>
           )}
@@ -82,7 +82,7 @@ export default function AdminDeliveryProviders() {
     {
       header: t('delivery.shippingFee'),
       render: (row) => (
-        <span className="font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
+        <span className="font-semibold text-[#870d4c] bg-[#870d4c]/5 px-2 py-1 rounded">
           ${parseFloat(row.shipping_fee || 0).toFixed(2)}
         </span>
       ),
@@ -117,7 +117,7 @@ export default function AdminDeliveryProviders() {
           </button>
           <DeleteButton
             onConfirm={() => handleDelete(row.id)}
-            className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
+            className="p-2 bg-[#fcfafb] border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
           >
             <Trash2 size={18} />
           </DeleteButton>
@@ -174,7 +174,7 @@ export default function AdminDeliveryProviders() {
                 setEditingProvider(null)
                 setIsModalOpen(true)
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm whitespace-nowrap"
+              className="flex items-center gap-2 px-4 py-2 bg-[#9d1159] text-white rounded-lg hover:bg-[#9d1159] transition-colors font-medium text-sm whitespace-nowrap"
             >
               <Plus size={18} />
               <span className="hidden md:inline">{t('delivery.addProvider')}</span>
@@ -198,7 +198,7 @@ export default function AdminDeliveryProviders() {
           }`}
         >
           <div className="overflow-hidden">
-            <div className="flex flex-col gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div className="flex flex-col gap-4 p-4 bg-[#fcfafb] border border-slate-200 rounded-xl">
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
                   <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -207,7 +207,7 @@ export default function AdminDeliveryProviders() {
                     placeholder={t('delivery.searchPlaceholder')}
                     value={filters.search || ''}
                     onChange={(e) => updateFilter('search', e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#870d4c]/30"
                   />
                 </div>
               </div>

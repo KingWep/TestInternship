@@ -77,7 +77,7 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
             type="text"
             {...register("name")}
             placeholder="J&T, Vireak Buntham..."
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
         </div>
 
@@ -90,7 +90,7 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
             type="text"
             {...register("phone")}
             placeholder="012345678"
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
         </div>
       </div>
@@ -106,11 +106,11 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
             step="0.01"
             {...register("shipping_fee")}
             placeholder="2.50"
-            className="w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
         </div>
 
-        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+        <div className="flex items-center justify-between p-4 bg-[#fcfafb] rounded-xl border border-slate-200">
           <label className="text-sm font-semibold text-slate-700">
             {t('common.status')}
           </label>
@@ -122,8 +122,8 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
                 checked={!!watch("is_active")}
                 onChange={(e) => setValue("is_active", e.target.checked ? 1 : 0)}
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              <span className={`ml-3 text-sm font-medium ${watch("is_active") ? 'text-blue-600' : 'text-slate-500'}`}>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#9d1159]"></div>
+              <span className={`ml-3 text-sm font-medium ${watch("is_active") ? 'text-[#870d4c]' : 'text-slate-500'}`}>
                 {watch("is_active") ? t('common.statusActive') : t('common.statusInactive')}
               </span>
             </label>
@@ -136,7 +136,7 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
           {t('delivery.logo')}
         </label>
         <div className="flex items-center gap-3">
-          <label className="flex-1 flex items-center gap-2 px-3 py-2 text-sm bg-gray-50 rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition">
+          <label className="flex-1 flex items-center gap-2 px-3 py-2 text-sm bg-[#fcfafb] rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition">
             <Upload size={16} className="text-gray-500" />
             <span className="flex-1 truncate text-left text-slate-600 font-medium group-hover:text-slate-800 transition-colors">
               {watch("logo")?.name ? watch("logo").name : t('common.selectImage')}
@@ -149,7 +149,7 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
             />
           </label>
 
-          <div className="w-12 h-12 rounded-lg border border-gray-200 bg-gray-100 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+          <div className="w-12 h-12 rounded-lg border border-gray-200 bg-[#fcfafb] flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
             {previewImage ? (
               <img
                 src={previewImage}
@@ -171,7 +171,7 @@ export default function DeliveryProviderForm({ onSubmit, initialData }) {
       <div className="flex justify-end pt-2">
         <button
           type="submit"
-          className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+          className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-[#870d4c] to-[#9d1159] hover:from-[#9d1159] hover:to-[#44092e] text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200"
         >
           {isEditing ? t('common.updateBtn') : t('common.saveBtn')}
         </button>

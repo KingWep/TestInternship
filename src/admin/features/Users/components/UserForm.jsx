@@ -54,7 +54,7 @@ export default function UserForm({ onSubmit, initialData }) {
           type="text"
           {...register("name")}
           placeholder={t('users.namePlaceholder')}
-          className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 ${
+          className={`w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 ${
             errors.name
               ? "ring-2 ring-red-400 focus:ring-red-500"
               : "focus:ring-gray-200"
@@ -78,7 +78,7 @@ export default function UserForm({ onSubmit, initialData }) {
             type="email"
             {...register("email")}
             placeholder={t('users.emailPlaceholder')}
-            className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 ${
+            className={`w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 ${
               errors.email
                 ? "ring-2 ring-red-400 focus:ring-red-500"
                 : "focus:ring-gray-200"
@@ -99,7 +99,7 @@ export default function UserForm({ onSubmit, initialData }) {
 
           <select
             {...register("role")}
-            className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 ${
+            className={`w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 ${
               errors.role
                 ? "ring-2 ring-red-400 focus:ring-red-500"
                 : "focus:ring-gray-200"
@@ -128,7 +128,7 @@ export default function UserForm({ onSubmit, initialData }) {
               type="password"
               {...register("password")}
               placeholder={t('users.passwordPlaceholder')}
-              className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 ${
+              className={`w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 ${
                 errors.password
                   ? "ring-2 ring-red-400 focus:ring-red-500"
                   : "focus:ring-gray-200"
@@ -152,7 +152,7 @@ export default function UserForm({ onSubmit, initialData }) {
               type="password"
               {...register("confirmPassword")}
               placeholder={t('users.confirmPasswordPlaceholder')}
-              className={`w-full px-3 py-2 text-sm bg-gray-50 rounded-lg outline-none focus:ring-2 ${
+              className={`w-full px-3 py-2 text-sm bg-[#fcfafb] rounded-lg outline-none focus:ring-2 ${
                 errors.confirmPassword
                   ? "ring-2 ring-red-400 focus:ring-red-500"
                   : "focus:ring-gray-200"
@@ -172,7 +172,7 @@ export default function UserForm({ onSubmit, initialData }) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-5 py-2 text-sm rounded-lg bg-[#9d1159] text-white hover:bg-[#9d1159] transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Save size={16} />
 

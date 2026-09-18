@@ -17,12 +17,13 @@ export default async function handler(req, res) {
     if (apiResponse.ok) {
       const result = await apiResponse.json();
       
-      // 🚨 លុប result.success ចេញ! ឆែកមើលតែ result.data និង result.data.setting ប៉ុណ្ណោះ
-      if (result.data && result.data.setting) {
-        const setting = result.data.setting;
+      // Public endpoint returns: { success: true, data: { shop_name, logo, ... } }
+      if (result.success && result.data) {
+        const setting = result.data;
         
-        // ចាប់យកទិន្នន័យ
-        shopName = setting.shop_name;
+        if (setting.shop_name) {
+          shopName = setting.shop_name;
+        }
         if (setting.logo) {
           logoUrl = `${apiDomain}${setting.logo}`;
         }

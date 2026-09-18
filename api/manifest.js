@@ -7,21 +7,28 @@ export default async function handler(req, res) {
 
   const apiDomain = "https://onlineapi.chomnenhapp.com";
   let shopName = `Chomnenh - ${shop_code}`;
-  let logoUrl = '/images/digitalshop.png';
+  let logoUrl = '/images/chomnenh.png'; // រូបភាព Default
 
   try {
-    // ហៅ API ដើម្បីទាញទិន្នន័យ Logo (សូមកែ URL បើចាំបាច់)
+    // 💡 ចំណាំ៖ បើចង់ឱ្យ API ទាញយកហាងចំឈ្មោះ អ្នកប្រហែលជាត្រូវថែម query ពីក្រោយ:
+    // const apiUrl = `${apiDomain}/api/settings?shop_code=${shop_code}`;
     const apiUrl = `${apiDomain}/api/settings`;
     const apiResponse = await fetch(apiUrl);
     
     if (apiResponse.ok) {
       const result = await apiResponse.json();
-      if (result.success && result.data) {
-        const data = result.data;
-        shopName = data.shop_name;
+      
+      // 👉 កែតម្រូវត្រង់នេះ៖ ចូលទៅយកក្នុង result.data.setting
+      if (result.success && result.data && result.data.setting) {
+        const setting = result.data.setting;
         
-        if (data.logo) {
-          logoUrl = `${apiDomain}${data.logo}`;
+        // (ជម្រើស) បើចង់ផ្ទៀងផ្ទាត់ថាហាងត្រូវគ្នាឬអត់
+        if (setting.shop_code === shop_code || shop_code) {
+          shopName = setting.shop_name;
+          
+          if (setting.logo) {
+            logoUrl = `${apiDomain}${setting.logo}`;
+          }
         }
       }
     }
@@ -55,7 +62,7 @@ export default async function handler(req, res) {
   };
 
   res.setHeader("Content-Type", "application/json");
-  // កំណត់ Cache ត្រឹម 5 នាទីចុះ ដើម្បីឱ្យពេលហាងដូរ Logo វាឆាប់ Update
+  // កំណត់ Cache ត្រឹម 5 នាទី ដើម្បីឱ្យពេលហាងដូរ Logo វាឆាប់ Update
   res.setHeader("Cache-Control", "public, max-age=300, s-maxage=300");
   res.status(200).json(manifest);
 }

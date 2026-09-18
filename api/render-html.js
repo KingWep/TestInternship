@@ -2,35 +2,36 @@ import fs from 'fs';
 import path from 'path';
 
 export default async function handler(req, res) {
-  const { shopCode } = req.query; // shopCode នឹងស្មើនឹង "4234dsd"
+  const { shopCode } = req.query;
   
   const apiDomain = "https://onlineapi.chomnenhapp.com"; 
-  let shopName = shopCode; // Default
-  let logoUrl = '/images/digitalshop.png'; // Default
-  let bioShop = 'Full-featured e-commerce storefront...'; // Default
+  let shopName = shopCode; 
+  let logoUrl = '/images/chomnenh.png';
+  let bioShop = 'Full-featured e-commerce storefront...';
 
   try {
-    // ហៅ API របស់អ្នក ដោយបញ្ចូល shopCode ជា Query បើចាំបាច់
-    // បើ API អ្នកត្រូវការបញ្ជូន shopCode សូមដូរទៅតាមជាក់ស្តែង (ឧ: /api/settings?shop_code=${shopCode})
+    // ចំណាំ៖ បើ API របស់អ្នកតម្រូវឱ្យបញ្ជូន shop_code ដើម្បីទាញយកហាងឱ្យចំ សូមដូរទៅជា: 
+    // const apiUrl = `${apiDomain}/api/settings?shop_code=${shopCode}`;
     const apiUrl = `${apiDomain}/api/settings`; 
     const apiResponse = await fetch(apiUrl);
     
     if (apiResponse.ok) {
       const result = await apiResponse.json();
       
-      if (result.success && result.data) {
-        const data = result.data;
-        // ប្រសិនបើ API នេះពិតជារបស់ហាងនេះមែន (ការពារការខុសទិន្នន័យ)
-        if (data.shop_code === shopCode || shopCode) {
-          shopName = data.shop_name;
+      // ផ្លាស់ប្តូរត្រង់នេះ៖ ចូលទៅយកទិន្នន័យក្នុង result.data.setting
+      if (result.data && result.data.setting) {
+        const setting = result.data.setting;
+        
+        // ផ្ទៀងផ្ទាត់ shop_code ឱ្យត្រូវគ្នា
+        if (setting.shop_code === shopCode || shopCode) {
+          shopName = setting.shop_name;
           
-          // ដោយសារ logo មានទម្រង់ /uploads/... យើងត្រូវថែម Domain ពីមុខឱ្យវា
-          if (data.logo) {
-            logoUrl = `${apiDomain}${data.logo}`;
+          if (setting.logo) {
+            logoUrl = `${apiDomain}${setting.logo}`;
           }
           
-          if (data.bio_shop) {
-            bioShop = data.bio_shop;
+          if (setting.bio_shop) {
+            bioShop = setting.bio_shop;
           }
         }
       }
@@ -38,6 +39,12 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error("មិនអាចទាញទិន្នន័យពី API:", error);
   }
+
+  // Log មើលលទ្ធផលពិតប្រាកដ
+  console.log("=== ព័ត៌មានហាងសម្រាប់ការបង្កើត App ===");
+  console.log("👉 ឈ្មោះហាង (App Name):", shopName);
+  console.log("👉 តំណភ្ជាប់ Logo (Logo URL):", logoUrl);
+  console.log("===================================");
 
   // អាន File HTML
   const filePath = path.join(process.cwd(), 'dist', 'index.html');
@@ -58,7 +65,6 @@ export default async function handler(req, res) {
     `;
 
     html = html.replace('</head>', `${pwaTags}</head>`);
-    
     html = html.replace('<title>Chomnenh Digital</title>', '');
 
     res.setHeader('Content-Type', 'text/html');

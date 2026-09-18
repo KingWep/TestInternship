@@ -61,7 +61,7 @@ const GlobalForgotPassword = () => {
 
             <div className="w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center border border-gray-100 shadow-sm mb-3 overflow-hidden transition-transform hover:scale-105 duration-300">
               <img
-                src="images/chomnenh.png"
+                src="/images/chomnenh.png"
                 alt="Chomnenh Logo"
                 className="object-cover w-full h-full drop-shadow-sm"
               />

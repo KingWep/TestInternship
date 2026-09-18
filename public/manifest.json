@@ -1,9 +1,9 @@
 {
   "short_name": "DigitalShop",
-  "name": "DigitalShop Web",
+  "name": "Digital Digital",
   "icons": [
     {
-      "src": "/images/digitalshop.png",
+      "src": "/images/chomnenh.png",
       "sizes": "192x192 512x512",
       "type": "image/png"
     }

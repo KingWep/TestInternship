@@ -110,10 +110,19 @@ export const useShopRegisterForm = (t) => {
       if (!error.response) {
         errorMessage = "មិនអាចភ្ជាប់ទៅកាន់ម៉ាស៊ីនមេបានទេ (Network Error/CORS)";
       } else {
-        errorMessage =
-          error.response.data?.error ||
-          error.response.data?.message ||
-          errorMessage;
+        const resData = error.response.data;
+        console.error("Raw Error Data:", resData);
+        if (typeof resData?.message === 'string') {
+          errorMessage = resData.message;
+        } else if (typeof resData?.error === 'string') {
+          errorMessage = resData.error;
+        } else if (resData?.errors) {
+          errorMessage = Object.values(resData.errors).flat().join('\\n');
+        } else if (typeof resData === 'string') {
+          errorMessage = resData;
+        } else if (resData) {
+          errorMessage = JSON.stringify(resData);
+        }
       }
 
       Swal.fire({

@@ -10,20 +10,18 @@ export default async function handler(req, res) {
   let bioShop = 'Full-featured e-commerce storefront...';
 
   try {
-    // ចំណាំ៖ បើ API របស់អ្នកតម្រូវឱ្យបញ្ជូន shop_code ដើម្បីទាញយកហាងឱ្យចំ សូមដូរទៅជា: 
-    // const apiUrl = `${apiDomain}/api/settings?shop_code=${shopCode}`;
-    const apiUrl = `${apiDomain}/api/settings`; 
+    // 🚨 កែតម្រូវ៖ ត្រូវតែបញ្ជូន shopCode ទៅឱ្យ API ជាដាច់ខាត
+    const apiUrl = `${apiDomain}/api/settings?shop_code=${shopCode}`; 
     const apiResponse = await fetch(apiUrl);
     
     if (apiResponse.ok) {
       const result = await apiResponse.json();
       
-      // ផ្លាស់ប្តូរត្រង់នេះ៖ ចូលទៅយកទិន្នន័យក្នុង result.data.setting
       if (result.data && result.data.setting) {
         const setting = result.data.setting;
         
-        // ផ្ទៀងផ្ទាត់ shop_code ឱ្យត្រូវគ្នា
-        if (setting.shop_code === shopCode || shopCode) {
+        // 🚨 កែតម្រូវ៖ លុប "|| shopCode" ចេញ ដើម្បីផ្ទៀងផ្ទាត់ឱ្យបានត្រឹមត្រូវ
+        if (setting.shop_code === shopCode) {
           shopName = setting.shop_name;
           
           if (setting.logo) {
@@ -40,8 +38,8 @@ export default async function handler(req, res) {
     console.error("មិនអាចទាញទិន្នន័យពី API:", error);
   }
 
-  // Log មើលលទ្ធផលពិតប្រាកដ
-  console.log("=== ព័ត៌មានហាងសម្រាប់ការបង្កើត App ===");
+  // Log មើលលទ្ធផលពិតប្រាកដ (អ្នកអាចឆែកមើលក្នុង Vercel Logs)
+  console.log("=== ព័ត៌មានហាងសម្រាប់ការបង្កើត App (HTML) ===");
   console.log("👉 ឈ្មោះហាង (App Name):", shopName);
   console.log("👉 តំណភ្ជាប់ Logo (Logo URL):", logoUrl);
   console.log("===================================");

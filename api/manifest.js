@@ -10,14 +10,11 @@ export default async function handler(req, res) {
   let logoUrl = '/images/chomnenh.png'; 
 
   try {
-    // កុំភ្លេចបញ្ជូន shop_code ទៅ API បើមិនអញ្ចឹងទេវាអាចនឹងទាញខុសហាង
     const apiUrl = `${apiDomain}/api/settings?shop_code=${shop_code}`;
     const apiResponse = await fetch(apiUrl);
     
     if (apiResponse.ok) {
       const result = await apiResponse.json();
-      
-      // Public endpoint returns: { success: true, data: { shop_name, logo, ... } }
       if (result.success && result.data) {
         const setting = result.data;
         

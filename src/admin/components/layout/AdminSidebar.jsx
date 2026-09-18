@@ -61,7 +61,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
       if (window.innerWidth < 768) {
         setSidebarState(0);
       } else {
-        setSidebarState((prev) => (prev === 0 ? 2 : prev));
+        setSidebarState((prev) => (prev === 0 ? 1 : prev));
       }
     };
     window.addEventListener("resize", handleResize);
@@ -77,9 +77,8 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
 
   const handleToggle = () => {
     if (window.innerWidth < 768) {
-      if (sidebarState === 0) setSidebarState(1);
-      else if (sidebarState === 1) setSidebarState(2);
-      else setSidebarState(0);
+      if (sidebarState === 2) setSidebarState(0);
+      else setSidebarState(2);
     } else {
       if (sidebarState === 2) setSidebarState(1);
       else setSidebarState(2);

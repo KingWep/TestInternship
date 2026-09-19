@@ -29,7 +29,7 @@ export function useOrdersQuery(params = {}) {
 
 // Custom hook to encapsulate the derived business logic exactly as it was in OrderContext
 export function useOrderStats() {
-  const { data: orders = [] } = useOrdersQuery();
+  const { data: orders = [], isPending } = useOrdersQuery();
 
   const topSellingProducts = useMemo(() => {
     return orders
@@ -63,7 +63,7 @@ export function useOrderStats() {
       .reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
   }, [orders]);
 
-  return { topSellingProducts, totalRevenue };
+  return { topSellingProducts, totalRevenue, isPending };
 }
 
 export function useCreateOrderMutation() {

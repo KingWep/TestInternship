@@ -52,6 +52,7 @@ export default function OrderFormFields({
                 }
               },
             })}
+            maxLength={10}
           />
         </div>
 
@@ -98,14 +99,15 @@ export default function OrderFormFields({
         <div className="flex sm:grid-cols-3 gap-1">
           {activeProviders.map((p) => {
             const isSelected =
-              selectedProviderId?.toString() === p.id.toString();
+              selectedProviderId != null &&
+              selectedProviderId.toString() === p.id.toString();
 
             return (
               <div
                 key={p.id}
                 onClick={() => {
                   if (isSelected) {
-                    setValue("deliveryProviderId", "", {
+                    setValue("deliveryProviderId", null, {
                       shouldValidate: true,
                       shouldDirty: true,
                       shouldTouch: true,

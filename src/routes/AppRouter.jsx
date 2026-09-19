@@ -1,6 +1,9 @@
 import React from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
 import ProtectedRoute from './ProtectedRoute'
+import RoleRoute from './RoleRoute'
+import ErrorBoundary from '../components/ErrorBoundary'
+import NotFoundPage from '../components/NotFoundPage'
 import Home from "../client/features/home/pages/Home"
 import ProductDetail from "../client/features/products/pages/ProductDetail"
 
@@ -26,6 +29,11 @@ import AdminStickerPage from '../admin/features/Order/pages/AdminStickerPage'
 import AdminQRCode from '../admin/features/QRCode/pages/AdminQRCode'
 import AdminDeliveryProviders from '../admin/features/Delivery_Providers/pages/AdminDeliveryProviders'
 
+// Wrap a page in ErrorBoundary — resets on each unique key (page name)
+function Safe({ name, children }) {
+  return <ErrorBoundary key={name}>{children}</ErrorBoundary>
+}
+
 export default function AppRouter() {
   return (
     <Routes>
@@ -49,18 +57,28 @@ export default function AppRouter() {
 
       <Route path="/admin" element={<ProtectedRoute />}>
         <Route element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="sale-form" element={<AdminSaleForm />} />
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="users" element={<AdminUsers />} />
-          <Route path="categories" element={<AdminCategories />} />
-          <Route path="promotions" element={<AdminSlides />} />
-          <Route path="delivery-providers" element={<AdminDeliveryProviders />} />
-          <Route path="qr-code" element={<AdminQRCode />} />
-          <Route path="settings" element={<AdminSettings />} />
+          {/* Pages accessible by ALL roles (including 'user') */}
+          <Route index element={<Safe name="dashboard"><AdminDashboard /></Safe>} />
+          <Route path="orders" element={<Safe name="orders"><AdminOrders /></Safe>} />
+          <Route path="sale-form" element={<Safe name="sale-form"><AdminSaleForm /></Safe>} />
+          <Route path="qr-code" element={<Safe name="qr-code"><AdminQRCode /></Safe>} />
+
+          {/* admin / superadmin only pages */}
+          <Route element={<RoleRoute allowedRoles={['admin', 'superadmin']} fallback="/admin" />}>
+            <Route path="products" element={<Safe name="products"><AdminProducts /></Safe>} />
+            <Route path="users" element={<Safe name="users"><AdminUsers /></Safe>} />
+            <Route path="categories" element={<Safe name="categories"><AdminCategories /></Safe>} />
+            <Route path="promotions" element={<Safe name="promotions"><AdminSlides /></Safe>} />
+            <Route path="delivery-providers" element={<Safe name="delivery-providers"><AdminDeliveryProviders /></Safe>} />
+            <Route path="settings" element={<Safe name="settings"><AdminSettings /></Safe>} />
+          </Route>
         </Route>
+        {/* Admin 404 — full screen (no sidebar), still auth-protected */}
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
+
+      {/* Global 404 — full screen */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
 }

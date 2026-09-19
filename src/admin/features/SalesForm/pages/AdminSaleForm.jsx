@@ -261,6 +261,7 @@ export default function AdminSaleForm() {
             register={register}
             errors={errors}
             setValue={setValue}
+            watch={watch}
           />
 
           <OrderSummaryBox

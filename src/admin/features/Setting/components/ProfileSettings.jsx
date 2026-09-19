@@ -1,5 +1,5 @@
 import React from "react";
-import { User, KeyRound, ShieldAlert, ShieldCheck } from "lucide-react";
+import { User, ShieldAlert, ShieldCheck, Mail } from "lucide-react";
 import Button from "../../../components/common/Button";
 import { useProfileSetting } from "../hooks/useProfileSetting";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,9 +22,9 @@ export default function ProfileSettings() {
 
   if (isLoading) {
     return (
-      <div className="animate-pulse space-y-6">
-        <div className="h-12 bg-slate-200 rounded w-1/3"></div>
-        <div className="h-96 bg-[#fcfafb] rounded-2xl"></div>
+      <div className="w-full animate-pulse space-y-6">
+        <div className="h-10 bg-slate-200 rounded-lg w-48"></div>
+        <div className="h-[400px] bg-white border border-slate-100 shadow-sm rounded-2xl"></div>
       </div>
     );
   }
@@ -32,150 +32,107 @@ export default function ProfileSettings() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500"
+      className="w-full space-y-6 animate-in fade-in duration-500"
     >
-      <div className="mb-6 pb-6 border-b border-slate-100 flex items-start justify-between">
-        <div>
-          <h3 className="text-lg font-bold text-slate-800">{t('settings.profile')}</h3>
-          <p className="text-sm text-slate-500 mt-1">
-            {t('settings.profileDescription')}
-          </p>
-        </div>
+      {/* Header Section */}
+      <div>
+        <h3 className="text-xl font-bold text-slate-800 tracking-tight">{t('settings.profile')}</h3>
+        <p className="text-sm text-slate-500 mt-1">
+          {t('settings.profileDescription')}
+        </p>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-8">
-        {/* Avatar */}
-        <div className="flex items-center gap-6 border-b border-slate-100 pb-6">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#870d4c] to-indigo-500 shadow-md flex items-center justify-center overflow-hidden shrink-0 text-white text-4xl font-bold uppercase ring-4 ring-slate-50">
-            {displayName.charAt(0)}
+      {/* Full Width Card */}
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-6 sm:p-8">
+          
+          {/* Top Profile Summary */}
+          <div className="flex items-center gap-5 border-b border-slate-100 pb-6 mb-6">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#870d4c] to-indigo-500 shadow-sm flex items-center justify-center overflow-hidden shrink-0 text-white text-2xl font-bold uppercase">
+              {displayName.charAt(0)}
+            </div>
+            <div>
+              <h4 className="text-lg font-bold text-slate-800">{displayName || "User"}</h4>
+              <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-0.5">
+                <ShieldCheck size={14} className="text-emerald-500" />
+                <span className="font-medium">{displayRole}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Form Fields Grid - Smart usage of full width */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Name */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                {t('settings.name')} <span className="text-red-500">*</span>
+              </label>
+              <div className={`flex items-center w-full bg-slate-50/50 border rounded-xl overflow-hidden focus-within:border-[#870d4c] focus-within:ring-1 focus-within:ring-[#870d4c]/30 transition-all ${errors.name ? "border-red-500" : "border-slate-200"}`}>
+                <div className="pl-3.5 pr-2 py-2.5 text-slate-400">
+                  <User size={18} />
+                </div>
+                <input
+                  type="text"
+                  placeholder={t('settings.namePlaceholder')}
+                  className="w-full pr-4 py-2.5 bg-transparent text-sm focus:outline-none text-slate-800"
+                  {...register("name")}
+                />
+              </div>
+              {errors.name && (
+                <p className="text-red-500 text-xs mt-1.5">{errors.name.message}</p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                {t('settings.email')} <span className="text-red-500">*</span>
+              </label>
+              <div className={`flex items-center w-full bg-slate-50/50 border rounded-xl overflow-hidden focus-within:border-[#870d4c] focus-within:ring-1 focus-within:ring-[#870d4c]/30 transition-all ${errors.email ? "border-red-500" : "border-slate-200"}`}>
+                <div className="pl-3.5 pr-2 py-2.5 text-slate-400">
+                  <Mail size={18} />
+                </div>
+                <input
+                  type="email"
+                  placeholder={t('settings.emailPlaceholder')}
+                  className="w-full pr-4 py-2.5 bg-transparent text-sm focus:outline-none text-slate-800"
+                  {...register("email")}
+                />
+              </div>
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1.5">{errors.email.message}</p>
+              )}
+            </div>
+
+            {/* Role Info Box - Spans both columns */}
+            <div className="md:col-span-2 bg-slate-50 rounded-xl p-4 border border-slate-100 flex items-start gap-3">
+              <ShieldAlert size={18} className="text-slate-400 mt-0.5 shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-slate-700">Account Role: {displayRole}</p>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                  {t('settings.roleCannotChange')}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-          {/* Name */}
-          <div className="sm:col-span-1">
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              {t('settings.name')} <span className="text-red-500">*</span>
-            </label>
-            <div
-              className={`flex items-center w-full bg-[#fcfafb] border rounded-xl overflow-hidden focus-within:border-[#870d4c] focus-within:ring-1 focus-within:ring-[#870d4c]/30 transition-colors ${
-                errors.name ? "border-red-500" : "border-slate-200"
-              }`}
-            >
-              <div className="pl-3.5 pr-2 py-2.5 text-slate-400 border-r border-slate-200 bg-[#fcfafb]">
-                <User size={16} />
-              </div>
-              <input
-                type="text"
-                placeholder={t('settings.namePlaceholder')}
-                className="w-full px-3 py-2.5 bg-transparent text-sm focus:outline-none text-slate-800"
-                {...register("name")}
-              />
-            </div>
-            {errors.name && (
-              <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-            )}
-          </div>
-
-          {/* Email */}
-          <div className="sm:col-span-1">
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              {t('settings.email')} <span className="text-red-500">*</span>
-            </label>
-            <div
-              className={`flex items-center w-full bg-[#fcfafb] border rounded-xl overflow-hidden focus-within:border-[#870d4c] focus-within:ring-1 focus-within:ring-[#870d4c]/30 transition-colors ${
-                errors.email ? "border-red-500" : "border-slate-200"
-              }`}
-            >
-              <input
-                type="email"
-                placeholder={t('settings.emailPlaceholder')}
-                className="w-full px-3.5 py-2.5 bg-transparent text-sm focus:outline-none text-slate-800"
-                {...register("email")}
-              />
-            </div>
-            {errors.email && (
-              <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
-            )}
-          </div>
-
-          {/* Role (read-only) */}
-          <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              {t('settings.role')}
-            </label>
-            <div className="flex items-center w-full bg-[#fcfafb] border border-slate-200 rounded-xl overflow-hidden cursor-not-allowed">
-              <div className="pl-3.5 pr-2 py-2.5 text-slate-400 border-r border-slate-200">
-                <ShieldAlert size={16} />
-              </div>
-              <input
-                type="text"
-                value={displayRole}
-                readOnly
-                className="w-full px-3 py-2.5 bg-transparent text-sm text-slate-500 cursor-not-allowed outline-none select-none font-medium"
-              />
-            </div>
-            <p className="mt-1 text-xs text-slate-400 flex items-center gap-1">
-              <ShieldCheck size={12} /> {t('settings.roleCannotChange')}
-            </p>
-          </div>
-
-          {/* New Password */}
-          <div className="sm:col-span-1">
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              {t('settings.newPassword')}
-            </label>
-            <div
-              className={`flex items-center w-full bg-[#fcfafb] border rounded-xl overflow-hidden focus-within:border-[#870d4c] focus-within:ring-1 focus-within:ring-[#870d4c]/30 transition-colors ${
-                errors.password ? "border-red-500" : "border-slate-200"
-              }`}
-            >
-              <div className="pl-3.5 pr-2 py-2.5 text-slate-400 border-r border-slate-200 bg-[#fcfafb]">
-                <KeyRound size={16} />
-              </div>
-              <input
-                type="password"
-                placeholder={t('settings.leaveEmptyPassword')}
-                className="w-full px-3 py-2.5 bg-transparent text-sm focus:outline-none text-slate-800"
-                {...register("password")}
-              />
-            </div>
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
-            )}
-          </div>
-
-          {/* Confirm Password */}
-          <div className="sm:col-span-1">
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              {t('settings.confirmNewPassword')}
-            </label>
-            <div
-              className={`flex items-center w-full bg-[#fcfafb] border rounded-xl overflow-hidden focus-within:border-[#870d4c] focus-within:ring-1 focus-within:ring-[#870d4c]/30 transition-colors ${
-                errors.confirmPassword ? "border-red-500" : "border-slate-200"
-              }`}
-            >
-              <div className="pl-3.5 pr-2 py-2.5 text-slate-400 border-r border-slate-200 bg-[#fcfafb]">
-                <KeyRound size={16} />
-              </div>
-              <input
-                type="password"
-                placeholder={t('settings.confirmPasswordPlaceholder')}
-                className="w-full px-3 py-2.5 bg-transparent text-sm focus:outline-none text-slate-800"
-                {...register("confirmPassword")}
-              />
-            </div>
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="flex justify-end pt-6 border-t border-slate-100 gap-3">
-          <Button variant="outline" type="button" className="px-6 rounded-xl" onClick={() => reset()}>
+        {/* Action Footer */}
+        <div className="flex items-center justify-end px-6 py-4 bg-slate-50/50 border-t border-slate-100 gap-3">
+          <Button 
+            variant="outline" 
+            type="button" 
+            className="px-5 py-2 text-sm rounded-xl font-medium" 
+            onClick={() => reset()}
+          >
             {t('common.cancel')}
           </Button>
-          <Button variant="primary" type="submit" className="px-6 rounded-xl" disabled={isSaving}>
+          <Button 
+            variant="primary" 
+            type="submit" 
+            className="px-6 py-2 text-sm rounded-xl font-medium shadow-sm hover:shadow-md transition-all disabled:opacity-70" 
+            disabled={isSaving}
+          >
             {isSaving ? t('common.saving') : t('settings.saveProfile')}
           </Button>
         </div>

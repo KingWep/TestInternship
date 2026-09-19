@@ -359,17 +359,12 @@ export const useGeneralSetting = () => {
   };
 
   const handleClearLogo = () => {
-    const savedLogo =
-      settingData?.logo || "";
-
-    setValue("logo", savedLogo, {
+    setValue("logo", "", {
       shouldValidate: true,
       shouldDirty: true,
     });
 
-    setLogoPreview(
-      getFileUrl(savedLogo)
-    );
+    setLogoPreview("");
 
     const input =
       document.getElementById(
@@ -382,21 +377,14 @@ export const useGeneralSetting = () => {
   };
 
   const handleClearQr = () => {
-    const savedQr =
-      settingData?.qr_upload || "";
-
-    setValue("qr_upload", savedQr, {
+    setValue("qr_upload", "", {
       shouldValidate: true,
       shouldDirty: true,
     });
 
-    setQrPreview(
-      getFileUrl(savedQr)
-    );
+    setQrPreview("");
 
-    setQrFileName(
-      getFileName(savedQr)
-    );
+    setQrFileName("");
 
     const input =
       document.getElementById(
@@ -409,21 +397,12 @@ export const useGeneralSetting = () => {
   };
 
   const handleClearSupport = () => {
-    const savedSupport =
-      settingData?.support || "";
+    setValue("support", "", {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
 
-    setValue(
-      "support",
-      savedSupport,
-      {
-        shouldValidate: true,
-        shouldDirty: true,
-      }
-    );
-
-    setSupportFileName(
-      getFileName(savedSupport)
-    );
+    setSupportFileName("");
 
     const input =
       document.getElementById(
@@ -471,7 +450,7 @@ export const useGeneralSetting = () => {
           }
 
           if (key === "logo") {
-            if (value instanceof File) {
+            if (value instanceof File || value === "") {
               formData.append(key, value);
             }
             return;

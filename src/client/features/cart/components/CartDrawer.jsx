@@ -81,6 +81,14 @@ export default function CartDrawer() {
     clearCart();
   };
 
+  // Toggle-unselect handler: clears all delivery state without clearing the cart
+  const handleDeliveryClear = () => {
+    setDeliveryMethod(null);
+    setDeliveryProviderId(null);
+    setSettingId(null);
+    setDeliveryFee(0);
+  };
+
   const handleOrder = async () => {
     const { isValid, formattedPhone } = validateOrderForm();
 
@@ -209,6 +217,7 @@ export default function CartDrawer() {
                 setDeliveryProviderId={setDeliveryProviderId}
                 deliveryFee={deliveryFee}
                 setDeliveryFee={setDeliveryFee}
+                onDeliveryClear={handleDeliveryClear}
                 errors={errors}
               />
             </>

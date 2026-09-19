@@ -146,7 +146,7 @@ export default function NotificationDropdown() {
                 <div
                   key={item.id}
                   onClick={() => handleNotificationClick(item)}
-                  className={`flex items-start gap-3.5 px-5 py-3.5 hover:bg-slate-50 transition-colors cursor-pointer ${
+                  className={`flex items-start gap-2 px-4 py-1.5 hover:bg-pink-400/20 transition-colors cursor-pointer ${
                     !item.read ? 'bg-[#fcfafb]/60' : ''
                   }`}
                 >

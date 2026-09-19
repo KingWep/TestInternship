@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Store,
   MapPin,
@@ -29,6 +29,7 @@ import {
 import Select from "react-select";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import Swal from "sweetalert2";
 import { useGeneralSetting } from "../hooks/useGeneralSetting";
 import SectionHeader from "./common/SectionHeader";
 import FormField from "./common/SettingFormField";
@@ -120,12 +121,33 @@ const GeneralSettings = () => {
     supportFileName,
     isSubmitting,
     setValue,
+    settingData,
   } = useGeneralSetting();
 
   const socialMedia = watch("social_media");
 
   const [telegramGroupToVerify, setTelegramGroupToVerify] = useState("");
   const [verifyStatus, setVerifyStatus] = useState({ loading: false, info: null, error: null });
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchChatInfo = async () => {
+      if (settingData?.chat_id && !verifyStatus.info) {
+        try {
+          const result = await telegramService.verifyGroup(settingData.chat_id);
+          if (isMounted && result.success && result.data) {
+            setVerifyStatus(prev => ({ ...prev, info: result.data }));
+          }
+        } catch (err) {
+          console.error("Failed to fetch Telegram chat info:", err);
+        }
+      }
+    };
+    fetchChatInfo();
+    return () => {
+      isMounted = false;
+    };
+  }, [settingData?.chat_id]);
 
   const handleVerifyTelegram = async () => {
     if (!telegramGroupToVerify) return;
@@ -137,9 +159,24 @@ const GeneralSettings = () => {
       if (result.success && result.data) {
         setVerifyStatus({ loading: false, info: result.data, error: null });
         setValue('chat_id', result.data.chat_id, { shouldValidate: true, shouldDirty: true });
+        
+        Swal.fire({
+          icon: "success",
+          title: t("common.success", "Success! ✅"),
+          text: t("settings.telegramVerifySuccess", "Telegram group verified successfully!"),
+          timer: 1800,
+          showConfirmButton: false,
+        });
       }
     } catch (err) {
-      setVerifyStatus({ loading: false, info: null, error: err.message || "Verification failed" });
+      const errorMsg = err.message || t("settings.verificationFailed", "Verification failed");
+      setVerifyStatus({ loading: false, info: null, error: errorMsg });
+      
+      Swal.fire({
+        icon: "error",
+        title: t("common.error", "Error"),
+        text: errorMsg,
+      });
     }
   };
 
@@ -297,26 +334,25 @@ const GeneralSettings = () => {
                     <div className="md:col-span-2 border border-slate-200 rounded-xl p-4 bg-slate-50">
                       <div className="flex items-center gap-2 mb-3">
                         <Send size={18} className="text-[#229ED9]" />
-                        <h3 className="text-sm font-bold text-slate-800">Telegram Bot Integration</h3>
+                        <h3 className="text-sm font-bold text-slate-800">{t("settings.telegramBotIntegration", "Telegram Bot Integration")}</h3>
                       </div>
                       <p className="text-xs text-slate-500 mb-4">
-                        To receive order notifications, add your bot to a Telegram group as an Admin, then enter the group username (e.g. @my_shop) and verify it to get the Chat ID.
+                        {t("settings.telegramBotIntegrationDesc", "To receive order notifications, add your bot to a Telegram group as an Admin, then enter the group username (e.g. @my_shop) and verify it to get the Chat ID.")}
                       </p>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                            Verify Group Username
+                            {t("settings.verifyGroupUsername", "Verify Group Username")}
                           </label>
                           <div className="flex gap-2">
                             <div className="relative flex-1">
-                              <AtSign size={16} className="absolute left-3 top-3 text-slate-400 pointer-events-none" />
                               <input
                                 type="text"
                                 value={telegramGroupToVerify}
                                 onChange={(e) => setTelegramGroupToVerify(e.target.value)}
                                 placeholder="@shop_orders"
-                                className={`${inputClass} pl-9`}
+                                className={`${inputClass}`}
                               />
                             </div>
                             <button
@@ -325,44 +361,23 @@ const GeneralSettings = () => {
                               disabled={verifyStatus.loading || !telegramGroupToVerify}
                               className="h-10 px-4 rounded-xl bg-slate-800 text-white text-xs font-semibold hover:bg-slate-700 transition disabled:opacity-50"
                             >
-                              {verifyStatus.loading ? 'Verifying...' : 'Verify'}
+                              {verifyStatus.loading ? t("settings.verifying", "Verifying...") : t("settings.verify", "Verify")}
                             </button>
                           </div>
-                          {verifyStatus.error && (
-                            <p className="text-[10px] text-red-500 mt-1.5 font-medium">{verifyStatus.error}</p>
-                          )}
                         </div>
 
-                        <FormField
-                          label={t("settings.telegramChatId", "Telegram Chat ID")}
-                          error={errors.chat_id}
-                        >
-                          <div className="relative">
-                            <input
-                              type="text"
-                              readOnly
-                              placeholder={t(
-                                "settings.telegramChatIdPlaceholder",
-                                "Chat ID will appear here"
-                              )}
-                              className={`${inputClass} bg-slate-100/70 text-slate-500 cursor-not-allowed border-slate-200 focus:border-slate-200 focus:ring-0`}
-                              {...register("chat_id")}
-                            />
-                          </div>
-                        </FormField>
+                        <input type="hidden" {...register("chat_id")} />
                       </div>
 
                       {verifyStatus.info && (
                         <div className="mt-4 p-3 bg-white border border-green-200 rounded-lg">
                           <div className="flex items-center gap-2 text-green-600 mb-2">
                             <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                            <span className="text-xs font-bold">Status: Connected</span>
+                            <span className="text-xs font-bold">{t("settings.statusConnected", "Status: Connected")}</span>
                           </div>
                           <div className="grid grid-cols-2 gap-2 text-xs text-slate-600">
-                            <div><span className="font-semibold text-slate-700">Group:</span> {verifyStatus.info.title || 'N/A'}</div>
-                            <div><span className="font-semibold text-slate-700">Username:</span> {verifyStatus.info.username ? `@${verifyStatus.info.username}` : 'N/A'}</div>
-                            <div><span className="font-semibold text-slate-700">Chat ID:</span> <span className="font-mono">{verifyStatus.info.chat_id}</span></div>
-                            <div><span className="font-semibold text-slate-700">Type:</span> <span className="capitalize">{verifyStatus.info.type || 'N/A'}</span></div>
+                            <div><span className="font-semibold text-slate-700">{t("settings.group", "Group:")}</span> {verifyStatus.info.title || 'N/A'}</div>
+                            <div><span className="font-semibold text-slate-700">{t("settings.username", "Username:")}</span> {verifyStatus.info.username ? `@${verifyStatus.info.username}` : 'N/A'}</div>
                           </div>
                         </div>
                       )}
@@ -412,7 +427,7 @@ const GeneralSettings = () => {
                             key={field.id}
                             className="group rounded-xl border border-slate-200 bg-white p-3 hover:border-slate-300 hover:shadow-sm transition-all"
                           >
-                            <div className="grid grid-cols-1 md:grid-cols-[48px_minmax(150px,0.8fr)_minmax(240px,1.5fr)_40px] gap-3 items-end">
+                            <div className="grid grid-cols-1 lg:grid-cols-[48px_1fr_1.5fr_40px] md:grid-cols-[48px_1fr_1fr_40px] gap-3 items-end">
                               <Controller
                                 name={`social_media.${index}.icon`}
                                 control={control}
@@ -438,6 +453,7 @@ const GeneralSettings = () => {
                                       isSearchable={false}
                                       isClearable
                                       placeholder="—"
+                                      menuPlacement="top"
                                       className="text-sm"
                                       styles={{
                                         control: (base, state) => ({
@@ -747,13 +763,14 @@ const GeneralSettings = () => {
                               "Select Support Document",
                             )}
                         </p>
-
-                        <p className="text-[10px] text-slate-400 mt-1">
-                          PDF, DOC, DOCX
-                        </p>
+                        <div className="flex items-center gap-1">
+                          <Upload size={16} className="text-slate-400 shrink-0" />
+                          <p className="text-[10px] text-slate-400 mt-1">
+                            PDF, DOC, DOCX
+                          </p>
+                        </div>
                       </div>
 
-                      <Upload size={16} className="text-slate-400 shrink-0" />
                     </label>
 
                     {supportFileName && (

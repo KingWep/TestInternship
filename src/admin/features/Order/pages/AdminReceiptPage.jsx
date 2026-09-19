@@ -222,7 +222,7 @@ function AdminReceiptCard({ order }) {
 export default function AdminReceiptPage() {
   const { t } = useTranslation();
   const { No: paramNo } = useParams();
-  const { data: orders = [] } = useOrdersQuery();
+  const { data: orders = [], isLoading: ordersLoading } = useOrdersQuery();
   const order = orders?.find(
     (o) =>
       String(o.orderNo) === String(paramNo) ||
@@ -260,6 +260,62 @@ export default function AdminReceiptPage() {
       }
     `,
   });
+
+  if (ordersLoading) {
+    return (
+      <div className="min-h-screen bg-[#fcfafb] flex flex-col items-center py-8 px-4">
+        {/* Back button skeleton */}
+        <div className="w-full max-w-md flex items-center justify-between mb-5">
+          <div className="h-7 w-24 bg-slate-200 rounded-lg animate-pulse" />
+          <div className="h-6 w-32 bg-slate-200 rounded animate-pulse" />
+        </div>
+        {/* Receipt card skeleton */}
+        <div className="bg-white border border-slate-200 mb-6 p-5 w-full max-w-md rounded">
+          {/* Header */}
+          <div className="flex flex-col items-center gap-2 pb-3 mb-3 border-b border-dashed border-slate-200">
+            <div className="h-10 w-10 bg-slate-200 rounded-md animate-pulse" />
+            <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
+            <div className="h-3 w-24 bg-slate-100 rounded animate-pulse" />
+          </div>
+          {/* Info rows */}
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="flex justify-between items-center mb-2">
+              <div className="h-3 w-20 bg-slate-200 rounded animate-pulse" />
+              <div className="h-3 w-28 bg-slate-100 rounded animate-pulse" />
+            </div>
+          ))}
+          {/* Items table */}
+          <div className="border-t border-dashed border-slate-200 pt-3 mt-3 space-y-2">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="flex justify-between">
+                <div className="h-3 w-28 bg-slate-200 rounded animate-pulse" />
+                <div className="h-3 w-10 bg-slate-100 rounded animate-pulse" />
+                <div className="h-3 w-12 bg-slate-100 rounded animate-pulse" />
+                <div className="h-3 w-14 bg-slate-200 rounded animate-pulse" />
+              </div>
+            ))}
+          </div>
+          {/* Totals */}
+          <div className="border-t border-dashed border-slate-200 pt-3 mt-3 space-y-2">
+            <div className="flex justify-between">
+              <div className="h-3 w-16 bg-slate-100 rounded animate-pulse" />
+              <div className="h-3 w-16 bg-slate-100 rounded animate-pulse" />
+            </div>
+            <div className="flex justify-between">
+              <div className="h-4 w-10 bg-slate-200 rounded animate-pulse" />
+              <div className="h-4 w-20 bg-slate-200 rounded animate-pulse" />
+            </div>
+          </div>
+        </div>
+        {/* Action buttons skeleton */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-md">
+          <div className="h-8 bg-slate-200 rounded-lg animate-pulse" />
+          <div className="h-8 bg-slate-100 rounded-lg animate-pulse" />
+          <div className="col-span-2 md:col-span-1 h-8 bg-sky-100 rounded-lg animate-pulse" />
+        </div>
+      </div>
+    );
+  }
 
   if (!order) {
     return (

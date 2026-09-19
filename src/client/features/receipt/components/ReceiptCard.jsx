@@ -7,8 +7,11 @@ export default function ReceiptCard({ order, settings, settingsLoading }) {
   const [imgError, setImgError] = useState(false);
 
   const { shop_code } = useParams();
-  const { data: settingData, isLoading } = usePublicSettingsQuery(shop_code);
+  const { data: settingData, isLoading: localLoading } = usePublicSettingsQuery(shop_code);
+  // Prefer local query data; fall back to parent-passed settings
   const setting = settingData?.data || settings;
+  // Only hide logo while BOTH sources are still loading
+  const logoLoading = localLoading && settingsLoading;
   const shopName = setting?.shop_name || setting?.shopName ;
   const rawLogo = setting?.logo;
   const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
@@ -39,7 +42,7 @@ export default function ReceiptCard({ order, settings, settingsLoading }) {
       className="bg-white text-slate-900 mx-auto text-xs px-5 py-6 shadow-sm overflow-hidden flex flex-col"
     >
       <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
-        {logoUrl && !imgError && !settingsLoading ? (
+        {logoUrl && !imgError && !logoLoading ? (
           <img
             src={logoUrl}
             alt={shopName}
@@ -53,7 +56,7 @@ export default function ReceiptCard({ order, settings, settingsLoading }) {
         <p className="text-[11px] text-slate-900 mt-1">
           {t("order.phone")} {setting?.phone || "xxxxxxxxx"}
         </p>
-        <p className="text-[11px] text-slae-900">{settings?.address || ""}</p>
+        <p className="text-[11px] text-slate-900">{setting?.address || ""}</p>
       </div>
 
       <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">

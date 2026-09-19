@@ -154,7 +154,7 @@ export default function AdminProducts() {
     },
 
     {
-      header: t('products.actions'),
+      header: t('common.actions'),
       align: "right",
       render: (row) => (
         <div className="flex items-center justify-end gap-3">

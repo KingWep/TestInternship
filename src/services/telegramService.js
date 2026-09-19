@@ -179,11 +179,12 @@ const buildOrderMessage = (order, courier) => {
     order?.id ||
     'N/A'
 
-  const customerName =
+  let customerName =
     order?.customerName ||
     order?.customer_name ||
     order?.name ||
     'អតិថិជនទូទៅ'
+  if (customerName === 'N/A') customerName = 'អតិថិជនទូទៅ'
 
   const phone =
     order?.customerPhone ||
@@ -263,11 +264,12 @@ const buildStickerMessage = (order, courier) => {
     order?.id ||
     'N/A'
 
-  const customerName =
+  let customerName =
     order?.customerName ||
     order?.customer_name ||
     order?.name ||
-    'N/A'
+    'អតិថិជនទូទៅ'
+  if (customerName === 'N/A') customerName = 'អតិថិជនទូទៅ'
 
   const phone =
     order?.customerPhone ||
@@ -282,7 +284,9 @@ const buildStickerMessage = (order, courier) => {
     'N/A'
 
   const deliveryProvider =
-    getCourierName(courier)
+    getCourierName(courier) !== 'N/A'
+      ? getCourierName(courier)
+      : order?.deliveryProvider?.name || 'N/A'
 
   const total =
     order?.total ||

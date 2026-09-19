@@ -15,6 +15,7 @@ export default function DeliveryForm({
   setSettingId,
   setDeliveryProviderId,
   setDeliveryFee,
+  onDeliveryClear,
   errors = {},
 }) {
   const { shop_code } = useParams();
@@ -189,11 +190,14 @@ export default function DeliveryForm({
                   <button
                     key={option.id}
                     type="button"
-                    onClick={() =>
-                      handleDeliveryChange(
-                        option
-                      )
-                    }
+                    onClick={() => {
+                      if (isSelected) {
+                        // Unselect: reset all delivery state
+                        if (onDeliveryClear) onDeliveryClear();
+                      } else {
+                        handleDeliveryChange(option);
+                      }
+                    }}
                     className={`flex flex-col items-center justify-center p-2 rounded-2xl border text-xs transition-all duration-200 ${
                       isSelected
                         ? "border-red-600 bg-red-50/80 text-red-950 font-semibold shadow-sm"

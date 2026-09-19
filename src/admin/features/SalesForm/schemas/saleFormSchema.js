@@ -21,5 +21,6 @@ export const saleFormSchema = z.object({
     .optional(),
   deliveryProviderId: z
     .union([z.string(), z.number()])
+    .nullable()
     .optional(),
 });

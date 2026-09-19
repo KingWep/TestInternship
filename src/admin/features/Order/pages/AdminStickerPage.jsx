@@ -211,7 +211,9 @@ function AdminStickerCard({ order, courier, setCourier }) {
               </div>
 
               <p className="font-bold text-xs text-slate-900 truncate">
-                {order?.customerName || t("order.generalCustomer")}
+                {order?.customerName && order.customerName !== 'N/A' 
+                  ? order.customerName 
+                  : t("order.generalCustomer")}
               </p>
 
               <p className="text-[11px] font-bold text-slate-900 tracking-wide">
@@ -345,7 +347,7 @@ export default function AdminStickerPage() {
 
   const navigate = useNavigate();
 
-  const { data: orders = [] } = useOrdersQuery();
+  const { data: orders = [], isLoading: ordersLoading } = useOrdersQuery();
 
   const order = orders?.find(
     (o) =>
@@ -396,6 +398,63 @@ export default function AdminStickerPage() {
       }
     }
   }, [order]);
+
+  if (ordersLoading) {
+    return (
+      <div className="min-h-screen bg-[#fcfafb] flex flex-col items-center py-8 px-4">
+        {/* Top bar skeleton */}
+        <div className="w-full max-w-2xl flex items-center justify-between mb-5">
+          <div className="h-7 w-24 bg-slate-200 rounded-lg animate-pulse" />
+          <div className="h-6 w-32 bg-[#870d4c]/10 rounded-lg animate-pulse" />
+        </div>
+        {/* Sticker card skeleton */}
+        <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 w-full max-w-2xl mb-6 animate-pulse">
+          {/* Header row */}
+          <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b-2 border-slate-100">
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 bg-slate-200 rounded-md" />
+              <div className="space-y-1.5">
+                <div className="h-2.5 w-16 bg-slate-100 rounded" />
+                <div className="h-4 w-32 bg-slate-200 rounded" />
+              </div>
+            </div>
+            <div className="h-8 w-36 bg-slate-100 rounded-md" />
+          </div>
+          {/* Body grid */}
+          <div className="grid grid-cols-12 gap-2.5 my-2.5">
+            {/* Left */}
+            <div className="col-span-7 flex flex-col gap-2">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="h-20 bg-slate-100 rounded-lg" />
+                <div className="h-20 bg-slate-100 rounded-lg" />
+              </div>
+              <div className="h-24 bg-slate-50 rounded-lg" />
+            </div>
+            {/* Right */}
+            <div className="col-span-5 flex flex-col gap-2">
+              <div className="h-28 bg-slate-100 rounded-lg" />
+              <div className="h-28 bg-slate-50 rounded-lg" />
+            </div>
+          </div>
+          {/* Footer */}
+          <div className="flex items-center justify-between pt-2.5 border-t-2 border-slate-100">
+            <div className="flex gap-2">
+              <div className="h-6 w-16 bg-slate-200 rounded" />
+              <div className="h-6 w-16 bg-slate-100 rounded" />
+              <div className="h-6 w-16 bg-slate-100 rounded" />
+            </div>
+            <div className="h-4 w-28 bg-slate-100 rounded" />
+          </div>
+        </div>
+        {/* Action buttons skeleton */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-2xl">
+          <div className="h-8 bg-[#870d4c]/20 rounded-lg animate-pulse" />
+          <div className="h-8 bg-slate-200 rounded-lg animate-pulse" />
+          <div className="col-span-2 md:col-span-1 h-8 bg-sky-100 rounded-lg animate-pulse" />
+        </div>
+      </div>
+    );
+  }
 
   if (!order) {
     return (

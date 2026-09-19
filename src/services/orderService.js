@@ -2,9 +2,9 @@ import axiosClient from '../api/axiosClient';
 import { API_ENDPOINTS } from '../api/endpoints';
 
 export const orderService = {
-  getOrders: async (params = {}) => {
+  getOrders: async (params = {}, config = {}) => {
     try {
-      const response = await axiosClient.get(API_ENDPOINTS.ORDERS.GET_ALL, { params });
+      const response = await axiosClient.get(API_ENDPOINTS.ORDERS.GET_ALL, { params, ...config });
       return response.data;
     } catch (error) {
       console.error('Order API Error [getOrders]:', {
@@ -16,9 +16,9 @@ export const orderService = {
     }
   },
 
-  getOrder: async (id) => {
+  getOrder: async (id, config = {}) => {
     try {
-      const response = await axiosClient.get(API_ENDPOINTS.ORDERS.GET_ONE(id));
+      const response = await axiosClient.get(API_ENDPOINTS.ORDERS.GET_ONE(id), config);
       return response.data;
     } catch (error) {
       console.error('Order API Error [getOrder]:', {
@@ -56,6 +56,40 @@ export const orderService = {
         data:   error.response?.data ? JSON.stringify(error.response?.data) : null,
         message: error.message,
       });
+      throw error;
+    }
+  },
+
+  sendTelegramNotification: async (message) => {
+    try {
+      const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || process.env.REACT_APP_TELEGRAM_BOT_TOKEN;
+      const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID || process.env.REACT_APP_TELEGRAM_CHAT_ID;
+      
+      if (!botToken || !chatId) {
+        console.warn('Telegram Bot Token or Chat ID is not configured');
+        return;
+      }
+
+      const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'HTML',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Telegram API Error: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Order API Error [sendTelegramNotification]:', error);
       throw error;
     }
   },

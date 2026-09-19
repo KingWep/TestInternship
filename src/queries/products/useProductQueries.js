@@ -49,8 +49,8 @@ export function useProductsQuery(params = {}) {
 
   return useQuery({
     queryKey: productKeys.list(params),
-    queryFn: async () => {
-      const data = await productService.getProducts(params);
+    queryFn: async ({ signal }) => {
+      const data = await productService.getProducts(params, { signal });
       const rawProducts = data?.data || data || [];
       return rawProducts;
     },

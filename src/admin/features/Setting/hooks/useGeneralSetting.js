@@ -642,5 +642,6 @@ export const useGeneralSetting = () => {
     isFetching,
     isSubmitting:
       updateSettingMutation.isPending,
+    setValue,
   };
 };

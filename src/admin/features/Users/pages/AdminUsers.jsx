@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Plus, Edit, Trash2, SlidersHorizontal } from 'lucide-react'
+import { Plus, Edit, SlidersHorizontal } from 'lucide-react'
 import { useUsers } from '../hooks/useUsers'
 import UserForm from '../components/UserForm'
 import DataTable from '../../../components/common/DataTable'
@@ -9,7 +9,6 @@ import Button from '../../../components/common/Button'
 import Modal from '../../../components/common/Modal'
 import PageHeader from '../../../components/common/PageHeader'
 import FilterBar from '../../../components/common/FilterBar'
-import DeleteButton from '../../../components/common/DeleteButton'
 import Pagination from '../../../components/common/Pagination'
 import { useTranslation } from 'react-i18next'
 
@@ -38,7 +37,6 @@ export default function AdminUsers() {
     handleSortChange,
     handleSubmit,
     handleEdit,
-    handleDelete,
     openAddModal,
     closeModal,
   } = useUsers()
@@ -132,12 +130,6 @@ export default function AdminUsers() {
           >
             <Edit size={18} />
           </button>
-          <DeleteButton
-            onConfirm={() => handleDelete(row.id)}
-            className="p-2 bg-[#fcfafb] border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
-          >
-            <Trash2 size={18} />
-          </DeleteButton>
         </div>
       ),
     },

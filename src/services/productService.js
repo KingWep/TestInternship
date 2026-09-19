@@ -3,9 +3,9 @@ import { API_ENDPOINTS } from '../api/endpoints';
 
 export const productService = {
 
-  getProducts: async (params = {}) => {
+  getProducts: async (params = {}, config = {}) => {
     try {
-      const response = await axiosClient.get(API_ENDPOINTS.PRODUCTS.GET_ALL, { params });
+      const response = await axiosClient.get(API_ENDPOINTS.PRODUCTS.GET_ALL, { params, ...config });
       return response.data;
     } catch (error) {
       console.error('Product API Error [getProducts]:', {

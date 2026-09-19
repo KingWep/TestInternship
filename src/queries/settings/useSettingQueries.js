@@ -5,7 +5,7 @@ import { settingKeys } from './settingKeys';
 export function useSettingsQuery(shopCode) {
   return useQuery({
     queryKey: settingKeys.byShopCode(shopCode),
-    queryFn: () => settingService.getByShopCode(shopCode),
+    queryFn: ({ signal }) => settingService.getByShopCode(shopCode, { signal }),
     select: (data) => {
       const rawData = data?.data || data || {};
       return Array.isArray(rawData) ? rawData[0] || {} : rawData;
@@ -17,7 +17,7 @@ export function useSettingsQuery(shopCode) {
 export function useSettingByIdQuery(id) {
   return useQuery({
     queryKey: settingKeys.byId(id),
-    queryFn: () => settingService.getSettingById(id),
+    queryFn: ({ signal }) => settingService.getSettingById(id, { signal }),
     select: (data) => {
       const rawData = data?.data || data || [];
       return Array.isArray(rawData) ? rawData[0] || {} : rawData;

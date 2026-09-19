@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Store,
   MapPin,
@@ -21,11 +21,19 @@ import {
   QrCode,
   Save,
   RotateCcw,
+  // NEW ICONS ADDED FOR INPUTS:
+  Phone,
+  Tag,
+  Info
 } from "lucide-react";
 import Select from "react-select";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useGeneralSetting } from "../hooks/useGeneralSetting";
+import SectionHeader from "./common/SectionHeader";
+import FormField from "./common/SettingFormField";
+import ImageUpload from "./common/ImageUpload";
+import { telegramService } from "../../../../services/telegramService";
 
 const socialIconOptions = [
   {
@@ -78,53 +86,13 @@ const socialIconOptions = [
   },
 ];
 
-const SectionHeader = ({ icon: Icon, title, description }) => {
-  return (
-    <div className="flex items-start gap-3 mb-5">
-      <div className="w-10 h-10 rounded-xl bg-[#fcfafb] flex items-center justify-center shrink-0">
-        <Icon size={19} className="text-slate-700" />
-      </div>
 
-      <div className="min-w-0">
-        <h3 className="text-sm font-bold text-slate-900">{title}</h3>
-
-        {description && (
-          <p className="text-xs text-slate-500 mt-1 leading-5">{description}</p>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const FormField = ({
-  label,
-  error,
-  required = false,
-  children,
-  className = "",
-}) => {
-  return (
-    <div className={className}>
-      <label className="block text-xs font-semibold text-slate-700 mb-2">
-        {label}
-
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
-
-      {children}
-
-      {error && <p className="text-xs text-red-500 mt-1.5">{error.message}</p>}
-    </div>
-  );
-};
 
 const inputClass =
   "w-full h-10 rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-[#870d4c] focus:ring-2 focus:ring-[#870d4c]/30/10";
 
 const textareaClass =
   "w-full min-h-[96px] rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none resize-none transition focus:border-[#870d4c] focus:ring-2 focus:ring-[#870d4c]/30/10";
-
-
 
 const GeneralSettings = () => {
   const { t } = useTranslation();
@@ -151,9 +119,29 @@ const GeneralSettings = () => {
     qrFileName,
     supportFileName,
     isSubmitting,
+    setValue,
   } = useGeneralSetting();
 
   const socialMedia = watch("social_media");
+
+  const [telegramGroupToVerify, setTelegramGroupToVerify] = useState("");
+  const [verifyStatus, setVerifyStatus] = useState({ loading: false, info: null, error: null });
+
+  const handleVerifyTelegram = async () => {
+    if (!telegramGroupToVerify) return;
+    
+    setVerifyStatus({ loading: true, info: null, error: null });
+    
+    try {
+      const result = await telegramService.verifyGroup(telegramGroupToVerify);
+      if (result.success && result.data) {
+        setVerifyStatus({ loading: false, info: result.data, error: null });
+        setValue('chat_id', result.data.chat_id, { shouldValidate: true, shouldDirty: true });
+      }
+    } catch (err) {
+      setVerifyStatus({ loading: false, info: null, error: err.message || "Verification failed" });
+    }
+  };
 
   return (
     <div className="w-full">
@@ -226,59 +214,63 @@ const GeneralSettings = () => {
                       required
                       error={errors.shop_name}
                     >
-                      <input
-                        type="text"
-                        placeholder={t(
-                          "settings.shopNamePlaceholder",
-                          "Enter shop name",
-                        )}
-                        className={inputClass}
-                        {...register("shop_name")}
-                      />
+                      <div className="relative">
+                        <Tag
+                          size={16}
+                          className="absolute left-3 top-3 text-slate-400 pointer-events-none"
+                        />
+                        <input
+                          type="text"
+                          placeholder={t(
+                            "settings.shopNamePlaceholder",
+                            "Enter shop name",
+                          )}
+                          className={`${inputClass} pl-9`}
+                          {...register("shop_name")}
+                        />
+                      </div>
                     </FormField>
-
-                    {/*
-                    <FormField
-                      label={t("settings.shopCode", "Shop Code")}
-                      error={errors.shop_code}
-                    >
-                      <input
-                        type="text"
-                        readOnly
-                        className={`${inputClass} bg-[#fcfafb] text-slate-500 cursor-not-allowed`}
-                        {...register("shop_code")}
-                      />
-                    </FormField>
-                    */}
 
                     <FormField
                       label={t("settings.supportPhone", "Support Phone")}
                       error={errors.phone}
                     >
-                      <input
-                        type="text"
-                        placeholder={t(
-                          "settings.phonePlaceholder",
-                          "+855 12 345 678",
-                        )}
-                        className={inputClass}
-                        {...register("phone")}
-                      />
+                      <div className="relative">
+                        <Phone
+                          size={16}
+                          className="absolute left-3 top-3 text-slate-400 pointer-events-none"
+                        />
+                        <input
+                          type="text"
+                          placeholder={t(
+                            "settings.phonePlaceholder",
+                            "+855 12 345 678",
+                          )}
+                          className={`${inputClass} pl-9`}
+                          {...register("phone")}
+                        />
+                      </div>
                     </FormField>
 
                     <FormField
-                      label={t("settings.telegramChatId", "Telegram Chat ID")}
-                      error={errors.chat_id}
+                      label={t("settings.bioShop", "Shop Bio")}
+                      error={errors.bio_shop}
+                      className="md:col-span-2"
                     >
-                      <input
-                        type="text"
-                        placeholder={t(
-                          "settings.telegramChatIdPlaceholder",
-                          "Enter Telegram chat ID",
-                        )}
-                        className={inputClass}
-                        {...register("chat_id")}
-                      />
+                      <div className="relative">
+                        <Info
+                          size={16}
+                          className="absolute left-3 top-3.5 text-slate-400 pointer-events-none"
+                        />
+                        <textarea
+                          placeholder={t(
+                            "settings.bioShopPlaceholder",
+                            "Write a short description about your shop",
+                          )}
+                          className={`${textareaClass} pl-9`}
+                          {...register("bio_shop")}
+                        />
+                      </div>
                     </FormField>
 
                     <FormField
@@ -289,9 +281,8 @@ const GeneralSettings = () => {
                       <div className="relative">
                         <MapPin
                           size={16}
-                          className="absolute left-3 top-3 text-slate-400"
+                          className="absolute left-3 top-3.5 text-slate-400 pointer-events-none"
                         />
-
                         <textarea
                           placeholder={t(
                             "settings.addressDetailedPlaceholder",
@@ -302,21 +293,80 @@ const GeneralSettings = () => {
                         />
                       </div>
                     </FormField>
+                    
+                    <div className="md:col-span-2 border border-slate-200 rounded-xl p-4 bg-slate-50">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Send size={18} className="text-[#229ED9]" />
+                        <h3 className="text-sm font-bold text-slate-800">Telegram Bot Integration</h3>
+                      </div>
+                      <p className="text-xs text-slate-500 mb-4">
+                        To receive order notifications, add your bot to a Telegram group as an Admin, then enter the group username (e.g. @my_shop) and verify it to get the Chat ID.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                            Verify Group Username
+                          </label>
+                          <div className="flex gap-2">
+                            <div className="relative flex-1">
+                              <AtSign size={16} className="absolute left-3 top-3 text-slate-400 pointer-events-none" />
+                              <input
+                                type="text"
+                                value={telegramGroupToVerify}
+                                onChange={(e) => setTelegramGroupToVerify(e.target.value)}
+                                placeholder="@shop_orders"
+                                className={`${inputClass} pl-9`}
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={handleVerifyTelegram}
+                              disabled={verifyStatus.loading || !telegramGroupToVerify}
+                              className="h-10 px-4 rounded-xl bg-slate-800 text-white text-xs font-semibold hover:bg-slate-700 transition disabled:opacity-50"
+                            >
+                              {verifyStatus.loading ? 'Verifying...' : 'Verify'}
+                            </button>
+                          </div>
+                          {verifyStatus.error && (
+                            <p className="text-[10px] text-red-500 mt-1.5 font-medium">{verifyStatus.error}</p>
+                          )}
+                        </div>
 
-                    <FormField
-                      label={t("settings.bioShop", "Shop Bio")}
-                      error={errors.bio_shop}
-                      className="md:col-span-2"
-                    >
-                      <textarea
-                        placeholder={t(
-                          "settings.bioShopPlaceholder",
-                          "Write a short description about your shop",
-                        )}
-                        className={textareaClass}
-                        {...register("bio_shop")}
-                      />
-                    </FormField>
+                        <FormField
+                          label={t("settings.telegramChatId", "Telegram Chat ID")}
+                          error={errors.chat_id}
+                        >
+                          <div className="relative">
+                            <input
+                              type="text"
+                              readOnly
+                              placeholder={t(
+                                "settings.telegramChatIdPlaceholder",
+                                "Chat ID will appear here"
+                              )}
+                              className={`${inputClass} bg-slate-100/70 text-slate-500 cursor-not-allowed border-slate-200 focus:border-slate-200 focus:ring-0`}
+                              {...register("chat_id")}
+                            />
+                          </div>
+                        </FormField>
+                      </div>
+
+                      {verifyStatus.info && (
+                        <div className="mt-4 p-3 bg-white border border-green-200 rounded-lg">
+                          <div className="flex items-center gap-2 text-green-600 mb-2">
+                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                            <span className="text-xs font-bold">Status: Connected</span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-xs text-slate-600">
+                            <div><span className="font-semibold text-slate-700">Group:</span> {verifyStatus.info.title || 'N/A'}</div>
+                            <div><span className="font-semibold text-slate-700">Username:</span> {verifyStatus.info.username ? `@${verifyStatus.info.username}` : 'N/A'}</div>
+                            <div><span className="font-semibold text-slate-700">Chat ID:</span> <span className="font-mono">{verifyStatus.info.chat_id}</span></div>
+                            <div><span className="font-semibold text-slate-700">Type:</span> <span className="capitalize">{verifyStatus.info.type || 'N/A'}</span></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </section>
 
@@ -439,7 +489,6 @@ const GeneralSettings = () => {
                                           cursor: "pointer",
                                         }),
                                       }}
-
                                       formatOptionLabel={(
                                         option,
                                         { context },
@@ -484,15 +533,23 @@ const GeneralSettings = () => {
                                 )}
                                 error={errors.social_media?.[index]?.title}
                               >
-                                <input
-                                  type="text"
-                                  placeholder={t(
-                                    "settings.socialMediaNamePlaceholder",
-                                    "Facebook",
-                                  )}
-                                  className={`${inputClass} font-medium`}
-                                  {...register(`social_media.${index}.title`)}
-                                />
+                                <div className="relative">
+                                  {/* Dynamic Icon based on selected option */}
+                                  <Icon
+                                    size={16}
+                                    className="absolute left-3 top-3 pointer-events-none transition-colors"
+                                    style={{ color: selectedOption.color || '#94a3b8' }}
+                                  />
+                                  <input
+                                    type="text"
+                                    placeholder={t(
+                                      "settings.socialMediaNamePlaceholder",
+                                      "Facebook",
+                                    )}
+                                    className={`${inputClass} font-medium pl-9`}
+                                    {...register(`social_media.${index}.title`)}
+                                  />
+                                </div>
                               </FormField>
 
                               <FormField
@@ -502,7 +559,7 @@ const GeneralSettings = () => {
                                 <div className="relative">
                                   <LinkIcon
                                     size={14}
-                                    className="absolute left-3 top-3 text-slate-400"
+                                    className="absolute left-3 top-3 text-slate-400 pointer-events-none"
                                   />
 
                                   <input
@@ -598,139 +655,37 @@ const GeneralSettings = () => {
                     )}
                   />
 
-                  <div className="flex flex-col items-center">
-                    <div className="relative group w-40 h-40 rounded-2xl border border-slate-200 bg-[#fcfafb] overflow-hidden">
-                      {logoPreview ? (
-                        <>
-                          <img
-                            src={logoPreview}
-                            alt="Shop Logo"
-                            className="w-full h-full object-contain p-4 bg-white"
-                          />
-
-                          <div className="absolute inset-0 bg-slate-950/45 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
-                            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-2">
-                              <Upload size={17} className="text-white" />
-                            </div>
-
-                            <span className="text-xs font-semibold text-white">
-                              {t("settings.change", "Change")}
-                            </span>
-                          </div>
-                        </>
-                      ) : (
-                        <label
-                          htmlFor="logo-upload"
-                          className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
-                        >
-                          <div className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center mb-3">
-                            <ImageIcon size={20} className="text-slate-400" />
-                          </div>
-
-                          <span className="text-xs font-semibold text-slate-600">
-                            {t("settings.uploadLogo", "Upload Logo")}
-                          </span>
-
-                          <span className="text-[10px] text-slate-400 mt-1">
-                            PNG, JPG, WEBP
-                          </span>
-                        </label>
-                      )}
-
-                      <input
-                        id="logo-upload"
-                        type="file"
-                        accept="image/png,image/jpeg,image/webp"
-                        className="hidden"
-                        onChange={handleLogoChange}
-                      />
-
-                      {logoPreview && (
-                        <label
-                          htmlFor="logo-upload"
-                          className="absolute inset-0 cursor-pointer"
-                        />
-                      )}
-                    </div>
-
-                    {logoPreview && (
-                      <button
-                        type="button"
-                        onClick={handleClearLogo}
-                        className="mt-3 text-xs text-red-500 hover:text-red-600 font-medium flex items-center gap-1"
-                      >
-                        <X size={13} />
-
-                        {t("common.delete", "Remove")}
-                      </button>
-                    )}
-                  </div>
+                  <ImageUpload
+                    id="logo-upload"
+                    preview={logoPreview}
+                    onChange={handleLogoChange}
+                    onClear={handleClearLogo}
+                    icon={ImageIcon}
+                    uploadText={t("settings.uploadLogo", "Upload Logo")}
+                  />
                 </section>
 
                 <section className="border border-slate-200 rounded-2xl p-5">
                   <SectionHeader
                     icon={QrCode}
-                    title={t("settings.qrUpload", "QR Code")}
+                    title={t("settings.qrUpload", "KHQR Payment")}
                     description={t(
                       "settings.qrUploadDesc",
-                      "Upload a QR code image for your customers.",
+                      "Upload a QR code image for your customers payme.",
                     )}
                   />
 
                   <div className="flex flex-col items-center">
-                    <div className="relative group w-48 h-48 rounded-2xl border border-dashed border-slate-300 bg-[#fcfafb] overflow-hidden">
-                      {qrPreview ? (
-                        <>
-                          <img
-                            src={qrPreview}
-                            alt="QR Code Preview"
-                            className="w-full h-full object-contain p-4 bg-white"
-                          />
-
-                          <div className="absolute inset-0 bg-slate-950/45 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
-                            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-2">
-                              <Upload size={17} className="text-white" />
-                            </div>
-
-                            <span className="text-xs font-semibold text-white">
-                              {t("settings.change", "Change")}
-                            </span>
-                          </div>
-                        </>
-                      ) : (
-                        <label
-                          htmlFor="qr-upload"
-                          className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
-                        >
-                          <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center mb-3">
-                            <QrCode size={24} className="text-slate-400" />
-                          </div>
-
-                          <span className="text-xs font-semibold text-slate-600">
-                            {t("settings.uploadQr", "Upload QR Code")}
-                          </span>
-
-                          <span className="text-[10px] text-slate-400 mt-1">
-                            PNG, JPG, WEBP
-                          </span>
-                        </label>
-                      )}
-
-                      <input
-                        id="qr-upload"
-                        type="file"
-                        accept="image/png,image/jpeg,image/webp"
-                        className="hidden"
-                        onChange={handleQrUploadChange}
-                      />
-
-                      {qrPreview && (
-                        <label
-                          htmlFor="qr-upload"
-                          className="absolute inset-0 cursor-pointer"
-                        />
-                      )}
-                    </div>
+                    <ImageUpload
+                      id="qr-upload"
+                      preview={qrPreview}
+                      onChange={handleQrUploadChange}
+                      onClear={handleClearQr}
+                      icon={QrCode}
+                      uploadText={t("settings.uploadQr", "Upload QR Code")}
+                      className="w-48 h-48 rounded-2xl border border-dashed border-slate-300 bg-[#fcfafb]"
+                      iconSize={24}
+                    />
 
                     {qrFileName && (
                       <div className="w-full mt-3 flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-[#fcfafb] border border-slate-200">

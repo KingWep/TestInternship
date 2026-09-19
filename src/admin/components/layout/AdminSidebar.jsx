@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import {
@@ -16,29 +16,47 @@ import {
   ChevronsRight,
   QrCode,
   Truck,
+  BadgeCheck,
+  Store,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { useSettingsQuery } from "../../../queries/settings/useSettingQueries";
-import { Store } from "lucide-react";
 
 export default function AdminSidebar({ sidebarState, setSidebarState }) {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
-  const shopCode = user?.shop?.code;
-  const { data: settingData = {}, isLoading } = useSettingsQuery(shopCode);
-  const [imgError, setImgError] = useState(false);
-  const shopName = settingData?.shop_name || "Shop";
-  const rawLogo = settingData?.logo;
-  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
-  const logoUrl = rawLogo
-    ? rawLogo.startsWith("http")
-      ? rawLogo
-      : `${baseUrl}${rawLogo.startsWith("/") ? "" : "/"}${rawLogo}`
-    : "";
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const shopCode = user?.shop?.code;
+
+  const { data: settingData = {}, isLoading } = useSettingsQuery(shopCode);
+
+  const [imgError, setImgError] = useState(false);
+
+  const shopName = settingData?.shop_name || "Shop";
+  const rawLogo = settingData?.logo;
+
+  const baseUrl = useMemo(
+    () => import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "",
+    []
+  );
+
+  const logoUrl = useMemo(() => {
+    if (!rawLogo) return "";
+
+    if (rawLogo.startsWith("http")) {
+      return rawLogo;
+    }
+
+    return `${baseUrl}${rawLogo.startsWith("/") ? "" : "/"}${rawLogo}`;
+  }, [rawLogo, baseUrl]);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [logoUrl]);
+
+  const handleLogout = useCallback(() => {
     Swal.fire({
       title: t("common.logoutConfirmationTitle"),
       text: t("common.logoutConfirmationText"),
@@ -48,110 +66,144 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
       cancelButtonColor: "#3085d6",
       confirmButtonText: t("common.logout"),
       cancelButtonText: t("common.cancel"),
+      allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
         logout();
-        navigate("/login");
+        navigate("/login", { replace: true });
       }
     });
-  };
+  }, [t, logout, navigate]);
 
   useEffect(() => {
+    let resizeFrame = null;
+
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setSidebarState(0);
-      } else {
-        setSidebarState((prev) => (prev === 0 ? 1 : prev));
+      if (resizeFrame) {
+        cancelAnimationFrame(resizeFrame);
+      }
+
+      resizeFrame = requestAnimationFrame(() => {
+        const isMobile = window.innerWidth < 768;
+
+        setSidebarState((prev) => {
+          if (isMobile) {
+            return prev === 0 ? prev : 0;
+          }
+
+          return prev === 0 ? 1 : prev;
+        });
+      });
+    };
+
+    window.addEventListener("resize", handleResize, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+
+      if (resizeFrame) {
+        cancelAnimationFrame(resizeFrame);
       }
     };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, [setSidebarState]);
 
   useEffect(() => {
     if (window.innerWidth < 768) {
-      setSidebarState(0);
+      setSidebarState((prev) => (prev === 0 ? prev : 0));
     }
   }, [location.pathname, setSidebarState]);
 
-  const handleToggle = () => {
-    if (window.innerWidth < 768) {
-      if (sidebarState === 2) setSidebarState(0);
-      else setSidebarState(2);
-    } else {
-      if (sidebarState === 2) setSidebarState(1);
-      else setSidebarState(2);
-    }
-  };
+  const handleToggle = useCallback(() => {
+    const isMobile = window.innerWidth < 768;
+
+    setSidebarState((prev) => {
+      if (isMobile) {
+        return prev === 2 ? 0 : 2;
+      }
+
+      return prev === 2 ? 1 : 2;
+    });
+  }, [setSidebarState]);
 
   const isFull = sidebarState === 2;
   const isHidden = sidebarState === 0;
-  const menuSections = [
-    {
-      title: t("navigation.main"),
-      items: [
-        {
-          label: t("navigation.dashboard"),
-          path: "/admin",
-          icon: LayoutDashboard,
-        },
-        {
-          label: t("navigation.orders"),
-          path: "/admin/orders",
-          icon: ClipboardList,
-        },
-        {
-          label: t("navigation.saleForm"),
-          path: "/admin/sale-form",
-          icon: PlusCircle,
-        },
-      ],
-    },
-    {
-      title: t("navigation.catalog"),
-      items: [
-        {
-          label: t("navigation.products"),
-          path: "/admin/products",
-          icon: ShoppingBag,
-        },
-        {
-          label: t("navigation.categories"),
-          path: "/admin/categories",
-          icon: Layers,
-        },
-        {
-          label: t("navigation.promotions"),
-          path: "/admin/promotions",
-          icon: Image,
-        },
-      ],
-    },
-    {
-      title: t("navigation.system"),
-      items: [
-        { label: t("navigation.users"), path: "/admin/users", icon: Users },
-        {
-          label: t("navigation.deliveryProviders"),
-          path: "/admin/delivery-providers",
-          icon: Truck,
-        },
-        { label: t("navigation.qrCode"), path: "/admin/qr-code", icon: QrCode },
-        {
-          label: t("navigation.settings"),
-          path: "/admin/settings",
-          icon: Settings,
-        },
-      ],
-    },
-  ];
+
+  const menuSections = useMemo(
+    () => [
+      {
+        title: t("navigation.main"),
+        items: [
+          {
+            label: t("navigation.dashboard"),
+            path: "/admin",
+            icon: LayoutDashboard,
+          },
+          {
+            label: t("navigation.orders"),
+            path: "/admin/orders",
+            icon: ClipboardList,
+          },
+          {
+            label: t("navigation.saleForm"),
+            path: "/admin/sale-form",
+            icon: PlusCircle,
+          },
+        ],
+      },
+      {
+        title: t("navigation.catalog"),
+        items: [
+          {
+            label: t("navigation.products"),
+            path: "/admin/products",
+            icon: ShoppingBag,
+          },
+          {
+            label: t("navigation.categories"),
+            path: "/admin/categories",
+            icon: Layers,
+          },
+          {
+            label: t("navigation.promotions"),
+            path: "/admin/promotions",
+            icon: Image,
+          },
+        ],
+      },
+      {
+        title: t("navigation.system"),
+        items: [
+          {
+            label: t("navigation.users"),
+            path: "/admin/users",
+            icon: Users,
+          },
+          {
+            label: t("navigation.deliveryProviders"),
+            path: "/admin/delivery-providers",
+            icon: Truck,
+          },
+          {
+            label: t("navigation.qrCode"),
+            path: "/admin/qr-code",
+            icon: QrCode,
+          },
+          {
+            label: t("navigation.settings"),
+            path: "/admin/settings",
+            icon: Settings,
+          },
+        ],
+      },
+    ],
+    [t]
+  );
 
   return (
     <>
-      {/* Mobile Overlay */}
       <div
         className={`md:hidden fixed inset-0 bg-[#44092e]/10 z-40 backdrop-blur-sm transition-opacity duration-300 ${
-          sidebarState !== 0
+          !isHidden
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
@@ -160,41 +212,51 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
 
       <aside
         className={`
-        fixed md:relative z-50 h-full text-white flex flex-col border-r border-[#870d4c]/30 
-        transition-[width,transform] duration-300 ease-in-out select-none shadow-2xl md:shadow-none
-        ${sidebarState === 0 ? "-translate-x-full md:translate-x-0 w-[80px]" : "translate-x-0"}
-        ${sidebarState === 1 ? "w-[80px]" : ""}
-        ${sidebarState === 2 ? "w-64" : ""}
-      `}
-        style={{ backgroundColor: "#44092e" }}
+          fixed md:relative z-50 h-full text-white flex flex-col
+          border-r border-[#870d4c]/30
+          transition-[width,transform] duration-200 ease-out
+          select-none shadow-2xl md:shadow-none
+          will-change-[width,transform]
+          ${
+            isHidden
+              ? "-translate-x-full md:translate-x-0 w-[80px]"
+              : "translate-x-0"
+          }
+          ${sidebarState === 1 ? "w-[80px]" : ""}
+          ${sidebarState === 2 ? "w-64" : ""}
+        `}
+        style={{
+          backgroundColor: "#44092e",
+        }}
       >
-        {/* Toggle Button - ប្រើពណ៌ប៊ូតុង Sign In */}
         <button
           onClick={handleToggle}
-          className="absolute -right-5 top-1/2 -translate-y-1/2 bg-[#870d4c] text-white flex items-center justify-center w-5 h-20 hover:h-24 hover:w-6 hover:-right-6 rounded-r-xl shadow-lg hover:bg-[#9d1159] transition-all duration-300 ease-in-out focus:outline-none z-10"
+          className="absolute -right-5 top-1/2 -translate-y-1/2 bg-[#870d4c] text-white flex items-center justify-center w-5 h-20 hover:h-24 hover:w-6 hover:-right-6 rounded-r-xl shadow-lg hover:bg-[#9d1159] transition-all duration-200 ease-out focus:outline-none z-10"
           aria-label="Toggle Sidebar"
+          type="button"
         >
           {isFull ? (
             <ChevronsLeft
               size={18}
-              className="transition-transform duration-300"
+              className="transition-transform duration-200"
             />
           ) : (
             <ChevronsRight
               size={18}
-              className="transition-transform duration-300"
+              className="transition-transform duration-200"
             />
           )}
         </button>
 
-        {/* Logo Section */}
         <div className="p-6 h-[76px] font-bold text-lg text-white border-b border-[#870d4c]/30 flex items-center overflow-hidden shrink-0">
           <div className="w-12 h-12 shrink-0 rounded-xl overflow-hidden flex items-center justify-center border border-[#870d4c]/50 bg-white/5 shadow-inner">
             {logoUrl && !imgError ? (
               <img
                 src={logoUrl}
                 alt={shopName}
-                className="object-cover w-full h-full transition-opacity duration-300"
+                className="object-cover w-full h-full"
+                loading="eager"
+                decoding="async"
                 onError={() => setImgError(true)}
               />
             ) : (
@@ -205,7 +267,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
           </div>
 
           <div
-            className={`grid transition-[grid-template-columns,opacity] duration-300 ease-in-out overflow-hidden ${
+            className={`grid transition-[grid-template-columns,opacity] duration-200 ease-out overflow-hidden ${
               isFull
                 ? "grid-cols-[1fr] opacity-100 ml-4"
                 : "grid-cols-[0fr] opacity-0 ml-0"
@@ -227,6 +289,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
                   <span className="text-white text-xl font-bold leading-tight pr-8">
                     {shopName}
                   </span>
+
                   <span
                     className="text-white text-xl font-bold leading-tight pr-8"
                     aria-hidden="true"
@@ -235,26 +298,35 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
                   </span>
                 </div>
               )}
-              <span className="text-white/60 text-xs font-medium leading-tight mt-0.5 truncate">
-                Hello {user?.name ? `, ${user.name}` : ""}
-              </span>
+
+              <div className="flex items-center gap-1 mt-0.5 overflow-hidden">
+                <span className="text-white/60 text-xs font-medium leading-tight truncate">
+                  Hello {user?.name ? `, ${user.name}` : ""}
+                </span>
+
+                {user?.role?.toLowerCase() === "admin" && (
+                  <BadgeCheck
+                    size={14}
+                    className="text-white fill-blue-500 shrink-0"
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-6 overflow-y-auto overflow-x-hidden scroll-smooth overscroll-contain [scrollbar-width:thin] [scrollbar-color:rgba(135,13,76,0.5)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#870d4c]/50 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#870d4c] transition-colors duration-300">
-          {menuSections.map((section, idx) => (
-            <div key={idx} className="space-y-1">
+        <nav className="flex-1 p-4 space-y-6 overflow-y-auto overflow-x-hidden scroll-smooth overscroll-contain [scrollbar-width:thin] [scrollbar-color:rgba(135,13,76,0.5)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#870d4c]/50 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#870d4c]">
+          {menuSections.map((section) => (
+            <div key={section.title} className="space-y-1">
               <div
-                className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+                className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${
                   isFull
                     ? "grid-rows-[1fr] opacity-100 mb-2"
                     : "grid-rows-[0fr] opacity-0 mb-0"
                 }`}
               >
                 <div className="overflow-hidden">
-                  <h2 className="px-4 text-[11px] font-bold text-white/50 tracking-widest whitespace-nowrap uppercase transition-colors duration-300">
+                  <h2 className="px-4 text-[11px] font-bold text-white/50 tracking-widest whitespace-nowrap uppercase">
                     {section.title}
                   </h2>
                 </div>
@@ -263,12 +335,12 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
               {section.items.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
+
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
-                    /* កែពណ៌ Active ឱ្យស៊ីជាមួយប៊ូតុង Sign In និងដក border ចេញដើម្បីកុំឱ្យលោត */
-                    className={`flex items-center px-4 py-3 rounded-xl text-sm transition-colors duration-200 relative group overflow-hidden ${
+                    className={`flex items-center px-4 py-3 rounded-xl text-sm transition-colors duration-150 relative group overflow-hidden ${
                       isActive
                         ? "bg-[#870d4c] text-white font-semibold shadow-md"
                         : "hover:bg-[#870d4c]/40 hover:text-white text-white/70"
@@ -277,10 +349,15 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
                     <div className="flex items-center min-w-0">
                       <Icon
                         size={18}
-                        className={`shrink-0 transition-transform duration-200 ease-in-out ${isActive ? "" : "group-hover:scale-110"}`}
+                        className={`shrink-0 transition-transform duration-150 ease-out ${
+                          isActive
+                            ? ""
+                            : "group-hover:scale-110"
+                        }`}
                       />
+
                       <div
-                        className={`grid transition-[grid-template-columns,opacity] duration-300 ease-in-out ${
+                        className={`grid transition-[grid-template-columns,opacity] duration-200 ease-out ${
                           isFull
                             ? "grid-cols-[1fr] opacity-100 ml-3"
                             : "grid-cols-[0fr] opacity-0 ml-0"
@@ -292,8 +369,8 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
                       </div>
                     </div>
 
-                    {!isFull && sidebarState !== 0 && (
-                      <div className="absolute left-[calc(100%+8px)] px-2.5 py-1.5 bg-[#870d4c] text-white font-medium text-xs rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 ease-out z-50 whitespace-nowrap shadow-xl">
+                    {!isFull && !isHidden && (
+                      <div className="absolute left-[calc(100%+8px)] px-2.5 py-1.5 bg-[#870d4c] text-white font-medium text-xs rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-150 ease-out z-50 whitespace-nowrap shadow-xl">
                         {item.label}
                       </div>
                     )}
@@ -304,20 +381,21 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
           ))}
         </nav>
 
-        {/* Footer / Logout */}
         <div className="p-4 border-t border-[#870d4c]/30 shrink-0">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center px-4 py-3 rounded-xl text-sm transition-colors duration-200 relative group overflow-hidden hover:bg-red-500/20 hover:text-red-400 text-white/70"
+            className="w-full flex items-center px-4 py-3 rounded-xl text-sm transition-colors duration-150 relative group overflow-hidden hover:bg-red-500/20 hover:text-red-400 text-white/70"
             title={t("common.logout")}
+            type="button"
           >
             <div className="flex items-center min-w-0">
               <LogOut
                 size={18}
-                className="shrink-0 transition-transform duration-200 ease-in-out group-hover:-translate-x-1"
+                className="shrink-0 transition-transform duration-150 ease-out group-hover:-translate-x-1"
               />
+
               <div
-                className={`grid transition-[grid-template-columns,opacity] duration-300 ease-in-out ${
+                className={`grid transition-[grid-template-columns,opacity] duration-200 ease-out ${
                   isFull
                     ? "grid-cols-[1fr] opacity-100 ml-3"
                     : "grid-cols-[0fr] opacity-0 ml-0"
@@ -329,8 +407,8 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
               </div>
             </div>
 
-            {!isFull && sidebarState !== 0 && (
-              <div className="absolute left-[calc(100%+8px)] px-2.5 py-1.5 bg-red-600 text-white font-medium text-xs rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 ease-out z-50 whitespace-nowrap shadow-xl">
+            {!isFull && !isHidden && (
+              <div className="absolute left-[calc(100%+8px)] px-2.5 py-1.5 bg-red-600 text-white font-medium text-xs rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-150 ease-out z-50 whitespace-nowrap shadow-xl">
                 <div>{t("common.logout")}</div>
               </div>
             )}

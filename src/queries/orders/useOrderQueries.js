@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 export function useOrderQuery(orderId, initialData) {
   return useQuery({
     queryKey: orderKeys.detail(orderId),
-    queryFn: () => orderService.getOrder(orderId),
+    queryFn: ({ signal }) => orderService.getOrder(orderId, { signal }),
     enabled: !!orderId,
     initialData: initialData ?? undefined,
     staleTime: 5 * 60 * 1000,
@@ -19,8 +19,8 @@ export function useOrderQuery(orderId, initialData) {
 export function useOrdersQuery(params = {}) {
   return useQuery({
     queryKey: orderKeys.list(params),
-    queryFn: async () => {
-      const response = await orderService.getOrders(params);
+    queryFn: async ({ signal }) => {
+      const response = await orderService.getOrders(params, { signal });
       const apiOrders = response?.data || response || [];
       return Array.isArray(apiOrders) ? apiOrders : [];
     },

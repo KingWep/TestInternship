@@ -5,7 +5,7 @@ import { categoryKeys } from './categoryKeys';
 export function useCategoriesQuery(params = {}) {
   return useQuery({
     queryKey: categoryKeys.list(params),
-    queryFn: () => categoryService.getCategories(params),
+    queryFn: ({ signal }) => categoryService.getCategories(params, { signal }),
     select: (data) => {
       const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
       const rawCategories = data?.data || data || [];

@@ -6,12 +6,12 @@ const colorStyles = {
   emerald: {
     bg: "bg-[#870d4c]/10",
     text: "text-[#870d4c]",
-    border: "border-l-[#870d4c]",
+    border: "border-l-[#5d0a35]",
   },
   green: {
     bg: "bg-[#870d4c]/10",
     text: "text-[#870d4c]",
-    border: "border-l-[#870d4c]",
+    border: "border-l-[#5d0a35]",
   },
   blue: {
     bg: "bg-[#9d1159]/10",
@@ -45,7 +45,7 @@ export default function StatsCard({
   const cardContent = (
     <>
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+        <p className="text-md font-semibold text-slate-500 uppercase tracking-wider">
           {title}
         </p>
         {Icon && (

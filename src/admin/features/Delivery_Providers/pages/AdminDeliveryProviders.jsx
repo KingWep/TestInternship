@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Plus, Edit, Trash2, SlidersHorizontal, Ban, CheckCircle2, XCircle, Search } from 'lucide-react'
+import { Plus, Edit, SlidersHorizontal, Ban, CheckCircle2, XCircle, Search } from 'lucide-react'
 import { useDeliveryProviders } from '../hooks/useDeliveryProviders'
 import DeliveryProviderForm from '../components/DeliveryProviderForm'
 import DataTable from '../../../components/common/DataTable'
@@ -9,7 +9,6 @@ import Button from '../../../components/common/Button'
 import Modal from '../../../components/common/Modal'
 import PageHeader from '../../../components/common/PageHeader'
 import FilterBar from '../../../components/common/FilterBar'
-import DeleteButton from '../../../components/common/DeleteButton'
 import Pagination from '../../../components/common/Pagination'
 import { useTranslation } from 'react-i18next'
 
@@ -34,7 +33,6 @@ export default function AdminDeliveryProviders() {
     handleSortChange,
     handleSubmit,
     handleEdit,
-    handleDelete,
     openAddModal,
     closeModal,
     setEditingProvider,
@@ -110,17 +108,11 @@ export default function AdminDeliveryProviders() {
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={() => handleEdit(row)}
-            className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-600 transition-colors"
+            className="p-2 bg-[#fcfafb] border border-slate-200 rounded-xl text-amber-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all"
             title={t('common.edit')}
           >
             <Edit size={18} />
           </button>
-          <DeleteButton
-            onConfirm={() => handleDelete(row.id)}
-            className="p-2 bg-[#fcfafb] border border-slate-200 rounded-xl text-red-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all"
-          >
-            <Trash2 size={18} />
-          </DeleteButton>
         </div>
       ),
     },

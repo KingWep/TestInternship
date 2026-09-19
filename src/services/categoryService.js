@@ -2,9 +2,9 @@ import axiosClient from '../api/axiosClient';
 import { API_ENDPOINTS } from '../api/endpoints';
 
 export const categoryService = {
-  getCategories: async (params = {}) => {
+  getCategories: async (params = {}, config = {}) => {
     try {
-      const response = await axiosClient.get(API_ENDPOINTS.CATEGORIES.GET_ALL, { params });
+      const response = await axiosClient.get(API_ENDPOINTS.CATEGORIES.GET_ALL, { params, ...config });
       return response.data;
     } catch (error) {
       console.error('Category API Error [getCategories]:', {

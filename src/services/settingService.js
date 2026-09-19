@@ -2,9 +2,9 @@ import axiosClient from "../api/axiosClient";
 import { API_ENDPOINTS } from "../api/endpoints";
 
 export const settingService = {
-  getSettings: async () => {
+  getSettings: async (config = {}) => {
     try {
-      const response = await axiosClient.get(API_ENDPOINTS.SETTINGS.GET_ALL);
+      const response = await axiosClient.get(API_ENDPOINTS.SETTINGS.GET_ALL, config);
       return response.data;
     } catch (error) {
       console.error("Setting API Error [getSettings]:", {
@@ -16,10 +16,11 @@ export const settingService = {
     }
   },
 
-  getByShopCode: async (shopCode) => {
+  getByShopCode: async (shopCode, config = {}) => {
     try {
       const response = await axiosClient.get(API_ENDPOINTS.SETTINGS.GET_ALL, {
         params: { shop_code: shopCode },
+        ...config
       });
       return response.data;
     } catch (error) {
@@ -32,10 +33,11 @@ export const settingService = {
     }
   },
 
-  getSettingById: async (id) => {
+  getSettingById: async (id, config = {}) => {
     try {
       const response = await axiosClient.get(API_ENDPOINTS.SETTINGS.GET_ALL, {
         params: { id: id },
+        ...config
       });
       return response.data;
     } catch (error) {

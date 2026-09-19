@@ -1,18 +1,74 @@
-
 import { settingService } from './settingService'
 
-const TELEGRAM_API = 'https://api.telegram.org'
+const getBotToken = () => {
+  return import.meta.env.VITE_TELEGRAM_BOT_TOKEN || process.env.REACT_APP_TELEGRAM_BOT_TOKEN || '';
+}
+const getSettingFromResponse = (response) => {
+  const rawData = response?.data ?? response ?? []
 
-const getTelegramToken = () => {
-  const token = import.meta.env.VITE_TELEGRAM_BOT_TOKEN
+  if (Array.isArray(rawData)) {
+    return rawData[0] || {}
+  }
 
-  if (!token) {
+  return rawData
+}
+
+const resolveChatId = async (order) => {
+  const settingId =
+    order?.settingId ||
+    order?.setting_id
+
+  if (!settingId) {
     throw new Error(
-      'Telegram bot token is missing. Check your .env file.'
+      'Order settingId is missing. Cannot determine Telegram chat.'
     )
   }
 
-  return token
+  const response =
+    await settingService.getSettingById(settingId)
+
+  const settings =
+    getSettingFromResponse(response)
+
+  if (!settings?.chat_id) {
+    throw new Error(
+      'Target shop does not have a Telegram chat ID configured.'
+    )
+  }
+
+  return String(settings.chat_id)
+}
+
+const verifyGroup = async (group) => {
+  if (!group?.trim()) {
+    throw new Error('Telegram group is required.')
+  }
+
+  const token = getBotToken();
+  if (!token) throw new Error('Telegram Bot Token is not configured.');
+
+  const response = await fetch(
+    `https://api.telegram.org/bot${token}/getChat?chat_id=${encodeURIComponent(group.trim())}`
+  )
+
+  const data = await response.json()
+
+  if (!data?.ok) {
+    throw new Error(
+      data?.description ||
+        'Failed to verify Telegram group.'
+    )
+  }
+
+  return {
+    success: true,
+    data: {
+      chat_id: String(data.result.id),
+      title: data.result.title,
+      username: data.result.username,
+      type: data.result.type
+    }
+  }
 }
 
 const sendMessage = async (text, chatId) => {
@@ -20,17 +76,22 @@ const sendMessage = async (text, chatId) => {
     throw new Error('Telegram chat ID is missing for this shop.')
   }
 
-  const token = getTelegramToken()
+  if (!text) {
+    throw new Error('Telegram message is empty.')
+  }
+
+  const token = getBotToken();
+  if (!token) throw new Error('Telegram Bot Token is not configured.');
 
   const response = await fetch(
-    `${TELEGRAM_API}/bot${token}/sendMessage`,
+    `https://api.telegram.org/bot${token}/sendMessage`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        chat_id: chatId,
+        chat_id: String(chatId),
         text,
         parse_mode: 'HTML',
       }),
@@ -39,276 +100,264 @@ const sendMessage = async (text, chatId) => {
 
   const data = await response.json()
 
-  if (!response.ok || !data.ok) {
+  if (!data?.ok) {
     throw new Error(
-      data.description || 'Failed to send Telegram message'
+      data?.description ||
+        'Failed to send Telegram message.'
     )
   }
 
-  return data
+  return { success: true, data }
 }
 
-const getCourierName = (order = {}, courier) => {
-  if (courier) {
-    if (typeof courier === 'string') {
-      return courier
-    }
+const getCourierName = (courier) => {
+  if (!courier) {
+    return 'N/A'
+  }
 
-    return (
-      courier.name ||
-      courier.title ||
-      courier.providerName ||
-      courier.provider_name ||
-      courier.deliveryName ||
-      courier.delivery_name ||
-      ''
-    )
+  if (typeof courier === 'string') {
+    return courier
   }
 
   return (
-    order.courier ||
-    order.courierName ||
-    order.courier_name ||
-    order.deliveryProviderName ||
-    order.delivery_provider_name ||
-    order.deliveryServiceName ||
-    order.delivery_service_name ||
-    order.deliveryProvider?.name ||
-    order.deliveryProvider?.title ||
-    order.deliveryProvider?.providerName ||
-    order.deliveryProvider?.provider_name ||
-    order.deliveryProvider?.deliveryName ||
-    order.deliveryProvider?.delivery_name ||
-    order.provider?.name ||
-    order.provider?.title ||
-    order.providerName ||
-    order.provider_name ||
-    ''
+    courier?.name ||
+    courier?.title ||
+    courier?.providerName ||
+    courier?.provider_name ||
+    'N/A'
   )
 }
 
-const buildOrderMessage = (order = {}, courier) => {
-  const rawItems =
-    order.orderDetails ||
-    order.items ||
-    []
+const escapeHtml = (value) => {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
 
-  const items = rawItems
-    .map((item) => {
-      const price =
-        Number(item.price) ||
-        Number(item.salePrice) ||
-        Number(item.sale_price) ||
-        0
+const formatMoney = (value) => {
+  const amount = Number(value || 0)
 
-      const quantity =
-        Number(item.quantity) || 1
+  return amount.toFixed(2)
+}
 
-      const total = price * quantity
+const buildOrderMessage = (order, courier) => {
+  const items = Array.isArray(order?.items)
+    ? order.items
+    : Array.isArray(order?.orderDetails)
+    ? order.orderDetails
+    : []
+  const itemsText = items.length
+    ? items
+        .map((item, index) => {
+          const productName =
+            item?.product?.name ||
+            item?.productName ||
+            item?.product_name ||
+            item?.name ||
+            'Unknown Product'
 
-      const name =
-        item.product_name ||
-        item.productName ||
-        item.name ||
-        item.product?.name ||
-        'ទំនិញ'
+          const quantity =
+            item?.quantity || 0
 
-      return `• ${name} × ${quantity} — $${total.toFixed(2)}`
-    })
-    .join('\n')
+          const price =
+            item?.price ||
+            item?.salePrice ||
+            item?.product?.salePrice ||
+            0
 
-  const orderNum =
-    order.orderNo ||
-    order.orderNumber ||
-    order.order_no ||
-    order.order_number ||
-    order.id ||
+          return (
+            `• ${escapeHtml(productName)} × ${quantity} — $${formatMoney(price)}`
+          )
+        })
+        .join('\n')
+    : 'No items'
+
+  const orderNumber =
+    order?.orderNo ||
+    order?.order_no ||
+    order?.id ||
     'N/A'
 
   const customerName =
-    order.customerName ||
-    order.customer_name ||
-    order.customerInfo?.name ||
+    order?.customerName ||
+    order?.customer_name ||
+    order?.name ||
     'អតិថិជនទូទៅ'
 
   const phone =
-    order.customerPhone ||
-    order.customer_phone ||
-    order.phone ||
-    order.customerInfo?.phone ||
-    '—'
+    order?.customerPhone ||
+    order?.customer_phone ||
+    order?.phone ||
+    'N/A'
 
   const address =
-    order.customerAddress ||
-    order.customer_address ||
-    order.address ||
-    order.customerInfo?.address ||
-    '—'
+    order?.address ||
+    order?.customerAddress ||
+    order?.customer_address ||
+    'N/A'
 
-  const dateStr = order.createdAt
-    ? new Date(order.createdAt).toLocaleString('km-KH')
-    : `${order.date || ''} ${order.time || ''}`.trim() ||
-      '—'
+  const payment =
+    order?.paymentMethod ||
+    order?.payment_method ||
+    order?.paymentStatus ||
+    order?.payment ||
+    'N/A'
 
-  const delivery = Number(
-    order.deliveryFee ??
-      order.delivery_fee ??
-      order.delivery ??
-      0
-  )
+  const status =
+    order?.status ||
+    'Pending'
 
-  const total = Number(
-    order.totalAmount ??
-      order.total_amount ??
-      order.total ??
-      0
-  )
+  const deliveryProvider =
+    getCourierName(courier) !== 'N/A'
+      ? getCourierName(courier)
+      : order?.deliveryProvider?.name || 'N/A'
+
+  const deliveryFee =
+    order?.deliveryFee ||
+    order?.delivery_fee ||
+    0
+
+  const total =
+    order?.total ||
+    order?.totalAmount ||
+    order?.total_amount ||
+    0
+
+  const orderDate =
+    order?.createdAt ||
+    order?.created_at ||
+    order?.date
+      ? new Date(order?.createdAt || order?.created_at || order?.date).toLocaleString()
+      : new Date().toLocaleString()
 
   const subtotal =
-    Number(order.subtotal) ||
-    Number(order.sub_total) ||
-    (total > delivery
-      ? total - delivery
-      : 0)
+    order?.subtotal ||
+    order?.sub_total ||
+    (Number(total) - Number(deliveryFee)) ||
+    0
 
-  const courierName = getCourierName(
-    order,
-    courier
-  )
-
-  return (
-    `🧾 <b>វិក្កយបត្រ: ${orderNum}</b>\n\n` +
-    `👤 <b>អតិថិជន:</b> ${customerName.trim()}\n` +
-    `📲 <b>លេខទូរស័ព្ទ:</b> ${phone.trim()}\n` +
-    `📍 <b>អាសយដ្ឋាន:</b> ${address.trim()}\n` +
-    `📅 <b>កាលបរិច្ឆេទ:</b> ${dateStr}\n` +
-    (courierName
-      ? `🚚 <b>សេវាដឹក:</b> ${courierName}\n`
-      : '') +
-    `\n` +
-    `------------------------\n` +
-    `${items || '• គ្មានទំនិញ'}\n` +
-    `------------------------\n\n` +
-    `🔹 <b>Subtotal:</b> $${subtotal.toFixed(2)}\n` +
-    `🚚 <b>Delivery:</b> $${delivery.toFixed(2)}\n` +
-    `💰 <b>Total:</b> $${(
-      total > 0
-        ? total
-        : subtotal + delivery
-    ).toFixed(2)}`
-  )
+  return [
+    '🛍 NEW ORDER',
+    '',
+    `🧾 <b>វិក្កយបត្រ:</b> ${escapeHtml(orderNumber)}`,
+    `👤 <b>អតិថិជន:</b> ${escapeHtml(customerName)}`,
+    `📲 <b>លេខទូរស័ព្ទ:</b> ${escapeHtml(phone)}`,
+    `📍 <b>អាសយដ្ឋាន:</b> ${escapeHtml(address)}`,
+    `📅 <b>កាលបរិច្ឆេទ:</b> ${escapeHtml(orderDate)}`,
+    `🚚 <b>សេវាដឹក:</b> ${escapeHtml(deliveryProvider)}`,
+    '------------------------',
+    itemsText,
+    '------------------------',
+    `🔹 <b>Subtotal:</b> $${formatMoney(subtotal)}`,
+    `🚚 <b>Delivery:</b> $${formatMoney(deliveryFee)}`,
+    `💰 <b>Total:</b> $${formatMoney(total)}`,
+    `📊 <b>Status:</b> ${escapeHtml(status)}`,
+  ].join('\n')
 }
 
-const buildStickerMessage = (
-  order = {},
-  courier
-) => {
-  const orderNum =
-    order.orderNo ||
-    order.orderNumber ||
-    order.order_no ||
-    order.order_number ||
-    order.id ||
+const buildStickerMessage = (order, courier) => {
+  const orderNumber =
+    order?.orderNo ||
+    order?.order_no ||
+    order?.id ||
     'N/A'
 
   const customerName =
-    order.customerName ||
-    order.customer_name ||
-    order.customerInfo?.name ||
-    'អតិថិជនទូទៅ'
+    order?.customerName ||
+    order?.customer_name ||
+    order?.name ||
+    'N/A'
 
   const phone =
-    order.customerPhone ||
-    order.customer_phone ||
-    order.phone ||
-    order.customerInfo?.phone ||
-    '—'
+    order?.customerPhone ||
+    order?.customer_phone ||
+    order?.phone ||
+    'N/A'
 
   const address =
-    order.customerAddress ||
-    order.customer_address ||
-    order.address ||
-    order.customerInfo?.address ||
-    '—'
+    order?.address ||
+    order?.customerAddress ||
+    order?.customer_address ||
+    'N/A'
 
-  const total = Number(
-    order.totalAmount ??
-      order.total_amount ??
-      order.total ??
-      0
-  )
+  const deliveryProvider =
+    getCourierName(courier)
 
-  const courierName = getCourierName(
-    order,
-    courier
-  )
+  const total =
+    order?.total ||
+    order?.totalAmount ||
+    order?.total_amount ||
+    0
 
-  return (
-    `📦 <b>ប័ណ្ណដឹកជញ្ជូន: ${orderNum}</b>\n\n` +
-    `👤 <b>អតិថិជន:</b> ${customerName.trim()}\n` +
-    `📲 <b>លេខទូរស័ព្ទ:</b> ${phone.trim()}\n` +
-    `📍 <b>អាសយដ្ឋាន:</b> ${address.trim()}\n` +
-    `💰 <b>សរុប:</b> $${total.toFixed(2)}` +
-    (courierName
-      ? `\n🚚 <b>សេវាដឹក:</b> ${courierName}`
-      : '')
-  )
+  return [
+    '🏷️ <b>ORDER STICKER</b>',
+    '',
+    `📦 <b>Order:</b> #${escapeHtml(orderNumber)}`,
+    `👤 <b>Name:</b> ${escapeHtml(customerName)}`,
+    `📱 <b>Phone:</b> ${escapeHtml(phone)}`,
+    `📍 <b>Address:</b> ${escapeHtml(address)}`,
+    `🚚 <b>Delivery:</b> ${escapeHtml(deliveryProvider)}`,
+    `💰 <b>Total:</b> $${formatMoney(total)}`,
+  ].join('\n')
 }
 
-const resolveChatId = async (order) => {
-  const settingId =
-    order.settingId ||
-    order.setting_id
-
-  if (!settingId) {
-    throw new Error(
-      'Order settingId is missing. Cannot determine target Telegram chat.'
-    )
-  }
-
-  const settingData =
-    await settingService.getSettingById(settingId)
-
-  const rawData =
-    settingData?.data ||
-    settingData ||
-    []
-
-  const settings = Array.isArray(rawData)
-    ? rawData[0] || {}
-    : rawData
-
-  if (!settings.chat_id) {
-    throw new Error(
-      'Target shop does not have a Telegram chat ID configured.'
-    )
-  }
-
-  return settings.chat_id
-}
-
-export const sendOrderToTelegram = async (
+const sendOrderToTelegram = async (
   order,
   courier
 ) => {
   const chatId =
     await resolveChatId(order)
 
+  const message =
+    buildOrderMessage(
+      order,
+      courier
+    )
+
   return sendMessage(
-    buildOrderMessage(order, courier),
+    message,
     chatId
   )
 }
 
-export const sendStickerToTelegram = async (
+const sendStickerToTelegram = async (
   order,
   courier
 ) => {
   const chatId =
     await resolveChatId(order)
 
+  const message =
+    buildStickerMessage(
+      order,
+      courier
+    )
+
   return sendMessage(
-    buildStickerMessage(order, courier),
+    message,
     chatId
   )
+}
+
+export const telegramService = {
+  verifyGroup,
+  sendMessage,
+  resolveChatId,
+  getCourierName,
+  buildOrderMessage,
+  buildStickerMessage,
+  sendOrderToTelegram,
+  sendStickerToTelegram,
+}
+
+export {
+  verifyGroup,
+  sendMessage,
+  resolveChatId,
+  getCourierName,
+  buildOrderMessage,
+  buildStickerMessage,
+  sendOrderToTelegram,
+  sendStickerToTelegram,
 }

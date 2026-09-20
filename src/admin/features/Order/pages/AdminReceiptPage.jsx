@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import {
   Printer,
   FileDown,
@@ -17,218 +17,23 @@ import { sendOrderToTelegram } from "../../../../services/telegramService";
 import { useSettingByIdQuery } from "../../../../queries/settings/useSettingQueries";
 import { useTranslation } from "react-i18next";
 
-function AdminReceiptCard({ order }) {
-  const { t } = useTranslation();
-  const settingId = order?.settingId;
-  const { data: settingData } = useSettingByIdQuery(settingId);
-  const [imgError, setImgError] = useState(false);
-  const shopName = settingData?.shop_name || "Shop";
-  const rawLogo = settingData?.logo;
-  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
-  const logoUrl = rawLogo
-    ? rawLogo.startsWith("http")
-      ? rawLogo
-      : `${baseUrl}${rawLogo.startsWith("/") ? "" : "/"}${rawLogo}`
-    : "";
-  const delivery = Number(order?.deliveryFee) || 0;
-  const total = Number(order?.totalAmount) || 0;
-  const subtotal = total - delivery;
-
-  return (
-    <div
-      id="admin-receipt-card"
-      style={{
-        width: "340px",
-        fontFamily:
-          "'Geist Variable', 'Battambang', 'Siemreap', 'Kantumruy Pro', 'Noto Sans Khmer', sans-serif",
-        boxSizing: "border-box",
-        WebkitFontSmoothing: "antialiased",
-        MozOsxFontSmoothing: "grayscale",
-        textRendering: "optimizeLegibility",
-      }}
-      className="bg-white text-slate-900 mx-auto text-xs px-5 py-6 shadow-sm overflow-hidden flex flex-col"
-    >
-      {/* Header */}
-      <div className="text-center border-b border-dashed border-slate-800 pb-3 mb-3 w-full">
-        {logoUrl && !imgError ? (
-          <img
-            src={logoUrl}
-            alt={shopName}
-            className="h-10 mx-auto mb-2 object-contain rounded-md"
-            onError={() => setImgError(true)}
-          />
-        ) : null}
-        <h2 className="font-black text-base tracking-wider uppercase text-slate-900 leading-tight">
-          {shopName}
-        </h2>
-        <p className="text-[11px] text-slate-900 mt-1">
-          {t("order.phone")} {settingData?.phone || "—"}
-        </p>
-        <p className="text-[11px] text-slate-900">
-          {settingData?.address || ""}
-        </p>
-      </div>
-
-      {/* Meta Info */}
-      <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">
-        <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">
-            {t("order.receiptNo")}
-          </span>
-          <span className="font-mono font-bold text-slate-900">
-            {order?.orderNo || order?.orderNumber || `ORD-${order?.id}`}
-          </span>
-        </div>
-        <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">{t("order.date")}</span>
-          <span className="font-mono text-slate-800">
-            {order?.createdAt
-              ? new Date(order.createdAt).toLocaleDateString()
-              : order?.date || ""}{" "}
-            {order?.createdAt
-              ? new Date(order.createdAt).toLocaleTimeString()
-              : order?.time || ""}
-          </span>
-        </div>
-        {order?.customerName && (
-          <div className="flex justify-between items-center w-full">
-            <span className="font-medium text-slate-900">
-              {t("order.customer")}
-            </span>
-            <span className="font-bold text-slate-900 truncate max-w-[180px]">
-              {order.customerName || t("order.generalCustomer")}
-            </span>
-          </div>
-        )}
-        <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">{t("order.phone")}</span>
-          <span className="font-mono text-slate-900 font-semibold">
-            {order?.customerPhone || order?.phone || "—"}
-          </span>
-        </div>
-        <div className="flex justify-between items-center w-full">
-          <span className="font-medium text-slate-900">
-            {t("order.deliveryService")}
-          </span>
-          <span className="font-bold text-slate-900">
-            {order?.deliveryProvider?.name ||
-              order?.deliveryMethod ||
-              t("order.none")}
-          </span>
-        </div>
-        {(order?.customerAddress || order?.address) && (
-          <div className="flex justify-between items-start w-full">
-            <span className="font-medium text-slate-900 shrink-0">
-              {t("order.addressLabel")}
-            </span>
-            <span className="text-slate-800 text-right truncate max-w-[190px]">
-              {order.customerAddress || order.address}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Items Table */}
-      <div className="mb-3 w-full border-b border-dashed border-slate-800 pb-3">
-        <table className="w-full text-[11px] table-fixed border-collapse">
-          <thead>
-            <tr className="border-b border-slate-800 text-slate-900 font-bold">
-              <th className="text-left pb-1.5 font-bold w-[45%]">
-                {t("order.itemCol")}
-              </th>
-              <th className="text-center pb-1.5 font-bold w-[15%]">
-                {t("order.qtyCol")}
-              </th>
-              <th className="text-right pb-1.5 font-bold w-[20%]">
-                {t("order.priceCol")}
-              </th>
-              <th className="text-right pb-1.5 font-bold w-[20%]">
-                {t("order.totalCol")}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {(() => {
-              const orderItems = order?.orderDetails || order?.items || [];
-              return orderItems.length > 0 ? (
-                orderItems.map((item, idx) => {
-                  const price =
-                    Number(item.price) || Number(item.salePrice) || 0;
-                  const qty = Number(item.quantity) || 0;
-                  return (
-                    <tr key={item.id ?? idx} className="text-slate-800">
-                      <td className="py-1.5 pr-1 font-medium break-words text-left align-top leading-snug">
-                        {item.product_name || item.name}
-                      </td>
-                      <td className="py-1.5 text-center tabular-nums text-slate-600 font-semibold align-top">
-                        {qty}
-                      </td>
-                      <td className="py-1.5 text-right tabular-nums text-slate-600 align-top">
-                        ${price.toFixed(2)}
-                      </td>
-                      <td className="py-1.5 text-right tabular-nums font-bold text-slate-900 align-top">
-                        ${(price * qty).toFixed(2)}
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={4} className="py-3 text-center text-slate-400">
-                    {t("order.noItems")}
-                  </td>
-                </tr>
-              );
-            })()}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pricing Summary */}
-      <div className="space-y-1.5 pb-3 mb-3 border-b border-dashed border-slate-800 text-[11px] text-slate-700 w-full">
-        <div className="flex justify-between items-center">
-          <span className="text-slate-900">{t("order.subtotalLabel")}</span>
-          <span className="tabular-nums font-medium text-slate-800">
-            ${subtotal.toFixed(2)}
-          </span>
-        </div>
-        <div className="flex justify-between items-center">
-          <span className="text-slate-900">{t("order.deliveryFeeLabel")}</span>
-          <span className="tabular-nums font-medium text-slate-800">
-            ${delivery.toFixed(2)}
-          </span>
-        </div>
-        <div className="flex justify-between items-center pt-1.5 border-t border-slate-800 text-sm font-bold text-slate-900">
-          <span>{t("order.totalLabel")}</span>
-          <span className="tabular-nums font-black text-slate-950">
-            ${total.toFixed(2)}
-          </span>
-        </div>
-      </div>
-
-      {/* Footer message */}
-      <div className="text-center space-y-0.5 pt-0.5 w-full">
-        <p className="text-[11px] font-bold text-slate-900">
-          {t("order.thankYouReceipt")}
-        </p>
-        <p className="text-[10px] text-slate-900 font-medium tracking-wide uppercase">
-          {t("order.comeAgain")}
-        </p>
-      </div>
-    </div>
-  );
-}
+import ReceiptCard from "../../../../client/features/receipt/components/ReceiptCard";
 
 export default function AdminReceiptPage() {
   const { t } = useTranslation();
   const { No: paramNo } = useParams();
+  const location = useLocation();
+  const stateOrder = location.state?.orderData;
   const { data: orders = [], isLoading: ordersLoading } = useOrdersQuery();
-  const order = orders?.find(
+  const foundOrder = orders?.find(
     (o) =>
       String(o.orderNo) === String(paramNo) ||
       String(o.orderNumber) === String(paramNo),
   );
+  const order = foundOrder || stateOrder;
 
+  const { data: settingsResponse, isLoading: settingsLoading } = useSettingByIdQuery(order?.settingId);
+  const settings = settingsResponse?.data ?? settingsResponse;
   const printRef = useRef(null);
   const [loading, setLoading] = useState(null);
 
@@ -261,7 +66,7 @@ export default function AdminReceiptPage() {
     `,
   });
 
-  if (ordersLoading) {
+  if (ordersLoading && !order) {
     return (
       <div className="min-h-screen bg-[#fcfafb] flex flex-col items-center py-8 px-4">
         {/* Back button skeleton */}
@@ -415,7 +220,7 @@ export default function AdminReceiptPage() {
 
       <div className="bg-white mb-6 border border-slate-200 flex items-center justify-center">
         <div ref={printRef} className="bg-white inline-block">
-          <AdminReceiptCard order={order} />
+          <ReceiptCard order={order} settings={settings} settingsLoading={settingsLoading} />
         </div>
       </div>
 

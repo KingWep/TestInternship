@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { useSettingByIdQuery } from "../../../../queries/settings/useSettingQueries";
+import { usePublicSettingsQuery } from "../../../../queries/settings/useSettingQueries";
 import { useOrderQuery } from "../../../../queries/orders/useOrderQueries";
 
 import ReceiptCard from "../components/ReceiptCard";
@@ -39,8 +39,18 @@ export default function Receipt() {
     return orderResponse?.data ?? orderResponse ?? null;
   }, [initialOrder, orderResponse]);
 
+  // Safe fallback chain — order is typically a flat object, but we handle all shapes
+  const orderShopCode =
+    order?.shop_code ||
+    order?.shopCode ||
+    order?.data?.shop_code ||
+    order?.data?.shopCode;
+
+  // TODO: remove after confirming shop_code resolves correctly in production
+  console.log("[Receipt] order:", order, "| shop_code resolved:", orderShopCode);
+
   const { data: settingsData, isLoading: settingsLoading } =
-    useSettingByIdQuery(order?.settingId);
+    usePublicSettingsQuery(orderShopCode);
 
   const settings = useMemo(() => {
     if (Array.isArray(settingsData)) {

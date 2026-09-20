@@ -20,6 +20,7 @@ export default function CartDrawer() {
 
   const [settingId, setSettingId] = useState(null);
   const [deliveryProviderId, setDeliveryProviderId] = useState(null);
+  const [chatId, setChatId] = useState(null);
 
   const {
     cartItems,
@@ -78,6 +79,7 @@ export default function CartDrawer() {
     resetForm();
     setSettingId(null);
     setDeliveryProviderId(null);
+    setChatId(null);
     clearCart();
   };
 
@@ -86,6 +88,7 @@ export default function CartDrawer() {
     setDeliveryMethod(null);
     setDeliveryProviderId(null);
     setSettingId(null);
+    setChatId(null);
     setDeliveryFee(0);
   };
 
@@ -128,16 +131,23 @@ export default function CartDrawer() {
         return;
       }
 
+      // Capture snapshot before resetCheckoutForm clears deliveryFee & cart
+      const finalTotal = grandTotal;
+
+      // Enrich orderData with settingId AND chatId so Telegram can resolve
+      // the chat without an authenticated API call (avoids 401 on public pages)
+      const enrichedOrder = { ...orderData, setting_id: settingId, chat_id: chatId, shop_code: orderData?.shop_code || shop_code };
+
       resetCheckoutForm();
 
-      sendOrderToTelegram(orderData).catch((error) => {
+      sendOrderToTelegram(enrichedOrder).catch((error) => {
         console.error("Failed to send order to Telegram:", error);
       });
 
       await Swal.fire({
         icon: "success",
         title: "បញ្ជាទិញជោគជ័យ 🎉",
-        text: `ចំនួនសរុប $${grandTotal.toFixed(2)}`,
+        text: `ចំនួនសរុប $${finalTotal.toFixed(2)}`,
         confirmButtonText: "យល់ព្រម",
         confirmButtonColor: "#7f1d1d",
         allowOutsideClick: false,
@@ -158,7 +168,7 @@ export default function CartDrawer() {
         navigate(`/print-receipt/${orderData.orderNo}`, {
           state: {
             orderId: orderData.id,
-            orderData,
+            orderData: enrichedOrder,
           },
         });
       } else {
@@ -215,6 +225,7 @@ export default function CartDrawer() {
                 setDeliveryMethod={setDeliveryMethod}
                 setSettingId={setSettingId}
                 setDeliveryProviderId={setDeliveryProviderId}
+                setChatId={setChatId}
                 deliveryFee={deliveryFee}
                 setDeliveryFee={setDeliveryFee}
                 onDeliveryClear={handleDeliveryClear}

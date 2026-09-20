@@ -14,18 +14,24 @@ const getSettingFromResponse = (response) => {
 }
 
 const resolveChatId = async (order) => {
-  const settingId =
-    order?.settingId ||
-    order?.setting_id
+  // Fast path: if chat_id is already embedded (passed from client cart),
+  // skip the authenticated API call entirely — avoids 401 on public pages.
+  if (order?.chat_id) {
+    return String(order.chat_id)
+  }
 
-  if (!settingId) {
+  const shopCode =
+    order?.shop_code ||
+    order?.shopCode
+
+  if (!shopCode) {
     throw new Error(
-      'Order settingId is missing. Cannot determine Telegram chat.'
+      'Order shop_code is missing. Cannot determine Telegram chat.'
     )
   }
 
   const response =
-    await settingService.getSettingById(settingId)
+    await settingService.getByShopCode(shopCode)
 
   const settings =
     getSettingFromResponse(response)

@@ -1,4 +1,5 @@
 import axiosClient from "../api/axiosClient";
+import publicAxiosClient from "../api/publicAxiosClient";
 import { API_ENDPOINTS } from "../api/endpoints";
 
 export const settingService = {
@@ -17,22 +18,29 @@ export const settingService = {
   },
 
   getByShopCode: async (shopCode, config = {}) => {
+    const { signal, ...restConfig } = config;
     try {
-      const response = await axiosClient.get(API_ENDPOINTS.SETTINGS.GET_ALL, {
+      // Use public client — no auth token needed for public shop settings
+      const response = await publicAxiosClient.get(API_ENDPOINTS.SETTINGS.GET_ALL, {
         params: { shop_code: shopCode },
-        ...config
+        signal,
+        ...restConfig,
       });
       return response.data;
     } catch (error) {
-      console.error("Setting API Error [getByShopCode]:", {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
+      // Silently ignore React Query AbortController cancellations
+      if (error?.name === 'AbortError' || error?.name === 'CanceledError' || error?.code === 'ERR_CANCELED') {
+        throw error;
+      }
+      console.error("Setting API Error [getByShopCode]:",
+        error.response?.status,
+        error.response?.data || error.message
+      );
       throw error;
     }
   },
 
+  // ADMIN ONLY — uses authenticated client with ?id= param
   getSettingById: async (id, config = {}) => {
     try {
       const response = await axiosClient.get(API_ENDPOINTS.SETTINGS.GET_ALL, {

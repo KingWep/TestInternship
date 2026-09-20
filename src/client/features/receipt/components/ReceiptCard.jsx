@@ -1,19 +1,14 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
-import { usePublicSettingsQuery } from "../../../../queries/settings/useSettingQueries";
+
 export default function ReceiptCard({ order, settings, settingsLoading }) {
   const { t } = useTranslation();
   const [imgError, setImgError] = useState(false);
 
-  const { shop_code } = useParams();
-  const { data: settingData, isLoading: localLoading } = usePublicSettingsQuery(shop_code);
-  // Prefer local query data; fall back to parent-passed settings
-  const setting = settingData?.data || settings;
-  // Only hide logo while BOTH sources are still loading
-  const logoLoading = localLoading && settingsLoading;
-  const shopName = setting?.shop_name || setting?.shopName ;
-  const rawLogo = setting?.logo;
+  // Only hide logo while sources are still loading
+  const logoLoading = settingsLoading;
+  const shopName = settings?.shop_name || settings?.shopName ;
+  const rawLogo = settings?.logo;
   const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
   const logoUrl = rawLogo
     ? rawLogo.startsWith("http")
@@ -54,9 +49,9 @@ export default function ReceiptCard({ order, settings, settingsLoading }) {
           {shopName}
         </h2>
         <p className="text-[11px] text-slate-900 mt-1">
-          {t("order.phone")} {setting?.phone || "xxxxxxxxx"}
+          {t("order.phone")} {settings?.phone || "xxxxxxxxx"}
         </p>
-        <p className="text-[11px] text-slate-900">{setting?.address || ""}</p>
+        <p className="text-[11px] text-slate-900">{settings?.address || ""}</p>
       </div>
 
       <div className="text-[11px] space-y-1.5 mb-3 flex flex-col border-b border-dashed border-slate-800 pb-3 text-slate-700 w-full">

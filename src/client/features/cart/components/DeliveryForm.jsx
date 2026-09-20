@@ -14,6 +14,7 @@ export default function DeliveryForm({
   setDeliveryMethod,
   setSettingId,
   setDeliveryProviderId,
+  setChatId,
   setDeliveryFee,
   onDeliveryClear,
   errors = {},
@@ -41,6 +42,8 @@ export default function DeliveryForm({
       logo: p.logo,
       setting_id:
         p.setting_id ?? p.settingId,
+      chat_id:
+        p.chat_id ?? p.setting?.chat_id ?? null,
     }));
 
   const handleDeliveryChange = (option) => {
@@ -60,6 +63,10 @@ export default function DeliveryForm({
           ? null
           : selectedSettingId
       );
+    }
+
+    if (setChatId) {
+      setChatId(option.chat_id ?? null);
     }
 
     if (setDeliveryFee) {

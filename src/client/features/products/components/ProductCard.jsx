@@ -159,7 +159,7 @@ export default function ProductCard({ product = {}, index = 0 }) {
 
         {availableStock <= 0 && (
           <div className="absolute inset-0 bg-white/40 backdrop-blur-sm z-10 flex items-center justify-center">
-            <span className="bg-gray-900 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
+            <span className="bg-red-400 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
               {t('product.outOfStock')}
             </span>
           </div>

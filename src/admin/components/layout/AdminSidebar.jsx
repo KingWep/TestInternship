@@ -128,6 +128,12 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
   const isFull = sidebarState === 2;
   const isHidden = sidebarState === 0;
 
+  // Keep every animated child on the same timing curve as the sidebar.
+  // This prevents the labels from resizing at a different speed than the shell.
+  const contentVisibility = isFull
+    ? "opacity-100 translate-x-0 delay-75"
+    : "opacity-0 -translate-x-2 pointer-events-none";
+
   const menuSections = useMemo(
     () => [
       {
@@ -214,7 +220,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
         className={`
           fixed md:relative z-50 h-full text-white flex flex-col
           border-r border-[#870d4c]/30
-          transition-[width,transform] duration-200 ease-out
+          transition-[width,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]
           select-none shadow-2xl md:shadow-none
           will-change-[width,transform]
           ${
@@ -231,20 +237,14 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
       >
         <button
           onClick={handleToggle}
-          className="absolute -right-5 top-1/2 -translate-y-1/2 bg-[#870d4c] text-white flex items-center justify-center w-5 h-20 hover:h-24 hover:w-6 hover:-right-6 rounded-r-xl shadow-lg hover:bg-[#9d1159] transition-all duration-200 ease-out focus:outline-none z-10"
+          className="absolute -right-5 top-1/2 -translate-y-1/2 bg-[#870d4c] text-white flex items-center justify-center w-5 h-20 hover:bg-[#9d1159] rounded-r-xl shadow-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 z-10"
           aria-label="Toggle Sidebar"
           type="button"
         >
           {isFull ? (
-            <ChevronsLeft
-              size={18}
-              className="transition-transform duration-200"
-            />
+            <ChevronsLeft size={18} />
           ) : (
-            <ChevronsRight
-              size={18}
-              className="transition-transform duration-200"
-            />
+            <ChevronsRight size={18} />
           )}
         </button>
 
@@ -267,11 +267,7 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
           </div>
 
           <div
-            className={`grid transition-[grid-template-columns,opacity] duration-200 ease-out overflow-hidden ${
-              isFull
-                ? "grid-cols-[1fr] opacity-100 ml-4"
-                : "grid-cols-[0fr] opacity-0 ml-0"
-            }`}
+            className={`ml-4 min-w-0 whitespace-nowrap transition-[opacity,transform] duration-200 ease-out ${contentVisibility}`}
           >
             <div className="overflow-hidden whitespace-nowrap relative w-full flex flex-col justify-center">
               {isLoading || shopName.length <= 12 ? (
@@ -319,13 +315,13 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
           {menuSections.map((section) => (
             <div key={section.title} className="space-y-1">
               <div
-                className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${
+                className={`h-5 overflow-hidden transition-[height,opacity,transform,margin] duration-200 ease-out ${
                   isFull
-                    ? "grid-rows-[1fr] opacity-100 mb-2"
-                    : "grid-rows-[0fr] opacity-0 mb-0"
+                    ? "opacity-100 translate-x-0 mb-2"
+                    : "h-0 opacity-0 -translate-x-2 mb-0"
                 }`}
               >
-                <div className="overflow-hidden">
+                <div>
                   <h2 className="px-4 text-[11px] font-bold text-white/50 tracking-widest whitespace-nowrap uppercase">
                     {section.title}
                   </h2>
@@ -357,13 +353,9 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
                       />
 
                       <div
-                        className={`grid transition-[grid-template-columns,opacity] duration-200 ease-out ${
-                          isFull
-                            ? "grid-cols-[1fr] opacity-100 ml-3"
-                            : "grid-cols-[0fr] opacity-0 ml-0"
-                        }`}
+                        className={`ml-3 whitespace-nowrap transition-[opacity,transform] duration-200 ease-out ${contentVisibility}`}
                       >
-                        <span className="whitespace-nowrap overflow-hidden leading-normal">
+                        <span className="leading-normal">
                           {item.label}
                         </span>
                       </div>
@@ -395,13 +387,9 @@ export default function AdminSidebar({ sidebarState, setSidebarState }) {
               />
 
               <div
-                className={`grid transition-[grid-template-columns,opacity] duration-200 ease-out ${
-                  isFull
-                    ? "grid-cols-[1fr] opacity-100 ml-3"
-                    : "grid-cols-[0fr] opacity-0 ml-0"
-                }`}
+                className={`ml-3 whitespace-nowrap transition-[opacity,transform] duration-200 ease-out ${contentVisibility}`}
               >
-                <span className="whitespace-nowrap overflow-hidden leading-normal">
+                <span className="leading-normal">
                   {t("common.logout")}
                 </span>
               </div>

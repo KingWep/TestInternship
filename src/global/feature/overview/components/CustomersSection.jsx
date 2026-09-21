@@ -61,7 +61,7 @@ const CustomersSection = ({ t }) => {
         name: t.customer_sophal,
         business: t.customer_sophal_biz,
         img: studentImg,
-        fallback: "https://digital.muchtrading.com/student.jpg",
+        fallback: "https://i.pinimg.com/736x/67/90/9d/67909d18f75757085feb2757eaece904.jpg",
       },
     ],
   ];
@@ -140,7 +140,7 @@ const CustomersSection = ({ t }) => {
           {/* Prev/Next Controls */}
           <button
             onClick={handlePrev}
-            className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-2 sm:-translate-x-6 w-10 h-10 flex items-center justify-center bg-[#8B4773] hover:bg-[#6A3557] text-white rounded-full shadow-lg z-10 transition-all duration-200 focus:outline-none"
+            className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-2 sm:-translate-x-6 md:w-10 md:h-10 w-8 h-8 flex items-center justify-center bg-[#8B4773] hover:bg-[#6A3557] text-white rounded-full shadow-lg z-10 transition-all duration-200 focus:outline-none"
             aria-label="Previous customer"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -148,7 +148,7 @@ const CustomersSection = ({ t }) => {
 
           <button
             onClick={handleNext}
-            className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-2 sm:translate-x-6 w-10 h-10 flex items-center justify-center bg-[#8B4773] hover:bg-[#6A3557] text-white rounded-full shadow-lg z-10 transition-all duration-200 focus:outline-none"
+            className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-2 sm:translate-x-6 md:w-10 md:h-10 w-8 h-8 flex items-center justify-center bg-[#8B4773] hover:bg-[#6A3557] text-white rounded-full shadow-lg z-10 transition-all duration-200 focus:outline-none"
             aria-label="Next customer"
           >
             <ChevronRight className="w-6 h-6" />

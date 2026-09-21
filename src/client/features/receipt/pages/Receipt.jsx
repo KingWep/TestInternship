@@ -46,9 +46,6 @@ export default function Receipt() {
     order?.data?.shop_code ||
     order?.data?.shopCode;
 
-  // TODO: remove after confirming shop_code resolves correctly in production
-  console.log("[Receipt] order:", order, "| shop_code resolved:", orderShopCode);
-
   const { data: settingsData, isLoading: settingsLoading } =
     usePublicSettingsQuery(orderShopCode);
 
@@ -164,8 +161,8 @@ export default function Receipt() {
 
         await Swal.fire({
           icon: "success",
-          title: "ជោគជ័យ",
-          text: "Receipt ត្រូវបានទាញយក",
+          title: t('order.successTitle'),
+          text: t('order.receiptDownloaded'),
           confirmButtonColor: "#0f172a",
         });
       }
@@ -175,8 +172,8 @@ export default function Receipt() {
       if (error?.name !== "AbortError") {
         await Swal.fire({
           icon: "error",
-          title: "មានបញ្ហា",
-          text: "មិនអាច Share Receipt បានទេ",
+          title: t('order.errorTitle'),
+          text: t('order.cannotShareReceipt'),
           confirmButtonColor: "#0f172a",
         });
       }
@@ -213,7 +210,7 @@ export default function Receipt() {
       <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center">
         <Loader2 size={32} className="animate-spin text-slate-400 mb-4" />
         <p className="text-slate-500 font-medium text-sm">
-          កំពុងទាញយកវិក្កយបត្រ...
+          {t('order.downloadingReceipt')}
         </p>
       </div>
     );
@@ -302,8 +299,8 @@ export default function Receipt() {
         </button>
 
         <button
-          onClick={handleShare} // ឬ handleSendTelegram អាស្រ័យលើកូដរបស់អ្នក
-          disabled={loading === "share"} // ឬ loading === "telegram"
+          onClick={handleShare}
+          disabled={loading === "share"}
           className="col-span-2 md:col-span-1 justify-self-center w-3/4 sm:w-2/3 md:w-full flex items-center justify-center gap-1.5 bg-sky-600 text-white px-3 py-1.5 rounded-lg hover:bg-sky-500 active:scale-[0.98] transition-all text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer group"
         >
           {loading === "share" ? (

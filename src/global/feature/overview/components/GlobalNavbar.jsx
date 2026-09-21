@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
-import logoImg from '../../../assets/logo.jpg';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import logoImg from "../../../assets/logo.jpg";
 
 const GlobalNavbar = ({ lang, onToggleLang, t }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const navLinks = [
-    { name: t.nav_why_us, href: '#why-us' },
-    { name: t.nav_businesses, href: '#businesses' },
-    { name: t.nav_features, href: '#features' },
-    { name: t.nav_customers, href: '#customers' },
-    { name: t.nav_mobile_app, href: '#mobile-app' },
-    { name: t.nav_contact, href: '#contact' },
+    { name: t.nav_why_us, href: "#why-us" },
+    { name: t.nav_businesses, href: "#businesses" },
+    { name: t.nav_features, href: "#features" },
+    { name: t.nav_customers, href: "#customers" },
+    { name: t.nav_mobile_app, href: "#mobile-app" },
+    { name: t.nav_contact, href: "#contact" },
   ];
 
   const handleLinkClick = (e, href) => {
@@ -20,7 +20,7 @@ const GlobalNavbar = ({ lang, onToggleLang, t }) => {
     setIsMobileOpen(false);
     const target = document.querySelector(href);
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+      target.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -33,16 +33,20 @@ const GlobalNavbar = ({ lang, onToggleLang, t }) => {
             <img
               src={logoImg}
               onError={(e) => {
-                e.target.src = 'https://digital.muchtrading.com/logo.jpg';
+                e.target.src = "https://digital.muchtrading.com/logo.jpg";
               }}
               alt="Logo"
               className="site-logo"
             />
-            <div className="logo-brand flex flex-col leading-none">
-              <span className="brand-name flex items-center gap-1.5">
-                {t.brand_name} <span className="highlight">{t.brand_highlight}</span>
-              </span> 
-              <span className="brand-tagline">{t.brand_tagline}</span>
+            <div className="logo-brand flex flex-col items-start gap-[-8px]">
+              <span className="brand-name flex items-center gap-1.5 leading-none">
+                {t.brand_name}
+                <span className="highlight">{t.brand_highlight}</span>
+              </span>
+
+              <span className="brand-tagline leading-none">
+                {t.brand_tagline}
+              </span>
             </div>
           </a>
 
@@ -83,15 +87,15 @@ const GlobalNavbar = ({ lang, onToggleLang, t }) => {
             >
               <img
                 src={
-                  lang === 'km'
-                    ? 'https://flagicons.lipis.dev/flags/4x3/kh.svg'
-                    : 'https://flagicons.lipis.dev/flags/4x3/gb.svg'
+                  lang === "km"
+                    ? "https://flagicons.lipis.dev/flags/4x3/kh.svg"
+                    : "https://flagicons.lipis.dev/flags/4x3/gb.svg"
                 }
-                alt={lang === 'km' ? 'Khmer' : 'English'}
+                alt={lang === "km" ? "Khmer" : "English"}
                 className="flag-icon rounded"
               />
               <span className="font-semibold text-sm text-gray-700">
-                {lang === 'km' ? 'ខ្មែរ' : 'EN'}
+                {lang === "km" ? "ខ្មែរ" : "EN"}
               </span>
             </button>
           </div>
@@ -105,15 +109,15 @@ const GlobalNavbar = ({ lang, onToggleLang, t }) => {
             >
               <img
                 src={
-                  lang === 'km'
-                    ? 'https://flagicons.lipis.dev/flags/4x3/kh.svg'
-                    : 'https://flagicons.lipis.dev/flags/4x3/gb.svg'
+                  lang === "km"
+                    ? "https://flagicons.lipis.dev/flags/4x3/kh.svg"
+                    : "https://flagicons.lipis.dev/flags/4x3/gb.svg"
                 }
                 alt="Language"
-                className="flag-icon !w-5 !h-5"
+                className="flag-icon !w-5 !h-5 rounded"
               />
-              <span className="font-semibold text-xs text-gray-700">
-                {lang === 'km' ? 'ខ្មែរ' : 'EN'}
+              <span className="font-semibold text-xs ml-[2px] text-gray-700">
+                {lang === "km" ? "ខ្មែរ" : "EN"}
               </span>
             </button>
 

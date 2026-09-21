@@ -11,7 +11,7 @@ import { saleFormSchema } from "../schemas/saleFormSchema";
 import OrderCartTable from "../../Order/components/OrderCartTable";
 import OrderFormFields from "../../Order/components/OrderFormFields";
 import OrderSummaryBox from "../../Order/components/OrderSummaryBox";
-import AdminReceiptModal from "../../Order/components/AdminReceiptModal";
+
 import ProductSelectCard from "../components/ProductSelectCard";
 
 import PageHeader from "../../../components/common/PageHeader";
@@ -46,9 +46,7 @@ export default function AdminSaleForm() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(8);
   
-  // Receipt modal state
-  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
-  const [receiptOrder, setReceiptOrder] = useState(null);
+
 
   const loadMoreRef = useRef(null);
   const productContainerRef = useRef(null);
@@ -140,11 +138,11 @@ export default function AdminSaleForm() {
     });
 
     if (printConfirm.isConfirmed) {
-      setReceiptOrder(orderData);
-      setIsReceiptModalOpen(true);
-      
       reset();
       setIsCartOpen(false);
+      
+      const receiptNo = orderData.orderNo || orderData.orderNumber || orderData.id;
+      navigate(`/admin/print-receipt/${receiptNo}`, { state: { orderData } });
       return;
     }
 
@@ -293,15 +291,7 @@ export default function AdminSaleForm() {
         </button>
       </div>
 
-      {/* Admin Receipt Modal */}
-      <AdminReceiptModal
-        isOpen={isReceiptModalOpen}
-        onClose={() => {
-          setIsReceiptModalOpen(false);
-          setReceiptOrder(null);
-        }}
-        order={receiptOrder}
-      />
+
     </div>
   );
 }

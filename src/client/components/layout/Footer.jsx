@@ -12,8 +12,10 @@ import { MapPin, Phone, Clock, Globe } from "lucide-react";
 import Container from "./Container";
 import { useParams } from "react-router-dom";
 import { usePublicSettingsQuery } from "../../../queries/settings/useSettingQueries";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation();
   const { shop_code } = useParams();
   const { data: settingData, isLoading } = usePublicSettingsQuery(shop_code);
   const shopName = settingData?.shop_name || "Shop";
@@ -74,7 +76,7 @@ export default function Footer() {
 
           <div className="w-full sm:w-[calc(50%-1rem)] lg:w-auto">
             <h4 className="font-semibold text-red-900 mb-3 text-sm uppercase tracking-wider">
-              ព័ត៌មានបន្ថែម
+              {t('footer.additionalInfo')}
             </h4>
             <ul className="text-sm space-y-2">
               <li>
@@ -85,7 +87,7 @@ export default function Footer() {
                   download={false} 
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
-                  របៀបបញ្ជាទិញ
+                  {t('footer.howToOrder')}
                 </a>
               </li>
               <li>
@@ -96,7 +98,7 @@ export default function Footer() {
                   download={false} 
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
-                  គោលការណ៍ដឹកជញ្ជូន
+                  {t('footer.shippingPolicy')}
                 </a>
               </li>
             </ul>
@@ -104,7 +106,7 @@ export default function Footer() {
 
           <div className="w-full sm:w-[calc(50%-1rem)] lg:w-auto">
             <h4 className="font-semibold text-red-900 mb-3 text-sm uppercase tracking-wider">
-              សេវាកម្មអតិថិជន
+              {t('footer.customerService')}
             </h4>
             <ul className="text-sm space-y-2">
               <li>
@@ -115,7 +117,7 @@ export default function Footer() {
                   download={false} 
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
-                  គោលការណ៍ឯកជនភាព
+                  {t('footer.privacyPolicy')}
                 </a>
               </li>
               <li>
@@ -126,7 +128,7 @@ export default function Footer() {
                   download={false} 
                   className="text-black hover:text-red-900 transition-colors duration-150 block"
                 >
-                  លក្ខខណ្ឌសេវាកម្ម
+                  {t('footer.termsOfService')}
                 </a>
               </li>
             </ul>
@@ -134,12 +136,12 @@ export default function Footer() {
 
           <div className="w-full sm:w-[calc(50%-1rem)] lg:w-auto">
             <h4 className="font-semibold text-red-900 mb-3 text-sm uppercase tracking-wider">
-              ទំនាក់ទំនង
+              {t('footer.contact')}
             </h4>
             <ul className="text-sm space-y-2 text-black">
               <li className="flex items-start gap-2.5">
                 <MapPin size={18} className="text-red-500 shrink-0 mt-0.5" />
-                <span>{settingData?.address || "ភ្នំពេញ, កម្ពុជា"}</span>
+                <span>{settingData?.address || t('footer.phnomPenh')}</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone size={18} className="text-red-500 shrink-0" />
@@ -158,15 +160,15 @@ export default function Footer() {
       <div className="border-t border-slate-200 pt-4 pb-2">
         <Container className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4 text-center sm:text-left">
           <p>
-            © {new Date().getFullYear()} រក្សាសិទ្ធិគ្រប់យ៉ាង។ អភិវឌ្ឍដោយ{" "}
+            {t('footer.copyright', { year: new Date().getFullYear() })} {" "}
             <span className="font-medium text-slate-700">CHOMNENH DIGITAL</span>
           </p>
           <div className="flex gap-6">
             <a href="https://www.facebook.com/share/1CcNFUiYWy/?mibextid=wwXIfr" className="hover:text-black transition-colors">
-              ឯកជនភាព
+              {t('footer.privacy')}
             </a>
             <a href="https://www.facebook.com/share/1CcNFUiYWy/?mibextid=wwXIfr" className="hover:text-black transition-colors">
-              លក្ខខណ្ឌ
+              {t('footer.terms')}
             </a>
           </div>
         </Container>

@@ -37,7 +37,7 @@ export default function Header() {
       document.head.appendChild(manifestLink);
     }
     
-    const newManifestUrl = `/api/manifest?shop_code=${shop_code}`;
+    const newManifestUrl = `${baseUrl}/api/manifest?shop_code=${shop_code}`;
     if (manifestLink.getAttribute('href') !== newManifestUrl) {
       manifestLink.setAttribute('href', newManifestUrl);
     }

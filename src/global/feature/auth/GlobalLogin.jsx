@@ -70,9 +70,9 @@ const GlobalLogin = () => {
         login(
           token,
           response.data?.data ||
-            response.data?.user || {
-              email: data.email,
-            },
+          response.data?.user || {
+            email: data.email,
+          },
         );
 
         Swal.fire({

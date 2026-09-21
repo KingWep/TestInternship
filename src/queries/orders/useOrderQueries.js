@@ -116,11 +116,6 @@ export function useCreateOrderMutation() {
         ),
       };
 
-      console.log(
-        "Final API order payload:",
-        payload
-      );
-
       const response =
         await orderService.createOrder(
           payload

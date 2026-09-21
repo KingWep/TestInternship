@@ -45,7 +45,7 @@ const mapProduct = (item, categories = []) => {
 };
 
 export function useProductsQuery(params = {}) {
-  const { data: categories = [] } = useCategoriesQuery();
+  const { data: categories = [] } = useCategoriesQuery(params.shop_code ? { shop_code: params.shop_code } : {});
 
   return useQuery({
     queryKey: productKeys.list(params),

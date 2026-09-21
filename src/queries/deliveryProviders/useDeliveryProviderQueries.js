@@ -9,7 +9,6 @@ export function useDeliveryProvidersQuery(params = {}) {
     select: (data) => {
       const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
       const rawProviders = data?.data || data || [];
-      console.log('Raw Providers:', rawProviders); 
       return rawProviders.map((provider) => {
         if (provider.logo && !provider.logo.startsWith('http')) {
           return {

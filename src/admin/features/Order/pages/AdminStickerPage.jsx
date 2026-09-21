@@ -79,7 +79,6 @@ function AdminStickerCard({ order, courier, setCourier }) {
   const shopPhone = settingData?.phone;
   const rawLogo = settingData?.logo;
   const qrCode = settingData?.qr_upload || "";
-  console.log("qrCode", qrCode);
   const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
 
   const logoUrl = rawLogo
@@ -347,6 +346,8 @@ export default function AdminStickerPage() {
 
   const navigate = useNavigate();
 
+  const { user } = useAuth();
+
   const { data: orders = [], isLoading: ordersLoading } = useOrdersQuery();
 
   const order = orders?.find(
@@ -517,7 +518,10 @@ export default function AdminStickerPage() {
     setLoading("telegram");
 
     try {
-      await sendStickerToTelegram(order, courier);
+      await sendStickerToTelegram({
+        ...order,
+        shopCode: order?.shopCode || order?.shop_code || order?.shop?.code || user?.shop?.code
+      }, courier);
 
       Swal.fire({
         icon: "success",

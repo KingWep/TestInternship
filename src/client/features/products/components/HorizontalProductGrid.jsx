@@ -2,8 +2,10 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ProductCard from "./ProductCard";
 import EmptyState from "../../../components/common/EmptyState";
+import { useTranslation } from "react-i18next";
 
 export default function HorizontalProductGrid({ products = [] }) {
+  const { t } = useTranslation();
   const scrollContainerRef = useRef(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [thumbWidthPct, setThumbWidthPct] = useState(30);
@@ -47,7 +49,7 @@ export default function HorizontalProductGrid({ products = [] }) {
   };
 
   if (!products || products.length === 0) {
-    return <EmptyState message="គ្មានទំនិញក្នុងផ្នែកនេះទេ" />;
+    return <EmptyState message={t('product.noItemsInSection')} />;
   }
 
   // Calculate translateX for the progress thumb

@@ -179,11 +179,11 @@ export default function DeliveryForm({
           </div>
         ) : isError ? (
           <p className="text-red-500 text-xs">
-            មិនអាចទាញយក Delivery Provider បានទេ
+            {t('cart.cannotFetchDeliveryProvider')}
           </p>
         ) : deliveryOptions.length === 0 ? (
           <p className="text-slate-500 text-xs">
-            មិនមាន Delivery Provider ទេ
+            {t('cart.noDeliveryProvider')}
           </p>
         ) : (
           <div className="grid grid-cols-5 gap-2">

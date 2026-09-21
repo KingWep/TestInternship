@@ -14,5 +14,7 @@ export default function PromoBanner({ onShopClick }) {
     return <PromoBannerSkeleton />;
   }
 
-  return <PromotionSwiper slides={slides} onShopClick={onShopClick} />;
+  const activeSlides = slides?.filter((slide) => slide.status === "Active") || [];
+
+  return <PromotionSwiper slides={activeSlides} onShopClick={onShopClick} />;
 }

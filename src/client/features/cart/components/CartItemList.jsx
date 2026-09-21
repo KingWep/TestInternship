@@ -1,7 +1,9 @@
 import { useCart } from "../../../../context/CartContext"
 import CartItem from "./CartItem"
+import { useTranslation } from "react-i18next";
 
 export default function CartItemList() {
+  const { t } = useTranslation();
   const { cartItems } = useCart()
 
   if (cartItems.length === 0) {
@@ -12,11 +14,11 @@ export default function CartItemList() {
         </div>
 
         <p className="text-slate-500 font-medium">
-          កន្ត្រករបស់អ្នកទទេ
+          {t('cart.emptyCartTitle')}
         </p>
 
         <p className="text-sm text-slate-400 mt-1">
-          សូមជ្រើសរើសទំនិញដើម្បីបន្ត
+          {t('cart.emptyCartDesc')}
         </p>
       </div>
     )
@@ -26,11 +28,11 @@ export default function CartItemList() {
     <div className="space-y-3">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-semibold text-slate-900">
-          ទំនិញ
+          {t('cart.items')}
         </h3>
 
         <span className="text-sm text-slate-400">
-          {cartItems.length} មុខ
+          {t('cart.itemsCount', { count: cartItems.length })}
         </span>
       </div>
 

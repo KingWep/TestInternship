@@ -23,10 +23,12 @@ import { useSearch } from "../../../../context/SearchContext";
 import { useOrdersQuery } from "../../../../queries/orders/useOrderQueries";
 import { useProductsQuery } from "../../../../queries/products/useProductQueries";
 import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
+import { useTranslation } from "react-i18next";
 
 const PAGE_SIZE = 8;
 
 export default function ProductSection({ allProductsRef }) {
+  const { t } = useTranslation();
   const { shop_code } = useParams();
 
   const {
@@ -55,7 +57,7 @@ export default function ProductSection({ allProductsRef }) {
     priceRange = "all",
   } = useSearch();
 
-  const [activeTab, setActiveTab] = useState("ទាំងអស់");
+  const [activeTab, setActiveTab] = useState("ALL_CATEGORIES");
 
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -70,7 +72,7 @@ export default function ProductSection({ allProductsRef }) {
     priceRange !== "all";
 
   const isCategoryFiltered =
-    activeTab !== "ទាំងអស់";
+    activeTab !== "ALL_CATEGORIES";
 
   const shouldHideHighlights =
     isSearching || isCategoryFiltered;
@@ -78,15 +80,17 @@ export default function ProductSection({ allProductsRef }) {
   const tabs = useMemo(() => {
     return [
       {
-        name: "ទាំងអស់",
+        id: "ALL_CATEGORIES",
+        name: t('home.all'),
         image: null,
       },
       ...categories.map((category) => ({
+        id: category.id,
         name: category.name,
         image: category.image || null,
       })),
     ];
-  }, [categories]);
+  }, [categories, t]);
 
   const matchPriceRange = (price) => {
     const numPrice = Number(price) || 0;
@@ -120,7 +124,7 @@ export default function ProductSection({ allProductsRef }) {
     setActiveTab(tab);
     setVisibleCount(PAGE_SIZE);
 
-    if (tab === "ទាំងអស់") {
+    if (tab === "ALL_CATEGORIES") {
       setTimeout(() => {
         if (!allProductsRef?.current) {
           return;
@@ -243,19 +247,11 @@ export default function ProductSection({ allProductsRef }) {
 
     return products
       .filter((product) => {
-        if (activeTab === "ទាំងអស់") {
+        if (activeTab === "ALL_CATEGORIES") {
           return true;
         }
 
-        const categoryName =
-          product.categoryName ||
-          categories.find(
-            (category) =>
-              Number(category.id) ===
-              Number(product.categoryId)
-          )?.name;
-
-        return categoryName === activeTab;
+        return Number(product.categoryId) === Number(activeTab);
       })
       .filter((product) =>
         (product.name || "")
@@ -325,7 +321,7 @@ export default function ProductSection({ allProductsRef }) {
             aria-hidden="true"
           />
 
-          ស្វែងរកទំនិញតាមប្រភេទ
+          {t('home.searchByCategory')}
         </h2>
 
         {isCategoriesPending ? (
@@ -333,6 +329,7 @@ export default function ProductSection({ allProductsRef }) {
         ) : (
           <FilterTabs
             tabs={tabs}
+            activeTab={activeTab}
             onChange={handleTabChange}
           />
         )}
@@ -343,7 +340,7 @@ export default function ProductSection({ allProductsRef }) {
           <SectionHeader
             icon="arcticons:questionnaire-star"
             iconHeight="1.5em"
-            title="ទំនិញលក់ដាច់បំផុត"
+            title={t('home.bestSelling')}
           />
 
           {isBestSellingLoading ? (
@@ -363,7 +360,7 @@ export default function ProductSection({ allProductsRef }) {
           <SectionHeader
             icon="arcticons:all-accor"
             iconHeight="1.5em"
-            title="ទំនិញពេញថ្មី"
+            title={t('home.newArrivals')}
           />
 
           {isProductLoading ? (
@@ -387,10 +384,10 @@ export default function ProductSection({ allProductsRef }) {
           iconHeight="1.5em"
           title={
             isCategoryFiltered
-              ? `ទំនិញប្រភេទ: ${activeTab}`
+              ? t('home.categoryProducts', { category: tabs.find(t => t.id === activeTab)?.name || activeTab })
               : isSearching
-                ? `លទ្ធផលស្វែងរក (${filteredProducts.length})`
-                : "ទំនិញពេញទាំងអស់"
+                ? t('home.searchResults', { count: filteredProducts.length })
+                : t('home.allProducts')
           }
         />
 
@@ -413,7 +410,7 @@ export default function ProductSection({ allProductsRef }) {
                     icon="material-symbols:expand-more"
                     height="1.3em"
                   />
-                  មើលទំនិញបន្ថែម
+                  {t('home.loadMore')}
                 </button>
               </div>
             )}
@@ -421,13 +418,13 @@ export default function ProductSection({ allProductsRef }) {
             {!hasMoreProducts &&
               filteredProducts.length > 0 && (
                 <div className="py-4 text-center text-sm text-slate-400">
-                  បានបង្ហាញទំនិញទាំងអស់
+                  {t('home.showingAll')}
                 </div>
               )}
 
             {!visibleProducts.length && (
               <div className="py-10 text-center text-sm text-slate-400">
-                រកមិនឃើញទំនិញទេ
+                {t('home.noProducts')}
               </div>
             )}
           </>

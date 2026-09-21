@@ -13,8 +13,10 @@ import EmptyCart from "./EmptyCart";
 import DeliveryForm from "./DeliveryForm";
 
 import useClientOrder from "../hooks/useClientOrder";
+import { useTranslation } from "react-i18next";
 
 export default function CartDrawer() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { shop_code } = useParams();
 
@@ -70,8 +72,6 @@ export default function CartDrawer() {
       },
     };
 
-    console.log("CartDrawer order payload:", payload);
-
     return createOrderMutation.mutateAsync(payload);
   };
 
@@ -100,8 +100,8 @@ export default function CartDrawer() {
     if (!settingId) {
       await Swal.fire({
         icon: "warning",
-        title: "សូមជ្រើសរើសការដឹកជញ្ជូន",
-        text: "សូមជ្រើសរើស Delivery Provider មុនពេលបញ្ជាទិញ",
+        title: t('cart.pleaseSelectDelivery'),
+        text: t('cart.pleaseSelectDeliveryBefore'),
         confirmButtonColor: "#7f1d1d",
       });
       return;
@@ -110,8 +110,8 @@ export default function CartDrawer() {
     if (!deliveryProviderId) {
       await Swal.fire({
         icon: "warning",
-        title: "សូមជ្រើសរើស Delivery Provider",
-        text: "សូមជ្រើសរើស Delivery Provider មុនពេលបញ្ជាទិញ",
+        title: t('cart.pleaseSelectDeliveryProvider'),
+        text: t('cart.pleaseSelectDeliveryBefore'),
         confirmButtonColor: "#7f1d1d",
       });
       return;
@@ -124,8 +124,8 @@ export default function CartDrawer() {
       if (!orderData?.id || !orderData?.orderNo) {
         await Swal.fire({
           icon: "error",
-          title: "រកមិនឃើញ Order Number",
-          text: "Order ត្រូវបានបង្កើត ប៉ុន្តែមិនអាចបើកវិក្កយបត្របានទេ",
+          title: t('cart.orderNumberNotFound'),
+          text: t('cart.orderCreatedCannotOpenReceipt'),
           confirmButtonColor: "#7f1d1d",
         });
         return;
@@ -146,20 +146,20 @@ export default function CartDrawer() {
 
       await Swal.fire({
         icon: "success",
-        title: "បញ្ជាទិញជោគជ័យ 🎉",
-        text: `ចំនួនសរុប $${finalTotal.toFixed(2)}`,
-        confirmButtonText: "យល់ព្រម",
+        title: t('cart.orderSuccessful'),
+        text: t('cart.totalAmount', { amount: finalTotal.toFixed(2) }),
+        confirmButtonText: t('cart.ok'),
         confirmButtonColor: "#7f1d1d",
         allowOutsideClick: false,
       });
 
       const result = await Swal.fire({
         icon: "question",
-        title: "បោះពុម្ពវិក្កយបត្រ?",
-        text: "តើអ្នកចង់បោះពុម្ពវិក្កយបត្រដែរឬទេ?",
+        title: t('cart.printReceiptQ'),
+        text: t('cart.doYouWantToPrintReceipt'),
         showCancelButton: true,
-        confirmButtonText: "🖨️ បោះពុម្ពវិក្កយបត្រ",
-        cancelButtonText: "រំលង",
+        confirmButtonText: t('cart.printReceiptBtn'),
+        cancelButtonText: t('cart.skip'),
         confirmButtonColor: "#7f1d1d",
         cancelButtonColor: "#64748b",
       });
@@ -179,11 +179,11 @@ export default function CartDrawer() {
 
       await Swal.fire({
         icon: "error",
-        title: "បរាជ័យ",
+        title: t('cart.failed'),
         text:
           error?.response?.data?.message ||
           error?.message ||
-          "មានបញ្ហាក្នុងការបង្កើតការបញ្ជាទិញ",
+          t('cart.problemCreatingOrder'),
         confirmButtonColor: "#7f1d1d",
       });
     }
@@ -256,8 +256,8 @@ export default function CartDrawer() {
             }`}
           >
             {createOrderMutation.isPending
-              ? "កំពុងដំណើរការ..."
-              : "បន្តទៅការបញ្ជាទិញ"}
+              ? t('cart.processing')
+              : t('cart.proceedToCheckout')}
           </button>
         </div>
       </div>

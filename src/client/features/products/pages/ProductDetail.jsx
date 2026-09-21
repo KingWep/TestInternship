@@ -25,8 +25,10 @@ import Badge from "../../../components/common/Badge";
 import { useCart } from "../../../../context/CartContext";
 import { useProductsQuery } from "../../../../queries/products/useProductQueries";
 import RecommendedProducts from "../components/RecommendedProducts";
+import { useTranslation } from "react-i18next";
 
 export default function ProductDetail() {
+  const { t } = useTranslation();
   const { shop_code, id } = useParams();
 
   const { addToCart, setIsCartOpen } = useCart();
@@ -149,11 +151,11 @@ export default function ProductDetail() {
           </div>
 
           <h2 className="text-xl font-bold text-slate-800">
-            រកមិនឃើញផលិតផលនេះទេ
+            {t('product.notFoundTitle')}
           </h2>
 
           <p className="text-slate-500 text-sm mt-1">
-            ផលិតផលដែលអ្នកកំពុងស្វែងរកប្រហែលជាត្រូវបានលុប ឬផ្លាស់ប្តូរទីតាំង។
+            {t('product.notFoundDesc')}
           </p>
 
           <Link
@@ -161,7 +163,7 @@ export default function ProductDetail() {
             className="mt-6 inline-flex items-center gap-2 bg-red-800 text-white font-medium px-5 py-2.5 rounded-xl hover:bg-red-900 transition-all shadow-sm"
           >
             <ArrowLeft size={16} />
-            ត្រឡប់ទៅទំព័រដើម
+            {t('product.backToHome')}
           </Link>
         </Container>
 
@@ -208,8 +210,8 @@ export default function ProductDetail() {
     if (availableStock <= 0) {
       Swal.fire({
         icon: "warning",
-        title: "អស់ពីស្តុក",
-        text: "ផលិតផលនេះមិនមានស្តុកទៀតទេ",
+        title: t('product.outOfStock'),
+        text: t('product.outOfStockMsg'),
         timer: 1500,
         showConfirmButton: false,
       });
@@ -222,8 +224,8 @@ export default function ProductDetail() {
     if (!result?.success) {
       Swal.fire({
         icon: "warning",
-        title: "មិនអាចបន្ថែមបាន",
-        text: result?.message || "ទំនិញអស់ពីស្តុក",
+        title: t('product.cannotAdd'),
+        text: result?.message || t('product.itemOutOfStock'),
         timer: 1500,
         showConfirmButton: false,
       });
@@ -235,7 +237,7 @@ export default function ProductDetail() {
       toast: true,
       position: "top-end",
       icon: "success",
-      title: `បានបន្ថែមទៅកន្ត្រក! (${result.addedQuantity})`,
+      title: t('product.addedToCart', { quantity: result.addedQuantity }),
       showConfirmButton: false,
       timer: 1200,
       timerProgressBar: true,
@@ -252,8 +254,8 @@ export default function ProductDetail() {
     if (!result?.success) {
       Swal.fire({
         icon: "warning",
-        title: "មិនអាចទិញបាន",
-        text: result?.message || "ទំនិញអស់ពីស្តុក",
+        title: t('product.cannotBuy'),
+        text: result?.message || t('product.itemOutOfStock'),
         timer: 1500,
         showConfirmButton: false,
       });
@@ -282,12 +284,12 @@ export default function ProductDetail() {
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white bg-red-600 border border-slate-200 px-3.5 py-2 rounded-bl-xl rounded-tr-xl hover:text-red-700 hover:border-red-200 hover:bg-red-200/50 transition-all shadow-xs"
           >
             <ArrowLeft size={16} />
-            ត្រឡប់ក្រោយ
+            {t('product.goBack')}
           </Link>
 
           {categoryName && (
             <span className="text-xs font-semibold text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-md">
-              ប្រភេទ: <strong className="text-slate-800">{categoryName}</strong>
+              {t('product.category')} <strong className="text-slate-800">{categoryName}</strong>
             </span>
           )}
         </div>
@@ -318,7 +320,7 @@ export default function ProductDetail() {
                               setIsExpanded(true);
                             }
                           }}
-                          aria-label={`បង្ហាញរូបភាពទី ${i + 1}`}
+                          aria-label={t('product.showImage', { index: i + 1 })}
                           className={`w-[68px] h-[68px] sm:w-[72px] sm:h-[72px] lg:w-[78px] lg:h-[78px] rounded-xl overflow-hidden transition-all duration-200 flex-shrink-0 cursor-pointer relative ${
                             activeImage === i && (!isLastVisible || !hasMore)
                               ? "border border-transparent ring-2 ring-red-600 ring-offset-2 ring-offset-white shadow-md"
@@ -353,7 +355,7 @@ export default function ProductDetail() {
                     <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 bg-slate-50">
                       <ImageIcon size={48} className="mb-2 opacity-50" />
 
-                      <span className="text-sm font-medium">គ្មានរូបភាព</span>
+                      <span className="text-sm font-medium">{t('product.noImage')}</span>
                     </div>
                   )}
 
@@ -368,7 +370,7 @@ export default function ProductDetail() {
                       <button
                         type="button"
                         onClick={goPrev}
-                        aria-label="រូបភាពមុន"
+                        aria-label={t('product.prevImage')}
                         className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 hover:text-red-700 transition-all cursor-pointer z-10"
                       >
                         <ChevronLeft size={24} />
@@ -377,7 +379,7 @@ export default function ProductDetail() {
                       <button
                         type="button"
                         onClick={goNext}
-                        aria-label="រូបភាពបន្ទាប់"
+                        aria-label={t('product.nextImage')}
                         className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 hover:text-red-700 transition-all cursor-pointer z-10"
                       >
                         <ChevronRight size={24} />
@@ -397,7 +399,7 @@ export default function ProductDetail() {
                 <div className="flex items-center gap-2 flex-wrap text-xs">
                   {sku && (
                     <span className="text-red-800 font-bold uppercase tracking-wider bg-red-50 px-2 py-0.5 rounded-md">
-                      លេខកូដ: {sku}
+                      {t('product.sku')} {sku}
                     </span>
                   )}
                 </div>
@@ -423,8 +425,7 @@ export default function ProductDetail() {
                     <Gift size={14} className="text-emerald-600" />
 
                     <span>
-                      អ្នកចំណេញបាន ${Number(savingsAmount).toFixed(2)}{" "}
-                      ក្នុងការទិញនេះ!
+                      {t('product.youSaved', { amount: Number(savingsAmount).toFixed(2) })}
                     </span>
                   </div>
                 )}
@@ -432,14 +433,14 @@ export default function ProductDetail() {
                 <div className="flex items-center gap-2">
                   <Badge variant="stock">
                     {availableStock > 0
-                      ? `ស្តុកនៅសល់: ${availableStock}`
-                      : "អស់ពីស្តុក"}
+                      ? t('product.stockLeft', { count: availableStock })
+                      : t('product.outOfStock')}
                   </Badge>
 
                   {availableStock > 0 && (
                     <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
                       <CheckCircle size={12} />
-                      មានទំនិញស្រាប់
+                      {t('product.inStock')}
                     </span>
                   )}
                 </div>
@@ -447,7 +448,7 @@ export default function ProductDetail() {
                 {description && (
                   <div className="pt-1.5 border-t border-slate-100">
                     <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                      ព័ត៌មានលម្អិតអំពីទំនិញ
+                      {t('product.productDetails')}
                     </h3>
 
                     <p className="text-slate-600 text-xs leading-relaxed line-clamp-2">
@@ -462,7 +463,7 @@ export default function ProductDetail() {
                       <Truck size={14} className="text-red-600" />
                     </div>
 
-                    <span>ដឹកជញ្ជូនរហ័ស</span>
+                    <span>{t('product.fastDelivery')}</span>
                   </div>
 
                   <div className="flex items-center gap-2 p-2 rounded-xl bg-white border border-slate-100 shadow-xs">
@@ -470,7 +471,7 @@ export default function ProductDetail() {
                       <ShieldCheck size={14} className="text-emerald-600" />
                     </div>
 
-                    <span>ធានាផលិតផលសុទ្ធ</span>
+                    <span>{t('product.authenticGuarantee')}</span>
                   </div>
                 </div>
               </div>
@@ -479,7 +480,7 @@ export default function ProductDetail() {
                 <div className="flex items-center gap-2 w-full flex-nowrap">
                   <div className="flex items-center gap-1 shrink-0">
                     <span className="text-xs font-bold text-slate-600">
-                      ចំនួន:
+                      {t('product.quantity')}
                     </span>
 
                     <div className="flex items-center border border-slate-200 rounded-xl bg-white p-0.5">
@@ -518,7 +519,7 @@ export default function ProductDetail() {
                     className="flex-1 h-9 flex items-center justify-center gap-1 bg-red-800 text-white font-bold text-xs px-2 py-1.5 rounded-lg hover:bg-red-900 transition-all disabled:opacity-40"
                   >
                     <ShoppingCart size={14} />
-                    <span>ដាក់ចូលកន្ត្រក</span>
+                    <span>{t('product.addToCart')}</span>
                   </button>
 
                   <button
@@ -528,7 +529,7 @@ export default function ProductDetail() {
                     className="flex-1 h-9 flex items-center justify-center gap-1 bg-emerald-600 text-white font-bold text-xs px-2 py-1.5 rounded-lg hover:bg-emerald-700 transition-all disabled:opacity-40"
                   >
                     <SquareChevronDown size={14} />
-                    <span>ទិញឥឡូវ</span>
+                    <span>{t('product.buyNow')}</span>
                   </button>
                 </div>
               </div>

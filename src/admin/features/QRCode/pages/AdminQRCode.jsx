@@ -22,15 +22,8 @@ export default function AdminQRCode() {
   const { user } = useAuth();
 
   const shopCode = user?.shop?.code || "";
-
   const { data: settingsData } = useSettingsQuery(shopCode);
-
-  console.log("AdminQRCode - settingsData:", settingsData);
-
   const logoShop = settingsData?.logo || "";
-
-  console.log("AdminQRCode - logoShop:", logoShop);
-
   const BaseUrl =
     import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "";
 
@@ -39,9 +32,6 @@ export default function AdminQRCode() {
       ? logoShop
       : `${BaseUrl}${logoShop.startsWith("/") ? "" : "/"}${logoShop}`
     : "";
-
-  console.log("AdminQRCode - logoShopUrl:", logoShopUrl);
-
   const [copied, setCopied] = useState(false);
 
   const [roundLogoUrl, setRoundLogoUrl] = useState("");

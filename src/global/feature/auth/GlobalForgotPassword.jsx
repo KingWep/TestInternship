@@ -123,11 +123,10 @@ const GlobalForgotPassword = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full mt-3 font-medium py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed ${
-                  emailSent
+                className={`w-full mt-3 font-medium py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed ${emailSent
                     ? "bg-pink-50 border border-pink-200 text-pink-900 hover:bg-pink-900 hover:text-white"
                     : "bg-[#88004d] hover:bg-[#66013f] text-white shadow-md shadow-[#c026d3]/20"
-                }`}
+                  }`}
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

@@ -151,15 +151,15 @@ const GeneralSettings = () => {
 
   const handleVerifyTelegram = async () => {
     if (!telegramGroupToVerify) return;
-    
+
     setVerifyStatus({ loading: true, info: null, error: null });
-    
+
     try {
       const result = await telegramService.verifyGroup(telegramGroupToVerify);
       if (result.success && result.data) {
         setVerifyStatus({ loading: false, info: result.data, error: null });
         setValue('chat_id', result.data.chat_id, { shouldValidate: true, shouldDirty: true });
-        
+
         Swal.fire({
           icon: "success",
           title: t("common.success", "Success! ✅"),
@@ -171,7 +171,7 @@ const GeneralSettings = () => {
     } catch (err) {
       const errorMsg = err.message || t("settings.verificationFailed", "Verification failed");
       setVerifyStatus({ loading: false, info: null, error: errorMsg });
-      
+
       Swal.fire({
         icon: "error",
         title: t("common.error", "Error"),
@@ -330,20 +330,20 @@ const GeneralSettings = () => {
                         />
                       </div>
                     </FormField>
-                    
+
                     <div className="md:col-span-2 border border-slate-200 rounded-xl p-4 bg-slate-50">
                       <div className="flex items-center gap-2 mb-3">
                         <Send size={18} className="text-[#229ED9]" />
                         <h3 className="text-sm font-bold text-slate-800">{t("settings.telegramBotIntegration", "Telegram Bot Integration")}</h3>
                       </div>
                       <p className="text-xs text-slate-500 mb-4">
-                        {t("settings.telegramBotIntegrationDesc", "To receive order notifications, add your bot to a Telegram group as an Admin, then enter the group username (e.g. @my_shop) and verify it to get the Chat ID.")}
+                        {t("settings.telegramBotIntegrationDesc", "To receive order notifications, add your bot to a Telegram group as an Admin, then enter the group username (e.g. @my_shop) or link (e.g. https://t.me/my_shop) and verify it to get the Chat ID.")}
                       </p>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                            {t("settings.verifyGroupUsername", "Verify Group Username")}
+                            {t("settings.verifyGroupUsername", "Verify Group Username or Link")}
                           </label>
                           <div className="flex gap-2">
                             <div className="relative flex-1">
@@ -351,7 +351,7 @@ const GeneralSettings = () => {
                                 type="text"
                                 value={telegramGroupToVerify}
                                 onChange={(e) => setTelegramGroupToVerify(e.target.value)}
-                                placeholder="@shop_orders"
+                                placeholder="@shop_orders or https://t.me/..."
                                 className={`${inputClass}`}
                               />
                             </div>

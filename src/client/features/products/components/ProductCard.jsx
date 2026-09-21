@@ -10,8 +10,10 @@ import { Link, useNavigate, useParams } from "react-router-dom"; // 1. Import us
 import Badge from "../../../components/common/Badge";
 import ProductPrice from "./ProductPrice";
 import { useProductShareContext } from "../../../../context/ProductShareContext";
+import { useTranslation } from "react-i18next";
 
 export default function ProductCard({ product = {}, index = 0 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate(); // 2. Initialize navigate
   const { shop_code } = useParams();
 
@@ -124,7 +126,7 @@ export default function ProductCard({ product = {}, index = 0 }) {
               strokeWidth={1.5}
             />
             <span className="text-[11px] mt-2 font-medium text-gray-400">
-              គ្មានរូបភាព
+              {t('product.noImage')}
             </span>
           </div>
         )}
@@ -158,7 +160,7 @@ export default function ProductCard({ product = {}, index = 0 }) {
         {availableStock <= 0 && (
           <div className="absolute inset-0 bg-white/40 backdrop-blur-sm z-10 flex items-center justify-center">
             <span className="bg-gray-900 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
-              អស់ពីស្តុក
+              {t('product.outOfStock')}
             </span>
           </div>
         )}
@@ -172,7 +174,7 @@ export default function ProductCard({ product = {}, index = 0 }) {
               className="translate-y-4 group-hover/image:translate-y-0 transition-all duration-300 flex items-center gap-2 px-5 py-2.5 bg-white/90 backdrop-blur-sm text-gray-900 font-semibold text-sm rounded-full shadow-xl hover:bg-red-600 hover:text-white pointer-events-auto"
             >
               <Eye size={18} />
-              មើលលម្អិត
+              {t('product.viewDetails')}
             </Link>
           </div>
         </div>
@@ -182,14 +184,14 @@ export default function ProductCard({ product = {}, index = 0 }) {
         {/* Category + Stock */}
         <div className="flex items-center justify-between">
           <span className="text-[11px] sm:text-xs text-gray-400 font-medium uppercase tracking-wider truncate">
-            {categoryName || "ទូទៅ"}
+            {categoryName || t('product.general')}
           </span>
 
           <Badge
             variant="stock"
             className="scale-90 origin-right bg-gray-100 text-gray-600"
           >
-            ស្តុក: {availableStock}
+            {t('product.stock', { count: availableStock })}
           </Badge>
         </div>
 
@@ -208,14 +210,14 @@ export default function ProductCard({ product = {}, index = 0 }) {
             <div className="inline-flex items-center gap-1.5 bg-emerald-50/80 w-fit px-2 py-1 rounded-md border border-emerald-100">
               <Gift size={12} className="text-emerald-600" />
               <span className="text-[11px] text-emerald-700 font-medium">
-                ចំណេញ ${Number(savingsAmount).toFixed(2)}
+                {t('product.save', { amount: Number(savingsAmount).toFixed(2) })}
               </span>
             </div>
           ) : (
             <div className="inline-flex items-center gap-1.5 bg-gray-50 w-fit px-2 py-1 rounded-md border border-gray-200">
               <ShieldCheck size={12} className="text-blue-500" />
               <span className="text-[11px] text-gray-600 font-medium tracking-wide">
-                ផលិតផលសុទ្ធ 100%
+                {t('product.authenticGuarantee')}
               </span>
             </div>
           )}

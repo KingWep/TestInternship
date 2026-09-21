@@ -178,7 +178,11 @@ export default function AdminReceiptPage() {
     setLoading("telegram");
 
     try {
-      await sendOrderToTelegram(order);
+      await sendOrderToTelegram({
+        ...order,
+        chat_id: settings?.chat_id || order?.chat_id,
+        shopCode: order?.shopCode || order?.shop_code || order?.shop?.code || settings?.shop_code
+      });
 
       Swal.fire({
         icon: "success",

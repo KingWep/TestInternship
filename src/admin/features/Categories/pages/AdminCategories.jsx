@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Plus, Edit, SlidersHorizontal, Ban, Search } from 'lucide-react'
+import { Plus, Edit, SlidersHorizontal, Search, ImageOff } from 'lucide-react'
 import { useCategories } from '../hooks/useCategories'
 import CategoryForm from '../components/CategoryForm'
 import DataTable from '../../../components/common/DataTable'
@@ -60,7 +60,7 @@ export default function AdminCategories() {
             />
           ) : (
             <div className="w-full h-full bg-slate-200 flex items-center justify-center">
-              <Ban size={20} className="text-gray-400" />
+              <ImageOff size={20} className="text-gray-400"/>
             </div>
           )}
         </div>

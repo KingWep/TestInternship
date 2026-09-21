@@ -1,7 +1,9 @@
 import { Minus, Plus, Trash2 } from "lucide-react"
 import { useCart } from "../../../../context/CartContext"
+import { useTranslation } from "react-i18next";
 
 export default function CartItem({ item }) {
+  const { t } = useTranslation();
   const {
     updateQuantity,
     removeFromCart,
@@ -27,7 +29,7 @@ export default function CartItem({ item }) {
           <button
             onClick={() => removeFromCart(item.id)}
             className="shrink-0 p-1 text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
-            title="លុបចេញពីកន្ត្រក"
+            title={t('cart.removeFromCart')}
           >
             <Trash2 size={16} />
           </button>

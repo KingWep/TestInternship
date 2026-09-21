@@ -8,11 +8,13 @@ export const productService = {
       const response = await axiosClient.get(API_ENDPOINTS.PRODUCTS.GET_ALL, { params, ...config });
       return response.data;
     } catch (error) {
-      console.error('Product API Error [getProducts]:', {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
+      if (error.message !== 'canceled' && error.name !== 'CanceledError') {
+        console.error('Product API Error [getProducts]:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+      }
       throw error;
     }
   },

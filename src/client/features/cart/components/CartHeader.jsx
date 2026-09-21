@@ -1,7 +1,9 @@
 import { ShoppingCart, X } from "lucide-react"
 import { useCart } from "../../../../context/CartContext"
+import { useTranslation } from "react-i18next";
 
 export default function CartHeader() {
+  const { t } = useTranslation();
   const { setIsCartOpen } = useCart()
 
   return (
@@ -9,11 +11,11 @@ export default function CartHeader() {
       <div>
         <h2 className="flex items-center gap-2 text-lg font-bold text-red-900">
           <ShoppingCart size={20} />
-          កន្ត្រករបស់អ្នក
+          {t('cart.yourCart')}
         </h2>
 
         <p className="text-xs text-slate-400 mt-1">
-          ពិនិត្យទំនិញរបស់អ្នក
+          {t('cart.reviewItems')}
         </p>
       </div>
 

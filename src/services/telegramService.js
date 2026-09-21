@@ -50,11 +50,22 @@ const verifyGroup = async (group) => {
     throw new Error('Telegram group is required.')
   }
 
+  let formattedGroup = group.trim();
+  
+  // Extract username from t.me links
+  const tmeMatch = formattedGroup.match(/(?:https?:\/\/)?(?:www\.)?t\.me\/([a-zA-Z0-9_]+)/);
+  if (tmeMatch && tmeMatch[1]) {
+    formattedGroup = `@${tmeMatch[1]}`;
+  } else if (!formattedGroup.startsWith('@') && !formattedGroup.startsWith('-') && isNaN(Number(formattedGroup))) {
+    // If it's a plain string like "my_group_name", prepend @
+    formattedGroup = `@${formattedGroup}`;
+  }
+
   const token = getBotToken();
   if (!token) throw new Error('Telegram Bot Token is not configured.');
 
   const response = await fetch(
-    `https://api.telegram.org/bot${token}/getChat?chat_id=${encodeURIComponent(group.trim())}`
+    `https://api.telegram.org/bot${token}/getChat?chat_id=${encodeURIComponent(formattedGroup)}`
   )
 
   const data = await response.json()
@@ -62,7 +73,7 @@ const verifyGroup = async (group) => {
   if (!data?.ok) {
     throw new Error(
       data?.description ||
-        'Failed to verify Telegram group.'
+      'Failed to verify Telegram group.'
     )
   }
 
@@ -109,7 +120,7 @@ const sendMessage = async (text, chatId) => {
   if (!data?.ok) {
     throw new Error(
       data?.description ||
-        'Failed to send Telegram message.'
+      'Failed to send Telegram message.'
     )
   }
 
@@ -151,32 +162,32 @@ const buildOrderMessage = (order, courier) => {
   const items = Array.isArray(order?.items)
     ? order.items
     : Array.isArray(order?.orderDetails)
-    ? order.orderDetails
-    : []
+      ? order.orderDetails
+      : []
   const itemsText = items.length
     ? items
-        .map((item, index) => {
-          const productName =
-            item?.product?.name ||
-            item?.productName ||
-            item?.product_name ||
-            item?.name ||
-            'Unknown Product'
+      .map((item, index) => {
+        const productName =
+          item?.product?.name ||
+          item?.productName ||
+          item?.product_name ||
+          item?.name ||
+          'Unknown Product'
 
-          const quantity =
-            item?.quantity || 0
+        const quantity =
+          item?.quantity || 0
 
-          const price =
-            item?.price ||
-            item?.salePrice ||
-            item?.product?.salePrice ||
-            0
+        const price =
+          item?.price ||
+          item?.salePrice ||
+          item?.product?.salePrice ||
+          0
 
-          return (
-            `• ${escapeHtml(productName)} × ${quantity} — $${formatMoney(price)}`
-          )
-        })
-        .join('\n')
+        return (
+          `• ${escapeHtml(productName)} × ${quantity} — $${formatMoney(price)}`
+        )
+      })
+      .join('\n')
     : 'No items'
 
   const orderNumber =
@@ -233,8 +244,8 @@ const buildOrderMessage = (order, courier) => {
 
   const orderDate =
     order?.createdAt ||
-    order?.created_at ||
-    order?.date
+      order?.created_at ||
+      order?.date
       ? new Date(order?.createdAt || order?.created_at || order?.date).toLocaleString()
       : new Date().toLocaleString()
 

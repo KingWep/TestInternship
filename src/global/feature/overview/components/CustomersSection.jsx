@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
-import kv9Img from '../../../assets/kv9.jpg';
-import starcaeImg from '../../../assets/starcae.jpg';
-import onecareImg from '../../../assets/onecare.png';
-import bossImg from '../../../assets/boss.jpg';
-import studentImg from '../../../assets/student.jpg';
+import React, { useState, useEffect, useRef } from "react";
+import { ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
+import kv9Img from "../../../assets/kv9.jpg";
+import starcaeImg from "../../../assets/starcae.jpg";
+import onecareImg from "../../../assets/onecare.png";
+import bossImg from "../../../assets/boss.jpg";
+import studentImg from "../../../assets/student.jpg";
 
 const CustomersSection = ({ t }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -14,54 +14,54 @@ const CustomersSection = ({ t }) => {
   const slides = [
     [
       {
-        name: 'KV9',
+        name: "KV9",
         business: t.customer_kv9_biz,
         img: kv9Img,
-        fallback: 'https://digital.muchtrading.com/kv9.jpg',
+        fallback: "https://digital.muchtrading.com/kv9.jpg",
       },
       {
-        name: 'Star Care',
+        name: "Star Care",
         business: t.customer_starcare_biz,
         img: starcaeImg,
-        fallback: 'https://digital.muchtrading.com/starcae.jpg',
+        fallback: "https://digital.muchtrading.com/starcae.jpg",
       },
       {
-        name: 'One Care',
+        name: "One Care",
         business: t.customer_onecare_biz,
         img: onecareImg,
-        fallback: 'https://digital.muchtrading.com/onecare.png',
+        fallback: "https://digital.muchtrading.com/onecare.png",
       },
       {
         name: t.customer_setthi,
         business: t.customer_setthi_biz,
         img: bossImg,
-        fallback: 'https://digital.muchtrading.com/boss.jpg',
+        fallback: "https://digital.muchtrading.com/boss.jpg",
       },
     ],
     [
       {
-        name: 'One Care',
+        name: "One Care",
         business: t.customer_onecare_biz,
         img: onecareImg,
-        fallback: 'https://digital.muchtrading.com/onecare.png',
+        fallback: "https://digital.muchtrading.com/onecare.png",
       },
       {
-        name: 'Star Care',
+        name: "Star Care",
         business: t.customer_starcare_biz,
         img: starcaeImg,
-        fallback: 'https://digital.muchtrading.com/starcae.jpg',
+        fallback: "https://digital.muchtrading.com/starcae.jpg",
       },
       {
-        name: 'KV9',
+        name: "KV9",
         business: t.customer_kv9_biz,
         img: kv9Img,
-        fallback: 'https://digital.muchtrading.com/kv9.jpg',
+        fallback: "https://digital.muchtrading.com/kv9.jpg",
       },
       {
         name: t.customer_sophal,
         business: t.customer_sophal_biz,
         img: studentImg,
-        fallback: 'https://digital.muchtrading.com/student.jpg',
+        fallback: "https://digital.muchtrading.com/student.jpg",
       },
     ],
   ];
@@ -107,8 +107,8 @@ const CustomersSection = ({ t }) => {
                 key={sIndex}
                 className={`transition-all duration-500 ease-in-out ${
                   sIndex === currentSlide
-                    ? 'opacity-100 relative translate-x-0'
-                    : 'opacity-0 absolute inset-0 pointer-events-none'
+                    ? "opacity-100 relative translate-x-0"
+                    : "opacity-0 absolute inset-0 pointer-events-none"
                 }`}
               >
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
@@ -140,17 +140,18 @@ const CustomersSection = ({ t }) => {
           {/* Prev/Next Controls */}
           <button
             onClick={handlePrev}
-            className="carousel-control-prev"
+            className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-2 sm:-translate-x-6 w-10 h-10 flex items-center justify-center bg-[#8B4773] hover:bg-[#6A3557] text-white rounded-full shadow-lg z-10 transition-all duration-200 focus:outline-none"
             aria-label="Previous customer"
           >
-            <ChevronLeft className="w-5 h-5 text-white" />
+            <ChevronLeft className="w-6 h-6" />
           </button>
+
           <button
             onClick={handleNext}
-            className="carousel-control-next"
+            className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-2 sm:translate-x-6 w-10 h-10 flex items-center justify-center bg-[#8B4773] hover:bg-[#6A3557] text-white rounded-full shadow-lg z-10 transition-all duration-200 focus:outline-none"
             aria-label="Next customer"
           >
-            <ChevronRight className="w-5 h-5 text-white" />
+            <ChevronRight className="w-6 h-6" />
           </button>
 
           {/* Indicators */}
@@ -159,7 +160,7 @@ const CustomersSection = ({ t }) => {
               <button
                 key={dotIdx}
                 onClick={() => setCurrentSlide(dotIdx)}
-                className={dotIdx === currentSlide ? 'active' : ''}
+                className={dotIdx === currentSlide ? "active" : ""}
                 aria-label={`Slide ${dotIdx + 1}`}
               />
             ))}

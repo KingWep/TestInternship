@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Edit, SlidersHorizontal } from "lucide-react";
+import { Plus, Edit, SlidersHorizontal, ImageOff } from "lucide-react";
 import { useProducts, getStockStatus } from "../hooks/useProducts";
 import ProductsForm from "../components/ProductForm";
 import DataTable from "../../../components/common/DataTable";
@@ -53,7 +53,7 @@ export default function AdminProducts() {
           />
         ) : (
           <div className="h-16 w-16 min-w-[4rem] bg-[#fcfafb] rounded-lg flex items-center justify-center text-xs text-gray-400">
-            {t('products.noImage')}
+            <ImageOff size={20} className="text-gray-400"/>
           </div>
         ),
     },

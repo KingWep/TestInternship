@@ -3,9 +3,11 @@ import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 
 import { useCreateOrderMutation } from "../../../../queries/orders/useOrderQueries";
-import { sendOrderToTelegram } from "../../../../services/telegramService";
 import { useProductsQuery } from "../../../../queries/products/useProductQueries";
 import { useCategoriesQuery } from "../../../../queries/categories/useCategoryQueries";
+
+import { sendOrderToTelegram } from "../../../../services/telegramService";
+import { useAuth } from "../../../../hooks/useAuth";
 
 const INITIAL_CUSTOMER = {
   name: "",
@@ -16,6 +18,22 @@ const INITIAL_CUSTOMER = {
 
 export default function useSalesForm() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+
+  /**
+   * Support different Auth response structures:
+   *
+   * user.shop.code
+   * user.shop.shop_code
+   * user.shop_code
+   * user.shopCode
+   */
+  const shopCode =
+    user?.shop?.code ||
+    user?.shop?.shop_code ||
+    user?.shop_code ||
+    user?.shopCode ||
+    null;
 
   const {
     data: products = [],
@@ -30,7 +48,9 @@ export default function useSalesForm() {
   const createOrderMutation = useCreateOrderMutation();
 
   const isLoading =
-    isProductsLoading || isCategoriesLoading;
+    isProductsLoading ||
+    isCategoriesLoading ||
+    createOrderMutation.isPending;
 
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState("");
@@ -40,33 +60,43 @@ export default function useSalesForm() {
   });
 
   const filterOptions = useMemo(() => {
-    const uniqueCategories = [
-      t("common.all"),
-      ...categories.map((c) => c.name),
+    const uniqueCategoryNames = [
+      ...new Set(
+        categories
+          .map((category) => category?.name)
+          .filter(Boolean)
+      ),
     ];
 
     return [
       {
         key: "category",
-        options: uniqueCategories,
+        options: [
+          t("common.all"),
+          ...uniqueCategoryNames,
+        ],
         searchable: true,
       },
     ];
   }, [categories, t]);
 
   const handleFilterChange = (key, value) => {
-    setFilters((prev) => ({
-      ...prev,
+    setFilters((previousFilters) => ({
+      ...previousFilters,
       [key]: value,
     }));
   };
 
   const getStock = (product) => {
+    const stock = Number(
+      product?.stockQuantity ??
+      product?.stock ??
+      0
+    );
+
     return Math.max(
       0,
-      Number(
-        product?.stockQuantity ?? product?.stock ?? 0
-      ) || 0
+      Number.isFinite(stock) ? stock : 0
     );
   };
 
@@ -85,65 +115,58 @@ export default function useSalesForm() {
       return;
     }
 
-    let result = {
-      success: true,
-      message: "",
-    };
+    const existingItem = cart.find(
+      (item) => Number(item.id) === Number(product.id)
+    );
 
-    setCart((prev) => {
-      const existing = prev.find(
-        (item) => Number(item.id) === Number(product.id)
-      );
+    if (existingItem) {
+      const currentQuantity =
+        Number(existingItem.quantity) || 0;
 
-      if (existing) {
-        const currentQuantity =
-          Number(existing.quantity) || 0;
+      if (currentQuantity >= stock) {
+        Swal.fire({
+          icon: "warning",
+          title: t("sales.outOfStock"),
+          text: `ទំនិញនេះមានត្រឹម ${stock} ប៉ុណ្ណោះ`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
 
-        if (currentQuantity >= stock) {
-          result = {
-            success: false,
-            message: `ទំនិញនេះមានត្រឹម ${stock} ប៉ុណ្ណោះ`,
-          };
+        return;
+      }
 
-          return prev;
-        }
-
-        return prev.map((item) =>
+      setCart((previousCart) =>
+        previousCart.map((item) =>
           Number(item.id) === Number(product.id)
             ? {
                 ...item,
                 quantity: currentQuantity + 1,
               }
             : item
-        );
-      }
+        )
+      );
 
-      return [
-        ...prev,
-        {
-          ...product,
-          quantity: 1,
-        },
-      ];
-    });
-
-    if (!result.success) {
-      Swal.fire({
-        icon: "warning",
-        title: t("sales.outOfStock"),
-        text: result.message,
-        timer: 1500,
-        showConfirmButton: false,
-      });
+      return;
     }
+
+    setCart((previousCart) => [
+      ...previousCart,
+      {
+        ...product,
+        quantity: 1,
+      },
+    ]);
   };
 
-  const handleUpdateQuantity = (id, qty) => {
-    const newQuantity = Number(qty);
+  const handleUpdateQuantity = (id, quantity) => {
+    const newQuantity = Number(quantity);
 
-    if (!Number.isFinite(newQuantity) || newQuantity <= 0) {
-      setCart((prev) =>
-        prev.filter(
+    if (
+      !Number.isFinite(newQuantity) ||
+      newQuantity <= 0
+    ) {
+      setCart((previousCart) =>
+        previousCart.filter(
           (item) => Number(item.id) !== Number(id)
         )
       );
@@ -151,8 +174,8 @@ export default function useSalesForm() {
       return;
     }
 
-    setCart((prev) =>
-      prev
+    setCart((previousCart) =>
+      previousCart
         .map((item) => {
           if (Number(item.id) !== Number(id)) {
             return item;
@@ -164,14 +187,9 @@ export default function useSalesForm() {
             return null;
           }
 
-          const cappedQuantity = Math.min(
-            newQuantity,
-            stock
-          );
-
           return {
             ...item,
-            quantity: cappedQuantity,
+            quantity: Math.min(newQuantity, stock),
           };
         })
         .filter(Boolean)
@@ -179,47 +197,63 @@ export default function useSalesForm() {
   };
 
   const handleRemoveItem = (id) => {
-    setCart((prev) =>
-      prev.filter(
+    setCart((previousCart) =>
+      previousCart.filter(
         (item) => Number(item.id) !== Number(id)
       )
     );
   };
 
   const subtotal = useMemo(() => {
-    return cart.reduce((acc, item) => {
+    return cart.reduce((total, item) => {
       const price = Number(
-        item.salePrice || item.price || 0
+        item?.salePrice ??
+        item?.price ??
+        0
       );
 
-      const quantity = Number(item.quantity) || 0;
+      const quantity =
+        Number(item?.quantity) || 0;
 
-      return acc + price * quantity;
+      return total + price * quantity;
     }, 0);
   }, [cart]);
 
   const filterProducts = useMemo(() => {
-    const searchValue = search.trim().toLowerCase();
+    const searchValue = search
+      .trim()
+      .toLowerCase();
 
     return products.filter((product) => {
-      const productName =
-        product?.name?.toLowerCase() || "";
+      const productName = String(
+        product?.name || ""
+      ).toLowerCase();
 
-      const matchSearch =
+      const productCategory =
+        product?.categoryName ||
+        product?.category?.name ||
+        "";
+
+      const matchesSearch =
         productName.includes(searchValue);
 
-      const matchFilter =
+      const matchesCategory =
         !filters.category ||
         filters.category === t("common.all") ||
-        product.categoryName === filters.category;
+        productCategory === filters.category;
 
-      return matchSearch && matchFilter;
+      return matchesSearch && matchesCategory;
     });
-  }, [products, search, filters.category, t]);
+  }, [
+    products,
+    search,
+    filters.category,
+    t,
+  ]);
 
   const handleCheckout = async ({ customerInfo }) => {
     if (cart.length === 0) {
-      Swal.fire({
+      await Swal.fire({
         icon: "warning",
         title: t("common.cartEmpty"),
         text: t("common.addProductsFirst"),
@@ -232,13 +266,18 @@ export default function useSalesForm() {
 
     const invalidStockItem = cart.find((item) => {
       const stock = getStock(item);
-      const quantity = Number(item.quantity) || 0;
+      const quantity =
+        Number(item?.quantity) || 0;
 
-      return stock <= 0 || quantity > stock;
+      return (
+        stock <= 0 ||
+        quantity <= 0 ||
+        quantity > stock
+      );
     });
 
     if (invalidStockItem) {
-      Swal.fire({
+      await Swal.fire({
         icon: "warning",
         title: t("sales.outOfStock"),
         text: `${invalidStockItem.name} ${t(
@@ -251,32 +290,86 @@ export default function useSalesForm() {
       return null;
     }
 
-    let newOrder;
+    if (!shopCode) {
+      console.error(
+        "Shop code is missing from authenticated user:",
+        user
+      );
 
-    try {
-      newOrder = await createOrderMutation.mutateAsync({
-        items: cart,
-        subtotal,
-        delivery: Number(customerInfo.deliveryFee) || 0,
-        customerInfo,
-      });
-    } catch (error) {
-      Swal.fire({
+      await Swal.fire({
         icon: "error",
         title: t("common.failed"),
-        text: t("sales.createOrderError"),
+        text:
+          "Shop information is missing. " +
+          "Please log in again.",
         confirmButtonColor: "#3b82f6",
+        confirmButtonText: t("common.gotIt"),
       });
 
       return null;
     }
 
-    setCart([]);
-    setSearch("");
+    let newOrder;
 
-    setFilters({
-      category: "",
-    });
+    try {
+      const mutationResponse =
+        await createOrderMutation.mutateAsync({
+          shop_code: shopCode,
+          items: cart,
+          subtotal,
+          delivery:
+            Number(customerInfo?.deliveryFee) || 0,
+          customerInfo,
+        });
+
+      const createdOrder =
+        mutationResponse?.data?.data ??
+        mutationResponse?.data ??
+        mutationResponse;
+
+      if (!createdOrder?.id) {
+        throw new Error(
+          "Create-order API returned an invalid response."
+        );
+      }
+
+      newOrder = {
+        ...createdOrder,
+        shop_code:
+          createdOrder?.shop_code ||
+          createdOrder?.shopCode ||
+          shopCode,
+      };
+
+      console.log(
+        "Created order:",
+        createdOrder
+      );
+
+      console.log(
+        "Order prepared for Telegram:",
+        newOrder
+      );
+    } catch (error) {
+      console.error(
+        "Failed to create order:",
+        error
+      );
+
+      await Swal.fire({
+        icon: "error",
+        title: t("common.failed"),
+        text:
+          error?.response?.data?.message ||
+          error?.response?.data?.error ||
+          error?.message ||
+          t("sales.createOrderError"),
+        confirmButtonColor: "#3b82f6",
+        confirmButtonText: t("common.gotIt"),
+      });
+
+      return null;
+    }
 
     try {
       await sendOrderToTelegram(newOrder);
@@ -287,13 +380,20 @@ export default function useSalesForm() {
       );
     }
 
-    Swal.fire({
+    setCart([]);
+    setSearch("");
+    setFilters({
+      category: "",
+    });
+
+    await Swal.fire({
       icon: "success",
       title: t("sales.orderSuccess"),
       confirmButtonColor: "#3b82f6",
       confirmButtonText: t("common.great"),
       showClass: {
-        popup: "animate__animated animate__fadeInDown",
+        popup:
+          "animate__animated animate__fadeInDown",
       },
     });
 
@@ -303,17 +403,23 @@ export default function useSalesForm() {
   return {
     search,
     setSearch,
+
     filters,
     handleFilterChange,
     filterOptions,
+
     filterProducts,
+
     cart,
     handleAddToCart,
     handleUpdateQuantity,
     handleRemoveItem,
+
     handleCheckout,
+
     subtotal,
     INITIAL_CUSTOMER,
     isLoading,
+    shopCode,
   };
 }

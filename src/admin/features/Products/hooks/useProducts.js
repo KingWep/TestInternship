@@ -16,7 +16,6 @@ export function useProducts({ shopCode } = {}) {
   const { data: products = [], isPending: isLoading } = useProductsQuery(
     { shop_code: shopCode }
   )
-  console.log('Fetched products:', products) // Debugging log
   const createMutation = useCreateProductMutation()
   const updateMutation = useUpdateProductMutation()
   const deleteMutation = useDeleteProductMutation()

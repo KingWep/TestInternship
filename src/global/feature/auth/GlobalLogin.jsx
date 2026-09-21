@@ -137,7 +137,7 @@ const GlobalLogin = () => {
               <img
                 src="/images/chomnenh.png"
                 alt="Chomnenh Logo"
-                className="object-cover w-full h-full drop-shadow-sm"
+                className="w-full h-full rounded-xl object-contain drop-shadow-sm"
               />
             </div>
 

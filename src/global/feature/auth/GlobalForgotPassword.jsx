@@ -63,7 +63,7 @@ const GlobalForgotPassword = () => {
               <img
                 src="/images/chomnenh.png"
                 alt="Chomnenh Logo"
-                className="object-cover w-full h-full drop-shadow-sm"
+                className="rounded-xl object-contain w-full h-full drop-shadow-sm"
               />
             </div>
 

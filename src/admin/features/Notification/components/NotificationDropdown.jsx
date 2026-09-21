@@ -38,8 +38,8 @@ export default function NotificationDropdown() {
   const renderIcon = (type) => {
     switch(type) {
       case 'order': return <ShoppingBag className="text-[#870d4c]" size={20} />;
-      case 'low_stock': return <AlertTriangle className="text-amber-500" size={20} />;
-      case 'out_of_stock': return <AlertCircle className="text-red-500" size={20} />;
+      case 'low_stock': return <AlertTriangle className="text-amber-600" size={20} />;
+      case 'out_of_stock': return <AlertCircle className="text-red-700" size={20} />;
       default: return <IoNotifications className="text-slate-500" size={20} />;
     }
   };
@@ -150,7 +150,7 @@ export default function NotificationDropdown() {
                     !item.read ? 'bg-[#fcfafb]/60' : ''
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center bg-[#fcfafb]">
+                  <div className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center bg-[#f9acd960]">
                     {renderIcon(item.type)}
                   </div>
                   <div className="flex-1 min-w-0">

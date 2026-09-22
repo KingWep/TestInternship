@@ -121,6 +121,7 @@
     "invalidHex": "សូមបញ្ចូលពណ៌ HEX ត្រឹមត្រូវ",
     "shopCodeMaxLength": "Shop Code មិនអាចលើស 50 តួអក្សរ",
     "invalidUrl": "សូមបញ្ចូលតំណរភ្ជាប់អោយបានត្រឹមត្រូវ",
+    "requiredUrl": "សូមបញ្ចូលតំណភ្ជាប់",
     "requiredIcon": "សូមបញ្ចូលរូបតំណាង",
     "requiredShopName": "សូមបញ្ចូលឈ្មោះហាង",
     "requiredShopCode": "សូមបញ្ចូលលេខកូដហាង",
@@ -476,6 +477,7 @@
     "orderSuccess": "បង្កើតការបញ្ជាទិញជោគជ័យ!🎉"
   },
   "settings": {
+    "updateSuccess": "ការកំណត់ត្រូវបានធ្វើបច្ចុប្បន្នភាពដោយជោគជ័យ។",
     "generalSettings": "ការកំណត់ទូទៅ",
     "generalDesc": "គ្រប់គ្រងព័ត៌មាននិងយីហោហាងរបស់អ្នក។",
     "saveChanges": "រក្សាទុកការផ្លាស់ប្តូរ",

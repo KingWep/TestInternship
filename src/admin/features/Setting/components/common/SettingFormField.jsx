@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const SettingFormField = ({
   label,
@@ -7,6 +8,8 @@ const SettingFormField = ({
   children,
   className = "",
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className={className}>
       <label className="block text-xs font-semibold text-slate-700 mb-2">
@@ -16,7 +19,7 @@ const SettingFormField = ({
 
       {children}
 
-      {error && <p className="text-xs text-red-500 mt-1.5">{error.message}</p>}
+      {error && <p className="text-xs text-red-500 mt-1.5">{t(error.message)}</p>}
     </div>
   );
 };

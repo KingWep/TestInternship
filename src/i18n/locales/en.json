@@ -121,6 +121,7 @@
     "invalidHex": "Please enter a valid HEX color",
     "shopCodeMaxLength": "Shop Code cannot exceed 50 characters",
     "invalidUrl": "Please enter a valid URL",
+    "requiredUrl": "URL is required",
     "requiredIcon": "Icon is required",
     "requiredShopName": "Shop Name is required",
     "requiredShopCode": "Shop Code is required",
@@ -476,6 +477,7 @@
     "orderSuccess": "Order Placed Successfully!🎉"
   },
   "settings": {
+    "updateSuccess": "Settings updated successfully.",
     "generalSettings": "General Settings",
     "generalDesc": "Manage your shop information and branding.",
     "saveChanges": "Save Changes",
